@@ -1,1 +1,3 @@
-<img src="/main/docs/public/red-otter.svg" alt="logo">
+# red-otter
+
+![Logo](.github/assets/logo.png)
