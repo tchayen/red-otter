@@ -401,7 +401,7 @@ const replace = `
       }
 
       #logo-title {
-        font-size: 42px;
+        font-size: 44px;
         font-weight: 800;
         color: #fff;
       }
@@ -579,7 +579,7 @@ const replace = `
       <div id="logo">
         <img id="logo-img" src="/logo.svg" alt="Logo" />
         <span id="logo-title">Red Otter</span>
-        <span id="logo-description">Otters are cute. Red means fast.</span>
+        <span id="logo-description">Otters are cute. Red cars are fast.</span>
       </div>
       ${addHeader(2, "Introduction")}
       <p>
