@@ -1,0 +1,14 @@
+{
+  "unitsPerEm": 2816,
+  "capHeight": 2048,
+  "ascender": 2728,
+  "columns": [
+    "id",
+    "x",
+    "y",
+    "width",
+    "height",
+    "lsb",
+    "rsb"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@red-otter/docs",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-typescript": "^7.21.0",
+    "@types/babel__core": "^7.20.0",
+    "@types/prettier": "^2.7.2",
+    "chalk": "^5.2.0",
+    "highlight.js": "^11.7.0",
+    "prettier": "^2.8.4",
+    "ts-node": "^10.9.1",
+    "vite": "^4.1.4"
+  }
+}
