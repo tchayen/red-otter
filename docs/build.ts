@@ -214,6 +214,7 @@ const replace = `
       }
 
       #sidebar-mobile > summary {
+        outline: none;
         cursor: pointer;
         width: 100%;
         padding: 8px;
@@ -576,7 +577,7 @@ const replace = `
   <body>
     <div id="content">
       <div id="logo">
-        <img id="logo-img" src="/red-otter.svg" alt="Red Otter" />
+        <img id="logo-img" src="/logo.svg" alt="Logo" />
         <span id="logo-title">Red Otter</span>
         <span id="logo-description">Otters are cute. Red means fast.</span>
       </div>
@@ -1124,25 +1125,25 @@ layout.add(
         <a href="https://highlightjs.org/"
           rel="noopener noreferrer"
           target="_blank"
-        >
-          Highlights.js
-        </a> for syntax highlighting
+        >Highlights.js</a> for syntax highlighting.
       </li>
       <li>
         <a href="https://highlightjs.org/static/demo/styles/github-dark.css"
           rel="noopener noreferrer"
           target="_blank"
-        >
-          Code theme
-        </a> GitHub Dark from Highlight.js
+        >Code theme</a> GitHub Dark from Highlight.js.
       </li>
       <li>
         <a href="https://tailwindcss.com/docs/customizing-colors"
           rel="noopener noreferrer"
           target="_blank"
-        >
-          Colors
-        </a> Zinc from Tailwind CSS
+        >Colors</a> Zinc from Tailwind CSS.
+      </li>
+      <li>
+        <a href="https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817"
+          rel="noopener noreferrer"
+          target="_blank"
+        >Drawing Text with Signed Distance Fields in Mapbox GL</a>.
       </li>
       <p>
         This website was written in plain HTML and CSS with a build step script
@@ -1154,7 +1155,7 @@ layout.add(
     </div>
     <div id="sidebar">
       <div id="sidebar-logo">
-        <img src="/red-otter.svg" alt="Logo" />
+        <img src="/logo.svg" alt="Logo" />
         <div>
           <span>Red Otter</span>
           <span class="version">v0.0.1</span>
