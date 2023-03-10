@@ -1,6 +1,10 @@
-import { Style, Layout, TextStyle } from "./Layout";
-import { Font } from "./fonts/Font";
-import { Context } from "./Context";
+import {
+  Context,
+  Font,
+  Layout,
+  Style,
+  TextStyle,
+} from "../../packages/red-otter";
 
 const zinc = {
   50: "#fafafa",
@@ -437,7 +441,7 @@ export function mappingOverArrayExample(context: Context, font: Font) {
     { id: 5, name: "Five", createdAt: "2021-01-05" },
   ];
 
-  const columns: { key: keyof typeof data[0]; title: string }[] = [
+  const columns: { key: keyof (typeof data)[0]; title: string }[] = [
     { key: "id", title: "ID" },
     { key: "name", title: "Name" },
     { key: "createdAt", title: "Created" },

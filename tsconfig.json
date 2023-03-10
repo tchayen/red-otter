@@ -18,5 +18,5 @@
     "jsx": "react",
     "jsxFactory": "ę"
   },
-  "include": ["packages/red-otter/src"]
+  "include": ["packages/red-otter", "docs"]
 }

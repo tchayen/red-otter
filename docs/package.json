@@ -6,16 +6,19 @@
     "dev": "vite",
     "build": "yarn generate && vite build",
     "serve": "vite preview",
-    "generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' build.ts"
+    "generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' src/build.ts",
+    "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
     "@babel/preset-typescript": "^7.21.0",
+    "@sparticuz/chromium": "^111.0.0",
     "@types/babel__core": "^7.20.0",
     "@types/prettier": "^2.7.2",
     "chalk": "^4.1.2",
     "highlight.js": "^11.7.0",
     "prettier": "^2.8.4",
+    "puppeteer-core": "^19.7.4",
     "ts-node": "^10.9.1",
     "vite": "^4.1.4"
   }

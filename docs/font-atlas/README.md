@@ -1,0 +1,2 @@
+- `generate.ts` runs puppeteer which bundles the app and visits the page with atlas and downloads it.
+- `main.ts` is the website code which generates and shows the atlas.

@@ -1,11 +1,6 @@
-import { invariant } from "../packages/red-otter/src/invariant";
-import { Context } from "../packages/red-otter/src/Context";
-import { Font } from "../packages/red-otter/src/fonts/Font";
-import { fixtures } from "../packages/red-otter/src/Layout.fixtures";
-
-function toURLSafe(value: string): string {
-  return value.replaceAll(" ", "-").toLowerCase();
-}
+import { toURLSafe, invariant } from "../utils";
+import { Context, Font } from "../../packages/red-otter";
+import { fixtures } from "./examples";
 
 async function mainAsync(): Promise<void> {
   const inter = new Font(

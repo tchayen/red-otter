@@ -1,20 +1,17 @@
 import fs from "node:fs";
 import { performance } from "node:perf_hooks";
-
-import chalk from "chalk";
-import parserTypeScript from "prettier/parser-typescript";
-import parserHtml from "prettier/parser-html";
-import prettier from "prettier/standalone";
 import hljs from "highlight.js";
+import chalk from "chalk";
+
 import typescript from "highlight.js/lib/languages/typescript";
 import bash from "highlight.js/lib/languages/bash";
 import { PluginItem, transformSync } from "@babel/core";
 
-import { fixtures } from "../packages/red-otter/src/Layout.fixtures";
-
-const { format } = prettier;
+import { fixtures } from "./examples";
+import { codeExample, formatCode, toURLSafe } from "../utils";
 
 const steps: { name: string; start: number }[] = [];
+
 function step(name: string): void {
   const lastStep = steps.at(-1);
   const now = performance.now();
@@ -27,28 +24,14 @@ function step(name: string): void {
   steps.push({ name, start: now });
 }
 
-function toURLSafe(value: string): string {
-  return value.replaceAll(" ", "-").toLowerCase();
-}
-
 function addHeader(level: number, title: string): string {
   const slug = toURLSafe(title);
   headers.push({ level, slug, title });
   return `<h${level} id="${slug}"><a href="#${slug}">${title}</a></h${level}>`;
 }
 
-function codeExample(value: string, language = "typescript"): string {
-  const formatted =
-    language === "typescript"
-      ? format(value, {
-          parser: "typescript",
-          plugins: [parserTypeScript],
-        })
-      : value;
-
-  const highlighted = hljs.highlight(formatted, { language: language }).value;
-
-  return `<pre><code class="language-${language}">${highlighted}</code></pre>`;
+function linkExternal(url: string, text: string): string {
+  return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 }
 
 /**
@@ -104,10 +87,7 @@ const fixtureSources: Record<string, string> = {};
 
 step("Read fixtures file");
 // Read the source code of the fixtures.
-const fixturesSource = fs.readFileSync(
-  `${__dirname}/../packages/red-otter/src/Layout.fixtures.tsx`,
-  "utf8"
-);
+const fixturesSource = fs.readFileSync(`${__dirname}/examples.tsx`, "utf8");
 
 step("Transform file using Babel");
 transformSync(fixturesSource, {
@@ -384,7 +364,7 @@ const replace = `
       }
 
       .pusher > a:hover {
-        color: #fff;
+        color: var(--yellow);
       }
 
       #logo {
@@ -452,13 +432,41 @@ const replace = `
         margin-top: 12px;
       }
 
+      .social-link path {
+        fill: var(--zinc-400);
+      }
+
+      .reddit circle {
+        fill: var(--zinc-400);
+      }
+
+      .reddit path {
+        fill: var(--zinc-800);
+      }
+
+      .social-link:hover {
+        color: var(--yellow);
+      }
+
+      .social-link:hover path {
+        fill: var(--yellow);
+      }
+
+      .reddit:hover circle {
+        fill: var(--yellow);
+      }
+
+      .reddit:hover path {
+        fill: var(--zinc-800);
+      }
+
       * {
         box-sizing: border-box;
       }
 
       ::selection {
         color: #000;
-        background-color: #efaf50;
+        background-color: var(--yellow);
       }
 
       ::-webkit-scrollbar {
@@ -492,6 +500,10 @@ const replace = `
         --zinc-200: #e4e4e7;
         --zinc-100: #f4f4f5;
         --zinc-50: #fafafa;
+
+        --yellow: #efaf50;
+        --orange: #ef8950;
+        --red: #eb584e;
       }
 
       /* GitHub dark */
@@ -583,7 +595,7 @@ const replace = `
       </div>
       ${addHeader(2, "Introduction")}
       <p>
-        Red otter is a self-contained layout engine for WebGL that I've been
+        Red otter is a self-contained WebGL flexbox layout engine that I've been
         developing with long breaks for the past many months.
       </p>
       ${addHeader(3, "Features")}
@@ -596,10 +608,7 @@ const replace = `
           <strong>Text rendering</strong> is based on a font atlas texture that
           uses SDF (signed distance field). This allows for smooth scaling and
           upscaling up to some extent (see example below). You can see how the
-          texture looks
-          <a href="/font-atlas.png" referrerpolicy="no-referrer" target="_blank">
-            here
-          </a>.
+          texture looks ${linkExternal("/font-atlas.png", "here")}.
         </li>
         <li>
           <strong>TTF file parser</strong> that produces glyph atlas texture.
@@ -607,12 +616,10 @@ const replace = `
           files, but work on support for more features is in progress.
         </li>
         <li>
-          <strong>Layout engine</strong> which resembles
-          <a
-            href="https://yogalayout.com/"
-            referrerpolicy="no-referrer"
-            target="_blank"
-          >Facebook Yoga</a>
+          <strong>Layout engine</strong> which resembles ${linkExternal(
+            "https://yogalayout.com",
+            "Facebook Yoga"
+          )}.
           as it roughly implements CSS-like flexbox layout. It supports most of
           the properties and has some limited styling capabilities. API is
           designed to resemble React Native styling.
@@ -623,9 +630,9 @@ const replace = `
           <code>&lt;shape&gt;</code>.
         </li>
         <li>
-          Fully typed <strong>TypeScript</strong> types. IDE will guide users
-          through creating elements, applying styles. No single incorrect prop
-          will be passed.
+          Full <strong>TypeScript</strong> support. IDE will guide through
+          creating elements and applying styles. All incorrect props will be
+          easily detected.
         </li>
         <li>
           <strong>No dependencies</strong>. The whole library is hand-crafted
@@ -1122,16 +1129,14 @@ layout.add(
       )}
       ${addHeader(2, "Credits")}
       <li>
-        <a href="https://highlightjs.org/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >Highlights.js</a> for syntax highlighting.
+        ${linkExternal("https://highlightjs.org", "Highlights.js")} for syntax
+        highlighting.
       </li>
       <li>
-        <a href="https://highlightjs.org/static/demo/styles/github-dark.css"
-          rel="noopener noreferrer"
-          target="_blank"
-        >Code theme</a> GitHub Dark from Highlight.js.
+        ${linkExternal(
+          "https://highlightjs.org/static/demo/styles/github-dark.css",
+          "Code theme"
+        )} GitHub Dark from Highlight.js.
       </li>
       <li>
         <a href="https://tailwindcss.com/docs/customizing-colors"
@@ -1140,10 +1145,10 @@ layout.add(
         >Colors</a> Zinc from Tailwind CSS.
       </li>
       <li>
-        <a href="https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817"
-          rel="noopener noreferrer"
-          target="_blank"
-        >Drawing Text with Signed Distance Fields in Mapbox GL</a>.
+          ${linkExternal(
+            "https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817",
+            "Drawing Text with Signed Distance Fields in Mapbox GL"
+          )}.
       </li>
       <p>
         This website was written in plain HTML and CSS with a build step script
@@ -1182,7 +1187,7 @@ layout.add(
           class="social-link"
         >
           <svg viewBox="0 0 16 16" width="24" height="24">
-            <path fill="var(--zinc-400)" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
           </svg>
           <span>Source code</span>
         </a>
@@ -1196,7 +1201,7 @@ layout.add(
             <defs>
               <style>.cls-1{fill:#c12127;}.cls-2{fill:#fff;}</style>
             </defs>
-            <path fill="var(--zinc-400)" d="M240,250h100v-50h100V0H240V250z M340,50h50v100h-50V50z M480,0v200h100V50h50v150h50V50h50v150h50V0H480zM0,200h100V50h50v150h50V0H0V200z" />
+            <path d="M240,250h100v-50h100V0H240V250z M340,50h50v100h-50V50z M480,0v200h100V50h50v150h50V50h50v150h50V0H480zM0,200h100V50h50v150h50V0H0V200z" />
           </svg>
           <span>Package</span>
         </a>
@@ -1207,7 +1212,7 @@ layout.add(
           class="social-link"
         >
           <svg viewBox="0 0 24 24" width="24" height="24">
-            <path fill="var(--zinc-400)" d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"></path>
+            <path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"></path>
           </svg>
           <span>Twitter</span>
         </a>
@@ -1215,11 +1220,11 @@ layout.add(
           href="https://twitter.com/tchayen"
           rel="noopener noreferrer"
           target="_blank"
-          class="social-link"
+          class="social-link reddit"
         >
           <svg viewBox="85.4 85.4 171 171" width="24" height="24">
-            <circle fill="var(--zinc-400)" cx="170.9" cy="170.9" r="85.5"/>
-            <path fill="var(--zinc-800)" d="M227.9,170.9c0-6.9-5.6-12.5-12.5-12.5c-3.4,0-6.4,1.3-8.6,3.5c-8.5-6.1-20.3-10.1-33.3-10.6l5.7-26.7 l18.5,3.9c0.2,4.7,4.1,8.5,8.9,8.5c4.9,0,8.9-4,8.9-8.9c0-4.9-4-8.9-8.9-8.9c-3.5,0-6.5,2-7.9,5l-20.7-4.4c-0.6-0.1-1.2,0-1.7,0.3 c-0.5,0.3-0.8,0.8-1,1.4l-6.3,29.8c-13.3,0.4-25.2,4.3-33.8,10.6c-2.2-2.1-5.3-3.5-8.6-3.5c-6.9,0-12.5,5.6-12.5,12.5 c0,5.1,3,9.4,7.4,11.4c-0.2,1.2-0.3,2.5-0.3,3.8c0,19.2,22.3,34.7,49.9,34.7s49.9-15.5,49.9-34.7c0-1.3-0.1-2.5-0.3-3.7 C224.8,180.4,227.9,176,227.9,170.9z M142.4,179.8c0-4.9,4-8.9,8.9-8.9c4.9,0,8.9,4,8.9,8.9c0,4.9-4,8.9-8.9,8.9 C146.4,188.7,142.4,184.7,142.4,179.8z M192.1,203.3c-6.1,6.1-17.7,6.5-21.1,6.5c-3.4,0-15.1-0.5-21.1-6.5c-0.9-0.9-0.9-2.4,0-3.3 c0.9-0.9,2.4-0.9,3.3,0c3.8,3.8,12,5.2,17.9,5.2s14-1.4,17.9-5.2c0.9-0.9,2.4-0.9,3.3,0C193,201,193,202.4,192.1,203.3z M190.5,188.7c-4.9,0-8.9-4-8.9-8.9c0-4.9,4-8.9,8.9-8.9c4.9,0,8.9,4,8.9,8.9C199.4,184.7,195.4,188.7,190.5,188.7z"/>
+            <circle cx="170.9" cy="170.9" r="85.5"/>
+            <path d="M227.9,170.9c0-6.9-5.6-12.5-12.5-12.5c-3.4,0-6.4,1.3-8.6,3.5c-8.5-6.1-20.3-10.1-33.3-10.6l5.7-26.7 l18.5,3.9c0.2,4.7,4.1,8.5,8.9,8.5c4.9,0,8.9-4,8.9-8.9c0-4.9-4-8.9-8.9-8.9c-3.5,0-6.5,2-7.9,5l-20.7-4.4c-0.6-0.1-1.2,0-1.7,0.3 c-0.5,0.3-0.8,0.8-1,1.4l-6.3,29.8c-13.3,0.4-25.2,4.3-33.8,10.6c-2.2-2.1-5.3-3.5-8.6-3.5c-6.9,0-12.5,5.6-12.5,12.5 c0,5.1,3,9.4,7.4,11.4c-0.2,1.2-0.3,2.5-0.3,3.8c0,19.2,22.3,34.7,49.9,34.7s49.9-15.5,49.9-34.7c0-1.3-0.1-2.5-0.3-3.7 C224.8,180.4,227.9,176,227.9,170.9z M142.4,179.8c0-4.9,4-8.9,8.9-8.9c4.9,0,8.9,4,8.9,8.9c0,4.9-4,8.9-8.9,8.9 C146.4,188.7,142.4,184.7,142.4,179.8z M192.1,203.3c-6.1,6.1-17.7,6.5-21.1,6.5c-3.4,0-15.1-0.5-21.1-6.5c-0.9-0.9-0.9-2.4,0-3.3 c0.9-0.9,2.4-0.9,3.3,0c3.8,3.8,12,5.2,17.9,5.2s14-1.4,17.9-5.2c0.9-0.9,2.4-0.9,3.3,0C193,201,193,202.4,192.1,203.3z M190.5,188.7c-4.9,0-8.9-4-8.9-8.9c0-4.9,4-8.9,8.9-8.9c4.9,0,8.9,4,8.9,8.9C199.4,184.7,195.4,188.7,190.5,188.7z"/>
           </svg>
           <span>Reddit</span>
         </a>
@@ -1238,20 +1243,16 @@ layout.add(
           .join("\n")}
       </div>
     </details>
-    <script type="module" src="/main.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>`;
 
 step("Format HTML");
 
-// TODO: this doesn't do anything :(
-const result = format(replace, {
-  parser: "html",
-  plugins: [parserHtml],
-});
+const result = formatCode(replace, "html");
 
 step("Write file");
-fs.writeFileSync(`${__dirname}/index.html`, result, "utf8");
+fs.writeFileSync(`${__dirname}/../index.html`, result, "utf8");
 
 step("End");
 const total = performance.now() - steps[0].start;
