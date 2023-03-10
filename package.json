@@ -7,10 +7,10 @@
     "docs"
   ],
   "scripts": {
-    "test": "vitest --no-threads",
-    "docs:dev": "cd docs; yarn run vite dev",
-    "docs:build": "cd docs; yarn run vite build",
-    "docs:generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' docs/build.ts"
+    "lib:test": "cd packages/red-otter; vitest --no-threads",
+    "docs:dev": "cd docs; yarn dev",
+    "docs:build": "cd docs; yarn build",
+    "docs:generate": "cd docs; yarn generate"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.54.1",
@@ -18,7 +18,6 @@
     "eslint": "^8.35.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
-    "typescript": "^4.9.5",
-    "vitest": "^0.29.2"
+    "typescript": "^4.9.5"
   }
 }
