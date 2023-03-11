@@ -7,10 +7,10 @@ import { launch } from "puppeteer-core";
 
 const BUNDLER_PORT = 1337;
 
-const PNG_FILE = `${__dirname}/out/font-atlas.png`;
-const JSON_FILE = `${__dirname}/out/spacing.json`;
-const BINARY_FILE = `${__dirname}/out/spacing.dat`;
-const UV_FILE = `${__dirname}/out/uv.dat`;
+const PNG_FILE = `${__dirname}/public/font-atlas.png`;
+const JSON_FILE = `${__dirname}/public/spacing.json`;
+const BINARY_FILE = `${__dirname}/public/spacing.dat`;
+const UV_FILE = `${__dirname}/public/uv.dat`;
 
 const URL = `http://localhost:${BUNDLER_PORT}`;
 
@@ -70,7 +70,11 @@ function saveFile(
     .on("pageerror", ({ message }) => console.log(message))
     .on("response", (response) => {
       const status = response.status().toString();
-      const color = status.startsWith("2") ? chalk.green : chalk.red;
+      const color = status.startsWith("2")
+        ? chalk.green
+        : status.startsWith("3")
+        ? chalk.yellow
+        : chalk.red;
       console.log(`${color(`HTTP ${status}`)} ${response.url()}`);
     })
     .on("requestfailed", (request) => {

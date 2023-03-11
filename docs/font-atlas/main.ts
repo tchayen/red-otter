@@ -24,16 +24,12 @@ const DEBUG_FONT_ATLAS_SHOW_GLYPH_BACKGROUNDS = false;
 /**
  * Creates HTML canvas and appends it to the DOM.
  */
-function setUpCanvas(width?: number, height?: number): HTMLCanvasElement {
+function setUpCanvas(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
 
-  if (width && height) {
-    canvas.width = width * window.devicePixelRatio;
-    canvas.height = height * window.devicePixelRatio;
-    canvas.setAttribute("style", `width: ${width}px; height: ${height}px;`);
-  } else {
-    canvas.setAttribute("style", `width: 100vw; height: 100vh;`);
-  }
+  canvas.width = width * window.devicePixelRatio;
+  canvas.height = height * window.devicePixelRatio;
+  canvas.setAttribute("style", `width: ${width}px; height: ${height}px;`);
 
   const div = document.getElementById("app");
   invariant(div, "Could not find #app element.");
@@ -54,10 +50,7 @@ export function invariant(value: unknown, message?: string): asserts value {
  * Loads and parses TTF font file.
  */
 async function getFontAsync(): Promise<TTF> {
-  const fontFace = new FontFace(
-    "Inter",
-    'url("https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19")'
-  );
+  const fontFace = new FontFace("Inter", 'url("/inter-hinted-3-19.ttf")');
   await fontFace.load();
   // @ts-expect-error Property 'add' does not exist on type 'FontFaceSet'.ts(2339)
   document.fonts.add(fontFace);
@@ -73,6 +66,7 @@ type Vec2 = { x: number; y: number };
  * Used in font-atlas/index.html for displaying font atlas.
  */
 (async (): Promise<void> => {
+  const start = performance.now();
   const ttf = await getFontAsync();
 
   const scale = (1 / ttf.head.unitsPerEm) * ATLAS_FONT_SIZE;
@@ -85,7 +79,6 @@ type Vec2 = { x: number; y: number };
   invariant(context, "Could not get 2D context.");
 
   context.clearRect(0, 0, canvas.width, canvas.height);
-
   context.font = `${ATLAS_FONT_SIZE}px Inter`;
 
   const uvs: { position: Vec2; size: Vec2 }[] = [];
@@ -120,9 +113,7 @@ type Vec2 = { x: number; y: number };
   }
 
   const imageData = context.getImageData(0, 0, atlas.width, atlas.height);
-
   const sdfData = toSDF(imageData, atlas.width, atlas.height, ATLAS_RADIUS);
-
   context.putImageData(sdfData, 0, 0);
 
   const spacingData = {
@@ -168,6 +159,11 @@ type Vec2 = { x: number; y: number };
 
   const span = document.createElement("span");
   span.setAttribute("style", "display: none");
-  div.appendChild(span);
   span.innerText = JSON.stringify(spacingData);
+
+  div.appendChild(span);
+
+  console.log(
+    `Font atlas generated in ${(performance.now() - start).toFixed(2)}ms.`
+  );
 })();

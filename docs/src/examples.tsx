@@ -61,9 +61,23 @@ export function justifyContentExample(context: Context, font: Font) {
     fontFamily: font,
   };
 
-  const red = { width: 80, height: 80, backgroundColor: "#eb584e" };
-  const orange = { width: 80, height: 80, backgroundColor: "#ef8950" };
-  const yellow = { width: 80, height: 80, backgroundColor: "#efaf50" };
+  const red = {
+    width: 80,
+    height: 80,
+    backgroundColor: "#eb584e",
+  };
+
+  const orange = {
+    width: 80,
+    height: 80,
+    backgroundColor: "#ef8950",
+  };
+
+  const yellow = {
+    width: 80,
+    height: 80,
+    backgroundColor: "#efaf50",
+  };
 
   layout.add(
     <view style={container}>
@@ -376,6 +390,13 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
     padding: 20,
   };
 
+  const wrapper: Style = {
+    flexDirection: "row",
+    gap: 40,
+    padding: 40,
+    backgroundColor: zinc[700],
+  };
+
   const text: TextStyle = {
     fontFamily: font,
     color: "#fff",
@@ -387,31 +408,21 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
     padding: 20,
   };
 
+  const absoluteBox: Style = {
+    backgroundColor: "#ef8950",
+    position: "absolute",
+    zIndex: 1,
+    right: 0,
+    bottom: 0,
+  };
+
   layout.add(
     <view style={container}>
-      <view
-        style={{
-          flexDirection: "row",
-          gap: 40,
-          padding: 40,
-          backgroundColor: zinc[700],
-        }}
-      >
+      <view style={wrapper}>
         <view style={[box, { backgroundColor: "#eb584e" }]}>
           <text style={text}>1</text>
         </view>
-        <view
-          style={[
-            box,
-            {
-              backgroundColor: "#ef8950",
-              position: "absolute",
-              zIndex: 1,
-              right: 0,
-              bottom: 0,
-            },
-          ]}
-        >
+        <view style={[box, absoluteBox]}>
           <text style={text}>2</text>
         </view>
         <view style={[box, { backgroundColor: "#efaf50" }]}>
@@ -431,6 +442,24 @@ export function mappingOverArrayExample(context: Context, font: Font) {
     width: "100%",
     height: "100%",
     padding: 20,
+  };
+
+  const headerCell: Style = {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: zinc[700],
+  };
+
+  const headerText: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: "#fff",
+  };
+
+  const cellText: TextStyle = {
+    fontFamily: font,
+    color: zinc[400],
+    fontSize: 14,
   };
 
   const data = [
@@ -453,16 +482,8 @@ export function mappingOverArrayExample(context: Context, font: Font) {
         {columns.map(({ key, title }) => {
           return (
             <view style={{ alignItems: "stretch" }}>
-              <view
-                style={{
-                  paddingVertical: 12,
-                  paddingHorizontal: 16,
-                  backgroundColor: zinc[700],
-                }}
-              >
-                <text style={{ fontFamily: font, fontSize: 14, color: "#fff" }}>
-                  {title}
-                </text>
+              <view style={headerCell}>
+                <text style={headerText}>{title}</text>
               </view>
               {data.map((item, rowIndex) => {
                 let content = String(item[key]);
@@ -479,15 +500,7 @@ export function mappingOverArrayExample(context: Context, font: Font) {
                         rowIndex % 2 === 0 ? zinc[800] : zinc[900],
                     }}
                   >
-                    <text
-                      style={{
-                        fontFamily: font,
-                        color: zinc[400],
-                        fontSize: 14,
-                      }}
-                    >
-                      {content}
-                    </text>
+                    <text style={cellText}>{content}</text>
                   </view>
                 );
               })}
