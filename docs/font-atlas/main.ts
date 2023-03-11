@@ -1,5 +1,4 @@
 import {
-  parseTTF,
   TTF,
   prepareAtlas,
   getGlyphQuads,
@@ -57,7 +56,7 @@ async function getFontAsync(): Promise<TTF> {
 
   const font = await fetch("/inter-hinted-3-19.ttf");
   const buffer = await font.arrayBuffer();
-  return parseTTF(buffer);
+  return new TTF(buffer);
 }
 
 type Vec2 = { x: number; y: number };

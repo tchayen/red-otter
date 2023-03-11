@@ -104,16 +104,6 @@ type GlyfTable = {
   yMax: FWord;
 }[];
 
-export type TTF = {
-  head: HeadTable;
-  hhea: HheaTable;
-  hmtx: HmtxTable;
-  maxp: MaxpTable;
-  cmap: CmapTable;
-  loca: LocaTable;
-  glyf: GlyfTable;
-};
-
 /**
  *  See: [Microsoft docs](https://learn.microsoft.com/en-us/typography/opentype/spec/otff#calculating-checksums).
  */
@@ -496,76 +486,88 @@ function readGlyfTable(
   return glyfs;
 }
 
-export function parseTTF(data: ArrayBuffer): TTF {
-  const reader = new BinaryReader(data);
-  reader.getUint32(); // scalar type
-  const numTables = reader.getUint16();
-  reader.getUint16(); // searchRange
-  reader.getUint16(); // entrySelector
-  reader.getUint16(); // rangeShift
+export class TTF {
+  head: HeadTable;
+  hhea: HheaTable;
+  hmtx: HmtxTable;
+  maxp: MaxpTable;
+  cmap: CmapTable;
+  loca: LocaTable;
+  glyf: GlyfTable;
 
-  const tables: Record<string, Table> = {};
+  parsed = false;
 
-  for (let i = 0; i < numTables; i++) {
-    const tag = reader.getString(4);
-    tables[tag] = {
-      checksum: reader.getUint32(),
-      offset: reader.getUint32(),
-      length: reader.getUint32(),
-    };
+  constructor(data: ArrayBuffer) {
+    const reader = new BinaryReader(data);
+    reader.getUint32(); // scalar type
+    const numTables = reader.getUint16();
+    reader.getUint16(); // searchRange
+    reader.getUint16(); // entrySelector
+    reader.getUint16(); // rangeShift
 
-    if (tag !== "head") {
-      const calculated = calculateChecksum(
-        reader.getDataSlice(
-          tables[tag].offset,
-          4 * Math.ceil(tables[tag].length / 4)
-        )
-      );
-      invariant(
-        calculated === tables[tag].checksum,
-        `Checksum for table ${tag} is invalid.`
-      );
+    const tables: Record<string, Table> = {};
+
+    for (let i = 0; i < numTables; i++) {
+      const tag = reader.getString(4);
+      tables[tag] = {
+        checksum: reader.getUint32(),
+        offset: reader.getUint32(),
+        length: reader.getUint32(),
+      };
+
+      if (tag !== "head") {
+        const calculated = calculateChecksum(
+          reader.getDataSlice(
+            tables[tag].offset,
+            4 * Math.ceil(tables[tag].length / 4)
+          )
+        );
+        invariant(
+          calculated === tables[tag].checksum,
+          `Checksum for table ${tag} is invalid.`
+        );
+      }
     }
+
+    const shared =
+      "table is missing. Please use other font variant that contains it.";
+
+    invariant(tables["head"].offset, `head ${shared}`);
+    this.head = readHeadTable(reader, tables["head"].offset);
+
+    invariant(tables["cmap"].offset, `cmap ${shared}`);
+    this.cmap = readCmapTable(reader, tables["cmap"].offset);
+
+    invariant(tables["maxp"].offset, `maxp ${shared}`);
+    this.maxp = readMaxpTable(reader, tables["maxp"].offset);
+
+    invariant(tables["hhea"].offset, `hhea ${shared}`);
+    this.hhea = readHheaTable(reader, tables["hhea"].offset);
+
+    invariant(tables["hmtx"].offset, `hmtx ${shared}`);
+    this.hmtx = readHmtxTable(
+      reader,
+      tables["hmtx"].offset,
+      this.maxp.numGlyphs,
+      this.hhea.numberOfHMetrics
+    );
+
+    invariant(tables["loca"].offset, `loca ${shared}`);
+    this.loca = readLocaTable(
+      reader,
+      tables["loca"].offset,
+      this.maxp.numGlyphs,
+      this.head.indexToLocFormat
+    );
+
+    invariant(tables["glyf"].offset, `glyf ${shared}`);
+    this.glyf = readGlyfTable(
+      reader,
+      tables["glyf"].offset,
+      this.loca,
+      this.head.indexToLocFormat
+    );
+
+    this.parsed = true;
   }
-
-  const shared =
-    "table is missing. Please use other font variant that contains it.";
-
-  invariant(tables["head"].offset, `head ${shared}`);
-  const head = readHeadTable(reader, tables["head"].offset);
-
-  invariant(tables["cmap"].offset, `cmap ${shared}`);
-  const cmap = readCmapTable(reader, tables["cmap"].offset);
-
-  invariant(tables["maxp"].offset, `maxp ${shared}`);
-  const maxp = readMaxpTable(reader, tables["maxp"].offset);
-
-  invariant(tables["hhea"].offset, `hhea ${shared}`);
-  const hhea = readHheaTable(reader, tables["hhea"].offset);
-
-  invariant(tables["hmtx"].offset, `hmtx ${shared}`);
-  const hmtx = readHmtxTable(
-    reader,
-    tables["hmtx"].offset,
-    maxp.numGlyphs,
-    hhea.numberOfHMetrics
-  );
-
-  invariant(tables["loca"].offset, `loca ${shared}`);
-  const loca = readLocaTable(
-    reader,
-    tables["loca"].offset,
-    maxp.numGlyphs,
-    head.indexToLocFormat
-  );
-
-  invariant(tables["glyf"].offset, `glyf ${shared}`);
-  const glyf = readGlyfTable(
-    reader,
-    tables["glyf"].offset,
-    loca,
-    head.indexToLocFormat
-  );
-
-  return { head, cmap, maxp, hhea, hmtx, loca, glyf };
 }

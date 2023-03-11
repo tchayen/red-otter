@@ -1,5 +1,5 @@
 import { invariant } from "../invariant";
-import { TTF } from "./parseTTF";
+import { TTF } from "./ttf";
 
 export type Glyph = {
   id: number;

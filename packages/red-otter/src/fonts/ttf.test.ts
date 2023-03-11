@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import { parseTTF } from "./parseTTF";
+import { TTF } from "./ttf";
 
 describe("parseTTF", () => {
   it("parses Inter 3.19 OTF file", () => {
@@ -9,7 +9,7 @@ describe("parseTTF", () => {
       path.join(__dirname, "../../../../assets/inter-hinted-3-19.ttf")
     );
 
-    const ttf = parseTTF(file);
+    const ttf = new TTF(file);
 
     expect(ttf.head.checksumAdjustment).toBe(79606982);
     expect(ttf.head.xMax).toBe(7274);
