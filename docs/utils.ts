@@ -38,7 +38,7 @@ export function codeExample(
 ): string {
   const formatted = formatCode(value, language);
   const highlighted =
-    language === "typescript"
+    language === "typescript" || language === "html"
       ? hljs.highlight(formatted, { language: language }).value
       : formatted;
   return `${
