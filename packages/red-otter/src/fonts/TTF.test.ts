@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import { TTF } from "./ttf";
+import { TTF } from "./TTF";
 
 describe("parseTTF", () => {
   it("parses Inter 3.19 OTF file", () => {

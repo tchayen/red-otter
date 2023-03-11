@@ -4,7 +4,6 @@ import hljs from "highlight.js";
 import chalk from "chalk";
 
 import typescript from "highlight.js/lib/languages/typescript";
-import bash from "highlight.js/lib/languages/bash";
 import { PluginItem, transformSync } from "@babel/core";
 
 import { fixtures } from "./examples";
@@ -33,6 +32,8 @@ function addHeader(level: number, title: string): string {
 function linkExternal(url: string, text: string): string {
   return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 }
+
+const commandSymbol = "⌘";
 
 /**
  * Find functions that have their name end with `Example` and add a `code`
@@ -81,7 +82,6 @@ const LAYOUT_WIDTH = 800;
 const LAYOUT_HEIGHT = 600;
 
 hljs.registerLanguage("typescript", typescript);
-hljs.registerLanguage("bash", bash);
 
 const fixtureSources: Record<string, string> = {};
 
@@ -367,6 +367,15 @@ const replace = `
         font-size: 14px;
         line-height: 1.4em;
         font-family: Menlo, Consolas, Liberation Mono, monospace;
+      }
+
+      .code-filename {
+        font-family: Menlo, Consolas, Liberation Mono, monospace;
+        font-size: 14px;
+        background-color: var(--zinc-600);
+        padding: 8px;
+        padding-left: 12px;
+        margin-bottom: -24px;
       }
 
       .pusher {
@@ -728,9 +737,11 @@ const replace = `
         actually gives a good picture of the roadmap.
       </p>
       ${addHeader(2, "Install")}
-      <p>
-      </p>
       ${codeExample(`yarn add red-otter`, "bash")}
+      <p>
+        To render text you will also need to generate the font atlas. See
+        <a href="/#generating-font-atlas">guide</a>.
+      </p>
       ${addHeader(2, "Layout")}
       <p>All code present below follows similar pattern:</p>
       ${codeExample(
@@ -744,7 +755,12 @@ canvas.height = 600 * scale;
 const div = document.getElementById("app");
 div.appendChild(canvas);
 
-const font = new Font("/spacing.json", "/spacing.dat", "/uv.dat", "/font-atlas.png");
+const inter = new Font({
+  spacingMetadataJsonURL: "/spacing.json",
+  spacingBinaryURL: "/spacing.dat",
+  fontAtlasTextureURL: "/uv.dat",
+  UVBinaryURL: "/font-atlas.png",
+});
 await font.load();
 
 const context = new Context(canvas, font);
@@ -862,22 +878,22 @@ context.flush();
       ${addHeader(3, "Animation frame loop")}
       <p>TODO</p>
       ${codeExample(
-        `const inter = new Font(
-    "/spacing.json",
-    "/spacing.dat",
-    "/uv.dat",
-    "/font-atlas.png"
-  );
-  await inter.load();
+        `const font = new Font({
+  spacingMetadataJsonURL: "/spacing.json",
+  spacingBinaryURL: "/spacing.dat",
+  fontAtlasTextureURL: "/uv.dat",
+  UVBinaryURL: "/font-atlas.png",
+});
+await font.load();
 
-  const context = new Context(canvas, inter);
+const context = new Context(canvas, font);
 
-  function frame() {
+function frame() {
 
-    context.clear();
-    context.flush();
-    window.requestAnimationFrame(frame);
-  }`
+  context.clear();
+  context.flush();
+  window.requestAnimationFrame(frame);
+}`
       )}
       ${addHeader(3, "Button")}
       ${codeExample(
@@ -941,21 +957,264 @@ layout.add(
           There are also two other data files but their weight is around 30KB.
         </li>
       </ul>
-      ${codeExample(`const fontFace = new FontFace(
-  "Inter",
-  'url("https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19")'
-);
+      ${addHeader(3, "Runtime")}
+      <p>
+        The idea is to render font atlas on the fly using browser's canvas API.
+        It will provide some bandwidth savings (especially if you use a system
+        font and load a lot of characters – potentially megabytes of download
+        saved) but might take a bit longer and is more fragile as it requires
+        browser support for JS <code>font-face</code> manipulation and properly
+        functioning <code>&lt;canvas&gt;</code>.
+      </p>
+      ${codeExample(`import { TTF, FontAtlas, Font } from "red-otter";
 
-await fontFace.load();
-document.fonts.add(fontFace);
+async function loadFont() {
+  // Add font to the document so we will use browser to rasterize the font.
+  const fontFace = new FontFace("Inter", 'url("/inter.ttf")');
+  await fontFace.load();
+  document.fonts.add(fontFace);
 
-const font = await fetch("/inter-hinted-3-19.ttf");
-const buffer = await font.arrayBuffer();
+  // Download font file for parsing.
+  const file = await fetch("/inter.ttf");
+  const buffer = await file.arrayBuffer();
 
-const ttf = parseTTF(buffer);
-// TODO: render font atlas.`)}
+  const ttf = new TTF(buffer);
+  if (!ttf.ok) {
+    throw new Error("Failed to parse font file.");
+  }
+
+  // Render font atlas.
+  const atlas = new FontAtlas(ttf);
+  const { canvas, spacing } = atlas.render();
+
+  const image = new Image();
+  image.src = canvas.toDataURL();
+
+  return new Font(spacing, image);
+}`)}
+      <p>See full app on ${linkExternal(
+        "https://github.com/tchayen/red-otter/tree/main/examples/font-atlas-runtime",
+        "GitHub"
+      )}.</p>
+      ${addHeader(3, "On CI")}
+      <p>
+        Another option is to generate font atlas on CI as a build step of your
+        application. This will make font look precisely the same on all devices
+        (as font rasterization happens on the server).
+      </p>
+      <p>Example setup for CI rendering:</p>
+      ${codeExample(
+        `.
+├── ci
+│   ├── run.ts        # Vercel CI runs this script as part of \`yarn build\`.
+│   │                 # The script runs puppeteer and Vite, loads \`ci\` page
+│   │                 # and downloads font files to \`/public\`.
+│   ├── index.html    # Vite will use this file to show the font atlas page.
+│   ├── main.ts       # Renders font atlas.
+│   └── public
+│       └── inter.ttf
+├── index.html        # Final page. Both HTML files are identical.
+├── main.ts           # Renders on the final page, loading fonts from \`/public\`.`,
+        "bash"
+      )}
+      <p>
+        CI runtime script can look like this:
+      </p>
+      ${codeExample(
+        `import { FontAtlas, TTF } from "red-otter";
+
+async function run() {
+  const start = performance.now();
+
+  const fontFace = new FontFace("Inter", 'url("/inter.ttf")');
+  await fontFace.load();
+  document.fonts.add(fontFace);
+
+  const font = await fetch("/inter.ttf");
+  const buffer = await font.arrayBuffer();
+
+  const ttf = new TTF(buffer);
+  if (!ttf.ok) {
+    throw new Error("Failed to parse font file.");
+  }
+
+  const atlas = new FontAtlas(ttf);
+  const { canvas, spacing } = atlas.render();
+
+  const div = document.getElementById("app");
+  if (!div) {
+    throw new Error("Could not find #app element.");
+  }
+
+  const span = document.createElement("span");
+  span.setAttribute("style", "display: none");
+  span.innerText = JSON.stringify(spacing);
+
+  div.appendChild(canvas);
+  div.appendChild(span);
+
+  console.log(
+    \`Font atlas generated in $\{(performance.now() - start).toFixed(2)}ms.\`
+  );
+}
+
+run();`,
+        "typescript",
+        "ci/main.ts"
+      )}
+      <p><code>index.html</code> is very simple:</p>
+      ${codeExample(
+        `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Font atlas</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>
+`,
+        "html",
+        "index.html"
+      )}
+      <p>
+        Finally, there's a script that runs Vite server and Puppeteer to render
+        the page and save the results to the filesystem.
+      </p>
+      ${codeExample(
+        'yarn run ts-node  -O \'{"module":"nodenext"}\' ci-script.ts',
+        "bash"
+      )}
+      <p>And the script itself:</p>
+      ${codeExample(
+        `import path from "node:path";
+import fs from "node:fs";
+
+import { createServer } from "vite";
+import chromium from "@sparticuz/chromium";
+import { launch } from "puppeteer-core";
+
+const PNG_FILE = \`$\{__dirname}/../public/font-atlas.png\`;
+const JSON_FILE = \`$\{__dirname}/../public/spacing.json\`;
+const BINARY_FILE = \`$\{__dirname}/../public/spacing.dat\`;
+const UV_FILE = \`$\{__dirname}/../public/uv.dat\`;
+
+const BUNDLER_PORT = 3456;
+
+function saveFile(
+  filePath: string,
+  data: string | Int16Array | Float32Array,
+  encoding: "utf-8" | "binary"
+): void {
+  fs.writeFileSync(filePath, data, { encoding });
+  console.log(\`Saved $\{filePath}.\`);
+}
+
+async function run() {
+  const server = await createServer({
+    root: path.resolve(__dirname, "."),
+    server: { port: BUNDLER_PORT },
+  });
+  await server.listen();
+  console.log(\`Vite dev server started on port $\{BUNDLER_PORT}.\`);
+
+  const browser = await launch({
+    executablePath: await chromium.executablePath(),
+    args: [...chromium.args, "--no-sandbox"],
+    headless: false,
+  });
+  console.log("Chromium launched.");
+
+  const page = await browser.newPage();
+  page
+    .on("console", (message) => {
+      const type = message.type();
+      console.log(\`$\{type}: $\{message.text()}\`);
+    })
+    .on("pageerror", ({ message }) => console.log(message))
+    .on("response", (response) => {
+      const status = response.status().toString();
+      console.log(\`$\{\`HTTP $\{status}\`} $\{response.url()}\`);
+    })
+    .on("requestfailed", (request) => {
+      console.log(\`$\{request.failure().errorText} $\{request.url()}\`);
+    });
+
+  // Because of CORS it has to be served as a server.
+  await page.goto(\`http://localhost:$\{BUNDLER_PORT}\`);
+
+  await page.waitForSelector("canvas");
+  const canvas = await page.$("canvas");
+
+  if (!canvas) {
+    throw new Error("Canvas not found.");
+  }
+
+  console.log("Page loaded.");
+
+  await canvas.screenshot({ path: PNG_FILE, omitBackground: true });
+
+  console.log(\`Saved $\{PNG_FILE}.\`);
+
+  const spacing = await page.$eval("span", (element) => {
+    return JSON.parse(element.innerHTML);
+  });
+
+  const { glyphs, uvs, ...metadata } = spacing;
+
+  const spacingJson = JSON.stringify(metadata, null, 2);
+  saveFile(JSON_FILE, spacingJson, "utf-8");
+
+  const glyphBinary = new Int16Array(glyphs);
+  saveFile(BINARY_FILE, glyphBinary, "binary");
+
+  const uvBinary = new Float32Array(uvs);
+  saveFile(UV_FILE, uvBinary, "binary");
+
+  await browser.close();
+  await server.close();
+}
+
+run();`,
+        "typescript",
+        "ci/run.ts"
+      )}
+      <p>Example output from running on the CI:</p>
+      ${codeExample(
+        `$ /vercel/path0/node_modules/.bin/ts-node -O '{"module":"nodenext"}' ci/run.ts
+Vite dev server started on port 3456.
+Chromium launched.
+HTTP 200 http://localhost:3456/
+HTTP 200 http://localhost:3456/main.ts
+HTTP 200 http://localhost:3456/@vite/client
+HTTP 200 http://localhost:3456/@fs/vercel/path0/node_modules/vite/dist/client/env.mjs
+debug: [vite] connecting...
+debug: [vite] connected.
+HTTP 200 http://localhost:3456/@fs/vercel/path0/node_modules/.vite/deps/red-otter.js?v=c4488a07
+HTTP 200 http://localhost:3456/inter.ttf
+HTTP 304 http://localhost:3456/inter.ttf
+log: Font atlas generated in 1155.50ms.
+Page loaded.
+Saved /vercel/path0/ci/../public/font-atlas.png.
+Saved /vercel/path0/ci/../public/spacing.json.
+Saved /vercel/path0/ci/../public/spacing.dat.
+Saved /vercel/path0/ci/../public/uv.dat.`,
+        "bash"
+      )}
+      <p>
+        Full example on ${linkExternal(
+          "https://github.com/tchayen/red-otter/tree/main/examples/font-atlas-vercel-ci",
+          "GitHub"
+        )}.</p>
       ${addHeader(2, "Why JSX")}
-      <p>Compare code written with the direct API:</p>
+      <p>
+        Compare code written with the direct API, probably a simplest form of
+        immediate mode GUI:
+      </p>
       ${codeExample(`const container: Style = {
   width: "100%",
   height: "100%",
@@ -1002,7 +1261,10 @@ layout.frame(container);
   layout.end();
 }
 layout.end();`)}
-      <p>With calling HyperScript-style manually:</p>
+      <p>
+        Then with calling HyperScript-style function manually. Basically using
+        JSX in plain JavaScript:
+      </p>
       ${codeExample(`const container: Style = {
   width: "100%",
   height: "100%",
@@ -1058,7 +1320,10 @@ layout.add(
     )
   )
 );`)}
-      <p>And finally JSX:</p>
+      <p>
+        And finally JSX, which is easily supported by probably all bundlers and
+        IDEs:
+      </p>
       ${codeExample(`const container: Style = {
   width: "100%",
   height: "100%",
@@ -1187,7 +1452,7 @@ layout.add(
         <svg width="20" height="20" viewBox="0 0 48 48">
           <path fill="var(--zinc-400)" d="M20 6C12.268 6 6 12.268 6 20C6 27.732 12.268 34 20 34C23.4159 34 26.5461 32.7766 28.9763 30.7441L39.8662 41.6339C40.3543 42.122 41.1458 42.122 41.6339 41.6339C42.1221 41.1457 42.1221 40.3543 41.6339 39.8661L30.7441 28.9763C32.7766 26.5461 34 23.4159 34 20C34 12.268 27.732 6 20 6ZM8.5 20C8.5 13.6487 13.6487 8.5 20 8.5C26.3513 8.5 31.5 13.6487 31.5 20C31.5 26.3513 26.3513 31.5 20 31.5C13.6487 31.5 8.5 26.3513 8.5 20Z" />
         </svg>
-        Just use ⌘+F
+        Just use ${commandSymbol}+F
       </div>
       <div id="table-of-contents">
       ${headers

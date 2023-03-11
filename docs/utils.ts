@@ -31,8 +31,17 @@ export function formatCode(value: string, language: string): string {
   }
 }
 
-export function codeExample(value: string, language = "typescript"): string {
+export function codeExample(
+  value: string,
+  language = "typescript",
+  fileName?: string
+): string {
   const formatted = formatCode(value, language);
-  const highlighted = hljs.highlight(formatted, { language: language }).value;
-  return `<pre><code class="language-${language}">${highlighted}</code></pre>`;
+  const highlighted =
+    language === "typescript"
+      ? hljs.highlight(formatted, { language: language }).value
+      : formatted;
+  return `${
+    fileName ? `<div class="code-filename">${fileName}</div>` : ""
+  }<pre><code class="language-${language}">${highlighted}</code></pre>`;
 }

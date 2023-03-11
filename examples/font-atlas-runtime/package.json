@@ -1,0 +1,9 @@
+{
+  "name": "@red-otter/font-atlas-runtime",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "vite": "^4.1.4"
+  }
+}
