@@ -1555,6 +1555,7 @@ layout.add(
       </div>
     </details>
     <script type="module" src="/src/main.ts"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>`;
 
