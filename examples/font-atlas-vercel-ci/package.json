@@ -9,7 +9,7 @@
     "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' ci/run.ts"
   },
   "dependencies": {
-    "red-otter": "file:./red-otter-tmp"
+    "red-otter": "file:../../packages/red-otter"
   },
   "devDependencies": {
     "@sparticuz/chromium": "^111.0.0",

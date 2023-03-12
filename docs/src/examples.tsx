@@ -675,6 +675,11 @@ export function editorUIExample(context: Context, font: Font) {
     color: zinc[500],
   };
 
+  const label: Style = {
+    height: 24,
+    justifyContent: "center",
+  };
+
   const input: Style = {
     height: 24,
     justifyContent: "center",
@@ -751,13 +756,13 @@ export function editorUIExample(context: Context, font: Font) {
           {header("Transform")}
           <view style={sectionStyle}>
             <view style={{ gap: 4 }}>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Translate</text>
               </view>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Rotate</text>
               </view>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Scale</text>
               </view>
             </view>
@@ -780,13 +785,13 @@ export function editorUIExample(context: Context, font: Font) {
             }}
           >
             <view style={{ gap: 4 }}>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Type</text>
               </view>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Shadows</text>
               </view>
-              <view style={{ height: 24, justifyContent: "center" }}>
+              <view style={label}>
                 <text style={textSecondary}>Method</text>
               </view>
             </view>
