@@ -6,6 +6,8 @@ import {
   TextStyle,
 } from "../../packages/red-otter";
 
+import map from "./map.json";
+
 const zinc = {
   50: "#fafafa",
   100: "#f4f4f5",
@@ -513,6 +515,121 @@ export function mappingOverArrayExample(context: Context, font: Font) {
   return layout;
 }
 
+export function mapExample(context: Context, font: Font) {
+  const RADIUS = 6378137.0;
+
+  function degreesToMeters(lat: number, lng: number) {
+    return {
+      x: (RADIUS * lng * Math.PI) / 180.0,
+      y: RADIUS * Math.atanh(Math.sin((lat * Math.PI) / 180.0)),
+    };
+  }
+
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  function isNumberArrayArray(
+    value: number | number[] | number[][]
+  ): value is number[] {
+    return Array.isArray(value) && Array.isArray(value[0]);
+  }
+
+  function assertNumberArrayArray(
+    value: number | number[] | number[][]
+  ): asserts value is number[][] {
+    if (!isNumberArrayArray(value)) {
+      throw new Error("Not a number array");
+    }
+  }
+
+  const polygons = map.features
+    .filter((f) => {
+      if (f.geometry.type !== "Polygon") {
+        return false;
+      }
+
+      if (!isNumberArrayArray(f.geometry.coordinates[0])) {
+        return false;
+      }
+
+      return true;
+    })
+    .map((f) => {
+      const coordinates = f.geometry.coordinates[0];
+      assertNumberArrayArray(coordinates);
+
+      return {
+        name: f.properties["addr:housenumber"],
+        points: coordinates.map(([lon, lat]) => {
+          const { x, y } = degreesToMeters(lat, lon);
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
+          return { x, y };
+        }),
+      };
+    })
+    .map((polygon) => {
+      const points = polygon.points.map(({ x, y }) => {
+        return [
+          ((x - minX) / (maxX - minX)) * 800,
+          (1 - (y - minY) / (maxY - minY)) * 600,
+        ] as [number, number];
+      });
+
+      return {
+        name: polygon.name,
+        center: {
+          x: points.reduce((acc, [x]) => acc + x, 0) / points.length,
+          y: points.reduce((acc, [, y]) => acc + y, 0) / points.length,
+        },
+        points,
+      };
+    });
+
+  const layout = new Layout(context);
+
+  const container: Style = {
+    width: "100%",
+    height: "100%",
+    backgroundColor: zinc[900],
+  };
+
+  layout.add(
+    <view style={container}>
+      {polygons.map((polygon) => {
+        return (
+          <view style={{ position: "absolute", width: "100%", height: "100%" }}>
+            <view
+              style={{
+                position: "absolute",
+              }}
+            >
+              <shape points={polygon.points.reverse()} color={zinc[600]} />
+            </view>
+            <view
+              style={{
+                position: "absolute",
+                left: polygon.center.x,
+                top: polygon.center.y,
+              }}
+            >
+              <text style={{ fontFamily: font, color: "#fff" }}>
+                {polygon.name}
+              </text>
+            </view>
+          </view>
+        );
+      })}
+    </view>
+  );
+
+  return layout;
+}
+
 export function editorUIExample(context: Context, font: Font) {
   const layout = new Layout(context);
 
@@ -799,6 +916,13 @@ export const fixtures = [
   {
     callback: mappingOverArrayExample,
     title: "Mapping over array",
-    description: "TODO",
+    description:
+      "As in regular JSX, it's possible to map over an array of elements.",
+  },
+  {
+    callback: mapExample,
+    title: "Map",
+    description:
+      "Example of drawing arbitrary shapes – here a map from OpenStreetMap data with building numbers overlayed on top of their shapes.",
   },
 ];

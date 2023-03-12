@@ -161,6 +161,7 @@ export interface IContext {
    * Y axis is flipped - point `(0, 0)` is in the top left.
    */
   setProjection(x: number, y: number, width: number, height: number): void;
+
   /**
    * Writes text on the screen.
    */
@@ -171,6 +172,7 @@ export interface IContext {
     fontSize: number,
     color: string
   ): void;
+
   /**
    * Renders to screen and resets buffers.
    */

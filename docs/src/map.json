@@ -1,0 +1,1321 @@
+{
+"type": "FeatureCollection",
+"features": [
+{
+  "type": "Feature",
+  "id": "way/181823531",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:housename": "D-17",
+    "addr:housenumber": "21",
+    "addr:postcode": "30-055",
+    "addr:street": "Kawiory",
+    "building": "university",
+    "building:levels": "4",
+    "name": "Centrum Informatyki AGH",
+    "note": "Budynek ma dziwną numerację poziomów - parter to 1, nie 0.",
+    "opening_hours": "Mo-Su 06:00-22:00",
+    "ref": "D-17",
+    "source": "http://www.ki.agh.edu.pl/strona/kontakt",
+    "website": "http://www.ki.agh.edu.pl/",
+    "wheelchair": "yes",
+    "id": "way/181823531"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9125382,
+          50.0678366
+        ],
+        [
+          19.9128643,
+          50.0677922
+        ],
+        [
+          19.9129078,
+          50.0677862
+        ],
+        [
+          19.9130003,
+          50.0677736
+        ],
+        [
+          19.9131195,
+          50.0677574
+        ],
+        [
+          19.9131412,
+          50.067754
+        ],
+        [
+          19.9131445,
+          50.0677706
+        ],
+        [
+          19.9132033,
+          50.0677479
+        ],
+        [
+          19.9132059,
+          50.0677499
+        ],
+        [
+          19.9132088,
+          50.0677527
+        ],
+        [
+          19.9132123,
+          50.0677565
+        ],
+        [
+          19.9132155,
+          50.0677605
+        ],
+        [
+          19.9132182,
+          50.0677643
+        ],
+        [
+          19.9132219,
+          50.0677709
+        ],
+        [
+          19.9132236,
+          50.0677747
+        ],
+        [
+          19.913226,
+          50.0677821
+        ],
+        [
+          19.9132271,
+          50.0677878
+        ],
+        [
+          19.913229,
+          50.0678086
+        ],
+        [
+          19.9132251,
+          50.0678181
+        ],
+        [
+          19.9132218,
+          50.0678259
+        ],
+        [
+          19.9132089,
+          50.0678423
+        ],
+        [
+          19.9131919,
+          50.0678537
+        ],
+        [
+          19.9131762,
+          50.067863
+        ],
+        [
+          19.9128902,
+          50.0679809
+        ],
+        [
+          19.9126515,
+          50.0680791
+        ],
+        [
+          19.9126374,
+          50.0680658
+        ],
+        [
+          19.9125835,
+          50.0680887
+        ],
+        [
+          19.912519,
+          50.0681158
+        ],
+        [
+          19.9125322,
+          50.0681279
+        ],
+        [
+          19.9122893,
+          50.0682252
+        ],
+        [
+          19.911995,
+          50.0683467
+        ],
+        [
+          19.9119904,
+          50.068347
+        ],
+        [
+          19.9119847,
+          50.0683468
+        ],
+        [
+          19.9119794,
+          50.0683457
+        ],
+        [
+          19.9119776,
+          50.0683451
+        ],
+        [
+          19.9119746,
+          50.0683437
+        ],
+        [
+          19.9119707,
+          50.0683411
+        ],
+        [
+          19.9119686,
+          50.0683394
+        ],
+        [
+          19.9119243,
+          50.0681962
+        ],
+        [
+          19.9119207,
+          50.0681846
+        ],
+        [
+          19.9119079,
+          50.0681444
+        ],
+        [
+          19.9118703,
+          50.0680253
+        ],
+        [
+          19.9120002,
+          50.0680084
+        ],
+        [
+          19.9120435,
+          50.0680025
+        ],
+        [
+          19.9120848,
+          50.0679969
+        ],
+        [
+          19.912128,
+          50.067991
+        ],
+        [
+          19.9121711,
+          50.0679851
+        ],
+        [
+          19.9122134,
+          50.0679793
+        ],
+        [
+          19.9122566,
+          50.0679735
+        ],
+        [
+          19.912298,
+          50.0679678
+        ],
+        [
+          19.91234,
+          50.0679621
+        ],
+        [
+          19.9123833,
+          50.0679562
+        ],
+        [
+          19.912413,
+          50.0679521
+        ],
+        [
+          19.9124342,
+          50.0680184
+        ],
+        [
+          19.9124466,
+          50.0680575
+        ],
+        [
+          19.9125193,
+          50.0680281
+        ],
+        [
+          19.9125922,
+          50.0679986
+        ],
+        [
+          19.9125382,
+          50.0678366
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231815815",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "10",
+    "addr:street": "Kawiory",
+    "building": "yes",
+    "building:levels": "3",
+    "roof:levels": "1",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231815815"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9131619,
+          50.067545
+        ],
+        [
+          19.9131292,
+          50.0674441
+        ],
+        [
+          19.9131261,
+          50.0674342
+        ],
+        [
+          19.9131221,
+          50.0674225
+        ],
+        [
+          19.9131206,
+          50.0674172
+        ],
+        [
+          19.9132298,
+          50.0674024
+        ],
+        [
+          19.9132385,
+          50.0674295
+        ],
+        [
+          19.9132687,
+          50.0675302
+        ],
+        [
+          19.9131619,
+          50.067545
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816571",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "16",
+    "addr:street": "Kawiory",
+    "building": "apartments",
+    "building:levels": "2",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816571"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9127719,
+          50.0675978
+        ],
+        [
+          19.9127396,
+          50.0674969
+        ],
+        [
+          19.9128536,
+          50.0674804
+        ],
+        [
+          19.9128493,
+          50.0674694
+        ],
+        [
+          19.9128655,
+          50.0674668
+        ],
+        [
+          19.9128693,
+          50.0674789
+        ],
+        [
+          19.9128994,
+          50.0675771
+        ],
+        [
+          19.9127719,
+          50.0675978
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816593",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "20",
+    "addr:street": "Kawiory",
+    "building": "yes",
+    "building:levels": "2",
+    "roof:orientation": "along",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816593"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9124499,
+          50.067642
+        ],
+        [
+          19.9124147,
+          50.067534
+        ],
+        [
+          19.9124112,
+          50.0675233
+        ],
+        [
+          19.9124647,
+          50.0675157
+        ],
+        [
+          19.9124683,
+          50.0675264
+        ],
+        [
+          19.9126081,
+          50.0675066
+        ],
+        [
+          19.9126423,
+          50.0676155
+        ],
+        [
+          19.9124499,
+          50.067642
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816610",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "14",
+    "addr:street": "Kawiory",
+    "building": "apartments",
+    "building:levels": "2",
+    "roof:levels": "1",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816610"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9128994,
+          50.0675771
+        ],
+        [
+          19.9128693,
+          50.0674789
+        ],
+        [
+          19.9128655,
+          50.0674668
+        ],
+        [
+          19.9129169,
+          50.0674597
+        ],
+        [
+          19.9129212,
+          50.0674724
+        ],
+        [
+          19.9129992,
+          50.0674621
+        ],
+        [
+          19.9130307,
+          50.0675627
+        ],
+        [
+          19.9128994,
+          50.0675771
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816612",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "18",
+    "addr:street": "Kawiory",
+    "building": "apartments",
+    "building:levels": "2",
+    "roof:orientation": "across",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816612"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9126423,
+          50.0676155
+        ],
+        [
+          19.9126081,
+          50.0675066
+        ],
+        [
+          19.9126834,
+          50.0674968
+        ],
+        [
+          19.9126803,
+          50.0674852
+        ],
+        [
+          19.9127338,
+          50.0674792
+        ],
+        [
+          19.9127396,
+          50.0674969
+        ],
+        [
+          19.9127719,
+          50.0675978
+        ],
+        [
+          19.9126423,
+          50.0676155
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816655",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "8",
+    "addr:street": "Kawiory",
+    "building": "yes",
+    "id": "way/231816655"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9132687,
+          50.0675302
+        ],
+        [
+          19.9132388,
+          50.0674243
+        ],
+        [
+          19.913321,
+          50.0674151
+        ],
+        [
+          19.9133145,
+          50.0673909
+        ],
+        [
+          19.9133486,
+          50.0673865
+        ],
+        [
+          19.913352,
+          50.0673975
+        ],
+        [
+          19.9134496,
+          50.0673857
+        ],
+        [
+          19.9134843,
+          50.0675006
+        ],
+        [
+          19.9132687,
+          50.0675302
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816658",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "12",
+    "addr:street": "Kawiory",
+    "building": "yes",
+    "building:levels": "2",
+    "roof:levels": "1",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816658"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9130307,
+          50.0675627
+        ],
+        [
+          19.9129992,
+          50.0674621
+        ],
+        [
+          19.913024,
+          50.067458
+        ],
+        [
+          19.9131292,
+          50.0674441
+        ],
+        [
+          19.9131619,
+          50.067545
+        ],
+        [
+          19.9130307,
+          50.0675627
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816717",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "22",
+    "addr:street": "Kawiory",
+    "building": "yes",
+    "building:levels": "2",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816717"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9122585,
+          50.0676681
+        ],
+        [
+          19.912223,
+          50.0675611
+        ],
+        [
+          19.9122477,
+          50.0675577
+        ],
+        [
+          19.9124147,
+          50.067534
+        ],
+        [
+          19.9124499,
+          50.067642
+        ],
+        [
+          19.9122585,
+          50.0676681
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/231816743",
+  "properties": {
+    "addr:city": "Kraków",
+    "addr:country": "PL",
+    "addr:housenumber": "24",
+    "addr:street": "Kawiory",
+    "building": "apartments",
+    "building:levels": "2",
+    "roof:shape": "gabled",
+    "source": "www.geoportal.gov.pl",
+    "id": "way/231816743"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9120666,
+          50.0676943
+        ],
+        [
+          19.9120282,
+          50.0675779
+        ],
+        [
+          19.9120462,
+          50.0675756
+        ],
+        [
+          19.9121279,
+          50.0675646
+        ],
+        [
+          19.9121643,
+          50.0675602
+        ],
+        [
+          19.9121606,
+          50.0675475
+        ],
+        [
+          19.9122173,
+          50.0675407
+        ],
+        [
+          19.912223,
+          50.0675611
+        ],
+        [
+          19.9122585,
+          50.0676681
+        ],
+        [
+          19.9120666,
+          50.0676943
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/310209912",
+  "properties": {
+    "building": "parking_entrance",
+    "id": "way/310209912"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9131349,
+          50.0677364
+        ],
+        [
+          19.9128099,
+          50.0677734
+        ],
+        [
+          19.912801,
+          50.0677413
+        ],
+        [
+          19.9131259,
+          50.0677011
+        ],
+        [
+          19.9131349,
+          50.0677364
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/694071613",
+  "properties": {
+    "building": "yes",
+    "id": "way/694071613"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.912128,
+          50.067522
+        ],
+        [
+          19.9121224,
+          50.067498
+        ],
+        [
+          19.9121753,
+          50.0674929
+        ],
+        [
+          19.9121757,
+          50.0674929
+        ],
+        [
+          19.912181,
+          50.0675166
+        ],
+        [
+          19.912128,
+          50.067522
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/694071614",
+  "properties": {
+    "building": "yes",
+    "id": "way/694071614"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9121847,
+          50.0675311
+        ],
+        [
+          19.912181,
+          50.0675166
+        ],
+        [
+          19.9121757,
+          50.0674929
+        ],
+        [
+          19.9122031,
+          50.0674904
+        ],
+        [
+          19.9122117,
+          50.0675179
+        ],
+        [
+          19.9122154,
+          50.0675351
+        ],
+        [
+          19.9121924,
+          50.0675379
+        ],
+        [
+          19.9121907,
+          50.0675305
+        ],
+        [
+          19.9121847,
+          50.0675311
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/694071615",
+  "properties": {
+    "building": "yes",
+    "id": "way/694071615"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9122117,
+          50.0675179
+        ],
+        [
+          19.9122031,
+          50.0674904
+        ],
+        [
+          19.9122276,
+          50.0674875
+        ],
+        [
+          19.9122361,
+          50.0675147
+        ],
+        [
+          19.9122117,
+          50.0675179
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/903324699",
+  "properties": {
+    "building": "university",
+    "id": "way/903324699"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9121891,
+          50.0678442
+        ],
+        [
+          19.9121861,
+          50.0678534
+        ],
+        [
+          19.9121778,
+          50.0678612
+        ],
+        [
+          19.9121656,
+          50.0678662
+        ],
+        [
+          19.9121512,
+          50.0678678
+        ],
+        [
+          19.9121369,
+          50.0678657
+        ],
+        [
+          19.9121248,
+          50.0678603
+        ],
+        [
+          19.9121169,
+          50.0678523
+        ],
+        [
+          19.9121142,
+          50.0678429
+        ],
+        [
+          19.9121172,
+          50.0678337
+        ],
+        [
+          19.9121254,
+          50.067826
+        ],
+        [
+          19.9121377,
+          50.0678209
+        ],
+        [
+          19.9121521,
+          50.0678193
+        ],
+        [
+          19.9121664,
+          50.0678214
+        ],
+        [
+          19.9121784,
+          50.0678269
+        ],
+        [
+          19.9121864,
+          50.0678349
+        ],
+        [
+          19.9121891,
+          50.0678442
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "way/903324700",
+  "properties": {
+    "building": "yes",
+    "id": "way/903324700"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          19.9123658,
+          50.0675219
+        ],
+        [
+          19.9123534,
+          50.0674781
+        ],
+        [
+          19.9123948,
+          50.0674738
+        ],
+        [
+          19.912407,
+          50.0675171
+        ],
+        [
+          19.9123658,
+          50.0675219
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2184337423",
+  "properties": {
+    "automatic_door": "yes",
+    "door": "sliding",
+    "entrance": "yes",
+    "wheelchair": "yes",
+    "id": "node/2184337423"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9125193,
+      50.0680281
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2184337427",
+  "properties": {
+    "automatic_door": "yes",
+    "door": "sliding",
+    "entrance": "main",
+    "wheelchair": "yes",
+    "id": "node/2184337427"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9125835,
+      50.0680887
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931645",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931645"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9131195,
+      50.0677574
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931651",
+  "properties": {
+    "entrance": "service",
+    "id": "node/2185931651"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9130003,
+      50.0677736
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931654",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931654"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9129078,
+      50.0677862
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931659",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931659"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9128643,
+      50.0677922
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931662",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931662"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9123833,
+      50.0679562
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931667",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931667"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.91234,
+      50.0679621
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931670",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931670"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.912298,
+      50.0679678
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931674",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931674"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9122566,
+      50.0679735
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931678",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931678"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9128902,
+      50.0679809
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931681",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931681"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9122134,
+      50.0679793
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931685",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931685"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9121711,
+      50.0679851
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931689",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931689"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.912128,
+      50.067991
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931692",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931692"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9120848,
+      50.0679969
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931696",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931696"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9120435,
+      50.0680025
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931699",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931699"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9120002,
+      50.0680084
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931702",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931702"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9119207,
+      50.0681846
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/2185931707",
+  "properties": {
+    "entrance": "emergency",
+    "id": "node/2185931707"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      19.9122893,
+      50.0682252
+    ]
+  }
+}
+]
+}

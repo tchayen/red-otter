@@ -1,8 +1,0 @@
-{
-  "name": "red-otter",
-  "version": "0.0.1",
-  "license": "MIT",
-  "devDependencies": {
-    "vitest": "^0.29.2"
-  }
-}

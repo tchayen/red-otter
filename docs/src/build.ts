@@ -403,6 +403,7 @@ const replace = `
 
       #logo-img {
         width: 200px;
+        height: 200px;
         margin-bottom: 16px;
       }
 
@@ -426,6 +427,7 @@ const replace = `
 
       #sidebar-logo img {
         width: 100px;
+        height: 100px;
       }
 
       #sidebar-logo span {
@@ -849,10 +851,18 @@ context.flush();
    * Y axis is flipped - point \`(0, 0)\` is in the top left.
    */
   setProjection(x: number, y: number, width: number, height: number): void;
+
   /**
    * Writes text on the screen.
    */
-  text(text: string, x: number, y: number, fontSize: number, color: Vec4): void;
+  text(
+    text: string,
+    x: number,
+    y: number,
+    fontSize: number,
+    color: string
+  ): void;
+
   /**
    * Renders to screen and resets buffers.
    */
@@ -876,29 +886,42 @@ context.flush();
       </p>
 
       ${addHeader(3, "Animation frame loop")}
-      <p>TODO</p>
+      <p>
+        Very common way of rendering UI in games is called immediate mode GUI.
+        It basically means that UI elements are drawn every frame. In similar
+        fashion, one simple way of using this library is to follow the same
+        method.
+      </p>
       ${codeExample(
-        `const font = new Font({
-  spacingMetadataJsonURL: "/spacing.json",
-  spacingBinaryURL: "/spacing.dat",
-  fontAtlasTextureURL: "/uv.dat",
-  UVBinaryURL: "/font-atlas.png",
-});
-await font.load();
-
-const context = new Context(canvas, font);
+        `const context = new Context(canvas, font);
 
 function frame() {
-
   context.clear();
+
+  // Draw UI continuously in the loop.
+  const layout = new Layout(context.getCanvas().clientWidth, context.getCanvas().clientHeight);
+  layout.add(
+    <view style={{ padding: 20, backgroundColor: "#fff" }}>
+      <text style={{ fontFamily: font, fontSize: 20, color: "#000" }}>Hello</text>
+    </view>
+  )
+  layout.render();
+
   context.flush();
+
   window.requestAnimationFrame(frame);
-}`
+}
+
+frame();`
       )}
       ${addHeader(3, "Button")}
       ${codeExample(
         `layout.add(
-  <button onClick={() => alert("Hello!")}>
+  <button
+    onClick={() => {
+      alert("Hello!");
+    }}
+  >
     {({ hovered, pressed }) => (
       <view style={{
         paddingHorizontal: 16,
@@ -1374,37 +1397,37 @@ layout.add(
       </p>
       ${codeExample(
         `class MockContext implements IContext {
-  getCanvas(): HTMLCanvasElement {
+  getCanvas() {
     return {
       clientWidth: 800,
       clientHeight: 600,
     } as HTMLCanvasElement;
   }
-  line(): void {
+  line() {
     // noop
   }
-  polygon(): void {
+  polygon() {
     // noop
   }
-  triangles(): void {
+  triangles() {
     // noop
   }
-  rectangle(): void {
+  rectangle() {
     // noop
   }
-  clear(): void {
+  clear() {
     // noop
   }
-  setProjection(): void {
+  setProjection() {
     // noop
   }
-  text(): void {
+  text() {
     // noop
   }
-  flush(): void {
+  flush() {
     // noop
   }
-  loadTexture(): WebGLTexture {
+  loadTexture() {
     return {} as WebGLTexture;
   }
 }`
