@@ -6,8 +6,9 @@
     "dev": "vite",
     "lint": "eslint .",
     "tsc": "tsc",
-    "build": "yarn generate && vite build",
+    "build": "yarn build-lib & yarn generate && vite build",
     "serve": "vite preview",
+    "build-lib": "cd ../packages/red-otter; yarn build",
     "generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' src/build.ts",
     "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
   },
