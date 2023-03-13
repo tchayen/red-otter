@@ -1,5 +1,5 @@
 import { toURLSafe, invariant } from "../utils";
-import { Context, Font } from "../../packages/red-otter";
+import { Context, Font } from "red-otter";
 import { fixtures } from "./examples";
 
 async function mainAsync(): Promise<void> {

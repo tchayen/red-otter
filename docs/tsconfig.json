@@ -18,5 +18,5 @@
     "jsx": "react",
     "jsxFactory": "ę"
   },
-  "include": ["."]
+  "include": ["src"]
 }

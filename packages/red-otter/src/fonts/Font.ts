@@ -4,6 +4,10 @@ import { Vec4 } from "../math/Vec4";
 import { FontAtlasMetadata, Glyph, Spacing } from "./FontAtlas";
 import { ATLAS_FONT_SIZE, ATLAS_GAP } from "./atlasConsts";
 
+/**
+ * Class that holds font spacing data and font atlas image. For loading font
+ * file see `FontAtlas`.
+ */
 export class Font {
   private metadata: FontAtlasMetadata | null = null;
   private glyphs = new Map<number, Glyph>();
@@ -239,13 +243,15 @@ export class Font {
     // Skip the last padding.
     const width =
       positions[positions.length - 1].x + sizes[sizes.length - 1].x - padding;
+    const height =
+      (this.metadata.capHeight * fontSize) / this.metadata.unitsPerEm;
 
     return {
       positions,
       sizes,
       boundingRectangle: {
-        width,
-        height: (this.metadata.capHeight * fontSize) / this.metadata.unitsPerEm,
+        width: Math.ceil(width),
+        height: Math.ceil(height),
       },
     };
   }

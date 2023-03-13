@@ -1,4 +1,4 @@
-import { TTF, FontAtlas, Font, Context } from "../../packages/red-otter";
+import { TTF, FontAtlas, Font, Context } from "red-otter";
 
 async function loadFont() {
   const start = performance.now();

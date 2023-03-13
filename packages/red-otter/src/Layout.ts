@@ -1008,15 +1008,6 @@ export class Layout {
         const horizontalGap = availableWidth / (childrenCount - 1);
         const verticalGap = availableHeight / (childrenCount - 1);
 
-        if (input.backgroundColor === "rgba(50, 100, 200, 0.3)") {
-          console.log({
-            availableHeight,
-            availableWidth,
-            horizontalGap,
-            verticalGap,
-          });
-        }
-
         p = element.firstChild;
         while (p) {
           p.value.x = x;

@@ -9,6 +9,10 @@ import { PluginItem, transformSync } from "@babel/core";
 import { fixtures } from "./examples";
 import { codeExample, formatCode, toURLSafe } from "../utils";
 
+import packageJson from "red-otter/package.json";
+
+const versionNumber = `v${packageJson.version}`;
+
 const steps: { name: string; start: number }[] = [];
 
 function step(name: string): void {
@@ -691,11 +695,9 @@ const replace = `
         this library might be very useful for WebGL applications.
       </p>
       <p>
-        And finally, because it's fun. Reinventing the wheel is my hobby [<a
-          href="https://tchayen.com"
-          referrerpolicy="no-referrer"
-          target="_blank"
-          >2</a>] and writing this library was the goal itself.
+        If you find yourself writing some WebGL and at any point think "I wish
+        there was a simple way to render text and maybe some UI on top of it",
+        then this library might be for you.
       </p>
       ${addHeader(3, "What this is not")}
       <ul>
@@ -744,7 +746,7 @@ const replace = `
         To render text you will also need to generate the font atlas. See
         <a href="/#generating-font-atlas">guide</a>.
       </p>
-      ${addHeader(2, "Layout")}
+      ${addHeader(2, "Examples")}
       <p>All code present below follows similar pattern:</p>
       ${codeExample(
         `import { Font, Context, Layout } from "red-otter";
@@ -968,7 +970,7 @@ layout.add(
       <ul>
         <li>
           Full font atlas texture is usually much heavier than font file itself
-          (in case of Inter it is 680KB vs 2MB).
+          (in case of Inter it is 680kB vs 2MB).
         </li>
         <li>
           You can also generate a much smaller subset (for instance just ASCII
@@ -977,7 +979,7 @@ layout.add(
           ASCII to improve startup time and then load the rest on demand.
         </li>
         <li>
-          There are also two other data files but their weight is around 30KB.
+          There are also two other data files but their weight is around 30kB.
         </li>
       </ul>
       ${addHeader(3, "Runtime")}
@@ -1109,11 +1111,6 @@ run();`,
         the page and save the results to the filesystem.
       </p>
       ${codeExample(
-        'yarn run ts-node  -O \'{"module":"nodenext"}\' ci-script.ts',
-        "bash"
-      )}
-      <p>And the script itself:</p>
-      ${codeExample(
         `import path from "node:path";
 import fs from "node:fs";
 
@@ -1127,6 +1124,25 @@ const BINARY_FILE = \`$\{__dirname}/../public/spacing.dat\`;
 const UV_FILE = \`$\{__dirname}/../public/uv.dat\`;
 
 const BUNDLER_PORT = 3456;
+
+async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
+  if (process.env.CI === "1") {
+    return {
+      executablePath: await chromium.executablePath(),
+      args: [...chromium.args, "--no-sandbox"],
+      headless: chromium.headless,
+    };
+  } else if (process.platform === "darwin") {
+    return {
+      executablePath:
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      args: ["--no-sandbox"],
+      headless: true,
+    };
+  } else {
+    throw new Error("Unsupported OS.");
+  }
+}
 
 function saveFile(
   filePath: string,
@@ -1145,11 +1161,7 @@ async function run() {
   await server.listen();
   console.log(\`Vite dev server started on port $\{BUNDLER_PORT}.\`);
 
-  const browser = await launch({
-    executablePath: await chromium.executablePath(),
-    args: [...chromium.args, "--no-sandbox"],
-    headless: false,
-  });
+  const browser = await launch(await getPuppeteerOptions());
   console.log("Chromium launched.");
 
   const page = await browser.newPage();
@@ -1206,7 +1218,8 @@ run();`,
         "typescript",
         "ci/run.ts"
       )}
-      <p>Example output from running on the CI:</p>
+      <p>Because of the special Chromium installation this script likely won't
+      run locally, but for example it runs just fine on Vercel CI:</p>
       ${codeExample(
         `$ /vercel/path0/node_modules/.bin/ts-node -O '{"module":"nodenext"}' ci/run.ts
 Vite dev server started on port 3456.
@@ -1387,8 +1400,12 @@ layout.add(
   </view>
 );`)}
       <p>
-        JSX is definitely shortest and, at least to me, the easiest to read and
-        reason about.
+        JSX has couple advantages here. It is the shortest. Arguably this syntax
+        makes it more readable (which is for me not always the case with XML).
+        And something that is harder to reason about just looking at the code –
+        it is much easier for me to refactor than function calls above. Very
+        clear boundaries of components (opening and closing tags) make it easier
+        to move blocks around consciously.
       </p>
       ${addHeader(2, "Testing")}
       <p>
@@ -1432,6 +1449,38 @@ layout.add(
   }
 }`
       )}
+      ${addHeader(2, "Roadmap")}
+      <ul>
+        <li>
+          Make lib more tree-shakable. Currently example which processes font
+          server side loads 22.03 kB (7.04 kB gzipped) of code. By removing
+          utility functions from classes and moving them to separate modules,
+          this could be potentially reduced for users that don't use certain
+          features (like triangulation of polygons, setting projection matrices,
+          triangulation of lines).
+        </li>
+        <li>
+          Testing with more fonts. So far TTF parser was fine-tuned to work with
+          Inter. It should work with other fonts just as well, but maybe I was
+          wrong with assumptions about which TTF tables are best to support.
+        </li>
+        <li>
+          Better text rendering, including italics, bold, multiline text and
+          nested text blocks (a single bold word inside a paragraph).
+        </li>
+        <li>
+          Proper benchmarks.
+        </li>
+        <li>
+          Missing layout features: <code>margin</code>, <code>flex-wrap</code>, <code>flex-grow</code>, <code>flex-shrink</code>, <code>justify-content: space-around</code> and <code>space-evenly</code>, <code>overflow: hidden</code>, <code>aspect-ratio</code>.
+        </li>
+        <li>
+          Styling: <code>border-radius</code>, <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
+        </li>
+        <li>
+          Interactivity: UI controls like button, text input etc.
+        </li>
+      </ul>
       ${addHeader(2, "Credits")}
       <li>
         ${linkExternal("https://highlightjs.org", "Highlights.js")} for syntax
@@ -1468,7 +1517,7 @@ layout.add(
         <img src="/logo.svg" alt="Logo" />
         <div>
           <span>Red Otter</span>
-          <span class="version">v0.0.1</span>
+          <span class="version">${versionNumber}</span>
         </div>
       </div>
       <div id="search-box">

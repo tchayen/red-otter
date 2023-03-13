@@ -18,7 +18,7 @@
 
 ### Replacing map
 
-If for any reason the map needs to be replaced:
+If for any reason the map in the [map example](https://red-otter.dev/#map) needs to be replaced:
 
 1. use the following script:
 
@@ -64,3 +64,7 @@ If for any reason the map needs to be replaced:
 1. Copy the content and save it to file `osm-map.json`.
 1. Install [`osmtogeojson`](https://github.com/tyrasd/osmtogeojson).
 1. Run: `osmtogeojson osm-map.json > docs/src/map.json`.
+
+## Links to explanations
+
+- [Why `--no-threads` in `yarn test`?](https://twitter.com/youyuxi/status/1621299180261244928?s=20&t=fyQYZyV2omJHrGjlVrfq6A)

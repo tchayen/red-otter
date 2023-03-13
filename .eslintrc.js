@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   env: {
     browser: true,
@@ -16,7 +18,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "eslint-plugin-import"],
+  plugins: ["@typescript-eslint", "eslint-plugin-import", "import"],
   rules: {
     "block-spacing": ["warn", "always"],
     "eol-last": ["warn", "always"],
@@ -30,7 +32,7 @@ module.exports = {
   },
   settings: {
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"],
+      "@typescript-eslint/parser": [".ts", ".tsx", ".js", ".jsx"],
     },
     "import/resolver": {
       typescript: {},

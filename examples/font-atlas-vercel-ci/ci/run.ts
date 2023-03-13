@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 import { createServer } from "vite";
 import chromium from "@sparticuz/chromium";
-import { launch } from "puppeteer-core";
+import { launch, PuppeteerLaunchOptions } from "puppeteer-core";
 
 const PNG_FILE = `${__dirname}/../public/font-atlas.png`;
 const JSON_FILE = `${__dirname}/../public/spacing.json`;
@@ -11,6 +11,25 @@ const BINARY_FILE = `${__dirname}/../public/spacing.dat`;
 const UV_FILE = `${__dirname}/../public/uv.dat`;
 
 const BUNDLER_PORT = 3456;
+
+async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
+  if (process.env.CI === "1") {
+    return {
+      executablePath: await chromium.executablePath(),
+      args: [...chromium.args, "--no-sandbox"],
+      headless: chromium.headless,
+    };
+  } else if (process.platform === "darwin") {
+    return {
+      executablePath:
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      args: ["--no-sandbox"],
+      headless: true,
+    };
+  } else {
+    throw new Error("Unsupported OS.");
+  }
+}
 
 function saveFile(
   filePath: string,
@@ -29,11 +48,7 @@ async function run() {
   await server.listen();
   console.log(`Vite dev server started on port ${BUNDLER_PORT}.`);
 
-  const browser = await launch({
-    executablePath: await chromium.executablePath(),
-    args: [...chromium.args, "--no-sandbox"],
-    headless: false,
-  });
+  const browser = await launch(await getPuppeteerOptions());
   console.log("Chromium launched.");
 
   const page = await browser.newPage();

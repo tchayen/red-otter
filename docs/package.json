@@ -4,10 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "lint": "eslint .",
+    "tsc": "tsc",
     "build": "yarn generate && vite build",
     "serve": "vite preview",
     "generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' src/build.ts",
     "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
+  },
+  "dependencies": {
+    "red-otter": "0.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

@@ -2,6 +2,7 @@ node_modules/
 dist/
 .vercel/
 .DS_Store
+yarn-error.log
 
 docs/index.html
 
@@ -9,3 +10,5 @@ font-atlas.png
 spacing.dat
 spacing.json
 uv.dat
+
+packages/red-otter/red-otter-*.tgz

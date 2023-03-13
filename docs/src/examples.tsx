@@ -1,10 +1,4 @@
-import {
-  Context,
-  Font,
-  Layout,
-  Style,
-  TextStyle,
-} from "../../packages/red-otter";
+import { Context, Font, Layout, Style, TextStyle } from "red-otter";
 
 import map from "./map.json";
 
@@ -630,232 +624,340 @@ export function mapExample(context: Context, font: Font) {
   return layout;
 }
 
-export function editorUIExample(context: Context, font: Font) {
+export function complexUIExample(context: Context, font: Font) {
   const layout = new Layout(context);
 
   const container: Style = {
     width: "100%",
     height: "100%",
     backgroundColor: zinc[900],
-  };
-
-  const pane: Style = {
-    width: 300,
-    height: "100%",
-    padding: 4,
-    gap: 4,
+    flexDirection: "row",
     alignItems: "stretch",
   };
 
-  const sectionStyle: Style = {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: 4,
-    paddingLeft: 8,
+  const header: Style = {
+    height: 32,
+    paddingHorizontal: 8,
+    justifyContent: "center",
+    backgroundColor: zinc[800],
+    alignSelf: "stretch",
   };
 
-  const headerStyle: Style = {
-    height: 24,
-    alignItems: "center",
-    paddingHorizontal: 6,
-    gap: 6,
-    flexDirection: "row",
+  const headerText: TextStyle = {
+    fontFamily: font,
+    fontSize: 16,
+    color: "#fff",
   };
 
-  const textPrimary: TextStyle = {
+  const sectionsColumn: Style = {
+    alignItems: "stretch",
+    height: "100%",
+  };
+
+  const section: Style = {
+    alignItems: "stretch",
+  };
+
+  const verticalSeparator: Style = {
+    width: 1,
+    backgroundColor: zinc[700],
+    alignSelf: "stretch",
+  };
+
+  const horizontalSeparator: Style = {
+    height: 1,
+    backgroundColor: zinc[700],
+    alignSelf: "stretch",
+  };
+
+  // Timeline
+  const timeline: Style = {
+    alignSelf: "stretch",
+    backgroundColor: zinc[900],
+    height: 380, // TODO: this is hardcoded.
+  };
+
+  const timelineItems: Style = {
+    position: "absolute",
+    left: 20,
+    top: 50,
+    height: 83,
+    width: 260,
+  };
+
+  const timelineItem: Style = {
+    position: "absolute",
+    height: 20,
+    paddingHorizontal: 4,
+    justifyContent: "center",
+  };
+
+  const timelineInterval: Style = {
+    position: "absolute",
+    width: 1,
+    height: "100%",
+    backgroundColor: zinc[700],
+    top: 33,
+  };
+
+  const timelineText: TextStyle = {
     fontFamily: font,
     fontSize: 12,
-    color: zinc[50],
+    color: "#000",
   };
 
-  const textSecondary: TextStyle = {
+  const timelineHeaderText: TextStyle = {
     fontFamily: font,
     fontSize: 12,
     color: zinc[500],
   };
 
-  const label: Style = {
-    height: 24,
-    justifyContent: "center",
+  // Table
+  const table: Style = {
+    flexDirection: "row",
   };
 
-  const input: Style = {
+  const tableColumn: Style = {
+    alignItems: "stretch",
+  };
+
+  const tableCell: Style = {
     height: 24,
     justifyContent: "center",
-    alignItems: "flex-end",
-    backgroundColor: zinc[900],
     paddingHorizontal: 8,
-    width: 48,
+    backgroundColor: zinc[900],
   };
 
-  const dropdown: Style = {
-    height: 24,
+  const even: Style = {
+    backgroundColor: zinc[800],
+  };
+
+  const tableHeaderCell: Style = {
+    ...tableCell,
+    backgroundColor: zinc[800],
+  };
+
+  const tableCellText: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: zinc[400],
+  };
+
+  const tableCellHeaderText: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: "#fff",
+  };
+
+  const tableCellLinkText: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: "#8ab4f8",
+  };
+
+  // Settings
+  const checkbox: Style = {
+    height: 16,
+    width: 16,
+    backgroundColor: "#8ab4f8",
+  };
+
+  const settings: Style = {
+    gap: 20,
+    padding: 16,
+    backgroundColor: zinc[800],
+    flex: 1,
+    alignSelf: "stretch",
+  };
+
+  const settingsOption: Style = {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: zinc[700],
-    paddingHorizontal: 8,
     gap: 8,
-    width: "100%",
   };
 
-  const dropdownItem: Style = {
-    height: 24,
-    justifyContent: "center",
-    paddingHorizontal: 8,
-    width: "100%",
+  const settingsTexts: Style = {
+    gap: 8,
   };
 
-  const row = () => (
-    <view
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 4,
-      }}
-    >
-      <text style={textSecondary}>X</text>
-      <view style={input}>
-        <text style={textPrimary}>0.0</text>
-      </view>
-      <text style={textSecondary}>Y</text>
-      <view style={input}>
-        <text style={textPrimary}>0.0</text>
-      </view>
-      <text style={textSecondary}>Z</text>
-      <view style={input}>
-        <text style={textPrimary}>0.0</text>
-      </view>
-    </view>
-  );
+  const settingsSubHeaderText: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: "#fff",
+  };
 
-  const triangle = () => (
-    <shape
-      points={[
-        [0, 0],
-        [5, 8],
-        [10, 0],
-      ]}
-      color={zinc[500]}
-    />
-  );
-
-  const header = (title: string) => (
-    <view style={headerStyle}>
-      {triangle()}
-      {/* <Triangle /> */}
-      <text style={textPrimary}>{title}</text>
-    </view>
-  );
+  const settingsDescriptionText: TextStyle = {
+    fontFamily: font,
+    fontSize: 12,
+    color: zinc[400],
+  };
 
   layout.add(
     <view style={container}>
-      <view style={pane}>
-        <view style={{ backgroundColor: zinc[800] }}>
-          {header("Transform")}
-          <view style={sectionStyle}>
-            <view style={{ gap: 4 }}>
-              <view style={label}>
-                <text style={textSecondary}>Translate</text>
-              </view>
-              <view style={label}>
-                <text style={textSecondary}>Rotate</text>
-              </view>
-              <view style={label}>
-                <text style={textSecondary}>Scale</text>
-              </view>
-            </view>
-            <view style={{ gap: 4 }}>
-              {row()}
-              {row()}
-              {row()}
-            </view>
+      <view style={sectionsColumn}>
+        <view style={[section, { flex: 1 }]}>
+          <view style={header}>
+            <text style={headerText}>Timeline</text>
           </view>
-        </view>
-        <view style={{ backgroundColor: zinc[800] }}>
-          {header("Light")}
-          <view
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              padding: 4,
-              paddingLeft: 8,
-              gap: 8,
-            }}
-          >
-            <view style={{ gap: 4 }}>
-              <view style={label}>
-                <text style={textSecondary}>Type</text>
-              </view>
-              <view style={label}>
-                <text style={textSecondary}>Shadows</text>
-              </view>
-              <view style={label}>
-                <text style={textSecondary}>Method</text>
-              </view>
+          <view style={horizontalSeparator} />
+          <view style={timeline}>
+            <view style={{ position: "absolute", left: 64, top: 8 }}>
+              <text style={timelineHeaderText}>800ms</text>
             </view>
-            <view style={{ gap: 4, flex: 1 }}>
-              <view style={dropdown}>
-                <text style={textPrimary}>Directional</text>
-                {triangle()}
+            <view style={{ position: "absolute", left: 141, top: 8 }}>
+              <text style={timelineHeaderText}>810ms</text>
+            </view>
+            <view style={{ position: "absolute", left: 220, top: 8 }}>
+              <text style={timelineHeaderText}>820ms</text>
+            </view>
+            <view style={[timelineInterval, { left: 79 }]} />
+            <view style={[timelineInterval, { left: 159 }]} />
+            <view style={[timelineInterval, { left: 239 }]} />
+            <view style={timelineItems}>
+              <view
+                style={[
+                  timelineItem,
+                  { width: 260, backgroundColor: "#899df0" },
+                ]}
+              >
+                <text style={timelineText}>mainAsync</text>
               </view>
-              <view style={dropdown}>
-                <text style={textPrimary}>On</text>
-                {triangle()}
+              <view
+                style={[
+                  timelineItem,
+                  { width: 205, backgroundColor: "#dc99fc", top: 21, left: 5 },
+                ]}
+              >
+                <text style={timelineText}>loadTexture</text>
               </view>
-              <view style={dropdown}>
-                <text style={textPrimary}>PCSS</text>
-                {triangle()}
-                <view
-                  style={{
-                    position: "absolute",
-                    zIndex: 1,
-                    width: "100%",
-                    backgroundColor: zinc[700],
-                    top: 25,
-                    right: 0,
-                  }}
-                >
-                  <view style={dropdownItem}>
-                    <text style={textPrimary}>PFC</text>
-                  </view>
-                  <view style={[dropdownItem, { backgroundColor: "#2563eb" }]}>
-                    <text style={textPrimary}>PCSS</text>
-                  </view>
-                  <view style={dropdownItem}>
-                    <text style={textPrimary}>VSM</text>
-                  </view>
-                  <view style={dropdownItem}>
-                    <text style={textPrimary}>ESM</text>
-                  </view>
-                </view>
+              <view
+                style={[
+                  timelineItem,
+                  { width: 175, backgroundColor: "#dcbb64", top: 42, left: 15 },
+                ]}
+              >
+                <text style={timelineText}>texImage2D</text>
+              </view>
+              <view
+                style={[
+                  timelineItem,
+                  { width: 105, backgroundColor: "#6eac72", top: 63, left: 45 },
+                ]}
+              >
+                <text style={timelineText}>Image Decode</text>
               </view>
             </view>
           </view>
         </view>
-        <view style={{ backgroundColor: zinc[800] }}>
-          {header("Export")}
-          <view
-            style={{
-              padding: 4,
-              gap: 4,
-              flexDirection: "column",
-            }}
-          >
-            <view style={[dropdown, { width: undefined }]}>
-              <text style={textPrimary}>1x</text>
-              {triangle()}
+        <view style={horizontalSeparator} />
+        <view style={section}>
+          <view style={header}>
+            <text style={headerText}>Statistics</text>
+          </view>
+          <view style={horizontalSeparator} />
+          <view style={table}>
+            <view style={tableColumn}>
+              <view style={tableHeaderCell}>
+                <text style={tableCellHeaderText}>Function</text>
+              </view>
+              <view style={horizontalSeparator} />
+              <view style={tableCell}>
+                <text style={tableCellText}>Image Decode</text>
+              </view>
+              <view style={[tableCell, even]}>
+                <text style={tableCellText}>texImage2D</text>
+              </view>
+              <view style={tableCell}>
+                <text style={tableCellText}>loadTexture</text>
+              </view>
+              <view style={[tableCell, even]}>
+                <text style={tableCellText}>mainAsync</text>
+              </view>
             </view>
-            <view
-              style={{
-                paddingHorizontal: 12,
-                height: 24,
-                backgroundColor: zinc[600],
-                justifyContent: "center",
-              }}
-            >
-              <text style={textPrimary}>Export</text>
+            <view style={verticalSeparator} />
+            <view style={tableColumn}>
+              <view style={tableHeaderCell}>
+                <text style={tableCellHeaderText}>Location</text>
+              </view>
+              <view style={horizontalSeparator} />
+              <view style={tableCell}></view>
+              <view style={[tableCell, even]}></view>
+              <view style={tableCell}>
+                <text style={tableCellLinkText}>index.js:449:3</text>
+              </view>
+              <view style={[tableCell, even]}>
+                <text style={tableCellLinkText}>main.ts:5:16</text>
+              </view>
+            </view>
+            <view style={verticalSeparator} />
+            <view style={tableColumn}>
+              <view style={tableHeaderCell}>
+                <text style={tableCellHeaderText}>Total time</text>
+              </view>
+              <view style={horizontalSeparator} />
+              <view style={tableCell}>
+                <text style={tableCellText}>10.08ms</text>
+              </view>
+              <view style={[tableCell, even]}>
+                <text style={tableCellText}>16.66ms</text>
+              </view>
+              <view style={tableCell}>
+                <text style={tableCellText}>19.81ms</text>
+              </view>
+              <view style={[tableCell, even]}>
+                <text style={tableCellText}>24.23ms</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view style={verticalSeparator} />
+      <view style={[section, { flex: 1 }]}>
+        <view style={header}>
+          <text style={headerText}>Settings</text>
+        </view>
+        <view style={horizontalSeparator} />
+        <view style={settings}>
+          <view style={settingsOption}>
+            <view style={checkbox}>
+              <shape
+                color="#000"
+                points={[
+                  [3.5, 6.5],
+                  [6.5, 9.5],
+                  [12.5, 3.5],
+                  [14, 5],
+                  [6.5, 12.5],
+                  [2, 8],
+                ]}
+              />
+            </view>
+            <view style={settingsTexts}>
+              <text style={settingsSubHeaderText}>Enable source maps</text>
+              <text style={settingsDescriptionText}>
+                This might require some changes to your bundler settings.
+              </text>
+            </view>
+          </view>
+          <view style={settingsOption}>
+            <view style={checkbox}>
+              <shape
+                color="#000"
+                points={[
+                  [3.5, 6.5],
+                  [6.5, 9.5],
+                  [12.5, 3.5],
+                  [14, 5],
+                  [6.5, 12.5],
+                  [2, 8],
+                ]}
+              />
+            </view>
+            <view style={settingsTexts}>
+              <text style={settingsSubHeaderText}>Show internal functions</text>
+              <text style={settingsDescriptionText}>
+                Include browser APIs outside of your source code.
+              </text>
             </view>
           </view>
         </view>
@@ -868,8 +970,8 @@ export function editorUIExample(context: Context, font: Font) {
 
 export const fixtures = [
   {
-    callback: editorUIExample,
-    title: "Editor UI",
+    callback: complexUIExample,
+    title: "Complex UI",
     description: "Example of a bit more complex UI.",
   },
   {

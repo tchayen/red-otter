@@ -8,10 +8,16 @@
     "docs"
   ],
   "scripts": {
-    "lib:test": "cd packages/red-otter; vitest --no-threads",
+    "lib:build": "cd packages/red-otter; yarn build",
+    "lib:tsc": "cd packages/red-otter; yarn tsc",
+    "lib:lint": "cd packages/red-otter; yarn lint",
+    "lib:test": "cd packages/red-otter; yarn test",
+    "lib:check": "yarn lib:tsc && yarn lib:lint && yarn lib:test",
     "docs:dev": "cd docs; yarn dev",
     "docs:build": "cd docs; yarn build",
-    "docs:generate": "cd docs; yarn generate"
+    "docs:generate": "cd docs; yarn generate",
+    "docs:tsc": "cd docs; yarn tsc",
+    "docs:lint": "cd docs; yarn lint"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.54.1",
