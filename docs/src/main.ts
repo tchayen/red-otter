@@ -24,9 +24,14 @@ async function mainAsync(): Promise<void> {
         context.getCanvas().clientWidth,
         context.getCanvas().clientHeight
       );
+
+      const start = performance.now();
       const layout = callback(context, font);
       layout.render();
+      const end = performance.now();
       context.flush();
+
+      console.debug(`Rendered ${title} in ${(end - start).toFixed(2)}ms.`);
     }
   } catch (error) {
     console.error(error);
