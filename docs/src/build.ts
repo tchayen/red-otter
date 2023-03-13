@@ -1462,7 +1462,9 @@ layout.add(
   loadTexture() {
     return {} as WebGLTexture;
   }
-}`
+}`,
+        "typescript",
+        { fileName: "MockContext.ts", showLines: true }
       )}
       ${
         "" /*

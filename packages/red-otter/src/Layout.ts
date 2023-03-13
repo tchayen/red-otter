@@ -133,22 +133,55 @@ export type Style = Partial<{
   paddingVertical: number;
 
   /**
-   * Takes precedence over `padding` and `paddingHorizontal` properties.
+   * Takes precedence over `margin` and `marginHorizontal` properties.
    */
   paddingLeft: number;
   /**
-   * Takes precedence over `padding` and `paddingHorizontal` properties.
+   * Takes precedence over `margin` and `marginHorizontal` properties.
    */
   paddingRight: number;
 
   /**
-   * Takes precedence over `padding` and `paddingVertical` properties.
+   * Takes precedence over `margin` and `marginVertical` properties.
    */
   paddingTop: number;
   /**
-   *  Takes precedence over `padding` and `paddingVertical` properties.
+   *  Takes precedence over `margin` and `marginVertical` properties.
    */
   paddingBottom: number;
+
+  /**
+   * Space around children. More specific properties take precedence.
+   */
+  margin: number;
+
+  /**
+   * Takes precedence over `margin` property, less important than `marginLeft` or `marginRight`.
+   */
+  marginHorizontal: number;
+
+  /**
+   * Takes precedence over `margin` property, less important than `marginTop` or `marginBottom`.
+   */
+  marginVertical: number;
+
+  /**
+   * Takes precedence over `margin` and `marginHorizontal` properties.
+   */
+  marginLeft: number;
+  /**
+   * Takes precedence over `margin` and `marginHorizontal` properties.
+   */
+  marginRight: number;
+
+  /**
+   * Takes precedence over `margin` and `marginVertical` properties.
+   */
+  marginTop: number;
+  /**
+   *  Takes precedence over `margin` and `marginVertical` properties.
+   */
+  marginBottom: number;
 
   /**
    * Position `absolute` makes the frame skip taking part in the layout.
@@ -236,60 +269,24 @@ const textStyleDefaults = {
   color: "#fff",
 };
 
-function resolvePadding(input: Style): Style {
-  if (input.padding) {
-    if (input.paddingBottom === undefined) {
-      input.paddingBottom = input.padding;
-    }
+function resolvePaddingAndMargin(input: Style): Style {
+  input.paddingTop =
+    input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
+  input.paddingBottom =
+    input.paddingBottom ?? input.paddingVertical ?? input.padding ?? 0;
+  input.paddingLeft =
+    input.paddingLeft ?? input.paddingHorizontal ?? input.padding ?? 0;
+  input.paddingRight =
+    input.paddingRight ?? input.paddingHorizontal ?? input.padding ?? 0;
 
-    if (input.paddingTop === undefined) {
-      input.paddingTop = input.padding;
-    }
-
-    if (input.paddingLeft === undefined) {
-      input.paddingLeft = input.padding;
-    }
-
-    if (input.paddingRight === undefined) {
-      input.paddingRight = input.padding;
-    }
-  }
-
-  if (input.paddingHorizontal) {
-    if (input.paddingLeft === undefined) {
-      input.paddingLeft = input.paddingHorizontal;
-    }
-
-    if (input.paddingRight === undefined) {
-      input.paddingRight = input.paddingHorizontal;
-    }
-  }
-
-  if (input.paddingVertical) {
-    if (input.paddingTop === undefined) {
-      input.paddingTop = input.paddingVertical;
-    }
-
-    if (input.paddingBottom === undefined) {
-      input.paddingBottom = input.paddingVertical;
-    }
-  }
-
-  if (input.paddingBottom === undefined) {
-    input.paddingBottom = 0;
-  }
-
-  if (input.paddingLeft === undefined) {
-    input.paddingLeft = 0;
-  }
-
-  if (input.paddingRight === undefined) {
-    input.paddingRight = 0;
-  }
-
-  if (input.paddingTop === undefined) {
-    input.paddingTop = 0;
-  }
+  input.marginTop =
+    input.marginTop ?? input.marginVertical ?? input.margin ?? 0;
+  input.marginBottom =
+    input.marginBottom ?? input.marginVertical ?? input.margin ?? 0;
+  input.marginLeft =
+    input.marginLeft ?? input.marginHorizontal ?? input.margin ?? 0;
+  input.marginRight =
+    input.marginRight ?? input.marginHorizontal ?? input.margin ?? 0;
 
   return input;
 }
@@ -398,7 +395,7 @@ export function f(
         : fixedFrameDefaults.backgroundColor;
 
       const node = new TreeNode<FixedFrame>({
-        input: { ...frameDefaults, ...resolvePadding(flattenedStyle) },
+        input: { ...frameDefaults, ...resolvePaddingAndMargin(flattenedStyle) },
         ...fixedFrameDefaults,
         backgroundColor,
       });
@@ -453,7 +450,7 @@ export function f(
 
       const node = new TreeNode<FixedFrame>({
         input: {
-          ...resolvePadding(frameDefaults),
+          ...resolvePaddingAndMargin(frameDefaults),
           ...styleWithDefaults,
           color: styleWithDefaults.color,
           text,
@@ -496,7 +493,7 @@ export function f(
       const height = maxY - minY;
 
       return new TreeNode<FixedFrame>({
-        input: { ...resolvePadding(frameDefaults), points },
+        input: { ...resolvePaddingAndMargin(frameDefaults), points },
         ...fixedFrameDefaults,
         width,
         height,
@@ -527,7 +524,7 @@ export class Layout {
 
   constructor(private context: IContext) {
     const node = new TreeNode<FixedFrame>({
-      input: { ...resolvePadding(frameDefaults) },
+      input: { ...resolvePaddingAndMargin(frameDefaults) },
       ...fixedFrameDefaults,
       width: context.getCanvas().clientWidth,
       height: context.getCanvas().clientHeight,
@@ -561,7 +558,7 @@ export class Layout {
       : fixedFrameDefaults.backgroundColor;
 
     const node = new TreeNode({
-      input: { ...frameDefaults, ...resolvePadding(frame) },
+      input: { ...frameDefaults, ...resolvePaddingAndMargin(frame) },
       ...fixedFrameDefaults,
       backgroundColor,
     });
@@ -600,7 +597,7 @@ export class Layout {
 
     const node = new TreeNode({
       input: {
-        ...resolvePadding(frameDefaults),
+        ...resolvePaddingAndMargin(frameDefaults),
         fontSize: fontSize,
         color,
         text,
@@ -677,10 +674,13 @@ export class Layout {
       forwardQueue.enqueue(element);
 
       const { input } = element.value;
+
+      // TODO: adjust typing so at this point we know those are defined.
       invariant(input.paddingBottom !== undefined, "Padding is undefined.");
       invariant(input.paddingLeft !== undefined, "Padding is undefined.");
       invariant(input.paddingRight !== undefined, "Padding is undefined.");
       invariant(input.paddingTop !== undefined, "Padding is undefined.");
+
       invariant(input.gap !== undefined, "Gap is undefined.");
 
       if (typeof input.width === "number") {
@@ -696,21 +696,44 @@ export class Layout {
 
         let p = element.firstChild;
         while (p) {
+          invariant(
+            p.value.input.marginBottom !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginLeft !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginRight !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginTop !== undefined,
+            "Margin is undefined."
+          );
+
           if (p.value.width || typeof p.value.input.width === "number") {
             if (
               input.flexDirection === "row" &&
               p.value.input.position === "relative"
             ) {
-              element.value.width += p.value.width;
+              element.value.width +=
+                p.value.width +
+                p.value.input.marginLeft +
+                p.value.input.marginRight;
             }
 
             if (
               input.flexDirection === "column" &&
               p.value.input.position === "relative"
             ) {
+              // TODO: margin?
               element.value.width = Math.max(
                 element.value.width,
-                p.value.width
+                p.value.width +
+                  p.value.input.marginLeft +
+                  p.value.input.marginRight
               );
             }
           }
@@ -733,21 +756,44 @@ export class Layout {
 
         let p = element.firstChild;
         while (p) {
+          invariant(
+            p.value.input.marginBottom !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginLeft !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginRight !== undefined,
+            "Margin is undefined."
+          );
+          invariant(
+            p.value.input.marginTop !== undefined,
+            "Margin is undefined."
+          );
+
           if (p.value.height || typeof p.value.input.height === "number") {
             if (
               input.flexDirection === "column" &&
               p.value.input.position === "relative"
             ) {
-              element.value.height += p.value.height;
+              element.value.height +=
+                p.value.height +
+                p.value.input.marginTop +
+                p.value.input.marginBottom;
             }
 
             if (
               input.flexDirection === "row" &&
               p.value.input.position === "relative"
             ) {
+              // TODO: margin?
               element.value.height = Math.max(
                 element.value.height,
-                p.value.height
+                p.value.height +
+                  p.value.input.marginTop +
+                  p.value.input.marginBottom
               );
             }
           }
@@ -975,6 +1021,14 @@ export class Layout {
       invariant(input.paddingLeft !== undefined, "Padding is undefined.");
       invariant(input.paddingRight !== undefined, "Padding is undefined.");
       invariant(input.paddingTop !== undefined, "Padding is undefined.");
+
+      invariant(input.marginBottom !== undefined, "Margin is undefined.");
+      invariant(input.marginLeft !== undefined, "Margin is undefined.");
+      invariant(input.marginRight !== undefined, "Margin is undefined.");
+      invariant(input.marginTop !== undefined, "Margin is undefined.");
+
+      element.value.x += input.marginLeft;
+      element.value.y += input.marginTop;
 
       // Determine positions.
       let x = element.value.x + input.paddingLeft;

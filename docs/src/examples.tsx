@@ -379,6 +379,59 @@ export function positionRelativeExample(context: Context, font: Font) {
   return layout;
 }
 
+export function paddingMarginAndGapExample(context: Context, font: Font) {
+  const layout = new Layout(context);
+
+  const container: Style = {
+    width: "100%",
+    height: "100%",
+    padding: 20,
+  };
+
+  const text: TextStyle = {
+    fontFamily: font,
+  };
+
+  layout.add(
+    <view style={container}>
+      <view
+        style={{
+          backgroundColor: zinc[800],
+        }}
+      >
+        <view
+          style={{
+            backgroundColor: zinc[500],
+            marginHorizontal: 20,
+          }}
+        >
+          <text style={text}>marginHorizontal: 20</text>
+        </view>
+        <view
+          style={{
+            backgroundColor: zinc[700],
+            marginTop: 40,
+            gap: 20,
+          }}
+        >
+          <text style={text}>marginTop: 40</text>
+          <text style={text}>gap: 20</text>
+          <view style={{ padding: 20, backgroundColor: "#eb584e" }}>
+            <text style={text}>padding: 20</text>
+          </view>
+          <view style={{ padding: 20, backgroundColor: "#ef8950" }}>
+            <text style={text}>padding: 20</text>
+          </view>
+          <view style={{ padding: 20, backgroundColor: "#efaf50" }}>
+            <text style={text}>padding: 20</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  );
+
+  return layout;
+}
 export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
   const layout = new Layout(context);
 
@@ -1017,6 +1070,12 @@ export const fixtures = [
     title: "Position relative",
     description:
       "By default elements take part in automatic layout calculation.",
+  },
+  {
+    callback: paddingMarginAndGapExample,
+    title: "Padding, margin and gap",
+    description:
+      "Padding and margin are used to add space around elements. Padding is inside element, margin is outside. Gap is used to add space between children of a parent along the main axis.",
   },
   {
     callback: positionAbsoluteAndZIndexExample,
