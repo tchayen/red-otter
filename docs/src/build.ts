@@ -5,6 +5,7 @@ import chalk from "chalk";
 
 import typescript from "highlight.js/lib/languages/typescript";
 import { PluginItem, transformSync } from "@babel/core";
+import * as t from "@babel/types";
 
 import { fixtures } from "./examples";
 import { codeExample, formatCode, toURLSafe } from "../utils";
@@ -80,6 +81,34 @@ function copyCodeBabelPlugin(): PluginItem {
   };
 }
 
+let contextSourceCode = "";
+
+function copyIContextPlugin(): PluginItem {
+  return {
+    visitor: {
+      Program: {
+        enter(path) {
+          path.node.body.forEach((node) => {
+            if (t.isExportDeclaration(node)) {
+              if (node.type === "ExportNamedDeclaration") {
+                if (node.declaration?.type === "TSInterfaceDeclaration") {
+                  if (node.declaration.id.name === "IContext") {
+                    const code = contextSource.slice(
+                      node.declaration.start ?? 0,
+                      node.declaration.end ?? 0
+                    );
+                    contextSourceCode = code;
+                  }
+                }
+              }
+            }
+          });
+        },
+      },
+    },
+  };
+}
+
 step("Start");
 
 const LAYOUT_WIDTH = 800;
@@ -89,27 +118,29 @@ hljs.registerLanguage("typescript", typescript);
 
 const fixtureSources: Record<string, string> = {};
 
-step("Read fixtures file");
-// Read the source code of the fixtures.
+step("Transform examples file using Babel");
 const fixturesSource = fs.readFileSync(`${__dirname}/examples.tsx`, "utf8");
 
-step("Transform file using Babel");
 transformSync(fixturesSource, {
-  presets: [
-    [
-      "@babel/preset-typescript",
-      {
-        isTSX: true,
-        allExtensions: true,
-      },
-    ],
-  ],
+  presets: [["@babel/preset-typescript", { isTSX: true, allExtensions: true }]],
+  parserOpts: { sourceType: "module" },
   plugins: [copyCodeBabelPlugin],
   ast: true,
   sourceMaps: true,
-  parserOpts: {
-    sourceType: "module",
-  },
+});
+
+step("Copy IContext declaration using Babel");
+const contextSource = fs.readFileSync(
+  `${__dirname}/../../packages/red-otter/src/Context.ts`,
+  "utf8"
+);
+
+transformSync(contextSource, {
+  presets: [["@babel/preset-typescript", { isTSX: true, allExtensions: true }]],
+  parserOpts: { sourceType: "module" },
+  plugins: [copyIContextPlugin],
+  ast: true,
+  sourceMaps: true,
 });
 
 step("Process layout file");
@@ -358,12 +389,10 @@ const replace = `
         background-color: #18181b;
         overflow-x: auto;
         margin: 0;
-        margin-top: 24px;
-        margin-bottom: 24px;
         padding: 16px;
       }
 
-      details > pre {
+      details .code-block-with-lines {
         margin-top: 0px;
       }
 
@@ -380,6 +409,26 @@ const replace = `
         padding: 8px;
         padding-left: 12px;
         margin-bottom: -24px;
+      }
+
+      .code-block-with-lines {
+        display: flex;
+        margin-top: 24px;
+        margin-bottom: 24px;
+      }
+
+      .code-lines {
+        padding-top: 16px;
+        padding-bottom: 16px;
+        padding-left: 8px;
+        padding-right: 8px;
+        background-color: var(--zinc-900);
+        border-right: 1px solid var(--zinc-800);
+        font-size: 14px;
+        line-height: 1.4em;
+        color: var(--zinc-500);
+        text-align: right;
+        font-family: Menlo, Consolas, Liberation Mono, monospace;
       }
 
       .pusher {
@@ -759,7 +808,7 @@ canvas.height = 600 * scale;
 const div = document.getElementById("app");
 div.appendChild(canvas);
 
-const inter = new Font({
+const font = new Font({
   spacingMetadataJsonURL: "/spacing.json",
   spacingBinaryURL: "/spacing.dat",
   fontAtlasTextureURL: "/uv.dat",
@@ -788,11 +837,13 @@ context.flush();
 
           const code = fixtureSources[callback.name]
             .split("\n")
-            .slice(3, -2) // Remove function declaration and return statement.
+            .slice(3, -3) // Remove function declaration and return statement.
             .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
             .join("\n");
 
-          const highlighted = codeExample(code);
+          const highlighted = codeExample(code, "typescript", {
+            showLines: true,
+          });
 
           const slug = toURLSafe(title);
 
@@ -815,67 +866,10 @@ context.flush();
         Used by layout engine to draw elements. Library features a simple
         reference implementation that should work well in most cases.
       </p>
-      ${codeExample(
-        `export interface IContext {
-  /**
-   * Get canvas element.
-   */
-  getCanvas(): HTMLCanvasElement;
-
-  /**
-   * Draw line connecting given list of points.
-   */
-  line(points: Vec2[], thickness: number, color: Vec4): void;
-
-  /**
-   * Triangulates and draws given polygon.
-   * TODO: only takes CW/CCW. Make sure which. Flip direction if needed.
-   */
-  polygon(points: Vec2[], color: Vec4): void;
-
-  /**
-   * Draw given list of triangles.
-   */
-  triangles(points: Vec2[], color: Vec4): void;
-
-  /**
-   * Draw rectangle.
-   */
-  rectangle(position: Vec2, size: Vec2, color: Vec4): void;
-
-  /**
-   * Clears the screen.
-   */
-  clear(): void;
-
-  /**
-   * Sets projection matrix to orthographic with given dimensions.
-   * Y axis is flipped - point \`(0, 0)\` is in the top left.
-   */
-  setProjection(x: number, y: number, width: number, height: number): void;
-
-  /**
-   * Writes text on the screen.
-   */
-  text(
-    text: string,
-    x: number,
-    y: number,
-    fontSize: number,
-    color: string
-  ): void;
-
-  /**
-   * Renders to screen and resets buffers.
-   */
-  flush(): void;
-
-  /**
-   * Load texture to GPU memory.
-   */
-  loadTexture(image: HTMLImageElement): WebGLTexture;
-}`
-      )}
+      ${codeExample(contextSourceCode, "typescript", {
+        fileName: "IContext.ts",
+        showLines: true,
+      })}
       ${addHeader(2, "Interactivity WIP")}
       <p>
         Interactive UI controls are not part of this version. <strong>Everything
@@ -1085,7 +1079,7 @@ async function run() {
 
 run();`,
         "typescript",
-        "ci/main.ts"
+        { fileName: "ci/main.ts", showLines: true }
       )}
       <p><code>index.html</code> is very simple:</p>
       ${codeExample(
@@ -1104,7 +1098,7 @@ run();`,
 </html>
 `,
         "html",
-        "index.html"
+        { fileName: "index.html", showLines: true }
       )}
       <p>
         Finally, there's a script that runs Vite server and Puppeteer to render
@@ -1179,7 +1173,7 @@ async function run() {
       console.log(\`$\{request.failure().errorText} $\{request.url()}\`);
     });
 
-  // Because of CORS it has to be served as a server.
+  // Because of CORS it has to be served by a server.
   await page.goto(\`http://localhost:$\{BUNDLER_PORT}\`);
 
   await page.waitForSelector("canvas");
@@ -1216,7 +1210,7 @@ async function run() {
 
 run();`,
         "typescript",
-        "ci/run.ts"
+        { fileName: "ci/run.ts", showLines: true }
       )}
       <p>Because of the special Chromium installation this script likely won't
       run locally, but for example it runs just fine on Vercel CI:</p>
@@ -1251,7 +1245,8 @@ Saved /vercel/path0/ci/../public/uv.dat.`,
         Compare code written with the direct API, probably a simplest form of
         immediate mode GUI:
       </p>
-      ${codeExample(`const container: Style = {
+      ${codeExample(
+        `const container: Style = {
   width: "100%",
   height: "100%",
   padding: 20,
@@ -1296,12 +1291,19 @@ layout.frame(container);
   }
   layout.end();
 }
-layout.end();`)}
+layout.end();`,
+        "typescript",
+        {
+          fileName: "direct-api.ts",
+          showLines: true,
+        }
+      )}
       <p>
         Then with calling HyperScript-style function manually. Basically using
         JSX in plain JavaScript:
       </p>
-      ${codeExample(`const container: Style = {
+      ${codeExample(
+        `const container: Style = {
   width: "100%",
   height: "100%",
   padding: 20,
@@ -1355,12 +1357,19 @@ layout.add(
       )
     )
   )
-);`)}
+);`,
+        "typescript",
+        {
+          fileName: "hyperscript.ts",
+          showLines: true,
+        }
+      )}
       <p>
         And finally JSX, which is easily supported by probably all bundlers and
         IDEs:
       </p>
-      ${codeExample(`const container: Style = {
+      ${codeExample(
+        `const container: Style = {
   width: "100%",
   height: "100%",
   padding: 20,
@@ -1398,7 +1407,13 @@ layout.add(
       </view>
     </view>
   </view>
-);`)}
+);`,
+        "typescript",
+        {
+          fileName: "jsx.ts",
+          showLines: true,
+        }
+      )}
       <p>
         JSX has couple advantages here. It is the shortest. Arguably this syntax
         makes it more readable (which is for me not always the case with XML).
@@ -1449,6 +1464,8 @@ layout.add(
   }
 }`
       )}
+      ${
+        "" /*
       ${addHeader(2, "Roadmap")}
       <ul>
         <li>
@@ -1480,7 +1497,16 @@ layout.add(
         <li>
           Interactivity: UI controls like button, text input etc.
         </li>
+        <li>
+          Accessibility: explore maintaining a copy of layout as a hidden DOM
+          tree that can be used by screen readers. For performance reasons it
+          can be updated for example only once per second.
+          <code>aria-busy</code> could be useful for marking tree as under
+          construction.
+        </li>
       </ul>
+*/
+      }
       ${addHeader(2, "Credits")}
       <li>
         ${linkExternal("https://highlightjs.org", "Highlights.js")} for syntax

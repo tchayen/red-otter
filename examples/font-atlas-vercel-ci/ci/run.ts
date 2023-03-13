@@ -66,7 +66,7 @@ async function run() {
       console.log(`${request.failure().errorText} ${request.url()}`);
     });
 
-  // Because of CORS it has to be served as a server.
+  // Because of CORS it has to be served by a server.
   await page.goto(`http://localhost:${BUNDLER_PORT}`);
 
   await page.waitForSelector("canvas");

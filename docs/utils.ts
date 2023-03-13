@@ -34,7 +34,10 @@ export function formatCode(value: string, language: string): string {
 export function codeExample(
   value: string,
   language = "typescript",
-  fileName?: string
+  options?: {
+    fileName?: string;
+    showLines?: boolean;
+  }
 ): string {
   const formatted = formatCode(value, language);
   const highlighted =
@@ -42,6 +45,18 @@ export function codeExample(
       ? hljs.highlight(formatted, { language: language }).value
       : formatted;
   return `${
-    fileName ? `<div class="code-filename">${fileName}</div>` : ""
-  }<pre><code class="language-${language}">${highlighted}</code></pre>`;
+    options?.fileName
+      ? `<div class="code-filename">${options.fileName}</div>`
+      : ""
+  }<div class="code-block-with-lines">
+   ${
+     options?.showLines
+       ? `<div class="code-lines">${value
+           .split("\n")
+           .map((_, i) => `<div>${i + 1}</div>`)
+           .join("")}</div>`
+       : ""
+   }
+    <pre><code class="language-${language}">${highlighted}</code></pre>
+  </div>`;
 }

@@ -34,6 +34,7 @@ export function textExample(context: Context, font: Font) {
   layout.text(text, font, 16, "#fff", 0, 100);
   layout.text(text, font, 12, "#fff", 0, 130);
   layout.text(text, font, 10, "#fff", 0, 150);
+
   return layout;
 }
 
@@ -276,6 +277,7 @@ export function flexExample(context: Context, font: Font) {
       </view>
     </view>
   );
+
   return layout;
 }
 
@@ -506,6 +508,7 @@ export function mappingOverArrayExample(context: Context, font: Font) {
       </view>
     </view>
   );
+
   return layout;
 }
 
@@ -674,7 +677,7 @@ export function complexUIExample(context: Context, font: Font) {
   const timeline: Style = {
     alignSelf: "stretch",
     backgroundColor: zinc[900],
-    height: 380, // TODO: this is hardcoded.
+    height: 379, // TODO: this is hardcoded.
   };
 
   const timelineItems: Style = {
@@ -849,7 +852,7 @@ export function complexUIExample(context: Context, font: Font) {
             </view>
           </view>
         </view>
-        <view style={horizontalSeparator} />
+        <view style={[horizontalSeparator, { backgroundColor: zinc[600] }]} />
         <view style={section}>
           <view style={header}>
             <text style={headerText}>Statistics</text>
@@ -911,7 +914,7 @@ export function complexUIExample(context: Context, font: Font) {
           </view>
         </view>
       </view>
-      <view style={verticalSeparator} />
+      <view style={[verticalSeparator, { backgroundColor: zinc[600] }]} />
       <view style={[section, { flex: 1 }]}>
         <view style={header}>
           <text style={headerText}>Settings</text>
