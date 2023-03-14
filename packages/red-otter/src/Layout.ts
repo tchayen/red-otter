@@ -886,6 +886,10 @@ export class Layout {
           } else {
             element.value.x = (element.parent?.value.x ?? 0) - input.right;
           }
+        } else if (input.position === "absolute") {
+          // If position is "absolute" but offsets are not specified, set
+          // position to parent's top left corner.
+          element.value.x = element.parent?.value.x ?? 0;
         }
 
         if (
@@ -911,6 +915,10 @@ export class Layout {
           } else {
             element.value.y = (element.parent?.value.y ?? 0) - input.bottom;
           }
+        } else if (input.position === "absolute") {
+          // If position is "absolute" but offsets are not specified, set
+          // position to parent's top left corner.
+          element.value.y = element.parent?.value.y ?? 0;
         }
       }
 

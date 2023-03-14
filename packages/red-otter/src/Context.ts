@@ -327,16 +327,28 @@ export class Context implements IContext {
   clear(): void {
     invariant(this.gl, "WebGL context does not exist.");
 
-    const width = this.getCanvas().clientWidth * window.devicePixelRatio;
-    const height = this.getCanvas().clientHeight * window.devicePixelRatio;
+    // https://www.khronos.org/webgl/wiki/HandlingHighDPI
+    const canvas = this.getCanvas();
+    const scale = window.devicePixelRatio;
 
-    if (this.gl.canvas.width !== width || this.gl.canvas.height !== height) {
-      this.gl.canvas.width = width;
-      this.gl.canvas.height = height;
+    if (canvas.style.width !== `${canvas.clientWidth}px`) {
+      canvas.style.width = `${canvas.clientWidth}px`;
+    }
+
+    if (canvas.style.height !== `${canvas.clientHeight}px`) {
+      canvas.style.height = `${canvas.clientHeight}px`;
+    }
+
+    if (canvas.width !== canvas.clientWidth * scale) {
+      canvas.width = canvas.clientWidth * scale;
+    }
+
+    if (canvas.height !== canvas.clientHeight * scale) {
+      canvas.height = canvas.clientHeight * scale;
     }
 
     this.gl.clearColor(0, 0, 0, 1);
-    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+    this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
   }
 

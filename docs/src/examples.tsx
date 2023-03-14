@@ -589,6 +589,16 @@ export function mappingOverArrayExample(context: Context, font: Font) {
     { id: 3, name: "Three", createdAt: "2021-01-03" },
     { id: 4, name: "Four", createdAt: "2021-01-04" },
     { id: 5, name: "Five", createdAt: "2021-01-05" },
+    { id: 6, name: "Six", createdAt: "2021-01-06" },
+    { id: 7, name: "Seven", createdAt: "2021-01-07" },
+    { id: 8, name: "Eight", createdAt: "2021-01-08" },
+    { id: 9, name: "Nine", createdAt: "2021-01-09" },
+    { id: 10, name: "Ten", createdAt: "2021-01-10" },
+    { id: 11, name: "Eleven", createdAt: "2021-01-11" },
+    { id: 12, name: "Twelve", createdAt: "2021-01-12" },
+    { id: 13, name: "Thirteen", createdAt: "2021-01-13" },
+    { id: 14, name: "Fourteen", createdAt: "2021-01-14" },
+    { id: 15, name: "Fifteen", createdAt: "2021-01-15" },
   ];
 
   const columns: { key: keyof (typeof data)[0]; title: string }[] = [
