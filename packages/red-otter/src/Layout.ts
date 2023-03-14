@@ -22,7 +22,9 @@ export type JustifyContent =
   | "flex-start"
   | "center"
   | "flex-end"
-  | "space-between";
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 export type AlignItems = "flex-start" | "center" | "flex-end" | "stretch";
 export type AlignSelf = AlignItems;
 export type Position = "absolute" | "relative";
@@ -213,10 +215,18 @@ export type TextStyle = {
   color?: string;
 };
 
-type ShapeAttributes = {
-  points: [number, number][];
-  color: string;
-};
+type ShapeAttributes =
+  | {
+      points: [number, number][];
+      color: string;
+      type: "polygon";
+    }
+  | {
+      points: [number, number][];
+      color: string;
+      thickness: number;
+      type: "line";
+    };
 
 /**
  * Fixed frame is a frame with all layout properties calculated. Output of
@@ -466,17 +476,22 @@ export function f(
     case "shape": {
       if (
         attributes === null ||
+        !("type" in attributes) ||
         !("points" in attributes) ||
         !("color" in attributes)
       ) {
-        throw new Error("Shape must have points and color.");
+        throw new Error("Shape must have type, points and color.");
+      }
+
+      if (attributes.type === "polygon" && "thickness" in attributes) {
+        throw new Error("Polygon does not accept thickness.");
       }
 
       if ("style" in attributes) {
         throw new Error("Shape does not accept style.");
       }
 
-      const { points, color } = attributes;
+      const { points, color, type } = attributes;
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
@@ -493,7 +508,13 @@ export function f(
       const height = maxY - minY;
 
       return new TreeNode<FixedFrame>({
-        input: { ...resolvePaddingAndMargin(frameDefaults), points },
+        input: {
+          ...resolvePaddingAndMargin(frameDefaults),
+          points,
+          type,
+          thickness:
+            "thickness" in attributes ? attributes.thickness : undefined,
+        },
         ...fixedFrameDefaults,
         width,
         height,
@@ -842,33 +863,53 @@ export class Layout {
 
       // Apply `top`, `left`, `right`, `bottom` properties.
       {
-        if (input.position === "absolute") {
-          element.value.x = element.parent?.value.x ?? 0;
-          element.value.y = element.parent?.value.y ?? 0;
-        }
-
-        if (input.top !== undefined) {
-          element.value.y += input.top;
-        }
-
-        if (input.left !== undefined) {
-          element.value.x += input.left;
-        }
-
-        if (input.right !== undefined) {
+        if (
+          input.left !== undefined &&
+          input.right !== undefined &&
+          input.width === undefined
+        ) {
+          element.value.x = (element.parent?.value.x ?? 0) + input.left;
+          element.value.width = parentWidth - input.left - input.right;
+        } else if (input.left !== undefined) {
           if (input.position === "absolute") {
-            element.value.x += parentWidth - input.right - element.value.width;
+            element.value.x = (element.parent?.value.x ?? 0) + input.left;
           } else {
-            element.value.x -= input.right;
+            element.value.x += input.left;
+          }
+        } else if (input.right !== undefined) {
+          if (input.position === "absolute") {
+            element.value.x =
+              (element.parent?.value.x ?? 0) +
+              parentWidth -
+              input.right -
+              element.value.width;
+          } else {
+            element.value.x = (element.parent?.value.x ?? 0) - input.right;
           }
         }
 
-        if (input.bottom !== undefined) {
+        if (
+          input.top !== undefined &&
+          input.bottom !== undefined &&
+          input.height === undefined
+        ) {
+          element.value.y = (element.parent?.value.y ?? 0) + input.top;
+          element.value.height = parentHeight - input.top - input.bottom;
+        } else if (input.top !== undefined) {
           if (input.position === "absolute") {
-            element.value.y +=
-              parentHeight - input.bottom - element.value.height;
+            element.value.y = (element.parent?.value.y ?? 0) + input.top;
           } else {
-            element.value.y -= input.bottom;
+            element.value.y += input.top;
+          }
+        } else if (input.bottom !== undefined) {
+          if (input.position === "absolute") {
+            element.value.y =
+              (element.parent?.value.y ?? 0) +
+              parentHeight -
+              input.bottom -
+              element.value.height;
+          } else {
+            element.value.y = (element.parent?.value.y ?? 0) - input.bottom;
           }
         }
       }
@@ -987,7 +1028,9 @@ export class Layout {
         input.paddingLeft +
         input.paddingRight +
         (input.flexDirection === "row" &&
-        input.justifyContent !== "space-between"
+        input.justifyContent !== "space-between" &&
+        input.justifyContent !== "space-around" &&
+        input.justifyContent !== "space-evenly"
           ? (childrenCount - 1) * input.gap
           : 0);
 
@@ -995,7 +1038,9 @@ export class Layout {
         input.paddingTop +
         input.paddingBottom +
         (input.flexDirection === "column" &&
-        input.justifyContent !== "space-between"
+        input.justifyContent !== "space-between" &&
+        input.justifyContent !== "space-around" &&
+        input.justifyContent !== "space-evenly"
           ? (childrenCount - 1) * input.gap
           : 0);
 
@@ -1066,6 +1111,44 @@ export class Layout {
         while (p) {
           p.value.x = x;
           p.value.y = y;
+
+          if (input.flexDirection === "row") {
+            x += p.value.width + horizontalGap;
+          }
+
+          if (input.flexDirection === "column") {
+            y += p.value.height + verticalGap;
+          }
+
+          p = p.next;
+        }
+      } else if (input.justifyContent === "space-around") {
+        const horizontalGap = availableWidth / childrenCount;
+        const verticalGap = availableHeight / childrenCount;
+
+        p = element.firstChild;
+        while (p) {
+          p.value.x = x + horizontalGap / 2;
+          p.value.y = y + verticalGap / 2;
+
+          if (input.flexDirection === "row") {
+            x += p.value.width + horizontalGap;
+          }
+
+          if (input.flexDirection === "column") {
+            y += p.value.height + verticalGap;
+          }
+
+          p = p.next;
+        }
+      } else if (input.justifyContent === "space-evenly") {
+        const horizontalGap = availableWidth / (childrenCount + 1);
+        const verticalGap = availableHeight / (childrenCount + 1);
+
+        p = element.firstChild;
+        while (p) {
+          p.value.x = x + horizontalGap;
+          p.value.y = y + verticalGap;
 
           if (input.flexDirection === "row") {
             x += p.value.width + horizontalGap;
@@ -1219,12 +1302,22 @@ export class Layout {
           frame.input.color ?? "rgba(0, 0, 0, 0)"
         );
       } else if ("points" in frame.input) {
-        this.context.polygon(
-          frame.input.points.map(
-            ([x, y]) => new Vec2(x + frame.x, y + frame.y)
-          ),
-          frame.backgroundColor
-        );
+        if (frame.input.type === "polygon") {
+          this.context.polygon(
+            frame.input.points.map(
+              ([x, y]) => new Vec2(x + frame.x, y + frame.y)
+            ),
+            frame.backgroundColor
+          );
+        } else if (frame.input.type === "line") {
+          this.context.line(
+            frame.input.points.map(
+              ([x, y]) => new Vec2(x + frame.x, y + frame.y)
+            ),
+            frame.input.thickness,
+            frame.backgroundColor
+          );
+        }
       } else {
         this.context.rectangle(
           new Vec2(frame.x, frame.y),

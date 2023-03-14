@@ -60,19 +60,19 @@ export function justifyContentExample(context: Context, font: Font) {
 
   const red = {
     width: 80,
-    height: 80,
+    height: 40,
     backgroundColor: "#eb584e",
   };
 
   const orange = {
     width: 80,
-    height: 80,
+    height: 40,
     backgroundColor: "#ef8950",
   };
 
   const yellow = {
     width: 80,
-    height: 80,
+    height: 40,
     backgroundColor: "#efaf50",
   };
 
@@ -98,6 +98,18 @@ export function justifyContentExample(context: Context, font: Font) {
       </view>
       <text style={text}>justifyContent: "space-between"</text>
       <view style={[row, { justifyContent: "space-between" }]}>
+        <view style={red} />
+        <view style={orange} />
+        <view style={yellow} />
+      </view>
+      <text style={text}>justifyContent: "space-around"</text>
+      <view style={[row, { justifyContent: "space-around" }]}>
+        <view style={red} />
+        <view style={orange} />
+        <view style={yellow} />
+      </view>
+      <text style={text}>justifyContent: "space-evenly"</text>
+      <view style={[row, { justifyContent: "space-evenly" }]}>
         <view style={red} />
         <view style={orange} />
         <view style={yellow} />
@@ -445,7 +457,7 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
     flexDirection: "row",
     gap: 40,
     padding: 40,
-    backgroundColor: zinc[700],
+    backgroundColor: zinc[800],
   };
 
   const text: TextStyle = {
@@ -479,6 +491,64 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
         <view style={[box, { backgroundColor: "#efaf50" }]}>
           <text style={text}>3</text>
         </view>
+      </view>
+    </view>
+  );
+
+  return layout;
+}
+
+export function leftRightTopBottomExample(context: Context, font: Font) {
+  const layout = new Layout(context);
+
+  const container: Style = {
+    width: "100%",
+    height: "100%",
+    padding: 20,
+    gap: 20,
+  };
+
+  const text: TextStyle = {
+    fontFamily: font,
+  };
+
+  const wrapper: Style = {
+    flexDirection: "row",
+    gap: 20,
+    padding: 20,
+    backgroundColor: zinc[800],
+  };
+
+  const box: Style = {
+    width: 120,
+    height: 120,
+    padding: 20,
+    gap: 10,
+  };
+
+  layout.add(
+    <view style={container}>
+      <view style={wrapper}>
+        <view style={[box, { backgroundColor: "#eb584e" }]}></view>
+        <view
+          style={[box, { backgroundColor: "#ef8950", top: -20, left: -20 }]}
+        >
+          <text style={text}>top: -20</text>
+          <text style={text}>left: -20</text>
+        </view>
+        <view style={[box, { backgroundColor: "#efaf50" }]}></view>
+      </view>
+      <view
+        style={{
+          backgroundColor: zinc[700],
+          left: 200,
+          right: 200,
+          height: 100,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <text style={text}>left: 200, right: 200, height: 100</text>
       </view>
     </view>
   );
@@ -565,7 +635,9 @@ export function mappingOverArrayExample(context: Context, font: Font) {
   return layout;
 }
 
-export function mapExample(context: Context, font: Font) {
+export function polygonsExample(context: Context, font: Font) {
+  const layout = new Layout(context);
+
   const RADIUS = 6378137.0;
 
   function degreesToMeters(lat: number, lng: number) {
@@ -580,38 +652,24 @@ export function mapExample(context: Context, font: Font) {
   let maxX = -Infinity;
   let maxY = -Infinity;
 
-  function isNumberArrayArray(
-    value: number | number[] | number[][]
-  ): value is number[] {
-    return Array.isArray(value) && Array.isArray(value[0]);
-  }
-
-  function assertNumberArrayArray(
-    value: number | number[] | number[][]
-  ): asserts value is number[][] {
-    if (!isNumberArrayArray(value)) {
-      throw new Error("Not a number array");
-    }
-  }
-
-  const polygons = map.features
+  const shapes = map.features
     .filter((f) => {
-      if (f.geometry.type !== "Polygon") {
-        return false;
-      }
-
-      if (!isNumberArrayArray(f.geometry.coordinates[0])) {
+      if (f.geometry.type !== "Polygon" && f.geometry.type !== "LineString") {
         return false;
       }
 
       return true;
     })
     .map((f) => {
-      const coordinates = f.geometry.coordinates[0];
-      assertNumberArrayArray(coordinates);
+      const isRoad = f.properties.highway !== undefined;
+
+      const coordinates: [number, number][] = isRoad
+        ? (f.geometry.coordinates as [number, number][])
+        : (f.geometry.coordinates[0] as [number, number][]);
 
       return {
-        name: f.properties["addr:housenumber"],
+        name: isRoad ? f.properties.name : f.properties["addr:housenumber"],
+        type: isRoad ? "road" : "building",
         points: coordinates.map(([lon, lat]) => {
           const { x, y } = degreesToMeters(lat, lon);
           minX = Math.min(minX, x);
@@ -632,6 +690,7 @@ export function mapExample(context: Context, font: Font) {
 
       return {
         name: polygon.name,
+        type: polygon.type,
         center: {
           x: points.reduce((acc, [x]) => acc + x, 0) / points.length,
           y: points.reduce((acc, [, y]) => acc + y, 0) / points.length,
@@ -640,39 +699,61 @@ export function mapExample(context: Context, font: Font) {
       };
     });
 
-  const layout = new Layout(context);
-
   const container: Style = {
     width: "100%",
     height: "100%",
-    backgroundColor: zinc[900],
+    backgroundColor: zinc[800],
+  };
+
+  const absolute: Style = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
   };
 
   layout.add(
     <view style={container}>
-      {polygons.map((polygon) => {
-        return (
-          <view style={{ position: "absolute", width: "100%", height: "100%" }}>
-            <view
-              style={{
-                position: "absolute",
-              }}
-            >
-              <shape points={polygon.points.reverse()} color={zinc[600]} />
+      {shapes.map((shape) => {
+        if (shape.type === "building") {
+          return (
+            <view style={absolute}>
+              <view style={{ position: "absolute" }}>
+                <shape
+                  type="polygon"
+                  points={shape.points.reverse()}
+                  color={zinc[600]}
+                />
+              </view>
+              <view
+                style={{
+                  position: "absolute",
+                  left: shape.center.x,
+                  top: shape.center.y,
+                  zIndex: 1,
+                }}
+              >
+                <text style={{ fontFamily: font, color: "#fff", fontSize: 20 }}>
+                  {shape.name}
+                </text>
+              </view>
             </view>
-            <view
-              style={{
-                position: "absolute",
-                left: polygon.center.x,
-                top: polygon.center.y,
-              }}
-            >
-              <text style={{ fontFamily: font, color: "#fff" }}>
-                {polygon.name}
-              </text>
+          );
+        }
+
+        if (shape.type === "road") {
+          return (
+            <view style={absolute}>
+              <view style={{ position: "absolute" }}>
+                <shape
+                  type="line"
+                  points={shape.points.reverse()}
+                  thickness={4}
+                  color={zinc[700]}
+                />
+              </view>
             </view>
-          </view>
-        );
+          );
+        }
       })}
     </view>
   );
@@ -977,6 +1058,7 @@ export function complexUIExample(context: Context, font: Font) {
           <view style={settingsOption}>
             <view style={checkbox}>
               <shape
+                type="polygon"
                 color="#000"
                 points={[
                   [3.5, 6.5],
@@ -998,6 +1080,7 @@ export function complexUIExample(context: Context, font: Font) {
           <view style={settingsOption}>
             <view style={checkbox}>
               <shape
+                type="polygon"
                 color="#000"
                 points={[
                   [3.5, 6.5],
@@ -1072,16 +1155,22 @@ export const fixtures = [
       "By default elements take part in automatic layout calculation.",
   },
   {
-    callback: paddingMarginAndGapExample,
-    title: "Padding, margin and gap",
-    description:
-      "Padding and margin are used to add space around elements. Padding is inside element, margin is outside. Gap is used to add space between children of a parent along the main axis.",
-  },
-  {
     callback: positionAbsoluteAndZIndexExample,
     title: "Position absolute and z index",
     description:
       "Position absolute makes element skip taking part in the layout calculation and positions it relatively to the parent. <code>zIndex</code> is used to declare that element should skip the order and be higher or lower than siblings.",
+  },
+  {
+    callback: leftRightTopBottomExample,
+    title: "Left, right, top, bottom",
+    description:
+      "If element has <code>position: relative</code>, it will take part in the layout together with siblings and then will be offset by the coordinates.</p><p>If element has <code>position: absolute</code>, it will not take part in the layout and will be positioned relative to the parent's edges according to those coordinates.</p><p>If two opposing coordinates are specified (e.g. <code>left</code> and <code>right</code>) and element has no size specified in that dimension (<code>width: undefined</code>), the element will be stretched to fill the space between them.",
+  },
+  {
+    callback: paddingMarginAndGapExample,
+    title: "Padding, margin and gap",
+    description:
+      "Padding and margin are used to add space around elements. Padding is inside element, margin is outside. Gap is used to add space between children of a parent along the main axis.",
   },
   {
     callback: mappingOverArrayExample,
@@ -1090,9 +1179,9 @@ export const fixtures = [
       "As in regular JSX, it's possible to map over an array of elements.",
   },
   {
-    callback: mapExample,
-    title: "Map",
+    callback: polygonsExample,
+    title: "Polygons",
     description:
-      "Example of drawing arbitrary shapes – here a map from OpenStreetMap data with building numbers overlayed on top of their shapes.",
+      'Example of drawing arbitrary shapes – here a map from <a href="https://www.openstreetmap.org/#map=18/60.26608/24.98888" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> data with building numbers overlayed on top of their shapes.',
   },
 ];

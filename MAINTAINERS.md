@@ -39,11 +39,18 @@ If for any reason the map in the [map example](https://red-otter.dev/#map) needs
      };
    }
 
-   const position = { lat: 50.068, lng: 19.913 };
+   const position = { lat: 60.26627, lng: 24.98868 };
+   const squareSide = 400;
 
    const center = degreesToMeters(position.lat, position.lng);
-   const ne = metersToDegrees(center.x + 100, center.y + 100);
-   const sw = metersToDegrees(center.x - 100, center.y - 100);
+   const ne = metersToDegrees(
+     center.x + squareSide / 2,
+     center.y + squareSide / 2
+   );
+   const sw = metersToDegrees(
+     center.x - squareSide / 2,
+     center.y - squareSide / 2
+   );
 
    const boundingBox = `${sw.lat},${sw.lng},${ne.lat},${ne.lng}`;
 
@@ -52,6 +59,7 @@ If for any reason the map in the [map example](https://red-otter.dev/#map) needs
      (
        way[building];
        relation[building];
+       way[highway~residential];
      );
      (._;>;);
      out;`;

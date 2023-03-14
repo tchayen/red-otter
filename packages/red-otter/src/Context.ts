@@ -271,7 +271,7 @@ export class Context implements IContext {
       return;
     }
 
-    this.positions.push(...vertices);
+    this.positions.push(...vertices.reverse());
     this.uvs.push(...vertices.map(() => NO_TEXTURE));
     this.colors.push(...vertices.map(() => color));
   }
