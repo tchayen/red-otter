@@ -184,6 +184,11 @@ export interface IContext {
   loadTexture(image: HTMLImageElement): WebGLTexture;
 }
 
+/**
+ * Context is a low level drawing API, resembling Canvas API from browsers.
+ * Used by layout engine to draw elements. This is a reference implementation
+ * that should work well in most cases.
+ */
 export class Context implements IContext {
   public readonly gl: WebGL2RenderingContext;
   private program: WebGLProgram | null = null;
@@ -199,7 +204,13 @@ export class Context implements IContext {
   private uvBuffer: WebGLBuffer | null = null;
   private colorBuffer: WebGLBuffer | null = null;
 
-  private projection: { x: number; y: number; width: number; height: number };
+  private projection: { x: number; y: number; width: number; height: number } =
+    {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    };
 
   constructor(canvas: HTMLCanvasElement, private font: Font) {
     const context = canvas.getContext("webgl2");
@@ -234,12 +245,7 @@ export class Context implements IContext {
     this.uvBuffer = this.gl.createBuffer();
     this.colorBuffer = this.gl.createBuffer();
 
-    this.projection = {
-      x: 0,
-      y: 0,
-      width: canvas.width,
-      height: canvas.height,
-    };
+    this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 
   getCanvas(): HTMLCanvasElement {

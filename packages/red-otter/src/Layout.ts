@@ -17,197 +17,182 @@ declare global {
   }
 }
 
-export type FlexDirection = "row" | "column";
-export type JustifyContent =
-  | "flex-start"
-  | "center"
-  | "flex-end"
-  | "space-between"
-  | "space-around"
-  | "space-evenly";
-export type AlignItems = "flex-start" | "center" | "flex-end" | "stretch";
-export type AlignSelf = AlignItems;
-export type Position = "absolute" | "relative";
-export type Display = "flex" | "none";
+/**
+ * Available components.
+ */
 export type Component = "view" | "text" | "shape";
 
 /**
  *
  */
-export type Style = Partial<{
+export type Style = {
   /**
-   * If frame is positioned `absolute`, this property is used to define its
-   * position relative to the parent frame.
-   *
-   * If frame is positioned `relative`, this property is an offset from the
-   * calculated layout position (but it doesn't affect layout of siblings).
-   */
-  top: number;
-  /**
-   * If frame is positioned `absolute`, this property is used to define its
-   * position relative to the parent frame.
-   *
-   * If frame is positioned `relative`, this property is an offset from the
-   * calculated layout position (but it doesn't affect layout of siblings).
-   */
-  left: number;
-  /**
-   * If frame is positioned `absolute`, this property is used to define its
-   * position relative to the parent frame.
-   *
-   * If frame is positioned `relative`, this property is an offset from the
-   * calculated layout position (but it doesn't affect layout of siblings).
-   */
-  right: number;
-  /**
-   * If frame is positioned `absolute`, this property is used to define its
-   * position relative to the parent frame.
-   *
-   * If frame is positioned `relative`, this property is an offset from the
-   * calculated layout position (but it doesn't affect layout of siblings).
-   */
-  bottom: number;
-
-  /**
-   * Undefined means that frame should hug its content.
+   * Undefined means that view should hug its content.
    *
    * String can only be a percentage value (e.g. `'50%'`).
-   * It is defined relative to the parent frame.
+   * It is defined relative to the parent view.
    *
    * Numerical value is defined in pixels.
    */
-  width: number | string | undefined;
+  width?: number | string | undefined;
   /**
-   * Undefined means that frame should hug its content.
+   * Undefined means that view should hug its content.
    *
    * String can only be a percentage value (e.g. `'50%'`).
-   * It is defined relative to the parent frame.
+   * It is defined relative to the parent view.
    *
    * Percentage value does not take into account paddings or gaps.
    *
    * Numerical value is defined in pixels.
    */
-  height: number | string | undefined;
+  height?: number | string | undefined;
 
   /**
    * Direction of children layout.
    */
-  flexDirection: FlexDirection;
+  flexDirection?: "row" | "column";
 
   /**
    * How children are aligned along the main axis.
    */
-  justifyContent: JustifyContent;
+  justifyContent?:
+    | "flex-start"
+    | "center"
+    | "flex-end"
+    | "space-between"
+    | "space-around"
+    | "space-evenly";
 
   /**
    * How children are aligned along the cross axis.
    */
-  alignItems: AlignItems;
+  alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
 
   /**
    * Override parent's `alignItems` property for this child.
    */
-  alignSelf: AlignSelf;
+  alignSelf?: "flex-start" | "center" | "flex-end" | "stretch";
 
   /**
    * How space is distributed among children along the main axis.
    */
-  flex: number;
+  flex?: number;
+
+  /**
+   * Position `absolute` makes the view skip taking part in the layout.
+   */
+  position?: "absolute" | "relative";
 
   /**
    * Space between children along the main axis.
    */
-  gap: number;
+  gap?: number;
 
   /**
-   * Space around children. More specific properties take precedence.
-   */
-  padding: number;
-
-  /**
-   * Takes precedence over `padding` property, less important than `paddingLeft` or `paddingRight`.
-   */
-  paddingHorizontal: number;
-
-  /**
-   * Takes precedence over `padding` property, less important than `paddingTop` or `paddingBottom`.
-   */
-  paddingVertical: number;
-
-  /**
-   * Takes precedence over `margin` and `marginHorizontal` properties.
-   */
-  paddingLeft: number;
-  /**
-   * Takes precedence over `margin` and `marginHorizontal` properties.
-   */
-  paddingRight: number;
-
-  /**
-   * Takes precedence over `margin` and `marginVertical` properties.
-   */
-  paddingTop: number;
-  /**
-   *  Takes precedence over `margin` and `marginVertical` properties.
-   */
-  paddingBottom: number;
-
-  /**
-   * Space around children. More specific properties take precedence.
-   */
-  margin: number;
-
-  /**
-   * Takes precedence over `margin` property, less important than `marginLeft` or `marginRight`.
-   */
-  marginHorizontal: number;
-
-  /**
-   * Takes precedence over `margin` property, less important than `marginTop` or `marginBottom`.
-   */
-  marginVertical: number;
-
-  /**
-   * Takes precedence over `margin` and `marginHorizontal` properties.
-   */
-  marginLeft: number;
-  /**
-   * Takes precedence over `margin` and `marginHorizontal` properties.
-   */
-  marginRight: number;
-
-  /**
-   * Takes precedence over `margin` and `marginVertical` properties.
-   */
-  marginTop: number;
-  /**
-   *  Takes precedence over `margin` and `marginVertical` properties.
-   */
-  marginBottom: number;
-
-  /**
-   * Position `absolute` makes the frame skip taking part in the layout.
-   */
-  position: Position;
-
-  /**
-   * Z-index of the frame. Higher value means that the frame will be drawn on
+   * Z-index of the view. Higher value means that the view will be drawn on
    * top of values with lower z-index.
    *
    * Default value is 0.
    */
-  zIndex: number;
+  zIndex?: number;
 
   /**
-   * RGBA color of the background.
+   * Supported formats: `#f00`, `#ff0000`, `rgb(255, 0, 0)`, `rgba(255, 0, 0, 0.5)`, `hsl(60, 100%, 50%)`, `hsl(60 100% 50%)`, `hsla(30, 60%, 90%, 0.8)`, `hsla(30 60% 90% 0.8)`, `hsla(30 60% 90% / 0.8)`.
    */
-  backgroundColor: string;
+  backgroundColor?: string;
 
   /**
+   * Whether the view should be visible or not.
+   */
+  display?: "flex" | "none";
+
+  /**
+   * If view is positioned `absolute`, this property is used to define its
+   * position relative to the parent view.
    *
+   * If view is positioned `relative`, this property is an offset from the
+   * calculated layout position (but it doesn't affect layout of siblings).
    */
-  display: Display;
-}>;
+  top?: number;
+  /**
+   * See: `top` property.
+   */
+  left?: number;
+  /**
+   * See: `top` property.
+   */
+  right?: number;
+  /**
+   * See: `top` property.
+   */
+  bottom?: number;
+
+  /**
+   * Space around children. More specific properties override it.
+   */
+  padding?: number;
+
+  /**
+   * Overrides `padding` property but is less important than `paddingLeft` or `paddingRight`.
+   */
+  paddingHorizontal?: number;
+
+  /**
+   * Overrides `padding` property, less important than `paddingTop` or `paddingBottom`.
+   */
+  paddingVertical?: number;
+
+  /**
+   * Overrides `margin` and `marginHorizontal` properties.
+   */
+  paddingLeft?: number;
+  /**
+   * Overrides `margin` and `marginHorizontal` properties.
+   */
+  paddingRight?: number;
+
+  /**
+   * Overrides `margin` and `marginVertical` properties.
+   */
+  paddingTop?: number;
+  /**
+   *  Overrides `margin` and `marginVertical` properties.
+   */
+  paddingBottom?: number;
+
+  /**
+   * Space around children. More specific properties take precedence.
+   */
+  margin?: number;
+
+  /**
+   * Overrides `margin` property, less important than `marginLeft` or `marginRight`.
+   */
+  marginHorizontal?: number;
+
+  /**
+   * Overrides `margin` property, less important than `marginTop` or `marginBottom`.
+   */
+  marginVertical?: number;
+
+  /**
+   * Overrides `margin` and `marginHorizontal` properties.
+   */
+  marginLeft?: number;
+  /**
+   * Overrides `margin` and `marginHorizontal` properties.
+   */
+  marginRight?: number;
+
+  /**
+   * Overrides `margin` and `marginVertical` properties.
+   */
+  marginTop?: number;
+  /**
+   *  Overrides `margin` and `marginVertical` properties.
+   */
+  marginBottom?: number;
+};
 
 export type TextStyle = {
   fontFamily: Font;
@@ -229,10 +214,10 @@ type ShapeAttributes =
     };
 
 /**
- * Fixed frame is a frame with all layout properties calculated. Output of
+ * Fixed view is a view with all layout properties calculated. Output of
  * `flush()`, used by `render()`.
  */
-export type FixedFrame = {
+export type FixedView = {
   input:
     | Style
     | (Style &
@@ -252,10 +237,10 @@ export type FixedFrame = {
 };
 
 /**
- * Default values for frame properties.
+ * Default values for view properties.
  * TODO: move it to the `flush()` method.
  */
-const frameDefaults: Partial<Style> = {
+const viewDefaults: Partial<Style> = {
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "flex-start",
@@ -265,7 +250,7 @@ const frameDefaults: Partial<Style> = {
   display: "flex",
 };
 
-const fixedFrameDefaults = {
+const fixedViewDefaults = {
   x: 0,
   y: 0,
   width: 0,
@@ -304,16 +289,18 @@ function resolvePaddingAndMargin(input: Style): Style {
 /**
  * A tiny tree implementation which supports only adding children.
  */
-export class TreeNode<T> {
+class TreeNode<T> {
   next: TreeNode<T> | null;
   prev: TreeNode<T> | null;
   firstChild: TreeNode<T> | null;
+  lastChild: TreeNode<T> | null;
   parent: TreeNode<T> | null = null;
 
   constructor(public readonly value: T) {
     this.next = null;
     this.prev = null;
     this.firstChild = null;
+    this.lastChild = null;
   }
 
   addChild(node: TreeNode<T>): TreeNode<T> {
@@ -321,13 +308,12 @@ export class TreeNode<T> {
 
     if (this.firstChild === null) {
       this.firstChild = node;
+      this.lastChild = node;
     } else {
-      let last = this.firstChild;
-      while (last.next !== null) {
-        last = last.next;
-      }
-      node.prev = last;
-      last.next = node;
+      invariant(this.lastChild !== null, "Last child must be set.");
+      node.prev = this.lastChild;
+      this.lastChild.next = node;
+      this.lastChild = node;
     }
 
     return node;
@@ -342,34 +328,34 @@ function toPercentage(value: string): number {
 type ViewAttributes = { style?: Style | Style[] };
 type TextAttributes = { style?: TextStyle | TextStyle[] };
 
-export function f(
+export function addView(
   component: "view",
   attributes: ViewAttributes,
-  ...children: TreeNode<FixedFrame>[]
-): TreeNode<FixedFrame>;
-export function f(
+  ...children: TreeNode<FixedView>[]
+): TreeNode<FixedView>;
+export function addView(
   component: "view",
   attributes: ViewAttributes,
-  children: TreeNode<FixedFrame>[]
-): TreeNode<FixedFrame>;
-export function f(
+  children: TreeNode<FixedView>[]
+): TreeNode<FixedView>;
+export function addView(
   component: "text",
   attributes: TextAttributes,
   ...children: [string]
-): TreeNode<FixedFrame>;
-export function f(
+): TreeNode<FixedView>;
+export function addView(
   component: "shape",
   attributes: ShapeAttributes
-): TreeNode<FixedFrame>;
+): TreeNode<FixedView>;
 
 /**
  *
  */
-export function f(
+export function addView(
   component: Component,
   attributes: ViewAttributes | TextAttributes | ShapeAttributes | null,
-  ...children: TreeNode<FixedFrame>[] | [TreeNode<FixedFrame>[]] | string[]
-): TreeNode<FixedFrame> {
+  ...children: TreeNode<FixedView>[] | [TreeNode<FixedView>[]] | string[]
+): TreeNode<FixedView> {
   switch (component) {
     case "view": {
       if (
@@ -402,11 +388,11 @@ export function f(
 
       const backgroundColor = flattenedStyle.backgroundColor
         ? parseColor(flattenedStyle.backgroundColor)
-        : fixedFrameDefaults.backgroundColor;
+        : fixedViewDefaults.backgroundColor;
 
-      const node = new TreeNode<FixedFrame>({
-        input: { ...frameDefaults, ...resolvePaddingAndMargin(flattenedStyle) },
-        ...fixedFrameDefaults,
+      const node = new TreeNode<FixedView>({
+        input: { ...viewDefaults, ...resolvePaddingAndMargin(flattenedStyle) },
+        ...fixedViewDefaults,
         backgroundColor,
       });
 
@@ -422,6 +408,7 @@ export function f(
           node.addChild(child);
         }
       }
+
       return node;
     }
     case "text": {
@@ -458,16 +445,16 @@ export function f(
 
       const { width, height } = layout.boundingRectangle;
 
-      const node = new TreeNode<FixedFrame>({
+      const node = new TreeNode<FixedView>({
         input: {
-          ...resolvePaddingAndMargin(frameDefaults),
+          ...resolvePaddingAndMargin(viewDefaults),
           ...styleWithDefaults,
           color: styleWithDefaults.color,
           text,
           width,
           height,
         },
-        ...fixedFrameDefaults,
+        ...fixedViewDefaults,
         width,
         height,
       });
@@ -507,15 +494,15 @@ export function f(
       const width = maxX - minX;
       const height = maxY - minY;
 
-      return new TreeNode<FixedFrame>({
+      return new TreeNode<FixedView>({
         input: {
-          ...resolvePaddingAndMargin(frameDefaults),
+          ...resolvePaddingAndMargin(viewDefaults),
           points,
           type,
           thickness:
             "thickness" in attributes ? attributes.thickness : undefined,
         },
-        ...fixedFrameDefaults,
+        ...fixedViewDefaults,
         width,
         height,
         backgroundColor: parseColor(color),
@@ -530,23 +517,26 @@ export function f(
  * warnings about unused variable).
  */
 declare global {
-  function ę(...args: Parameters<typeof f>): ReturnType<typeof f>;
+  function ę(...args: Parameters<typeof addView>): ReturnType<typeof addView>;
 }
 
-globalThis.ę = f;
+globalThis.ę = addView;
 
 /**
- * Layout is a tree of frames. Use it via JSX API (`<view>` etc.) or direct API
- * (`frame()` and `text()`).
+ * Layout is a tree of views. Use it via JSX API (`<view>` etc.) or direct API
+ * (`view()` and `text()`).
  */
 export class Layout {
-  private root: TreeNode<FixedFrame> | null;
-  private current: TreeNode<FixedFrame> | null;
+  private root: TreeNode<FixedView> | null;
+  private current: TreeNode<FixedView> | null;
 
+  /**
+   * Takes a context instance which is used to retrieve HTML canvas size.
+   */
   constructor(private context: IContext) {
-    const node = new TreeNode<FixedFrame>({
-      input: { ...resolvePaddingAndMargin(frameDefaults) },
-      ...fixedFrameDefaults,
+    const node = new TreeNode<FixedView>({
+      input: { ...resolvePaddingAndMargin(viewDefaults) },
+      ...fixedViewDefaults,
       width: context.getCanvas().clientWidth,
       height: context.getCanvas().clientHeight,
     });
@@ -556,31 +546,31 @@ export class Layout {
   }
 
   /**
-   * Adds a new frame to the layout. Any subsequent calls to `frame()` and
-   * `text()` will add children to this frame. Call `end()` to return to the
-   * parent frame.
+   * Adds a new view to the layout. Any subsequent calls to `view()` and
+   * `text()` will add children to this view. Call `end()` to return to the
+   * parent view.
    *
    * Alternative to JSX API.
    *
    * Usage:
    *
    * ```js
-   * layout.frame(containerStyle);
-   * layout.text("Hello", font, 12, "black");
+   * layout.view(containerStyle);
+   * layout.text("Hello", font, 12, "#000", 10, 10);
    * layout.end();
    * ```
    */
-  frame(frame: Style): void {
+  view(style: Style): void {
     const parent = this.current;
-    invariant(parent !== null, "No parent frame.");
+    invariant(parent !== null, "No parent view.");
 
-    const backgroundColor = frame.backgroundColor
-      ? parseColor(frame.backgroundColor)
-      : fixedFrameDefaults.backgroundColor;
+    const backgroundColor = style.backgroundColor
+      ? parseColor(style.backgroundColor)
+      : fixedViewDefaults.backgroundColor;
 
     const node = new TreeNode({
-      input: { ...frameDefaults, ...resolvePaddingAndMargin(frame) },
-      ...fixedFrameDefaults,
+      input: { ...viewDefaults, ...resolvePaddingAndMargin(style) },
+      ...fixedViewDefaults,
       backgroundColor,
     });
     parent.addChild(node);
@@ -589,15 +579,16 @@ export class Layout {
   }
 
   /**
-   * Returns to the parent frame.
+   * Makes the parent view the current view, so that subsequent calls to
+   * `view()` and `text()` will add children to the parent view instead.
    */
   end(): void {
-    invariant(this.current !== null, "No current frame.");
+    invariant(this.current !== null, "No current view.");
     this.current = this.current.parent;
   }
 
   /**
-   * Adds a new text frame to the layout.
+   * Adds a new text view to the layout.
    *
    * Alternative to JSX API.
    */
@@ -610,7 +601,7 @@ export class Layout {
     y?: number
   ): void {
     const parent = this.current;
-    invariant(parent !== null, "No parent frame.");
+    invariant(parent !== null, "No parent view.");
 
     const layout = font.getTextLayout(text, fontSize);
 
@@ -618,14 +609,14 @@ export class Layout {
 
     const node = new TreeNode({
       input: {
-        ...resolvePaddingAndMargin(frameDefaults),
+        ...resolvePaddingAndMargin(viewDefaults),
         fontSize: fontSize,
         color,
         text,
         width,
         height,
       },
-      ...fixedFrameDefaults,
+      ...fixedViewDefaults,
       x: x ?? 0,
       y: y ?? 0,
       width,
@@ -636,6 +627,10 @@ export class Layout {
   }
 
   /**
+   * Add a subtree to the layout. Can be used interchangeably with direct API
+   * (`view()` and `text()`) if needed.
+   *
+   * Can be also called multiple times
    * Usage:
    *
    * ```tsx
@@ -647,17 +642,10 @@ export class Layout {
    *  </view>
    * );
    * ```
-   *
-   * Alternative to using direct API:
-   * ```
-   * layout.frame(containerStyle);
-   * layout.text("Hello", font, 12, "#fff");
-   * layout.end();
-   * ```
    */
-  add(node: TreeNode<FixedFrame>): void {
+  add(node: TreeNode<FixedView>): void {
     const parent = this.current;
-    invariant(parent !== null, "No parent frame.");
+    invariant(parent !== null, "No parent view.");
     parent.addChild(node);
   }
 
@@ -665,12 +653,12 @@ export class Layout {
    * Calculates layout tree by applying all sizing and direction properties.
    * Returns the root node of the tree. Pass it to `render()` method.
    */
-  flush(): TreeNode<FixedFrame> {
-    const quadQueue = new Queue<TreeNode<FixedFrame>>();
-    const reverseQueue = new Queue<TreeNode<FixedFrame>>();
-    const forwardQueue = new Queue<TreeNode<FixedFrame>>();
+  flush(): TreeNode<FixedView> {
+    const quadQueue = new Queue<TreeNode<FixedView>>();
+    const reverseQueue = new Queue<TreeNode<FixedView>>();
+    const forwardQueue = new Queue<TreeNode<FixedView>>();
 
-    invariant(this.root !== null, "No root frame.");
+    invariant(this.root !== null, "No root view.");
 
     // Traverse node tree in level order and generate the reverse queue.
     quadQueue.enqueue(this.root);
@@ -858,9 +846,6 @@ export class Layout {
         element.value.height = toPercentage(input.height) * parentHeight;
       }
 
-      let availableWidth = element.value.width;
-      let availableHeight = element.value.height;
-
       // Apply `top`, `left`, `right`, `bottom` properties.
       {
         if (
@@ -994,6 +979,9 @@ export class Layout {
       // Take zIndex from parent if not set.
       element.value.zIndex = input.zIndex ?? element.parent?.value.zIndex ?? 0;
 
+      let availableWidth = element.value.width;
+      let availableHeight = element.value.height;
+
       // Count children and total flex value.
       p = element.firstChild;
       while (p) {
@@ -1056,13 +1044,23 @@ export class Layout {
       p = element.firstChild;
       while (p) {
         if (input.flexDirection === "row") {
-          if (p.value.input.flex !== undefined) {
+          if (
+            p.value.input.flex !== undefined &&
+            input.justifyContent !== "space-between" &&
+            input.justifyContent !== "space-evenly" &&
+            input.justifyContent !== "space-around"
+          ) {
             p.value.width = (p.value.input.flex / totalFlex) * availableWidth;
           }
         }
 
         if (input.flexDirection === "column") {
-          if (p.value.input.flex !== undefined) {
+          if (
+            p.value.input.flex !== undefined &&
+            input.justifyContent !== "space-between" &&
+            input.justifyContent !== "space-evenly" &&
+            input.justifyContent !== "space-around"
+          ) {
             p.value.height = (p.value.input.flex / totalFlex) * availableHeight;
           }
         }
@@ -1258,12 +1256,12 @@ export class Layout {
         }
       }
 
-      // Hide parts of frames that overflow parent. Similarly, fix UV
+      // Hide parts of views that overflow parent. Similarly, fix UV
       // coordinates for text.
       // TODO: implement this.
     }
 
-    return this.root as TreeNode<FixedFrame>;
+    return this.root as TreeNode<FixedView>;
   }
 
   /**
@@ -1272,15 +1270,19 @@ export class Layout {
    */
   render(): void {
     const tree = this.flush();
-    const list: FixedFrame[] = [];
+    const list: FixedView[] = [];
 
-    const queue = new Queue<TreeNode<FixedFrame>>();
+    // Traverse the tree in DFS order to respect local order of components
+    // (unlike in level order traversal).
+    const queue = new Queue<TreeNode<FixedView>>();
     queue.enqueue(tree);
     while (!queue.isEmpty()) {
-      const node = queue.dequeue();
+      const node = queue.dequeueFront();
       invariant(node, "Node should not be null.");
-      let p = node.firstChild;
 
+      list.push(node.value);
+
+      let p = node.lastChild;
       while (p) {
         if (
           p.value.width < 0.01 ||
@@ -1292,45 +1294,40 @@ export class Layout {
         }
 
         queue.enqueue(p);
-        list.push(p.value);
 
-        p = p.next;
+        p = p.prev;
       }
     }
 
     list.sort((a, b) => a.zIndex - b.zIndex);
 
-    for (const frame of list) {
-      if ("text" in frame.input) {
+    for (const view of list) {
+      if ("text" in view.input) {
         this.context.text(
-          frame.input.text,
-          frame.x,
-          frame.y,
-          frame.input.fontSize,
-          frame.input.color ?? "rgba(0, 0, 0, 0)"
+          view.input.text,
+          view.x,
+          view.y,
+          view.input.fontSize,
+          view.input.color ?? "rgba(0, 0, 0, 0)"
         );
-      } else if ("points" in frame.input) {
-        if (frame.input.type === "polygon") {
+      } else if ("points" in view.input) {
+        if (view.input.type === "polygon") {
           this.context.polygon(
-            frame.input.points.map(
-              ([x, y]) => new Vec2(x + frame.x, y + frame.y)
-            ),
-            frame.backgroundColor
+            view.input.points.map(([x, y]) => new Vec2(x + view.x, y + view.y)),
+            view.backgroundColor
           );
-        } else if (frame.input.type === "line") {
+        } else if (view.input.type === "line") {
           this.context.line(
-            frame.input.points.map(
-              ([x, y]) => new Vec2(x + frame.x, y + frame.y)
-            ),
-            frame.input.thickness,
-            frame.backgroundColor
+            view.input.points.map(([x, y]) => new Vec2(x + view.x, y + view.y)),
+            view.input.thickness,
+            view.backgroundColor
           );
         }
       } else {
         this.context.rectangle(
-          new Vec2(frame.x, frame.y),
-          new Vec2(frame.width, frame.height),
-          frame.backgroundColor
+          new Vec2(view.x, view.y),
+          new Vec2(view.width, view.height),
+          view.backgroundColor
         );
       }
     }

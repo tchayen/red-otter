@@ -1,20 +1,22 @@
 import fs from "node:fs";
+import path from "node:path";
 import { performance } from "node:perf_hooks";
 import hljs from "highlight.js";
 import chalk from "chalk";
 
 import typescript from "highlight.js/lib/languages/typescript";
 import { PluginItem, transformSync } from "@babel/core";
-import * as t from "@babel/types";
 
 import { fixtures } from "./examples";
 import { codeExample, formatCode, toURLSafe } from "../utils";
 
 import packageJson from "red-otter/package.json";
+import { extractExports } from "./extractExports";
 
 const versionNumber = `v${packageJson.version}`;
 
 const steps: { name: string; start: number }[] = [];
+const headers: { level: number; slug: string; title: string }[] = [];
 
 function step(name: string): void {
   const lastStep = steps.at(-1);
@@ -81,32 +83,36 @@ function copyCodeBabelPlugin(): PluginItem {
   };
 }
 
-let contextSourceCode = "";
+function showCodeBlocks() {
+  return fixtures
+    .map((fixture) => {
+      const { callback, title, description } = fixture;
 
-function copyIContextPlugin(): PluginItem {
-  return {
-    visitor: {
-      Program: {
-        enter(path) {
-          path.node.body.forEach((node) => {
-            if (t.isExportDeclaration(node)) {
-              if (node.type === "ExportNamedDeclaration") {
-                if (node.declaration?.type === "TSInterfaceDeclaration") {
-                  if (node.declaration.id.name === "IContext") {
-                    const code = contextSource.slice(
-                      node.declaration.start ?? 0,
-                      node.declaration.end ?? 0
-                    );
-                    contextSourceCode = code;
-                  }
-                }
-              }
-            }
-          });
-        },
-      },
-    },
-  };
+      const code = fixtureSources[callback.name]
+        .split("\n")
+        .slice(3, -3) // Remove function declaration and return statement.
+        .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
+        .join("\n");
+
+      const highlighted = codeExample(code, "typescript", {
+        showLines: true,
+      });
+
+      const slug = toURLSafe(title);
+
+      return `${addHeader(3, title)}
+    <p>${description}</p>
+    <div class="canvas"><canvas
+      id="${slug}-canvas"
+      width="${LAYOUT_WIDTH}"
+      height="${LAYOUT_HEIGHT}"
+    ></canvas></div>
+    <details class="code-details">
+      <summary class="code-summary">Show code</summary>
+      ${highlighted}
+    </details>`;
+    })
+    .join("\n");
 }
 
 step("Start");
@@ -129,23 +135,129 @@ transformSync(fixturesSource, {
   sourceMaps: true,
 });
 
-step("Copy IContext declaration using Babel");
-const contextSource = fs.readFileSync(
-  `${__dirname}/../../packages/red-otter/src/Context.ts`,
-  "utf8"
+step("Extract API reference");
+
+const layoutPath = path.resolve(
+  path.join(__dirname, "../../packages/red-otter/src/Layout.ts")
+);
+const contextPath = path.resolve(
+  path.join(__dirname, "../../packages/red-otter/src/Context.ts")
+);
+const fontPath = path.resolve(
+  path.join(__dirname, "../../packages/red-otter/src/fonts/Font.ts")
+);
+const fontAtlasPath = path.resolve(
+  path.join(__dirname, "../../packages/red-otter/src/fonts/FontAtlas.ts")
 );
 
-transformSync(contextSource, {
-  presets: [["@babel/preset-typescript", { isTSX: true, allExtensions: true }]],
-  parserOpts: { sourceType: "module" },
-  plugins: [copyIContextPlugin],
-  ast: true,
-  sourceMaps: true,
-});
+const apiExports = extractExports([
+  layoutPath,
+  fontPath,
+  contextPath,
+  fontAtlasPath,
+]);
+
+function escapeDescription(description: string): string {
+  return description
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll(
+      /```.+\n([^`]+)```/g,
+      (_, p1) =>
+        `</p>${codeExample(
+          p1.replaceAll("&lt;", "<").replaceAll("&gt;", ">"),
+          "typescript"
+        )}<p>`
+    )
+    .replaceAll(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+type Method = {
+  name: string;
+  returnType?: string;
+  description: string;
+  parameters: { name: string; type: string }[];
+};
+
+function formatConstructors(methods: Method[]) {
+  const constructors = methods.filter(
+    (method) => method.name === "__constructor"
+  );
+
+  if (constructors.length === 0) {
+    return "";
+  }
+
+  const effectiveConstructors =
+    constructors.length === 1 ? constructors : constructors.slice(0, -1);
+
+  return `${effectiveConstructors
+    .map((constructor) => formatMethodName(constructor))
+    .join("")}<p>${effectiveConstructors[0].description}</p>${
+    methods.filter((method) => method.name !== "__constructor").length > 0
+      ? '<div class="hr"></div>'
+      : ""
+  }`;
+}
+
+function formatMethodName(method: Method): string {
+  const name = method.name === "__constructor" ? "constructor" : method.name;
+
+  // I wrap each method in a fake class and run prettier on it to get line
+  // breaks for longer method signatures. That's why I need to remove the first
+  // and last line and trim the indentation.
+  return `<pre class="code-header"><code>${formatCode(
+    `class X {${name}(${method.parameters
+      .map((p) => `${p.name}: ${p.type}`)
+      .join(", ")})${method.returnType ? `: ${method.returnType}` : ""}}`,
+    "typescript"
+  )
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .split("\n")
+    .slice(1, -2)
+    .map((line) => line.replace(/^ {2}/, ""))
+    .join("\n")
+    .slice(0, -1)}</code></pre>`;
+}
+
+function showApiReferences() {
+  return `${addHeader(3, "Style")}
+  <p>Styling available for views.</p>
+  <div class="style-table">
+    ${apiExports.types
+      .find((t) => t.name === "Style")
+      ?.properties.map(
+        (p) =>
+          `<div>${p.name}</div><div>${p.type}</div><div>${escapeDescription(
+            p.description
+          )}</div>`
+      )
+      .join("")}
+  </div>
+  ${apiExports.classes
+    .filter((c) => ["Layout", "Context", "Font", "FontAtlas"].includes(c.name))
+    .map((c) => {
+      return `${addHeader(3, c.name)}
+      <p>${escapeDescription(c.description)}</p>
+      <div class="hr"></div>
+        ${formatConstructors(c.methods)}
+        ${c.methods
+          .filter((method) => method.name !== "__constructor")
+          .map((method, i) => {
+            const hr =
+              i > 0 && i < c.methods.length - 1 ? '<div class="hr"></div>' : "";
+
+            return `${hr}${formatMethodName(method)}<p>${escapeDescription(
+              method.description
+            )}</p>`;
+          })
+          .join("")}`;
+    })
+    .join("")}`;
+}
 
 step("Process layout file");
-
-const headers: { level: number; slug: string; title: string }[] = [];
 
 const replace = `
 <!DOCTYPE html>
@@ -155,517 +267,6 @@ const replace = `
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Red Otter</title>
-    <style>
-      @import url("https://rsms.me/inter/inter.css");
-
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Inter", sans-serif;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        color: #fff;
-        background-color: var(--zinc-700);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-left: 320px; /* sidebar width */
-        font-display: swap;
-      }
-
-      @media only screen and (max-width: 1160px) {
-        body {
-          flex-direction: column-reverse;
-          padding-left: 0;
-        }
-      }
-
-      .canvas {
-        background-color: #000;
-        margin: 0;
-        margin-top: 24px;
-        margin-bottom: 24px;
-        overflow-x: auto;
-        display: flex; /* Prevents black space from appearing below the <canvas>. */
-      }
-
-      #content {
-        width: ${LAYOUT_WIDTH}px;
-        padding-bottom: 48px;
-      }
-
-      #sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 320px;
-        display: flex;
-        flex-direction: column;
-        padding: 24px;
-        gap: 16px;
-        background-color: var(--zinc-800);
-        overflow: auto;
-      }
-
-      #sidebar-mobile {
-        display: none;
-      }
-
-      #sidebar-mobile {
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-      }
-
-      #search-box {
-        user-select: none;
-        cursor: default;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        border-radius: 16px;
-        padding: 8px;
-        padding-left: 12px;
-        gap: 4px;
-        color: var(--zinc-400);
-        font-size: 14px;
-        line-height: 14px;
-        background-color: var(--zinc-900);
-      }
-
-      #mobile-list {
-        display: flex;
-        height: 100vh;
-        flex-direction: column;
-        padding: 24px;
-        padding-top: 8px;
-        gap: 8px;
-        background-color:var(--zinc-800);
-      }
-
-      #sidebar-mobile > summary {
-        outline: none;
-        cursor: pointer;
-        width: 100%;
-        padding: 8px;
-        background-color: var(--zinc-600);
-      }
-
-      @media only screen and (max-width: 1160px) {
-        #sidebar {
-          display: none;
-        }
-
-        #sidebar-mobile {
-          display: block;
-        }
-      }
-
-      @media only screen and (max-width: 840px) {
-        #content {
-          width: 100%;
-          padding: 20px;
-        }
-      }
-
-      h1 {
-        font-weight: 500;
-        margin: 0;
-        margin-top: 24px;
-        scroll-margin-top: 24px;
-        font-size: 40px;
-      }
-
-      h2 {
-        font-weight: 500;
-        margin: 0;
-        margin-top: 24px;
-        margin-bottom: 12px;
-        scroll-margin-top: 24px;
-        font-size: 28px;
-      }
-
-      h2 > a {
-        text-decoration: none;
-      }
-
-      h2 > a:hover::after {
-        content: "#";
-        font-size: 20px;
-        color: var(--zinc-400);
-      }
-
-      h3 {
-        font-weight: 500;
-        margin: 0;
-        margin-top: 24px;
-        margin-bottom: 12px;
-        scroll-margin-top: 24px;
-        font-size: 24px;
-      }
-
-      h3 > a {
-        text-decoration: none;
-      }
-
-      h3 > a:hover::after {
-        content: "#";
-        font-size: 20px;
-        color: var(--zinc-400);
-      }
-
-      @media only screen and (max-width: 1160px) {
-        h1 {
-          scroll-margin-top: 64px;
-        }
-
-        h2 {
-          scroll-margin-top: 64px;
-        }
-
-        h3 {
-          scroll-margin-top: 64px;
-        }
-      }
-
-      p {
-        font-weight: 300;
-        font-size: 15px;
-        line-height: 1.5em;
-        color: var(--zinc-300);
-        margin: 0;
-        margin-top: 12px;
-        margin-bottom: 12px;
-      }
-
-      strong {
-        color: #fff;
-        font-weight: 500;
-      }
-
-      em {
-        font-style: italic;
-      }
-
-      ul {
-        margin: 0;
-        margin-left: 24px;
-        padding: 0;
-      }
-
-      li {
-        font-weight: 300;
-        font-size: 15px;
-        line-height: 1.5em;
-        margin: 0;
-        color: var(--zinc-300);
-        margin-bottom: 8px;
-      }
-
-      a {
-        color: #fff;
-        text-decoration: underline var(--zinc-500) 1px;
-        text-underline-offset: 3px;
-      }
-
-      .code-details {
-        width: 100%;
-        margin-top: 24px;
-        margin-bottom: 24px;
-      }
-
-      .code-summary {
-        outline: none;
-        cursor: pointer;
-        padding: 8px;
-        padding-left: 12px;
-        background-color: var(--zinc-600);
-      }
-
-      pre {
-        width: 100%;
-        background-color: #18181b;
-        overflow-x: auto;
-        margin: 0;
-        padding: 16px;
-      }
-
-      details .code-block-with-lines {
-        margin-top: 0px;
-      }
-
-      code {
-        font-size: 14px;
-        line-height: 1.4em;
-        font-family: Menlo, Consolas, Liberation Mono, monospace;
-      }
-
-      .code-filename {
-        font-family: Menlo, Consolas, Liberation Mono, monospace;
-        font-size: 14px;
-        background-color: var(--zinc-600);
-        padding: 8px;
-        padding-left: 12px;
-        margin-bottom: -24px;
-      }
-
-      .code-block-with-lines {
-        display: flex;
-        margin-top: 24px;
-        margin-bottom: 24px;
-      }
-
-      .code-lines {
-        padding-top: 16px;
-        padding-bottom: 16px;
-        padding-left: 8px;
-        padding-right: 8px;
-        background-color: var(--zinc-900);
-        border-right: 1px solid var(--zinc-800);
-        font-size: 14px;
-        line-height: 1.4em;
-        color: var(--zinc-500);
-        text-align: right;
-        font-family: Menlo, Consolas, Liberation Mono, monospace;
-      }
-
-      .pusher {
-        display: flex;
-        flex-direction: row;
-      }
-
-      .pusher > a {
-        text-decoration: none;
-        color: #d4d4d8;
-        font-size: 15px;
-      }
-
-      .pusher > a:hover {
-        color: var(--yellow);
-      }
-
-      #logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 24px;
-        margin-top: 48px;
-      }
-
-      #logo-img {
-        width: 200px;
-        height: 200px;
-        margin-bottom: 16px;
-      }
-
-      #logo-title {
-        font-size: 44px;
-        font-weight: 800;
-        color: #fff;
-      }
-
-      #logo-description {
-        font-size: 13px;
-        font-style: italic;
-        color: var(--zinc-400);
-      }
-
-      #sidebar-logo {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      #sidebar-logo img {
-        width: 100px;
-        height: 100px;
-      }
-
-      #sidebar-logo span {
-        font-size: 24px;
-        font-weight: 800;
-        color: #fff;
-      }
-
-      #sidebar-logo .version {
-        font-size: 13px;
-        font-weight: 400;
-        color: var(--zinc-400);
-      }
-
-      #table-of-contents {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .social-link {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        font-size: 15px;
-        color: var(--zinc-400);
-        margin-top: 12px;
-      }
-
-      .social-link path {
-        fill: var(--zinc-400);
-      }
-
-      .reddit circle {
-        fill: var(--zinc-400);
-      }
-
-      .reddit path {
-        fill: var(--zinc-800);
-      }
-
-      .social-link:hover {
-        color: var(--yellow);
-      }
-
-      .social-link:hover path {
-        fill: var(--yellow);
-      }
-
-      .reddit:hover circle {
-        fill: var(--yellow);
-      }
-
-      .reddit:hover path {
-        fill: var(--zinc-800);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      ::selection {
-        color: #000;
-        background-color: var(--yellow);
-      }
-
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: var(--zinc-700);
-      }
-
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: var(--zinc-600);
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--zinc-500);
-      }
-
-      :root {
-        --zinc-900: #18181b;
-        --zinc-800: #27272a;
-        --zinc-700: #3f3f46;
-        --zinc-600: #52525b;
-        --zinc-500: #71717a;
-        --zinc-400: #a1a1aa;
-        --zinc-300: #d4d4d8;
-        --zinc-200: #e4e4e7;
-        --zinc-100: #f4f4f5;
-        --zinc-50: #fafafa;
-
-        --yellow: #efaf50;
-        --orange: #ef8950;
-        --red: #eb584e;
-      }
-
-      /* GitHub dark */
-      .hljs {
-        color: #c9d1d9;
-        background: #0d1117;
-      }
-      .hljs-doctag,
-      .hljs-keyword,
-      .hljs-meta .hljs-keyword,
-      .hljs-template-tag,
-      .hljs-template-variable,
-      .hljs-type,
-      .hljs-variable.language_ {
-        color: #ff7b72;
-      }
-      .hljs-title,
-      .hljs-title.class_,
-      .hljs-title.class_.inherited__,
-      .hljs-title.function_ {
-        color: #d2a8ff;
-      }
-      .hljs-attr,
-      .hljs-attribute,
-      .hljs-literal,
-      .hljs-meta,
-      .hljs-number,
-      .hljs-operator,
-      .hljs-selector-attr,
-      .hljs-selector-class,
-      .hljs-selector-id,
-      .hljs-variable {
-        color: #79c0ff;
-      }
-      .hljs-meta .hljs-string,
-      .hljs-regexp,
-      .hljs-string {
-        color: #a5d6ff;
-      }
-      .hljs-built_in,
-      .hljs-symbol {
-        color: #ffa657;
-      }
-      .hljs-code,
-      .hljs-comment,
-      .hljs-formula {
-        color: #8b949e;
-      }
-      .hljs-name,
-      .hljs-quote,
-      .hljs-selector-pseudo,
-      .hljs-selector-tag {
-        color: #7ee787;
-      }
-      .hljs-subst {
-        color: #c9d1d9;
-      }
-      .hljs-section {
-        color: #1f6feb;
-        font-weight: 700;
-      }
-      .hljs-bullet {
-        color: #f2cc60;
-      }
-      .hljs-emphasis {
-        color: #c9d1d9;
-        font-style: italic;
-      }
-      .hljs-strong {
-        color: #c9d1d9;
-        font-weight: 700;
-      }
-      .hljs-addition {
-        color: #aff5b4;
-        background-color: #033a16;
-      }
-      .hljs-deletion {
-        color: #ffdcd7;
-        background-color: #67060c;
-      }
-    </style>
   </head>
   <body>
     <div id="content">
@@ -818,7 +419,6 @@ await font.load();
 
 const context = new Context(canvas, font);
 context.clear();
-context.setProjection(0, 0, canvas.clientWidth, context.getCanvas().clientHeight);
 
 const layout = new Layout(context);
 layout.add(
@@ -831,45 +431,7 @@ layout.render();
 context.flush();
 `
       )}
-      ${fixtures
-        .map((fixture) => {
-          const { callback, title, description } = fixture;
-
-          const code = fixtureSources[callback.name]
-            .split("\n")
-            .slice(3, -3) // Remove function declaration and return statement.
-            .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
-            .join("\n");
-
-          const highlighted = codeExample(code, "typescript", {
-            showLines: true,
-          });
-
-          const slug = toURLSafe(title);
-
-          return `${addHeader(3, title)}
-            <p>${description}</p>
-            <div class="canvas"><canvas
-              id="${slug}-canvas"
-              width="${LAYOUT_WIDTH}"
-              height="${LAYOUT_HEIGHT}"
-            ></canvas></div>
-            <details class="code-details">
-              <summary class="code-summary">Show code</summary>
-              ${highlighted}
-            </details>`;
-        })
-        .join("\n")}
-      ${addHeader(2, "Context")}
-      <p>
-        Context is low level drawing API, resembling Canvas API from browsers.
-        Used by layout engine to draw elements. Library features a simple
-        reference implementation that should work well in most cases.
-      </p>
-      ${codeExample(contextSourceCode, "typescript", {
-        fileName: "IContext.ts",
-        showLines: true,
-      })}
+      ${showCodeBlocks()}
       ${addHeader(2, "Interactivity WIP")}
       <p>
         Interactive UI controls are not part of this version. <strong>Everything
@@ -1257,33 +819,33 @@ const text: TextStyle = {
 };
 
 // Those code blocks are useless but increase readability.
-layout.frame(container);
+layout.view(container);
 {
-  layout.frame({ backgroundColor: zinc[900] });
+  layout.view({ backgroundColor: zinc[900] });
   {
-    layout.frame({ padding: 20, backgroundColor: zinc[800] });
+    layout.view({ padding: 20, backgroundColor: zinc[800] });
     layout.text("Hello, welcome to my layout", text);
     layout.end();
 
-    layout.frame({ padding: 20, backgroundColor: zinc[700] });
+    layout.view({ padding: 20, backgroundColor: zinc[700] });
     layout.text("Components have automatic layout", text);
     layout.end();
 
-    layout.frame({
+    layout.view({
       flexDirection: "row",
       padding: 20,
       backgroundColor: zinc[600],
     });
     {
-      layout.frame({ padding: 20, backgroundColor: "#eb584e" });
+      layout.view({ padding: 20, backgroundColor: "#eb584e" });
       layout.text("One", text);
       layout.end();
 
-      layout.frame({ padding: 20, backgroundColor: "#eb584e" });
+      layout.view({ padding: 20, backgroundColor: "#eb584e" });
       layout.text("Two", text);
       layout.end();
 
-      layout.frame({ padding: 20, backgroundColor: "#eb584e" });
+      layout.view({ padding: 20, backgroundColor: "#eb584e" });
       layout.text("Three", text);
       layout.end();
     }
@@ -1422,6 +984,51 @@ layout.add(
         clear boundaries of components (opening and closing tags) make it easier
         to move blocks around consciously.
       </p>
+      ${
+        "" /*
+      ${addHeader(2, "Roadmap")}
+      <ul>
+        <li>
+          Make lib more tree-shakable. Currently example which processes font
+          server side loads 22.03 kB (7.04 kB gzipped) of code. By removing
+          utility functions from classes and moving them to separate modules,
+          this could be potentially reduced for users that don't use certain
+          features (like triangulation of polygons, setting projection matrices,
+          triangulation of lines).
+        </li>
+        <li>
+          Testing with more fonts. So far TTF parser was fine-tuned to work with
+          Inter. It should work with other fonts just as well, but maybe I was
+          wrong with assumptions about which TTF tables are best to support.
+        </li>
+        <li>
+          Better text rendering, including italics, bold, multiline text and
+          nested text blocks (a single bold word inside a paragraph).
+        </li>
+        <li>
+          Proper benchmarks.
+        </li>
+        <li>
+          Missing layout features: <code>margin</code>, <code>flex-wrap</code>, <code>flex-grow</code>, <code>flex-shrink</code>, <code>justify-content: space-around</code> and <code>space-evenly</code>, <code>overflow: hidden</code>, <code>aspect-ratio</code>.
+        </li>
+        <li>
+          Styling: <code>border-radius</code>, <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
+        </li>
+        <li>
+          Interactivity: UI controls like button, text input etc.
+        </li>
+        <li>
+          Accessibility: explore maintaining a copy of layout as a hidden DOM
+          tree that can be used by screen readers. For performance reasons it
+          can be updated for example only once per second.
+          <code>aria-busy</code> could be useful for marking tree as under
+          construction.
+        </li>
+      </ul>
+*/
+      }
+      ${addHeader(2, "API reference")}
+      ${showApiReferences()}
       ${addHeader(2, "Testing")}
       <p>
         To write unit tests for layout, you will need a class implementing
@@ -1466,49 +1073,6 @@ layout.add(
         "typescript",
         { fileName: "MockContext.ts", showLines: true }
       )}
-      ${
-        "" /*
-      ${addHeader(2, "Roadmap")}
-      <ul>
-        <li>
-          Make lib more tree-shakable. Currently example which processes font
-          server side loads 22.03 kB (7.04 kB gzipped) of code. By removing
-          utility functions from classes and moving them to separate modules,
-          this could be potentially reduced for users that don't use certain
-          features (like triangulation of polygons, setting projection matrices,
-          triangulation of lines).
-        </li>
-        <li>
-          Testing with more fonts. So far TTF parser was fine-tuned to work with
-          Inter. It should work with other fonts just as well, but maybe I was
-          wrong with assumptions about which TTF tables are best to support.
-        </li>
-        <li>
-          Better text rendering, including italics, bold, multiline text and
-          nested text blocks (a single bold word inside a paragraph).
-        </li>
-        <li>
-          Proper benchmarks.
-        </li>
-        <li>
-          Missing layout features: <code>margin</code>, <code>flex-wrap</code>, <code>flex-grow</code>, <code>flex-shrink</code>, <code>justify-content: space-around</code> and <code>space-evenly</code>, <code>overflow: hidden</code>, <code>aspect-ratio</code>.
-        </li>
-        <li>
-          Styling: <code>border-radius</code>, <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
-        </li>
-        <li>
-          Interactivity: UI controls like button, text input etc.
-        </li>
-        <li>
-          Accessibility: explore maintaining a copy of layout as a hidden DOM
-          tree that can be used by screen readers. For performance reasons it
-          can be updated for example only once per second.
-          <code>aria-busy</code> could be useful for marking tree as under
-          construction.
-        </li>
-      </ul>
-*/
-      }
       ${addHeader(2, "Credits")}
       <li>
         ${linkExternal("https://highlightjs.org", "Highlights.js")} for syntax
@@ -1530,6 +1094,18 @@ layout.add(
           ${linkExternal(
             "https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817",
             "Drawing Text with Signed Distance Fields in Mapbox GL"
+          )}.
+      </li>
+      <li>
+          ${linkExternal(
+            "https://madebyevan.com/shaders/fast-rounded-rectangle-shadows/",
+            "Fast Rounded Rectangle Shadows"
+          )}.
+      </li>
+      <li>
+          ${linkExternal(
+            "https://zed.dev/blog/videogame",
+            "Leveraging Rust and the GPU to render user interfaces at 120 FPS"
           )}.
       </li>
       <p>

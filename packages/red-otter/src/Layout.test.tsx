@@ -81,4 +81,16 @@ describe("Layout", () => {
       "View does not accept text styles. Provide them directly to the <text> element."
     );
   });
+
+  it("ignores flex value when justify-content is space-between or space-around or space-evenly", () => {
+    // TODO: create a row with 3 elements, set it to justify-content: space-between. Give first element flex: 1. Check that it has no effect by comparing to another row without flex: 1. Repeat the same for space-around and space-evenly.
+  });
+
+  it("respects new size after applying align-self: stretch when placing children with justify-content", () => {
+    // TODO: create a row with 3 elements. Give align-self: stretch to the middle one. The other two should have height: 100. Add a text inside, put justify-content: center on it. The text should be centered (if there's a bug it will stay in the top).
+  });
+
+  it("respects position: absolute when rendering siblings", () => {
+    // Recreate situation from position: absolute example and make sure that box 3 renders over text 2.
+  });
 });

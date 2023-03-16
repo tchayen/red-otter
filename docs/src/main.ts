@@ -2,6 +2,9 @@ import { toURLSafe, invariant } from "../utils";
 import { Context, Font } from "red-otter";
 import { fixtures } from "./examples";
 
+import "./main.css";
+import "./github-dark.css";
+
 async function mainAsync(): Promise<void> {
   try {
     const font = new Font({
@@ -18,12 +21,6 @@ async function mainAsync(): Promise<void> {
 
       const context = new Context(canvas, font);
       context.clear();
-      context.setProjection(
-        0,
-        0,
-        context.getCanvas().clientWidth,
-        context.getCanvas().clientHeight
-      );
 
       const start = performance.now();
       const layout = callback(context, font);

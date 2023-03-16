@@ -22,12 +22,20 @@ export class Font {
 
   ok = false;
 
+  /**
+   * Initialize font by providing URLs to font files or by providing spacing
+   * data and font atlas image, which are all already loaded.
+   */
   constructor(files: {
     spacingMetadataJsonURL: string;
     spacingBinaryURL: string;
     fontAtlasTextureURL: string;
     UVBinaryURL: string;
   });
+  /**
+   * Initialize font by providing URLs to font files or by providing spacing
+   * data and font atlas image, which are all already loaded.
+   */
   constructor(spacing: Spacing, fontImage: HTMLImageElement);
   constructor(
     options:
@@ -117,6 +125,10 @@ export class Font {
     });
   }
 
+  /**
+   * Load font data from provided URLs. Not needed if font was initialized with
+   * preloaded data.
+   */
   async load(): Promise<void> {
     const start = performance.now();
     invariant(this.files, "Missing files.");
@@ -188,6 +200,9 @@ export class Font {
     this.ok = true;
   }
 
+  /**
+   * Calculates layout information for a given text string and font size.
+   */
   getTextLayout(
     text: string,
     fontSize: number
@@ -256,21 +271,33 @@ export class Font {
     };
   }
 
+  /**
+   * Returns a map of all glyphs in the font.
+   */
   getGlyphs(): Map<number, Glyph> {
     invariant(this.ok, "Font is not yet loaded.");
     return this.glyphs;
   }
 
+  /**
+   * Returns texture coordinates for a given character code.
+   */
   getUV(code: number): Vec4 | null {
     invariant(this.ok, "Font is not yet loaded.");
     return this.UVs.get(code) || null;
   }
 
+  /**
+   * Returns metadata for the font.
+   */
   getMetadata(): FontAtlasMetadata | null {
     invariant(this.ok, "Font is not yet loaded.");
     return this.metadata;
   }
 
+  /**
+   * Returns the font image.
+   */
   getFontImage(): HTMLImageElement | null {
     invariant(this.ok, "Font is not yet loaded.");
     return this.fontAtlasImage;

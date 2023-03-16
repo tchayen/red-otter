@@ -47,6 +47,10 @@ export class FontAtlas {
   readonly glyphs: Glyph[];
   readonly scale: number;
 
+  /**
+   * Alphabet is the subset of characters that will be included in the atlas.
+   * If not specified, all characters in the font will be included.
+   */
   constructor(public readonly ttf: TTF, alphabet?: string) {
     this.scale = (1 / ttf.head.unitsPerEm) * ATLAS_FONT_SIZE;
     this.glyphs = calculateGlyphQuads(ttf, alphabet);
@@ -74,6 +78,7 @@ export class FontAtlas {
   }
 
   /**
+   * Returns a canvas with the font atlas rendered on it.
    */
   render(): { canvas: HTMLCanvasElement; spacing: Spacing } {
     // Set up canvas.

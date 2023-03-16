@@ -110,7 +110,7 @@ export function justifyContentExample(context: Context, font: Font) {
       </view>
       <text style={text}>justifyContent: "space-evenly"</text>
       <view style={[row, { justifyContent: "space-evenly" }]}>
-        <view style={red} />
+        <view style={[red, { flex: 1 }]} />
         <view style={orange} />
         <view style={yellow} />
       </view>
@@ -219,10 +219,10 @@ export function alignSelfExample(context: Context, font: Font) {
         <view
           style={{
             flex: 1,
-            padding: 20,
+            paddingLeft: 20,
             backgroundColor: "#ef8950",
             height: 60,
-            justifyContent: "center", // TODO: this is ignored because of the stretch.
+            justifyContent: "center",
             alignSelf: "stretch",
           }}
         >
@@ -474,7 +474,7 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
   const absoluteBox: Style = {
     backgroundColor: "#ef8950",
     position: "absolute",
-    zIndex: 1,
+    // zIndex: 1,
     right: 0,
     bottom: 0,
   };
