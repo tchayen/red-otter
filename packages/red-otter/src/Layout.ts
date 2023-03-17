@@ -23,7 +23,7 @@ declare global {
 export type Component = "view" | "text" | "shape";
 
 /**
- *
+ * Styling available for views.
  */
 export type Style = {
   /**
@@ -550,7 +550,7 @@ export class Layout {
    * `text()` will add children to this view. Call `end()` to return to the
    * parent view.
    *
-   * Alternative to JSX API.
+   * Alternative to JSX API. Used in combination with `frame()` and `end()`.
    *
    * Usage:
    *
@@ -630,7 +630,8 @@ export class Layout {
    * Add a subtree to the layout. Can be used interchangeably with direct API
    * (`view()` and `text()`) if needed.
    *
-   * Can be also called multiple times
+   * Can be also called multiple times.
+   *
    * Usage:
    *
    * ```tsx

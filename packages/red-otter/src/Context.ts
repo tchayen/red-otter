@@ -212,6 +212,9 @@ export class Context implements IContext {
       height: 0,
     };
 
+  /**
+   * Creates new context.
+   */
   constructor(canvas: HTMLCanvasElement, private font: Font) {
     const context = canvas.getContext("webgl2");
     invariant(context, "WebGL2 context creation failed.");
@@ -224,7 +227,6 @@ export class Context implements IContext {
       context.FRAGMENT_SHADER,
       fragment
     );
-
     invariant(fragmentShader, "Fragment shader creation failed.");
 
     const program = createProgram(context, vertexShader, fragmentShader);
@@ -244,7 +246,6 @@ export class Context implements IContext {
     this.positionBuffer = this.gl.createBuffer();
     this.uvBuffer = this.gl.createBuffer();
     this.colorBuffer = this.gl.createBuffer();
-
     this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 

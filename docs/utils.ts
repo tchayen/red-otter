@@ -33,12 +33,13 @@ export function formatCode(value: string, language: string): string {
 
 export function codeExample(
   value: string,
-  language = "typescript",
-  options?: {
+  options: {
+    language: string;
     fileName?: string;
     showLines?: boolean;
   }
 ): string {
+  const language = options?.language ?? "typescript";
   const formatted = formatCode(value, language);
 
   const highlighted =

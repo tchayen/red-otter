@@ -94,7 +94,8 @@ function showCodeBlocks() {
         .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
         .join("\n");
 
-      const highlighted = codeExample(code, "typescript", {
+      const highlighted = codeExample(code, {
+        language: "typescript",
         showLines: true,
       });
 
@@ -102,11 +103,14 @@ function showCodeBlocks() {
 
       return `${addHeader(3, title)}
     <p>${description}</p>
-    <div class="canvas"><canvas
-      id="${slug}-canvas"
-      width="${LAYOUT_WIDTH}"
-      height="${LAYOUT_HEIGHT}"
-    ></canvas></div>
+    <div class="canvas">
+      <canvas
+        id="${slug}-canvas"
+        width="${LAYOUT_WIDTH}"
+        height="${LAYOUT_HEIGHT}"
+      ></canvas>
+      <button class="run-button" id="${slug}-button">Run</button>
+    </div>
     <details class="code-details">
       <summary class="code-summary">Show code</summary>
       ${highlighted}
@@ -164,10 +168,9 @@ function escapeDescription(description: string): string {
     .replaceAll(
       /```.+\n([^`]+)```/g,
       (_, p1) =>
-        `</p>${codeExample(
-          p1.replaceAll("&lt;", "<").replaceAll("&gt;", ">"),
-          "typescript"
-        )}<p>`
+        `</p>${codeExample(p1.replaceAll("&lt;", "<").replaceAll("&gt;", ">"), {
+          language: "typescript",
+        })}<p>`
     )
     .replaceAll(/`([^`]+)`/g, "<code>$1</code>");
 }
@@ -390,8 +393,39 @@ const replace = `
         Those are bold claims and current state is far from it, but this
         actually gives a good picture of the roadmap.
       </p>
+      ${addHeader(2, "Roadmap")}
+      <p>
+        This is not an ordered list, but several items that need to be done.
+      </p>
+      <ul>
+        <li>
+          Some missing layout features: <code>flex-wrap</code>,
+          <code>flex-grow</code>, <code>flex-shrink</code>, <code>overflow:
+          hidden</code>, <code>aspect-ratio</code>.
+        </li>
+        <li>
+          <strong>Styling</strong>: <code>border-radius</code>,
+          <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
+        </li>
+        <li>
+          <strong>Interactivity</strong>: UI controls like button, text input.
+        </li>
+        <li>
+          Better <strong>text rendering</strong>: test more fonts, nested text
+          elements, text alignment.
+        </li>
+        <li>
+          <strong>Benchmarks</strong>: start measuring performance, find weak
+          spots and fix them.
+        </li>
+        <li>
+          <strong>Accessibility</strong>: it will be a hard topic to cover and I
+          might in the end abandon it, but I have some ideas about maintaining
+          a mirror DOM tree for screen reader support.
+        </li>
+      </ul>
       ${addHeader(2, "Install")}
-      ${codeExample(`yarn add red-otter`, "bash")}
+      ${codeExample(`yarn add red-otter`, { language: "bash" })}
       <p>
         To render text you will also need to generate the font atlas. See
         <a href="/#generating-font-atlas">guide</a>.
@@ -429,7 +463,8 @@ layout.add(
 
 layout.render();
 context.flush();
-`
+`,
+        { language: "typescript" }
       )}
       ${showCodeBlocks()}
       ${addHeader(2, "Interactivity WIP")}
@@ -470,7 +505,8 @@ function frame() {
   window.requestAnimationFrame(frame);
 }
 
-frame();`
+frame();`,
+        { language: "typescript" }
       )}
       ${addHeader(3, "Button")}
       ${codeExample(
@@ -490,7 +526,8 @@ frame();`
       </view>
     )}
   </button>
-)`
+)`,
+        { language: "typescript" }
       )}
       ${addHeader(3, "Input")}
       ${codeExample(
@@ -503,7 +540,8 @@ const onChange = (next: string) => {
 // In the loop:
 layout.add(
   <input placeholder="Type here" onChange={onChange} />
-);`
+);`,
+        { language: "typescript" }
       )}
       ${addHeader(3, "Checkbox")}
       ${codeExample(
@@ -516,7 +554,8 @@ const onChange = (next: boolean) => {
 // In the loop:
 layout.add(
   <checkbox checked={checked} onChange={onChange} />
-);`
+);`,
+        { language: "typescript" }
       )}
       ${addHeader(2, "Generating font atlas")}
       <p>
@@ -547,7 +586,8 @@ layout.add(
         browser support for JS <code>font-face</code> manipulation and properly
         functioning <code>&lt;canvas&gt;</code>.
       </p>
-      ${codeExample(`import { TTF, FontAtlas, Font } from "red-otter";
+      ${codeExample(
+        `import { TTF, FontAtlas, Font } from "red-otter";
 
 async function loadFont() {
   // Add font to the document so we will use browser to rasterize the font.
@@ -572,7 +612,9 @@ async function loadFont() {
   image.src = canvas.toDataURL();
 
   return new Font(spacing, image);
-}`)}
+}`,
+        { language: "typescript" }
+      )}
       <p>See full app on ${linkExternal(
         "https://github.com/tchayen/red-otter/tree/main/examples/font-atlas-runtime",
         "GitHub"
@@ -580,8 +622,8 @@ async function loadFont() {
       ${addHeader(3, "On CI")}
       <p>
         Another option is to generate font atlas on CI as a build step of your
-        application. This will make font look precisely the same on all devices
-        (as font rasterization happens on the server).
+        application. As a side effect, this will make font look precisely the
+        same on all devices (as font rasterization happens on the server).
       </p>
       <p>Example setup for CI rendering:</p>
       ${codeExample(
@@ -596,7 +638,7 @@ async function loadFont() {
 │       └── inter.ttf
 ├── index.html        # Final page. Both HTML files are identical.
 ├── main.ts           # Renders on the final page, loading fonts from \`/public\`.`,
-        "bash"
+        { language: "bash" }
       )}
       <p>
         CI runtime script can look like this:
@@ -640,8 +682,12 @@ async function run() {
 }
 
 run();`,
-        "typescript",
-        { fileName: "ci/main.ts", showLines: true }
+
+        {
+          language: "typescript",
+          fileName: "ci/main.ts",
+          showLines: true,
+        }
       )}
       <p><code>index.html</code> is very simple:</p>
       ${codeExample(
@@ -659,8 +705,12 @@ run();`,
   </body>
 </html>
 `,
-        "html",
-        { fileName: "index.html", showLines: true }
+
+        {
+          language: "html",
+          fileName: "index.html",
+          showLines: true,
+        }
       )}
       <p>
         Finally, there's a script that runs Vite server and Puppeteer to render
@@ -771,11 +821,20 @@ async function run() {
 }
 
 run();`,
-        "typescript",
-        { fileName: "ci/run.ts", showLines: true }
+
+        { language: "typescript", fileName: "ci/run.ts", showLines: true }
       )}
-      <p>Because of the special Chromium installation this script likely won't
-      run locally, but for example it runs just fine on Vercel CI:</p>
+      <p>Call it as part of <code>yarn build</code>:</p>
+      ${codeExample(
+        `{
+  "scripts": {
+    "build": "yarn font-atlas && vite build",
+    "font-atlas": "yarn run ts-node  -O '{\\"module\\":\\"nodenext\\"}' ci/run.ts"
+  }
+}`,
+        { language: "json" }
+      )}
+      <p>Example of logs from running in the Vercel CI:</p>
       ${codeExample(
         `$ /vercel/path0/node_modules/.bin/ts-node -O '{"module":"nodenext"}' ci/run.ts
 Vite dev server started on port 3456.
@@ -795,7 +854,7 @@ Saved /vercel/path0/ci/../public/font-atlas.png.
 Saved /vercel/path0/ci/../public/spacing.json.
 Saved /vercel/path0/ci/../public/spacing.dat.
 Saved /vercel/path0/ci/../public/uv.dat.`,
-        "bash"
+        { language: "bash" }
       )}
       <p>
         Full example on ${linkExternal(
@@ -854,8 +913,9 @@ layout.view(container);
   layout.end();
 }
 layout.end();`,
-        "typescript",
+
         {
+          language: "typescript",
           fileName: "direct-api.ts",
           showLines: true,
         }
@@ -876,23 +936,23 @@ const text: TextStyle = {
 };
 
 layout.add(
-  f(
+  h(
     "view",
     { style: container },
-    f(
+    h(
       "view",
       { style: { backgroundColor: zinc[900] } },
-      f(
+      h(
         "view",
         { style: { padding: 20, backgroundColor: zinc[800] } },
-        f("text", { style: text }, "Hello, welcome to my layout")
+        h("text", { style: text }, "Hello, welcome to my layout")
       ),
-      f(
+      h(
         "view",
         { style: { padding: 20, backgroundColor: zinc[700] } },
-        f("text", { style: text }, "Components have automatic layout")
+        h("text", { style: text }, "Components have automatic layout")
       ),
-      f(
+      h(
         "view",
         {
           style: {
@@ -901,27 +961,27 @@ layout.add(
             backgroundColor: zinc[600],
           },
         },
-        f(
+        h(
           "view",
           { style: { padding: 20, backgroundColor: "#eb584e" } },
-          f("text", { style: text }, "One")
+          h("text", { style: text }, "One")
         ),
-        f(
+        h(
           "view",
           { style: { padding: 20, backgroundColor: "#eb584e" } },
-          f("text", { style: text }, "Two")
+          h("text", { style: text }, "Two")
         ),
-        f(
+        h(
           "view",
           { style: { padding: 20, backgroundColor: "#eb584e" } },
-          f("text", { style: text }, "Three")
+          h("text", { style: text }, "Three")
         )
       )
     )
   )
 );`,
-        "typescript",
         {
+          language: "typescript",
           fileName: "hyperscript.ts",
           showLines: true,
         }
@@ -970,8 +1030,8 @@ layout.add(
     </view>
   </view>
 );`,
-        "typescript",
         {
+          language: "typescript",
           fileName: "jsx.ts",
           showLines: true,
         }
@@ -1070,8 +1130,12 @@ layout.add(
     return {} as WebGLTexture;
   }
 }`,
-        "typescript",
-        { fileName: "MockContext.ts", showLines: true }
+
+        {
+          language: "typescript",
+          fileName: "MockContext.ts",
+          showLines: true,
+        }
       )}
       ${addHeader(2, "Credits")}
       <li>

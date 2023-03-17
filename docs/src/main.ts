@@ -6,6 +6,8 @@ import "./main.css";
 import "./github-dark.css";
 
 async function mainAsync(): Promise<void> {
+  const isMobile = window.innerWidth < 768;
+
   try {
     const font = new Font({
       spacingMetadataJsonURL: "/spacing.json",
@@ -16,19 +18,33 @@ async function mainAsync(): Promise<void> {
     await font.load();
 
     for (const { callback, title } of fixtures) {
-      const canvas = document.getElementById(`${toURLSafe(title)}-canvas`);
+      const callbackName = toURLSafe(title);
+      const canvas = document.getElementById(`${callbackName}-canvas`);
       invariant(canvas instanceof HTMLCanvasElement, "Canvas not found.");
 
-      const context = new Context(canvas, font);
-      context.clear();
+      const button = document.getElementById(`${callbackName}-button`);
+      invariant(button instanceof HTMLButtonElement, "Button not found.");
 
-      const start = performance.now();
-      const layout = callback(context, font);
-      layout.render();
-      const end = performance.now();
-      context.flush();
+      const run = () => {
+        const context = new Context(canvas, font);
+        context.clear();
 
-      console.debug(`Rendered ${title} in ${(end - start).toFixed(2)}ms.`);
+        const start = performance.now();
+        const layout = callback(context, font);
+        layout.render();
+        const end = performance.now();
+        context.flush();
+
+        console.debug(`Rendered ${title} in ${(end - start).toFixed(2)}ms.`);
+
+        button.remove();
+      };
+
+      if (isMobile) {
+        button.addEventListener("click", run);
+      } else {
+        run();
+      }
     }
   } catch (error) {
     console.error(error);

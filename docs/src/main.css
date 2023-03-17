@@ -29,6 +29,24 @@ body {
   margin-bottom: 24px;
   overflow-x: auto;
   display: flex; /* Prevents black space from appearing below the <canvas>. */
+  justify-content: center;
+  align-items: center;
+}
+
+.run-button {
+  position: absolute;
+  background-color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 8px;
+  color: #000;
+  border: none;
+  cursor: pointer;
 }
 
 #content {
@@ -259,6 +277,7 @@ pre {
   grid-template-columns: min-content 1fr 3fr;
   font-size: 15px;
   line-height: 1.4em;
+  overflow-x: auto;
 }
 
 .style-table {
