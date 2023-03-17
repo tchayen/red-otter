@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "yarn font-atlas && vite build",
-    "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' ci/run.ts"
+    "font-atlas": "yarn run ts-node -O '{\"module\":\"nodenext\"}' ci/run.ts"
   },
   "dependencies": {
     "red-otter": "0.0.1"

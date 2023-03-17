@@ -23,6 +23,7 @@ module.exports = {
     "block-spacing": ["warn", "always"],
     "eol-last": ["warn", "always"],
     eqeqeq: ["warn", "always"],
+    curly: ["warn", "all"],
     "no-mixed-spaces-and-tabs": ["warn", "smart-tabs"],
     "no-unneeded-ternary": "warn",
     "no-unreachable": "warn",

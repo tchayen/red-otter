@@ -352,6 +352,12 @@ const replace = `
         there was a simple way to render text and maybe some UI on top of it",
         then this library might be for you.
       </p>
+      <p>
+        In terms of software philosophy, think about products such as
+        ${linkExternal("https://warp.dev", "Warp")} or
+        ${linkExternal("https://zed.dev", "Zed")}. They are extremely fast
+        programs which implement their own GPU rendering.
+      </p>
       ${addHeader(3, "What this is not")}
       <ul>
         <li>
@@ -395,7 +401,8 @@ const replace = `
       </p>
       ${addHeader(2, "Roadmap")}
       <p>
-        This is not an ordered list, but several items that need to be done.
+        This is unordered list of things that need to be done before reaching
+        1.0 release.
       </p>
       <ul>
         <li>
@@ -829,7 +836,7 @@ run();`,
         `{
   "scripts": {
     "build": "yarn font-atlas && vite build",
-    "font-atlas": "yarn run ts-node  -O '{\\"module\\":\\"nodenext\\"}' ci/run.ts"
+    "font-atlas": "yarn run ts-node -O '{\\"module\\":\\"nodenext\\"}' ci/run.ts"
   }
 }`,
         { language: "json" }

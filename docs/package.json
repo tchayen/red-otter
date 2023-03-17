@@ -9,8 +9,8 @@
     "build": "yarn build-lib && yarn generate && vite build",
     "serve": "vite preview",
     "build-lib": "cd ../packages/red-otter; yarn build",
-    "generate": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' src/build.ts",
-    "font-atlas": "yarn run ts-node  -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
+    "generate": "yarn run ts-node -O '{\"module\":\"nodenext\"}' src/build.ts",
+    "font-atlas": "yarn run ts-node -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
   },
   "dependencies": {
     "red-otter": "0.0.1"

@@ -1122,7 +1122,7 @@ export const fixtures = [
     callback: complexUIExample,
     title: "Complex UI",
     description:
-      "Example of a bit more complex UI. Everything you see in the next screenshot was generated using <code>red-otter</code>.",
+      "Example of a bit more complex UI. Everything you see in the next canvas was generated using <code>red-otter</code>.",
   },
   {
     callback: textExample,
