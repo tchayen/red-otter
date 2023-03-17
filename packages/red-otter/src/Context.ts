@@ -204,14 +204,6 @@ export class Context implements IContext {
   private uvBuffer: WebGLBuffer | null = null;
   private colorBuffer: WebGLBuffer | null = null;
 
-  private projection: { x: number; y: number; width: number; height: number } =
-    {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-    };
-
   /**
    * Creates new context.
    */
@@ -253,30 +245,10 @@ export class Context implements IContext {
     return this.gl.canvas as HTMLCanvasElement;
   }
 
-  /**
-   * Checks if whole mesh will not be visible on the screen.
-   */
-  isOutsideOfTheScreen(vertices: Vec2[]): boolean {
-    return false; // For now turned off as it doesn't seem to work well with the roads.
-
-    return vertices.every((v) => {
-      return (
-        v.x < this.projection.x ||
-        v.x > this.projection.width ||
-        v.y < this.projection.y ||
-        v.y > this.projection.height
-      );
-    });
-  }
-
   line(points: Vec2[], thickness: number, color: Vec4): void {
     invariant(points.length >= 2, "Line must have at least 2 points.");
 
     const vertices = triangulateLine(points, thickness);
-
-    if (this.isOutsideOfTheScreen(vertices)) {
-      return;
-    }
 
     this.positions.push(...vertices.reverse());
     this.uvs.push(...vertices.map(() => NO_TEXTURE));
@@ -289,10 +261,6 @@ export class Context implements IContext {
     const vertices = points.length === 3 ? points : triangulatePolygon(points);
     invariant(vertices.length % 3 === 0, "Triangles must have 3 points.");
 
-    if (this.isOutsideOfTheScreen(vertices)) {
-      return;
-    }
-
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_TEXTURE));
     this.colors.push(...vertices.map(() => color));
@@ -301,10 +269,6 @@ export class Context implements IContext {
   triangles(points: Vec2[], color: Vec4): void {
     invariant(points.length >= 3, "Triangles must have at least 3 points.");
     invariant(points.length % 3 === 0, "Points array must be divisive by 3.");
-
-    if (this.isOutsideOfTheScreen(points)) {
-      return;
-    }
 
     this.positions.push(...points);
     this.uvs.push(...points.map(() => NO_TEXTURE));
@@ -321,10 +285,6 @@ export class Context implements IContext {
       new Vec2(position.x + size.x, position.y + size.y),
       new Vec2(position.x + size.x, position.y),
     ];
-
-    if (this.isOutsideOfTheScreen(vertices)) {
-      return;
-    }
 
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_TEXTURE));
@@ -364,8 +324,6 @@ export class Context implements IContext {
     invariant(this.gl, "WebGL context does not exist.");
     invariant(width >= 0, "Width must be positive.");
     invariant(height >= 0, "Height must be positive.");
-
-    this.projection = { x, y, width, height };
 
     const matrixLocation = this.gl.getUniformLocation(this.program, "u_matrix");
     const orthographic = Mat4.orthographic(0, width, height, 0, 0, 1);

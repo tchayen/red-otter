@@ -280,8 +280,7 @@ const replace = `
       </div>
       ${addHeader(2, "Introduction")}
       <p>
-        Red otter is a self-contained WebGL flexbox layout engine that I've been
-        developing with long breaks for the past many months.
+        Red otter is a self-contained WebGL flexbox layout engine.
       </p>
       ${addHeader(3, "Features")}
       <ul>

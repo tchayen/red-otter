@@ -10,7 +10,7 @@
   "scripts": {
     "lib:build": "cd packages/red-otter; yarn build",
     "lib:tsc": "cd packages/red-otter; yarn tsc",
-    "lib:lint": "cd packages/red-otter; yarn lint",
+    "lib:lint": "cd packages/red-otter; yarn lint --max-warnings 0",
     "lib:test": "cd packages/red-otter; yarn test",
     "lib:check": "yarn lib:tsc && yarn lib:lint && yarn lib:test",
     "docs:dev": "cd docs; yarn dev",

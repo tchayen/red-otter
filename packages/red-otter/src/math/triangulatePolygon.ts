@@ -44,7 +44,7 @@ export function triangulatePolygon(polygon: Vec2[]): Vec2[] {
 }
 
 function insertNode(position: Vec2, last?: RingNode): RingNode {
-  const p: any = { position };
+  const p = { position } as RingNode;
 
   if (!last) {
     p.prev = p;
@@ -83,13 +83,18 @@ function filterPoints(start?: RingNode, end?: RingNode): RingNode | null {
   let again;
   do {
     again = false;
+
     if (
       p.position.equals(p.next.position) ||
       area(p.prev.position, p.position, p.next.position) === 0
     ) {
       removeNode(p);
       p = end = p.prev;
-      if (p === p.next) break;
+
+      if (p === p.next) {
+        break;
+      }
+
       again = true;
     } else {
       p = p.next;

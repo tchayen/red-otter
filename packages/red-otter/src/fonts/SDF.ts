@@ -13,22 +13,32 @@ function edt1d(
   z: Float64Array
 ): void {
   let q: number, k: number, s: number, r: number;
+
   v[0] = 0;
   z[0] = -INF;
   z[1] = INF;
-  for (q = 0; q < length; q++) f[q] = grid[offset + q * stride];
+
+  for (q = 0; q < length; q++) {
+    f[q] = grid[offset + q * stride];
+  }
+
   for (q = 1, k = 0, s = 0; q < length; q++) {
     do {
       r = v[k];
       s = (f[q] - f[r] + q * q - r * r) / (q - r) / 2;
     } while (s <= z[k] && --k > -1);
+
     k++;
+
     v[k] = q;
     z[k] = s;
     z[k + 1] = INF;
   }
   for (q = 0, k = 0; q < length; q++) {
-    while (z[k + 1] < q) k++;
+    while (z[k + 1] < q) {
+      k++;
+    }
+
     r = v[k];
     grid[offset + q * stride] = f[r] + (q - r) * (q - r);
   }
