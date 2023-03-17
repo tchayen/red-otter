@@ -1,0 +1,18 @@
+name: CI actions
+run-name: CI actions (${{ github.actor }})
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: lib:check
