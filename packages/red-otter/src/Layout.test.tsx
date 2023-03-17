@@ -3,38 +3,38 @@ import { IContext } from "./Context";
 import { Layout } from "./Layout";
 
 class MockContext implements IContext {
-  getCanvas() {
+  getCanvas(): HTMLCanvasElement {
     return {
       clientWidth: 800,
       clientHeight: 600,
     } as HTMLCanvasElement;
   }
-  line() {
+  line(): void {
     // noop
   }
-  polygon() {
+  polygon(): void {
     // noop
   }
-  triangles() {
+  triangles(): void {
     // noop
   }
-  rectangle() {
+  rectangle(): void {
     // noop
   }
-  clear() {
+  clear(): void {
     // noop
   }
-  setProjection() {
+  setProjection(): void {
     // noop
   }
-  text() {
+  text(): void {
     // noop
   }
-  flush() {
+  flush(): void {
     // noop
   }
-  loadTexture() {
-    return {} as WebGLTexture;
+  loadTexture(): WebGLTexture {
+    return {};
   }
 }
 

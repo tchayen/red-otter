@@ -6,6 +6,21 @@ import { parseColor } from "./parseColor";
 import { IContext } from "./Context";
 import { Vec2 } from "./math/Vec2";
 
+type ViewAttributes = { style?: Style | Style[] };
+type TextAttributes = { style?: TextStyle | TextStyle[] };
+type ShapeAttributes =
+  | {
+      points: [number, number][];
+      color: string;
+      thickness: number;
+      type: "line";
+    }
+  | {
+      points: [number, number][];
+      color: string;
+      type: "polygon";
+    };
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
@@ -200,19 +215,6 @@ export type TextStyle = {
   color?: string;
 };
 
-type ShapeAttributes =
-  | {
-      points: [number, number][];
-      color: string;
-      type: "polygon";
-    }
-  | {
-      points: [number, number][];
-      color: string;
-      thickness: number;
-      type: "line";
-    };
-
 /**
  * Fixed view is a view with all layout properties calculated. Output of
  * `flush()`, used by `render()`.
@@ -325,9 +327,6 @@ function toPercentage(value: string): number {
   return Number(value.replace("%", "")) / 100;
 }
 
-type ViewAttributes = { style?: Style | Style[] };
-type TextAttributes = { style?: TextStyle | TextStyle[] };
-
 export function addView(
   component: "view",
   attributes: ViewAttributes,
@@ -414,7 +413,6 @@ export function addView(
     case "text": {
       const text = children[0] ?? "";
       if (typeof text !== "string") {
-        console.log(attributes, children);
         throw new Error("Child must be a string.");
       }
 
@@ -527,13 +525,13 @@ globalThis.ę = addView;
  * (`view()` and `text()`).
  */
 export class Layout {
-  private root: TreeNode<FixedView> | null;
+  private readonly root: TreeNode<FixedView> | null;
   private current: TreeNode<FixedView> | null;
 
   /**
    * Takes a context instance which is used to retrieve HTML canvas size.
    */
-  constructor(private context: IContext) {
+  constructor(private readonly context: IContext) {
     const node = new TreeNode<FixedView>({
       input: { ...resolvePaddingAndMargin(viewDefaults) },
       ...fixedViewDefaults,

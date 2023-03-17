@@ -7,8 +7,8 @@ export type FWord = Int16;
 export type Fixed = number;
 
 export class BinaryReader {
+  private readonly data: Uint8Array;
   private position = 0;
-  private data: Uint8Array;
 
   constructor(data: ArrayBuffer) {
     this.data = new Uint8Array(data);

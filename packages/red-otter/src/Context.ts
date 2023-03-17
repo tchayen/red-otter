@@ -191,23 +191,23 @@ export interface IContext {
  */
 export class Context implements IContext {
   public readonly gl: WebGL2RenderingContext;
-  private program: WebGLProgram | null = null;
+  private readonly program: WebGLProgram | null = null;
 
   private positions: Vec2[] = [];
   private uvs: Vec2[] = [];
   private colors: Vec4[] = [];
 
-  private fontAtlasTexture: WebGLTexture | null = null;
+  private readonly fontAtlasTexture: WebGLTexture | null = null;
 
-  private vao: WebGLVertexArrayObject | null = null;
-  private positionBuffer: WebGLBuffer | null = null;
-  private uvBuffer: WebGLBuffer | null = null;
-  private colorBuffer: WebGLBuffer | null = null;
+  private readonly vao: WebGLVertexArrayObject | null = null;
+  private readonly positionBuffer: WebGLBuffer | null = null;
+  private readonly uvBuffer: WebGLBuffer | null = null;
+  private readonly colorBuffer: WebGLBuffer | null = null;
 
   /**
    * Creates new context.
    */
-  constructor(canvas: HTMLCanvasElement, private font: Font) {
+  constructor(canvas: HTMLCanvasElement, private readonly font: Font) {
     const context = canvas.getContext("webgl2");
     invariant(context, "WebGL2 context creation failed.");
     this.gl = context;

@@ -9,18 +9,18 @@ import { ATLAS_FONT_SIZE, ATLAS_GAP } from "./atlasConsts";
  * file see `FontAtlas`.
  */
 export class Font {
+  ok = false;
+
   private metadata: FontAtlasMetadata | null = null;
-  private glyphs = new Map<number, Glyph>();
-  private UVs = new Map<number, Vec4>();
   private fontAtlasImage: HTMLImageElement | null = null;
-  private files: {
+  private readonly glyphs = new Map<number, Glyph>();
+  private readonly UVs = new Map<number, Vec4>();
+  private readonly files: {
     spacingMetadataJsonURL: string;
     spacingBinaryURL: string;
     fontAtlasTextureURL: string;
     UVBinaryURL: string;
   } | null = null;
-
-  ok = false;
 
   /**
    * Initialize font by providing URLs to font files or by providing spacing
@@ -39,13 +39,13 @@ export class Font {
   constructor(spacing: Spacing, fontImage: HTMLImageElement);
   constructor(
     options:
+      | Spacing
       | {
           spacingMetadataJsonURL: string;
           spacingBinaryURL: string;
           fontAtlasTextureURL: string;
           UVBinaryURL: string;
-        }
-      | Spacing,
+        },
     fontImage?: HTMLImageElement
   ) {
     if ("spacingMetadataJsonURL" in options) {
@@ -104,27 +104,6 @@ export class Font {
     }
   }
 
-  private async loadFontImageAsync(): Promise<HTMLImageElement> {
-    return new Promise((resolve) => {
-      const start = performance.now();
-      const image = new Image();
-
-      image.onload = () => {
-        invariant(this.files, "Missing files.");
-        console.debug(
-          `Loaded texture ${this.files.fontAtlasTextureURL} in ${(
-            performance.now() - start
-          ).toFixed(2)}ms.`
-        );
-
-        resolve(image);
-      };
-
-      invariant(this.files, "Missing files.");
-      image.src = this.files.fontAtlasTextureURL;
-    });
-  }
-
   /**
    * Load font data from provided URLs. Not needed if font was initialized with
    * preloaded data.
@@ -134,13 +113,15 @@ export class Font {
     invariant(this.files, "Missing files.");
 
     const [metadata, spacing, uv, fontImage] = await Promise.all([
-      fetch(this.files.spacingMetadataJsonURL).then((response) =>
+      fetch(this.files.spacingMetadataJsonURL).then(async (response) =>
         response.json()
       ),
-      fetch(this.files.spacingBinaryURL).then((response) =>
+      fetch(this.files.spacingBinaryURL).then(async (response) =>
         response.arrayBuffer()
       ),
-      fetch(this.files.UVBinaryURL).then((response) => response.arrayBuffer()),
+      fetch(this.files.UVBinaryURL).then(async (response) =>
+        response.arrayBuffer()
+      ),
       this.loadFontImageAsync(),
     ]);
 
@@ -301,6 +282,27 @@ export class Font {
   getFontImage(): HTMLImageElement | null {
     invariant(this.ok, "Font is not yet loaded.");
     return this.fontAtlasImage;
+  }
+
+  private async loadFontImageAsync(): Promise<HTMLImageElement> {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const image = new Image();
+
+      image.onload = (): void => {
+        invariant(this.files, "Missing files.");
+        console.debug(
+          `Loaded texture ${this.files.fontAtlasTextureURL} in ${(
+            performance.now() - start
+          ).toFixed(2)}ms.`
+        );
+
+        resolve(image);
+      };
+
+      invariant(this.files, "Missing files.");
+      image.src = this.files.fontAtlasTextureURL;
+    });
   }
 }
 

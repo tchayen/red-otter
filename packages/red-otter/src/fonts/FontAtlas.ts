@@ -180,7 +180,7 @@ export class FontAtlas {
       }));
 
       const spacingJson = JSON.stringify(mapped, null, 2);
-      console.log(spacingJson);
+      console.debug(spacingJson);
     }
 
     return { spacing, canvas };

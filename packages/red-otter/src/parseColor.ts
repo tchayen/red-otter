@@ -62,7 +62,7 @@ export function parseColor(color: string): Vec4 {
       hasAlpha ? channels[3] : 1
     );
   } else if (color.startsWith("hsl")) {
-    const separator = color.indexOf(",") !== -1 ? "," : " ";
+    const separator = color.includes(",") ? "," : " ";
     const hasAlpha = color[3] === "a";
     const channels = color.slice(hasAlpha ? 5 : 4, -1).split(separator);
 
