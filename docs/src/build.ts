@@ -278,11 +278,12 @@ const replace = `
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@tchayen" />
     <meta name="twitter:creator" content="@tchayen" />
-    <meta name="twitter:description" content="Red Otter – documentation" />
+    <meta name="twitter:description" content="A self-contained WebGL flexbox layout engine." />
     <meta property="twitter:image" content="https://red-otter.com/og.png" />
-    <meta property="twitter:image:alt" content="Red Otter – documentation" />
+    <meta property="twitter:image:alt" content="Red Otter – logo" />
     <link rel="icon" type="image/png" sizes="32x32" href="/32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/16x16.png" />
+    <meta name="theme-color" content="#0F172A" />
   </head>
   <body>
     <div id="content">
