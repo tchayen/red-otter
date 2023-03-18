@@ -452,6 +452,16 @@ const replace = `
         To render text you will also need to generate the font atlas. See
         <a href="/#generating-font-atlas">guide</a>.
       </p>
+      <p>
+        For editor to correctly highlight TypeScript code, add to <code>compilerOptions</code> in <code>tsconfig.json</code>:
+      </p>
+      ${codeExample(
+        `{
+  "jsx": "react",
+  "jsxFactory": "ę"
+}`,
+        { language: "json" }
+      )}
       ${addHeader(2, "Examples")}
       <p>All code present below follows similar pattern:</p>
       ${codeExample(
@@ -468,8 +478,8 @@ div.appendChild(canvas);
 const font = new Font({
   spacingMetadataJsonURL: "/spacing.json",
   spacingBinaryURL: "/spacing.dat",
-  fontAtlasTextureURL: "/uv.dat",
-  UVBinaryURL: "/font-atlas.png",
+  UVBinaryURL: "/uv.dat",
+  fontAtlasTextureURL: "/font-atlas.png",
 });
 await font.load();
 

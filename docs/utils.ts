@@ -1,6 +1,7 @@
 import { format } from "prettier/standalone";
 import parserTypeScript from "prettier/parser-typescript";
 import parserHtml from "prettier/parser-html";
+import parserBabel from "prettier/parser-babel";
 import hljs from "highlight.js";
 
 // Copied over from lib package.
@@ -19,12 +20,17 @@ export function formatCode(value: string, language: string): string {
     case "typescript":
       return format(value, {
         parser: "typescript",
-        plugins: [parserTypeScript],
+        plugins: [parserTypeScript, parserBabel],
       });
     case "html":
       return format(value, {
         parser: "html",
         plugins: [parserHtml],
+      });
+    case "json":
+      return format(value, {
+        parser: "json",
+        plugins: [parserBabel],
       });
     default:
       return value;
@@ -43,7 +49,7 @@ export function codeExample(
   const formatted = formatCode(value, language);
 
   const highlighted =
-    language === "typescript" || language === "html"
+    language === "typescript" || language === "html" || language === "json"
       ? hljs.highlight(formatted, { language: language }).value
       : formatted;
 

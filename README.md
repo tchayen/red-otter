@@ -16,6 +16,15 @@ yarn add red-otter
 
 To render text you will also need to generate the font atlas. See [guide](https://red-otter.dev/#generating-font-atlas).
 
+For editor to correctly highlight TypeScript code, add to `compilerOptions` in `tsconfig.json`:
+
+```json
+{
+  "jsx": "react",
+  "jsxFactory": "ę"
+}
+```
+
 ## Usage
 
 ```ts
@@ -26,8 +35,8 @@ const canvas = document.getElementById("app");
 const font = new Font({
   spacingMetadataJsonURL: "/spacing.json",
   spacingBinaryURL: "/spacing.dat",
-  fontAtlasTextureURL: "/uv.dat",
-  UVBinaryURL: "/font-atlas.png",
+  UVBinaryURL: "/uv.dat",
+  fontAtlasTextureURL: "/font-atlas.png",
 });
 await font.load();
 
