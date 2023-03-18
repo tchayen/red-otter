@@ -8,27 +8,48 @@ jobs:
     steps:
       - name: Checkout git
         uses: actions/checkout@v3
+
       - name: Use Node v18
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+
       - name: Install dependencies (main)
         uses: borales/actions-yarn@v4
         with:
           cmd: install
+
       - name: Install dependencies (docs)
         uses: borales/actions-yarn@v4
         with:
           cmd: --cwd docs install
+
       - name: Install dependencies (examples/font-atlas-runtime)
         uses: borales/actions-yarn@v4
         with:
           cmd: --cwd examples/font-atlas-runtime install
+
       - name: Install dependencies (examples/font-atlas-vercel-ci)
         uses: borales/actions-yarn@v4
         with:
           cmd: --cwd examples/font-atlas-vercel-ci install
-      - name: Run tsc, eslint and tests
+
+      - name: Run tsc
         uses: borales/actions-yarn@v4
         with:
-          cmd: run-checks
+          cmd: tsc
+
+      - name: Eslint
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint
+
+      - name: Run tests
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
+
+      - name: Build docs
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: docs:build
