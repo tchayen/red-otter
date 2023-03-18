@@ -269,7 +269,20 @@ const replace = `
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Red Otter</title>
+    <title>Red Otter – documentation</title>
+    <meta property="og:title" content="Red Otter – documentation" />
+    <meta name="og:description" content="A self-contained WebGL flexbox layout engine." />
+    <meta property="og:url" content="https://red-otter.dev" />
+    <meta property="og:image" content="https://red-otter.com/og.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@tchayen" />
+    <meta name="twitter:creator" content="@tchayen" />
+    <meta name="twitter:description" content="Red Otter – documentation" />
+    <meta property="twitter:image" content="https://red-otter.com/og.png" />
+    <meta property="twitter:image:alt" content="Red Otter – documentation" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/16x16.png" />
   </head>
   <body>
     <div id="content">
@@ -363,7 +376,8 @@ const replace = `
           <strong>This is not React</strong>. There is no virtual DOM, no
           reconciliation, no state management. This is a layout engine, not a
           full-blown framework. For instance, there are no components, only
-          elements (<code>&lt;view&gt;</code> etc.).
+          elements (you can use <code>&lt;view&gt;</code> but cannot define your
+          own <code>&lt;HeaderView&gt;</code>).
         </li>
       </ul>
       <ul>
@@ -374,8 +388,9 @@ const replace = `
           absolutely great there, but this is not general-purpose tool.
         </li>
         <li>
-          It's <strong>just a library</strong>. There is no compiler or hidden
-          magic. No new build steps required.
+          A <strong>compiler</strong> or other metaprogramming-based solution.
+          It is just a library which happens to use JSX which is supported by
+          various bundlers and IDEs.
         </li>
       </ul>
       ${addHeader(3, "What is it then?")}
@@ -400,8 +415,8 @@ const replace = `
       </p>
       ${addHeader(2, "Roadmap")}
       <p>
-        This is unordered list of things that need to be done before reaching
-        1.0 release.
+        Talking about roadmap, here is an unordered list of things that need a
+        lot attention before the 1.0 release.
       </p>
       <ul>
         <li>
