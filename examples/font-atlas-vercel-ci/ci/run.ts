@@ -1,9 +1,13 @@
 import path from "node:path";
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { createServer } from "vite";
 import chromium from "@sparticuz/chromium";
 import { launch, PuppeteerLaunchOptions } from "puppeteer-core";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PNG_FILE = `${__dirname}/../public/font-atlas.png`;
 const JSON_FILE = `${__dirname}/../public/spacing.json`;
@@ -11,6 +15,16 @@ const BINARY_FILE = `${__dirname}/../public/spacing.dat`;
 const UV_FILE = `${__dirname}/../public/uv.dat`;
 
 const BUNDLER_PORT = 3456;
+
+function printSize(size: number): string {
+  if (size < 1024) {
+    return `${size} B`;
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} kB`;
+  } else {
+    return `${(size / 1024 / 1024).toFixed(2)} MB`;
+  }
+}
 
 async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
   if (process.env.CI === "1") {
@@ -37,7 +51,8 @@ function saveFile(
   encoding: "utf-8" | "binary"
 ): void {
   fs.writeFileSync(filePath, data, { encoding });
-  console.debug(`Saved ${filePath}.`);
+  const fileOnDisk = fs.statSync(filePath);
+  console.debug(`Saved ${filePath} ${printSize(fileOnDisk.size)}`);
 }
 
 async function run(): Promise<void> {

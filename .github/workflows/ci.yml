@@ -5,6 +5,8 @@ on: [push]
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      CI: 1
     steps:
       - name: Checkout git
         uses: actions/checkout@v3

@@ -10,7 +10,7 @@
     "build": "yarn font-atlas && yarn generate && vite build",
     "serve": "vite preview",
     "generate": "yarn run ts-node --esm --swc --experimentalSpecifierResolution=node src/build.ts",
-    "font-atlas": "yarn run ts-node --esm --swc --experimentalSpecifierResolution=node  font-atlas/generate.ts"
+    "font-atlas": "yarn run ts-node --esm --swc --experimentalSpecifierResolution=node font-atlas/generate.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",

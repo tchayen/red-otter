@@ -3,24 +3,18 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { createServer } from "vite";
-import chalk from "chalk";
 import chromium from "@sparticuz/chromium";
-import { launch } from "puppeteer-core";
+import { launch, PuppeteerLaunchOptions } from "puppeteer-core";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const BUNDLER_PORT = 1337;
 
 const PNG_FILE = `${__dirname}/../public/font-atlas.png`;
 const JSON_FILE = `${__dirname}/../public/spacing.json`;
 const BINARY_FILE = `${__dirname}/../public/spacing.dat`;
 const UV_FILE = `${__dirname}/../public/uv.dat`;
 
-const URL = `http://localhost:${BUNDLER_PORT}`;
-
-const LOCAL_CHROME_EXECUTABLE =
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const BUNDLER_PORT = 3456;
 
 function printSize(size: number): string {
   if (size < 1024) {
@@ -32,6 +26,25 @@ function printSize(size: number): string {
   }
 }
 
+async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
+  if (process.env.CI === "1") {
+    return {
+      executablePath: await chromium.executablePath(),
+      args: [...chromium.args, "--no-sandbox"],
+      headless: chromium.headless,
+    };
+  } else if (process.platform === "darwin") {
+    return {
+      executablePath:
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      args: ["--no-sandbox"],
+      headless: true,
+    };
+  } else {
+    throw new Error("Unsupported OS.");
+  }
+}
+
 function saveFile(
   filePath: string,
   data: string | Int16Array | Float32Array,
@@ -39,54 +52,37 @@ function saveFile(
 ): void {
   fs.writeFileSync(filePath, data, { encoding });
   const fileOnDisk = fs.statSync(filePath);
-  console.debug(`Saved ${chalk.bold(filePath)} ${printSize(fileOnDisk.size)}`);
+  console.debug(`Saved ${filePath} ${printSize(fileOnDisk.size)}`);
 }
 
-(async (): Promise<void> => {
+async function run(): Promise<void> {
   const server = await createServer({
     root: path.resolve(__dirname, "."),
     server: { port: BUNDLER_PORT },
   });
   await server.listen();
+  console.debug(`Vite dev server started on port ${BUNDLER_PORT}.`);
 
-  const localOptions = {
-    executablePath: LOCAL_CHROME_EXECUTABLE,
-    args: ["--no-sandbox"],
-    headless: true,
-  };
+  const browser = await launch(await getPuppeteerOptions());
+  console.debug("Chromium launched.");
 
-  const optionsForCI = {
-    executablePath: await chromium.executablePath(),
-    args: [...chromium.args, "--no-sandbox"],
-    headless: chromium.headless,
-  };
-
-  const browser = await launch(
-    process.env.CI === "1" ? optionsForCI : localOptions
-  );
   const page = await browser.newPage();
   page
     .on("console", (message) => {
       const type = message.type();
-      const color = type === "debug" ? chalk.gray : chalk.white;
-      console.debug(color(`${type}: ${message.text()}`));
+      console.debug(`${type}: ${message.text()}`);
     })
     .on("pageerror", ({ message }) => console.debug(message))
     .on("response", (response) => {
       const status = response.status().toString();
-      const color = status.startsWith("2")
-        ? chalk.green
-        : status.startsWith("3")
-        ? chalk.yellow
-        : chalk.red;
-      console.debug(`${color(`HTTP ${status}`)} ${response.url()}`);
+      console.debug(`${`HTTP ${status}`} ${response.url()}`);
     })
     .on("requestfailed", (request) => {
       console.debug(`${request.failure().errorText} ${request.url()}`);
     });
 
   // Because of CORS it has to be served by a server.
-  await page.goto(URL);
+  await page.goto(`http://localhost:${BUNDLER_PORT}`);
 
   await page.waitForSelector("canvas");
   const canvas = await page.$("canvas");
@@ -95,12 +91,11 @@ function saveFile(
     throw new Error("Canvas not found.");
   }
 
+  console.debug("Page loaded.");
+
   await canvas.screenshot({ path: PNG_FILE, omitBackground: true });
 
-  const fontAtlasPngOnDisk = fs.statSync(PNG_FILE);
-  console.debug(
-    `Saved ${chalk.bold(PNG_FILE)} ${printSize(fontAtlasPngOnDisk.size)}`
-  );
+  console.debug(`Saved ${PNG_FILE}.`);
 
   const spacing = await page.$eval("span", (element) => {
     return JSON.parse(element.innerHTML);
@@ -119,4 +114,6 @@ function saveFile(
 
   await browser.close();
   await server.close();
-})();
+}
+
+run();
