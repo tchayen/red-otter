@@ -35,7 +35,7 @@ function saveFile(
 ): void {
   fs.writeFileSync(filePath, data, { encoding });
   const fileOnDisk = fs.statSync(filePath);
-  console.log(`Saved ${chalk.bold(filePath)} ${printSize(fileOnDisk.size)}`);
+  console.debug(`Saved ${chalk.bold(filePath)} ${printSize(fileOnDisk.size)}`);
 }
 
 (async (): Promise<void> => {
@@ -65,9 +65,9 @@ function saveFile(
     .on("console", (message) => {
       const type = message.type();
       const color = type === "debug" ? chalk.gray : chalk.white;
-      console.log(color(`${type}: ${message.text()}`));
+      console.debug(color(`${type}: ${message.text()}`));
     })
-    .on("pageerror", ({ message }) => console.log(message))
+    .on("pageerror", ({ message }) => console.debug(message))
     .on("response", (response) => {
       const status = response.status().toString();
       const color = status.startsWith("2")
@@ -75,10 +75,10 @@ function saveFile(
         : status.startsWith("3")
         ? chalk.yellow
         : chalk.red;
-      console.log(`${color(`HTTP ${status}`)} ${response.url()}`);
+      console.debug(`${color(`HTTP ${status}`)} ${response.url()}`);
     })
     .on("requestfailed", (request) => {
-      console.log(`${request.failure().errorText} ${request.url()}`);
+      console.debug(`${request.failure().errorText} ${request.url()}`);
     });
 
   // Because of CORS it has to be served by a server.
@@ -94,7 +94,7 @@ function saveFile(
   await canvas.screenshot({ path: PNG_FILE, omitBackground: true });
 
   const fontAtlasPngOnDisk = fs.statSync(PNG_FILE);
-  console.log(
+  console.debug(
     `Saved ${chalk.bold(PNG_FILE)} ${printSize(fontAtlasPngOnDisk.size)}`
   );
 

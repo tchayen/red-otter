@@ -8,10 +8,11 @@ import typescript from "highlight.js/lib/languages/typescript";
 import { PluginItem, transformSync } from "@babel/core";
 
 import { fixtures } from "./examples";
-import { codeExample, formatCode, toURLSafe } from "../utils";
+import { toURLSafe } from "../utils";
 
-import packageJson from "red-otter/package.json";
+import packageJson from "../../package.json";
 import { extractExports } from "./extractExports";
+import { codeExample, formatCode } from "./codeExamples";
 
 const versionNumber = `v${packageJson.version}`;
 
@@ -24,7 +25,7 @@ function step(name: string): void {
 
   if (lastStep) {
     const time = now - lastStep.start;
-    console.log(`${chalk.yellow(lastStep.name)} ${time.toFixed(2)}ms`);
+    console.debug(`${chalk.yellow(lastStep.name)} ${time.toFixed(2)}ms`);
   }
 
   steps.push({ name, start: now });
@@ -66,9 +67,9 @@ const commandSymbol = "⌘";
 function copyCodeBabelPlugin(): PluginItem {
   return {
     visitor: {
-      FunctionDeclaration(path) {
+      FunctionDeclaration(path): void {
         const name = path.node.id?.name;
-        if (name && name.endsWith("Example")) {
+        if (name?.endsWith("Example")) {
           // Using this instead of path.toString(); so it includes the code as
           // it was, especially including new lines. Printing babel AST skips
           // all new lines (but keeps comments).
@@ -83,14 +84,20 @@ function copyCodeBabelPlugin(): PluginItem {
   };
 }
 
-function showCodeBlocks() {
+function showCodeBlocks(): string {
   return fixtures
     .map((fixture) => {
       const { callback, title, description } = fixture;
 
+      const lineWithLayout = fixtureSources[callback.name]
+        .split("\n")
+        .findIndex((line) =>
+          line.includes("const layout = new Layout(context);")
+        );
+
       const code = fixtureSources[callback.name]
         .split("\n")
-        .slice(3, -3) // Remove function declaration and return statement.
+        .slice(lineWithLayout + 1, -3) // Remove function declaration and return statement.
         .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
         .join("\n");
 
@@ -129,7 +136,10 @@ hljs.registerLanguage("typescript", typescript);
 const fixtureSources: Record<string, string> = {};
 
 step("Transform examples file using Babel");
-const fixturesSource = fs.readFileSync(`${__dirname}/examples.tsx`, "utf8");
+const fixturesSource = fs.readFileSync(
+  `${__dirname}/../src/examples.tsx`,
+  "utf8"
+);
 
 transformSync(fixturesSource, {
   presets: [["@babel/preset-typescript", { isTSX: true, allExtensions: true }]],
@@ -141,17 +151,11 @@ transformSync(fixturesSource, {
 
 step("Extract API reference");
 
-const layoutPath = path.resolve(
-  path.join(__dirname, "../../packages/red-otter/src/Layout.ts")
-);
-const contextPath = path.resolve(
-  path.join(__dirname, "../../packages/red-otter/src/Context.ts")
-);
-const fontPath = path.resolve(
-  path.join(__dirname, "../../packages/red-otter/src/fonts/Font.ts")
-);
+const layoutPath = path.resolve(path.join(__dirname, "../../src/Layout.ts"));
+const contextPath = path.resolve(path.join(__dirname, "../../src/Context.ts"));
+const fontPath = path.resolve(path.join(__dirname, "../../src/fonts/Font.ts"));
 const fontAtlasPath = path.resolve(
-  path.join(__dirname, "../../packages/red-otter/src/fonts/FontAtlas.ts")
+  path.join(__dirname, "../../src/fonts/FontAtlas.ts")
 );
 
 const apiExports = extractExports([
@@ -182,7 +186,7 @@ type Method = {
   parameters: { name: string; type: string }[];
 };
 
-function formatConstructors(methods: Method[]) {
+function formatConstructors(methods: Method[]): string {
   const constructors = methods.filter(
     (method) => method.name === "__constructor"
   );
@@ -224,7 +228,7 @@ function formatMethodName(method: Method): string {
     .slice(0, -1)}</code></pre>`;
 }
 
-function showApiReferences() {
+function showApiReferences(): string {
   return `${addHeader(3, "Style")}
   <p>Styling available for views.</p>
   <div class="style-table">
@@ -1305,7 +1309,7 @@ fs.writeFileSync(`${__dirname}/../index.html`, result, "utf8");
 
 step("End");
 const total = performance.now() - steps[0].start;
-console.log(`${chalk.yellow("Total")} ${(total / 1000).toFixed(2)}s`);
+console.debug(`${chalk.yellow("Total")} ${(total / 1000).toFixed(2)}s`);
 
 // Reddit
 // <a

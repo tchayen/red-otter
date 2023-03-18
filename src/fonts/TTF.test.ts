@@ -6,7 +6,7 @@ import { TTF } from "./TTF";
 describe("parseTTF", () => {
   it("parses Inter 3.19 OTF file", () => {
     const file = fs.readFileSync(
-      path.join(__dirname, "../../../../assets/inter-hinted-3-19.ttf")
+      path.join(__dirname, "../../assets/inter-hinted-3-19.ttf")
     );
 
     const ttf = new TTF(file);

@@ -1,5 +1,5 @@
 import { toURLSafe, invariant } from "../utils";
-import { Context, Font } from "red-otter";
+import { Context, Font } from "../../src";
 import { fixtures } from "./examples";
 
 import "./main.css";
@@ -25,12 +25,12 @@ async function mainAsync(): Promise<void> {
       const button = document.getElementById(`${callbackName}-button`);
       invariant(button instanceof HTMLButtonElement, "Button not found.");
 
-      const run = () => {
+      const run = async (): Promise<void> => {
         const context = new Context(canvas, font);
         context.clear();
 
         const start = performance.now();
-        const layout = callback(context, font);
+        const layout = await callback(context, font);
         layout.render();
         const end = performance.now();
         context.flush();

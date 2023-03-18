@@ -1,23 +1,29 @@
-import * as ts from "typescript";
+// eslint-disable-next-line import/default
+import ts from "typescript";
 
 type NodeInfo = {
   name: string;
   description: string;
 };
 
-export function extractExports(fileNames: string[]) {
-  const classes: (NodeInfo & {
+type ExportInfo = {
+  classes: (NodeInfo & {
     methods: (NodeInfo & {
       parameters: { name: string; type: string }[];
       returnType?: string;
     })[];
     properties: (NodeInfo & { type: string })[];
-  })[] = [];
-
-  const types: (NodeInfo & {
+  })[];
+  types: (NodeInfo & {
     properties: (NodeInfo & { type: string })[];
     value?: string;
-  })[] = [];
+  })[];
+};
+
+export function extractExports(fileNames: string[]): ExportInfo {
+  const classes: ExportInfo["classes"] = [];
+
+  const types: ExportInfo["types"] = [];
 
   for (const fileName of fileNames) {
     const program = ts.createProgram([fileName], {});
@@ -39,18 +45,21 @@ export function extractExports(fileNames: string[]) {
 
     for (const c of classNodes) {
       // https://github.com/microsoft/rushstack/blob/9cd3e835cd20e18bbe9e1018d63a47fae634ac3e/apps/api-extractor/src/utils/TypeScriptHelpers.ts#L71-L78
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const symbol: ts.Symbol = (c as any).symbol;
 
       const methodNodes = c.members.filter(
         (m) => ts.isMethodDeclaration(m) || ts.isConstructorDeclaration(m)
       ) as ts.MethodDeclaration[];
 
-      const methods: (typeof classes)[0]["methods"] = [];
+      const methods: ExportInfo["classes"][0]["methods"] = [];
       for (const m of methodNodes) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const symbol: ts.Symbol = (m as any).symbol;
 
         const parameters = m.parameters
           .map((p) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const symbol: ts.Symbol = (p as any).symbol;
             if (!symbol) {
               return;
@@ -81,8 +90,9 @@ export function extractExports(fileNames: string[]) {
         ts.isPropertyDeclaration(m)
       ) as ts.PropertyDeclaration[];
 
-      const properties: (typeof classes)[0]["properties"] = [];
+      const properties: ExportInfo["classes"][0]["properties"] = [];
       for (const p of propertyNodes) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const symbol: ts.Symbol = (p as any).symbol;
         if (!symbol) {
           continue;
@@ -108,10 +118,12 @@ export function extractExports(fileNames: string[]) {
     }
 
     for (const t of typeNodes) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const symbol: ts.Symbol = (t as any).symbol;
 
-      const properties: (typeof types)[0]["properties"] = [];
+      const properties: ExportInfo["types"][0]["properties"] = [];
       ts.forEachChild(t.type, (child) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const symbol: ts.Symbol = (child as any).symbol;
         if (!symbol) {
           return;
@@ -175,7 +187,7 @@ export class Elk {
   /**
    * Make the elk say something.
    */
-  say(message: string) {
-    console.log(`${this.name} says: ${message}`);
+  say(message: string): void {
+    console.debug(`${this.name} says: ${message}`);
   }
 }

@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
+    "declaration": true,
+    "useDefineForClassFields": true,
     "moduleResolution": "Node",
     "strict": true,
     "resolveJsonModule": true,
@@ -14,9 +15,14 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "jsx": "react",
     "jsxFactory": "ę"
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "docs",
+    "examples/font-atlas-runtime",
+    "examples/font-atlas-vercel-ci"
+  ]
 }

@@ -1,6 +1,6 @@
-import { Font, Context } from "red-otter";
+import { Font, Context } from "../../src";
 
-async function run() {
+async function run(): Promise<void> {
   const start = performance.now();
 
   const font = new Font({
@@ -11,7 +11,7 @@ async function run() {
   });
   await font.load();
 
-  console.log(`Loaded font client-side in ${performance.now() - start}ms.`);
+  console.debug(`Loaded font client-side in ${performance.now() - start}ms.`);
 
   const canvas = document.createElement("canvas");
   canvas.width = 800 * window.devicePixelRatio;

@@ -37,33 +37,33 @@ function saveFile(
   encoding: "utf-8" | "binary"
 ): void {
   fs.writeFileSync(filePath, data, { encoding });
-  console.log(`Saved ${filePath}.`);
+  console.debug(`Saved ${filePath}.`);
 }
 
-async function run() {
+async function run(): Promise<void> {
   const server = await createServer({
     root: path.resolve(__dirname, "."),
     server: { port: BUNDLER_PORT },
   });
   await server.listen();
-  console.log(`Vite dev server started on port ${BUNDLER_PORT}.`);
+  console.debug(`Vite dev server started on port ${BUNDLER_PORT}.`);
 
   const browser = await launch(await getPuppeteerOptions());
-  console.log("Chromium launched.");
+  console.debug("Chromium launched.");
 
   const page = await browser.newPage();
   page
     .on("console", (message) => {
       const type = message.type();
-      console.log(`${type}: ${message.text()}`);
+      console.debug(`${type}: ${message.text()}`);
     })
-    .on("pageerror", ({ message }) => console.log(message))
+    .on("pageerror", ({ message }) => console.debug(message))
     .on("response", (response) => {
       const status = response.status().toString();
-      console.log(`${`HTTP ${status}`} ${response.url()}`);
+      console.debug(`${`HTTP ${status}`} ${response.url()}`);
     })
     .on("requestfailed", (request) => {
-      console.log(`${request.failure().errorText} ${request.url()}`);
+      console.debug(`${request.failure().errorText} ${request.url()}`);
     });
 
   // Because of CORS it has to be served by a server.
@@ -76,11 +76,11 @@ async function run() {
     throw new Error("Canvas not found.");
   }
 
-  console.log("Page loaded.");
+  console.debug("Page loaded.");
 
   await canvas.screenshot({ path: PNG_FILE, omitBackground: true });
 
-  console.log(`Saved ${PNG_FILE}.`);
+  console.debug(`Saved ${PNG_FILE}.`);
 
   const spacing = await page.$eval("span", (element) => {
     return JSON.parse(element.innerHTML);

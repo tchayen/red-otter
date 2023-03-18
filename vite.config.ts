@@ -13,5 +13,11 @@ export default defineConfig({
       fileName: "index",
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      // Because tsconfig.json includes docs/ and examples/, we cannot let dts
+      // use it (which happens by default).
+      include: ["src"],
+    }),
+  ],
 });

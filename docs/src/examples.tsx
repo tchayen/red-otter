@@ -1,6 +1,4 @@
-import { Context, Font, Layout, Style, TextStyle } from "red-otter";
-
-import map from "./map.json";
+import { Context, Font, Layout, Style, TextStyle } from "../../src";
 
 const zinc = {
   50: "#fafafa",
@@ -19,8 +17,9 @@ const zinc = {
 // restructure it so each example is an object instead of this weird function
 // with title and description.
 
-export function textExample(context: Context, font: Font) {
+export function textExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
+
   const text =
     "Turtle żółw черепаха želva sköldpadda süß Æøñ@ø№→⏎⁂➆§∑¾¤ - - – —";
 
@@ -38,7 +37,7 @@ export function textExample(context: Context, font: Font) {
   return layout;
 }
 
-export function justifyContentExample(context: Context, font: Font) {
+export function justifyContentExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -120,7 +119,7 @@ export function justifyContentExample(context: Context, font: Font) {
   return layout;
 }
 
-export function alignItemsExample(context: Context, font: Font) {
+export function alignItemsExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -183,7 +182,7 @@ export function alignItemsExample(context: Context, font: Font) {
   return layout;
 }
 
-export function alignSelfExample(context: Context, font: Font) {
+export function alignSelfExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -247,7 +246,7 @@ export function alignSelfExample(context: Context, font: Font) {
   return layout;
 }
 
-export function flexExample(context: Context, font: Font) {
+export function flexExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -293,7 +292,7 @@ export function flexExample(context: Context, font: Font) {
   return layout;
 }
 
-export function percentageSizeExample(context: Context, font: Font) {
+export function percentageSizeExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -345,7 +344,7 @@ export function percentageSizeExample(context: Context, font: Font) {
   return layout;
 }
 
-export function positionRelativeExample(context: Context, font: Font) {
+export function positionRelativeExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -391,7 +390,10 @@ export function positionRelativeExample(context: Context, font: Font) {
   return layout;
 }
 
-export function paddingMarginAndGapExample(context: Context, font: Font) {
+export function paddingMarginAndGapExample(
+  context: Context,
+  font: Font
+): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -444,7 +446,10 @@ export function paddingMarginAndGapExample(context: Context, font: Font) {
 
   return layout;
 }
-export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
+export function positionAbsoluteAndZIndexExample(
+  context: Context,
+  font: Font
+): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -498,7 +503,10 @@ export function positionAbsoluteAndZIndexExample(context: Context, font: Font) {
   return layout;
 }
 
-export function leftRightTopBottomExample(context: Context, font: Font) {
+export function leftRightTopBottomExample(
+  context: Context,
+  font: Font
+): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -556,7 +564,7 @@ export function leftRightTopBottomExample(context: Context, font: Font) {
   return layout;
 }
 
-export function mappingOverArrayExample(context: Context, font: Font) {
+export function mappingOverArrayExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {
@@ -645,12 +653,30 @@ export function mappingOverArrayExample(context: Context, font: Font) {
   return layout;
 }
 
-export function polygonsExample(context: Context, font: Font) {
+export async function polygonsExample(
+  context: Context,
+  font: Font
+): Promise<Layout> {
+  const response = await fetch("/map.json");
+  const map: {
+    features: {
+      geometry: {
+        type: string;
+        coordinates: number[][] | number[][][];
+      };
+      properties: {
+        name?: string;
+        highway?: string;
+        "addr:housenumber"?: string;
+      };
+    }[];
+  } = await response.json();
+
   const layout = new Layout(context);
 
   const RADIUS = 6378137.0;
 
-  function degreesToMeters(lat: number, lng: number) {
+  function degreesToMeters(lat: number, lng: number): { x: number; y: number } {
     return {
       x: (RADIUS * lng * Math.PI) / 180.0,
       y: RADIUS * Math.atanh(Math.sin((lat * Math.PI) / 180.0)),
@@ -771,7 +797,7 @@ export function polygonsExample(context: Context, font: Font) {
   return layout;
 }
 
-export function complexUIExample(context: Context, font: Font) {
+export function complexUIExample(context: Context, font: Font): Layout {
   const layout = new Layout(context);
 
   const container: Style = {

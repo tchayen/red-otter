@@ -2,30 +2,28 @@
   "name": "@red-otter/docs",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "lint": "eslint .",
     "tsc": "tsc",
-    "build": "yarn build-lib && yarn generate && vite build",
+    "build": "yarn generate && vite build",
     "serve": "vite preview",
-    "build-lib": "cd ../packages/red-otter; yarn build",
-    "generate": "yarn run ts-node -O '{\"module\":\"nodenext\"}' src/build.ts",
-    "font-atlas": "yarn run ts-node -O '{\"module\":\"nodenext\"}' font-atlas/generate.ts"
-  },
-  "dependencies": {
-    "red-otter": "0.0.1"
+    "generate": "esrun src/build.ts",
+    "font-atlas": "esrun font-atlas/generate.ts"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@babel/preset-typescript": "^7.21.0",
+    "@digitak/esrun": "^3.2.21",
     "@sparticuz/chromium": "^111.0.0",
     "@types/babel__core": "^7.20.0",
     "@types/prettier": "^2.7.2",
     "chalk": "^4.1.2",
     "highlight.js": "^11.7.0",
     "prettier": "^2.8.4",
-    "puppeteer-core": "^19.7.4",
-    "ts-node": "^10.9.1",
-    "vite": "^4.1.4"
+    "puppeteer-core": "^19.7.5",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0"
   }
 }

@@ -1,10 +1,11 @@
-import { FontAtlas, TTF } from "red-otter";
+import { FontAtlas, TTF } from "../../../src";
 
-async function run() {
+async function run(): Promise<void> {
   const start = performance.now();
 
   const fontFace = new FontFace("Inter", 'url("/inter.ttf")');
   await fontFace.load();
+  // @ts-expect-error Property 'add' does not exist on type 'FontFaceSet'.ts(2339)
   document.fonts.add(fontFace);
 
   const font = await fetch("/inter.ttf");
@@ -30,7 +31,7 @@ async function run() {
   div.appendChild(canvas);
   div.appendChild(span);
 
-  console.log(
+  console.debug(
     `Font atlas generated in ${(performance.now() - start).toFixed(2)}ms.`
   );
 }

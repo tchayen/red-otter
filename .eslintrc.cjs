@@ -5,7 +5,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  ignorePatterns: ["**/*.js", "**/*.d.ts", "vite.config.ts"],
+  ignorePatterns: ["**/*.js", "**/*.cjs", "**/*.d.ts", "vite.config.ts"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -17,10 +17,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: [
-      path.resolve(__dirname, "docs/tsconfig.json"),
-      path.resolve(__dirname, "packages/red-otter/tsconfig.json"),
-    ],
+    project: [path.resolve(__dirname, "tsconfig.json")],
   },
   plugins: ["@typescript-eslint", "eslint-plugin-import", "import"],
   rules: {
@@ -51,6 +48,7 @@ module.exports = {
     "@typescript-eslint/adjacent-overload-signatures": "warn",
     "@typescript-eslint/consistent-type-exports": "warn",
     "@typescript-eslint/member-ordering": "warn",
+    "import/no-named-as-default-member": "off",
   },
   settings: {
     "import/parsers": {

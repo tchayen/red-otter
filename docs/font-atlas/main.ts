@@ -1,4 +1,4 @@
-import { TTF, FontAtlas } from "red-otter";
+import { TTF, FontAtlas } from "../../src";
 
 // TODO: why ~ is not present in the font?
 // const punctuationAndSymbols = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}€";
@@ -17,6 +17,7 @@ import { TTF, FontAtlas } from "red-otter";
 
   const fontFace = new FontFace("Inter", 'url("/inter-hinted-3-19.ttf")');
   await fontFace.load();
+  // @ts-expect-error Property 'add' does not exist on type 'FontFaceSet'.ts(2339)
   document.fonts.add(fontFace);
 
   const font = await fetch("/inter-hinted-3-19.ttf");
@@ -42,7 +43,7 @@ import { TTF, FontAtlas } from "red-otter";
   div.appendChild(canvas);
   div.appendChild(span);
 
-  console.log(
+  console.debug(
     `Font atlas generated in ${(performance.now() - start).toFixed(2)}ms.`
   );
 })();

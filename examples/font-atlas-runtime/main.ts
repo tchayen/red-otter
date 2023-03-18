@@ -1,10 +1,12 @@
-import { Context, Font, FontAtlas, TTF } from "red-otter";
+import { Context, Font, FontAtlas, TTF } from "../../src";
 
-async function loadFont() {
+async function loadFont(): Promise<Font> {
   const start = performance.now();
+
   // Add font to the document so we will use browser to rasterize the font.
   const fontFace = new FontFace("Inter", 'url("/inter.ttf")');
   await fontFace.load();
+  // @ts-expect-error Property 'add' does not exist on type 'FontFaceSet'.ts(2339)
   document.fonts.add(fontFace);
 
   // Download font file for parsing.
@@ -24,7 +26,7 @@ async function loadFont() {
   image.src = canvas.toDataURL();
 
   const font = new Font(spacing, image);
-  console.log(`Loaded font client-side in ${performance.now() - start}ms.`);
+  console.debug(`Loaded font client-side in ${performance.now() - start}ms.`);
   return font;
 }
 
