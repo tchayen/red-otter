@@ -124,6 +124,8 @@ export type Style = {
 
   /**
    * Supported formats: `#f00`, `#ff0000`, `rgb(255, 0, 0)`, `rgba(255, 0, 0, 0.5)`, `hsl(60, 100%, 50%)`, `hsl(60 100% 50%)`, `hsla(30, 60%, 90%, 0.8)`, `hsla(30 60% 90% 0.8)`, `hsla(30 60% 90% / 0.8)`.
+   *
+   * You can provide option `readCSSVariables` to `Layout()` constructor and then you can use CSS variables in color values by their names, ie. `var(--my-color)` is accessed by `my-color`.
    */
   backgroundColor?: string;
 

@@ -288,7 +288,10 @@ pre {
   border-right: 1px solid var(--zinc-700);
   border-bottom: 1px solid var(--zinc-700);
   padding: 12px;
+  gap: 12px;
   color: var(--zinc-400);
+  display: flex;
+  flex-direction: column;
 }
 
 .style-table > div:nth-child(3n) {
@@ -314,6 +317,10 @@ pre {
 }
 .style-table > div:nth-last-child(3) {
   border-bottom: none;
+}
+
+.style-table p {
+  margin: 0;
 }
 
 details .code-block-with-lines {

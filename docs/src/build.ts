@@ -95,9 +95,7 @@ function showCodeBlocks(): string {
 
       const lineWithLayout = fixtureSources[callback.name]
         .split("\n")
-        .findIndex((line) =>
-          line.includes("const layout = new Layout(context);")
-        );
+        .findIndex((line) => line.includes("const layout = new Layout"));
 
       const code = fixtureSources[callback.name]
         .split("\n")
@@ -173,6 +171,7 @@ function escapeDescription(description: string): string {
   return description
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
+    .replaceAll("\n\n", "</p><p>")
     .replaceAll(
       /```.+\n([^`]+)```/g,
       (_, p1) =>
@@ -240,9 +239,11 @@ function showApiReferences(): string {
       .find((t) => t.name === "Style")
       ?.properties.map(
         (p) =>
-          `<div>${p.name}</div><div>${p.type}</div><div>${escapeDescription(
-            p.description
-          )}</div>`
+          `<div>${p.name}</div>
+          <div>${p.type}</div>
+          <div>
+            <p>${escapeDescription(p.description)}</p>
+          </div>`
       )
       .join("")}
   </div>
