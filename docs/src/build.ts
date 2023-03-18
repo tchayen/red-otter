@@ -273,13 +273,13 @@ const replace = `
     <meta property="og:title" content="Red Otter – documentation" />
     <meta name="og:description" content="A self-contained WebGL flexbox layout engine." />
     <meta property="og:url" content="https://red-otter.dev" />
-    <meta property="og:image" content="https://red-otter.com/og.png" />
+    <meta property="og:image" content="https://red-otter.dev/og.png" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@tchayen" />
     <meta name="twitter:creator" content="@tchayen" />
     <meta name="twitter:description" content="A self-contained WebGL flexbox layout engine." />
-    <meta property="twitter:image" content="https://red-otter.com/og.png" />
+    <meta property="twitter:image" content="https://red-otter.dev/og.png" />
     <meta property="twitter:image:alt" content="Red Otter – logo" />
     <link rel="icon" type="image/png" sizes="32x32" href="/32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/16x16.png" />
