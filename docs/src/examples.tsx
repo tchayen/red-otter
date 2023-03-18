@@ -18,7 +18,7 @@ const zinc = {
 // with title and description.
 
 export function textExample(context: Context, font: Font): Layout {
-  const layout = new Layout(context);
+  const layout = new Layout(context, { readCSSVariables: true });
 
   const text =
     "Turtle żółw черепаха želva sköldpadda süß Æøñ@ø№→⏎⁂➆§∑¾¤ - - – —";

@@ -79,6 +79,8 @@ export function parseColor(color: string): Vec4 {
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);
+  } else if (window.cssVariables.has(color)) {
+    return parseColor(window.cssVariables.get(color)?.trim() as string);
   } else {
     throw new Error(`Unsupported color: ${color}.`);
   }

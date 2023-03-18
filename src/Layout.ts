@@ -30,6 +30,17 @@ declare global {
       shape: ShapeAttributes;
     }
   }
+
+  let cssVariables: Map<string, string>;
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  interface Window {
+    cssVariables: Map<string, string>;
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.cssVariables = new Map();
 }
 
 /**
@@ -520,6 +531,10 @@ declare global {
 
 globalThis.ę = addView;
 
+type LayoutOptions = {
+  readCSSVariables?: boolean;
+};
+
 /**
  * Layout is a tree of views. Use it via JSX API (`<view>` etc.) or direct API
  * (`view()` and `text()`).
@@ -531,7 +546,7 @@ export class Layout {
   /**
    * Takes a context instance which is used to retrieve HTML canvas size.
    */
-  constructor(private readonly context: IContext) {
+  constructor(private readonly context: IContext, options?: LayoutOptions) {
     const node = new TreeNode<FixedView>({
       input: { ...resolvePaddingAndMargin(viewDefaults) },
       ...fixedViewDefaults,
@@ -541,6 +556,32 @@ export class Layout {
 
     this.root = node;
     this.current = node;
+
+    if (options?.readCSSVariables) {
+      const cssRoot = Array.from(document.styleSheets)
+        .filter(
+          (sheet) =>
+            sheet.href === null || sheet.href.startsWith(window.location.origin)
+        )
+        .map((sheet) => Array.from(sheet.cssRules))
+        .flat()
+        .filter((rule) => rule instanceof CSSStyleRule)
+        .map((rule) => rule as CSSStyleRule)
+        .filter((rule) => rule.selectorText === ":root")[0];
+
+      if (cssRoot) {
+        const dictionary = new Map<string, string>();
+        const vars = Array.from(cssRoot.style).filter((name) =>
+          name.startsWith("--")
+        );
+
+        for (const name of vars) {
+          dictionary.set(name, cssRoot.style.getPropertyValue(name));
+        }
+
+        window.cssVariables = dictionary;
+      }
+    }
   }
 
   /**
