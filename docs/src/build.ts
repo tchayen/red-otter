@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { performance } from "node:perf_hooks";
 import hljs from "highlight.js";
 import chalk from "chalk";
@@ -10,9 +11,12 @@ import { PluginItem, transformSync } from "@babel/core";
 import { fixtures } from "./examples";
 import { toURLSafe } from "../utils";
 
-import packageJson from "../../package.json";
+import packageJson from "../../package.json" assert { type: "json" };
 import { extractExports } from "./extractExports";
 import { codeExample, formatCode } from "./codeExamples";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const versionNumber = `v${packageJson.version}`;
 

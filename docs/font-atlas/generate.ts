@@ -1,17 +1,21 @@
 import path from "node:path";
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { createServer } from "vite";
 import chalk from "chalk";
 import chromium from "@sparticuz/chromium";
 import { launch } from "puppeteer-core";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const BUNDLER_PORT = 1337;
 
-const PNG_FILE = `${__dirname}/public/font-atlas.png`;
-const JSON_FILE = `${__dirname}/public/spacing.json`;
-const BINARY_FILE = `${__dirname}/public/spacing.dat`;
-const UV_FILE = `${__dirname}/public/uv.dat`;
+const PNG_FILE = `${__dirname}/../public/font-atlas.png`;
+const JSON_FILE = `${__dirname}/../public/spacing.json`;
+const BINARY_FILE = `${__dirname}/../public/spacing.dat`;
+const UV_FILE = `${__dirname}/../public/uv.dat`;
 
 const URL = `http://localhost:${BUNDLER_PORT}`;
 

@@ -1,14 +1,5 @@
 import { TTF, FontAtlas } from "../../src";
 
-// TODO: why ~ is not present in the font?
-// const punctuationAndSymbols = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}€";
-// const numbers = "0123456789";
-// const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-// const lowercase = "abcdefghijklmnopqrstuvwxyz";
-// const dashes = "‐‑‒–—―";
-// const quotes = "‘’‚‛“”„‟";
-// const alphabet = `${punctuationAndSymbols}${numbers}${uppercase}${lowercase}${dashes}${quotes}`;
-
 /**
  * Used in font-atlas/index.html for displaying font atlas.
  */

@@ -19,4 +19,4 @@ jobs:
       - name: Run tsc, eslint and tests
         uses: borales/actions-yarn@v4
         with:
-          cmd: lib:check
+          cmd: run-checks
