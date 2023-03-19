@@ -1,4 +1,4 @@
-import { Context, Font, Layout, Style, TextStyle } from "../../src";
+import { NewContext, Context, Font, Layout, Style, TextStyle } from "../../src";
 
 const zinc = {
   50: "#fafafa",
@@ -1424,6 +1424,31 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   context.flush();
 }
 
+export function borderRadiusExample(
+  canvas: HTMLCanvasElement,
+  font: Font
+): void {
+  const context = new NewContext(canvas, font);
+  context.clear();
+  const layout = new Layout(context);
+
+  layout.add(
+    <view
+      style={{
+        backgroundColor: "#ff00ff",
+        width: 200,
+        height: 100,
+        top: 100,
+        left: 100,
+        borderRadius: 30,
+      }}
+    ></view>
+  );
+
+  layout.render();
+  context.flush();
+}
+
 export const fixtures = [
   {
     callback: landingExample,
@@ -1505,5 +1530,11 @@ export const fixtures = [
     title: "Polygons",
     description:
       'Example of drawing arbitrary shapes – here a map from <a href="https://www.openstreetmap.org/#map=18/60.26608/24.98888" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> data with building numbers overlayed on top of their shapes.',
+  },
+  {
+    callback: borderRadiusExample,
+    title: "Border radius",
+    description:
+      "Border radius can be specified for each corner individually, or for all corners at once.",
   },
 ];

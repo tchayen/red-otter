@@ -169,6 +169,66 @@ export type Style = {
   bottom?: number;
 
   /**
+   * TODO
+   */
+  border?: number;
+
+  /**
+   * TODO
+   */
+  borderTop?: number;
+
+  /**
+   * TODO
+   */
+  borderRight?: number;
+
+  /**
+   * TODO
+   */
+  borderBottom?: number;
+
+  /**
+   * TODO
+   */
+  borderLeft?: number;
+
+  /**
+   * TODO
+   */
+  borderRadius?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusTop?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusBottom?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusTopLeft?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusTopRight?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusBottomLeft?: number;
+
+  /**
+   * TODO
+   */
+  borderRadiusBottomRight?: number;
+
+  /**
    * Space around children. More specific properties override it.
    */
   padding?: number;
@@ -320,6 +380,27 @@ function resolvePaddingAndMargin(input: Style): Style {
     input.marginLeft ?? input.marginHorizontal ?? input.margin ?? 0;
   input.marginRight =
     input.marginRight ?? input.marginHorizontal ?? input.margin ?? 0;
+
+  input.borderRadiusTopLeft =
+    input.borderRadiusTopLeft ??
+    input.borderRadiusTop ??
+    input.borderRadius ??
+    0;
+  input.borderRadiusTopRight =
+    input.borderRadiusTopRight ??
+    input.borderRadiusTop ??
+    input.borderRadius ??
+    0;
+  input.borderRadiusBottomLeft =
+    input.borderRadiusBottomLeft ??
+    input.borderRadiusBottom ??
+    input.borderRadius ??
+    0;
+  input.borderRadiusBottomRight =
+    input.borderRadiusBottomRight ??
+    input.borderRadiusBottom ??
+    input.borderRadius ??
+    0;
 
   return input;
 }
@@ -533,6 +614,9 @@ export function addView(
           ...resolvePaddingAndMargin(viewDefaults),
           points,
           type,
+          // TODO: remove
+          // width,
+          // height,
           thickness:
             "thickness" in attributes ? attributes.thickness : undefined,
         },
