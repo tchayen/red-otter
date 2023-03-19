@@ -1143,12 +1143,198 @@ export function complexUIExample(context: Context, font: Font): Layout {
   return layout;
 }
 
+export function landingExample(context: Context, font: Font): Layout {
+  const layout = new Layout(context, { readCSSVariables: true });
+
+  const container: Style = {
+    width: "100%",
+    height: "100%",
+    backgroundColor: zinc[900],
+  };
+
+  const menu: Style = {
+    flexDirection: "row",
+    gap: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: zinc[800],
+    alignSelf: "stretch",
+  };
+
+  const content: Style = {
+    padding: 24,
+    gap: 16,
+    flex: 1,
+  };
+
+  const headerText: TextStyle = {
+    color: zinc[100],
+    fontFamily: font,
+    fontSize: 24,
+  };
+
+  const text: TextStyle = {
+    color: zinc[400],
+    fontFamily: font,
+    fontSize: 14,
+  };
+
+  const overlay: Style = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const dialog: Style = {
+    backgroundColor: zinc[800],
+    padding: 24,
+    gap: 24,
+  };
+
+  const paragraphs: Style = {
+    gap: 16,
+  };
+
+  const row: Style = {
+    flexDirection: "row",
+    gap: 24,
+    alignSelf: "flex-end",
+  };
+
+  const buttonSecondary: Style = {
+    backgroundColor: zinc[600],
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const buttonText: TextStyle = {
+    color: zinc[100],
+    fontFamily: font,
+    fontSize: 16,
+  };
+
+  const buttonPrimary: Style = {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "--yellow",
+  };
+
+  const buttonPrimaryText: TextStyle = {
+    color: "#000",
+    fontFamily: font,
+    fontSize: 16,
+  };
+
+  const checkboxLine: Style = {
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  };
+
+  const checkbox: Style = {
+    height: 16,
+    width: 16,
+    backgroundColor: "--yellow",
+  };
+
+  const footer: Style = {
+    flexDirection: "row",
+    gap: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: zinc[800],
+    alignSelf: "stretch",
+    justifyContent: "space-around",
+  };
+
+  layout.add(
+    <view style={container}>
+      <view style={menu}>
+        <text style={text}>File</text>
+        <text style={text}>Edit</text>
+        <text style={text}>Run</text>
+        <text style={text}>Terminal</text>
+        <text style={text}>Window</text>
+        <text style={text}>Help</text>
+      </view>
+      <view style={content}>
+        <text style={headerText}>Welcome to Red Otter!</text>
+        <text style={text}>I can render rectangles and letter.</text>
+        <text style={text}>
+          I can do flexbox layout, position: absolute, z-index. Everything you
+          would expect from a layout engine!
+        </text>
+      </view>
+      <view style={footer}>
+        <text style={text}>main*</text>
+        <text style={text}>Ln: 1257, Col 38</text>
+        <text style={text}>UTF-8</text>
+        <text style={text}>LF</text>
+        <text style={text}>TypeScript</text>
+      </view>
+      <view style={overlay}>
+        <view style={dialog}>
+          <text style={headerText}>A modal</text>
+          <view style={paragraphs}>
+            <text style={text}>
+              All elements here take part in automatic layout.
+            </text>
+            <text style={text}>No hardocoded sizes or positions.</text>
+            <text style={text}>Everything is rendered by the library.</text>
+          </view>
+          <view style={checkboxLine}>
+            <view style={checkbox}>
+              <shape
+                type="polygon"
+                color="#000"
+                points={[
+                  [3.5, 6.5],
+                  [6.5, 9.5],
+                  [12.5, 3.5],
+                  [14, 5],
+                  [6.5, 12.5],
+                  [2, 8],
+                ]}
+              />
+            </view>
+            <text style={text}>Even the tick icon.</text>
+          </view>
+          <view style={row}>
+            <view style={buttonSecondary}>
+              <text style={buttonText}>Cancel</text>
+            </view>
+            <view style={buttonPrimary}>
+              <text style={buttonPrimaryText}>Confirm</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  );
+
+  return layout;
+}
+
 export const fixtures = [
+  {
+    callback: landingExample,
+    title: "First example",
+    description:
+      "Example layout made with <code>red-otter</code>. Everything is rendered using the library.",
+  },
   {
     callback: complexUIExample,
     title: "Complex UI",
-    description:
-      "Example of a bit more complex UI. Everything you see in the next canvas was generated using <code>red-otter</code>.",
+    description: "Example of a bit more complex UI.",
   },
   {
     callback: textExample,

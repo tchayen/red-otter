@@ -464,6 +464,10 @@ const replace = `
       <p>
         For editor to correctly highlight TypeScript code, add to <code>compilerOptions</code> in <code>tsconfig.json</code>:
       </p>
+      <p>
+        If you want to quickly try something – try one of the
+        <code>/examples</code>.
+      </p>
       ${codeExample(
         `{
   "jsx": "react",
@@ -508,96 +512,6 @@ context.flush();
         { language: "typescript" }
       )}
       ${showCodeBlocks()}
-      ${addHeader(2, "Interactivity WIP")}
-      <p>
-        Interactive UI controls are not part of this version. <strong>Everything
-        that follows is a draft/RFC of the API design</strong>.
-      </p>
-      <p>
-        I've been prototyping UI controls for months now and I have working
-        implementations of buttons, dropdowns and text inputs, so it shouldn't
-        take very long to get them into the library.
-      </p>
-
-      ${addHeader(3, "Animation frame loop")}
-      <p>
-        Very common way of rendering UI in games is called immediate mode GUI.
-        It basically means that UI elements are drawn every frame. In similar
-        fashion, one simple way of using this library is to follow the same
-        method.
-      </p>
-      ${codeExample(
-        `const context = new Context(canvas, font);
-
-function frame() {
-  context.clear();
-
-  // Draw UI continuously in the loop.
-  const layout = new Layout(context.getCanvas().clientWidth, context.getCanvas().clientHeight);
-  layout.add(
-    <view style={{ padding: 20, backgroundColor: "#fff" }}>
-      <text style={{ fontFamily: font, fontSize: 20, color: "#000" }}>Hello</text>
-    </view>
-  )
-  layout.render();
-
-  context.flush();
-
-  window.requestAnimationFrame(frame);
-}
-
-frame();`,
-        { language: "typescript" }
-      )}
-      ${addHeader(3, "Button")}
-      ${codeExample(
-        `layout.add(
-  <button
-    onClick={() => {
-      alert("Hello!");
-    }}
-  >
-    {({ hovered, pressed }) => (
-      <view style={{
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        backgroundColor: pressed ? zinc[900] : hovered ? zinc[700] : zinc[800],
-      }}>
-        <text style={{ fontFamily: font, fontSize: 16, color: "#fff" }}>Click me</text>
-      </view>
-    )}
-  </button>
-)`,
-        { language: "typescript" }
-      )}
-      ${addHeader(3, "Input")}
-      ${codeExample(
-        `let value = "";
-
-const onChange = (next: string) => {
-  value = next;
-}
-
-// In the loop:
-layout.add(
-  <input placeholder="Type here" onChange={onChange} />
-);`,
-        { language: "typescript" }
-      )}
-      ${addHeader(3, "Checkbox")}
-      ${codeExample(
-        `let checked = false;
-
-const onChange = (next: boolean) => {
-  checked = next;
-}
-
-// In the loop:
-layout.add(
-  <checkbox checked={checked} onChange={onChange} />
-);`,
-        { language: "typescript" }
-      )}
       ${addHeader(2, "Generating font atlas")}
       <p>
         The goal is to allow for both runtime and build step generation.
@@ -1329,3 +1243,95 @@ console.debug(`${chalk.yellow("Total")} ${(total / 1000).toFixed(2)}s`);
 //   </svg>
 //   <span>Reddit</span>
 // </a>
+
+//       ${addHeader(2, "Interactivity WIP")}
+//       <p>
+//         Interactive UI controls are not part of this version. <strong>Everything
+//         that follows is a draft/RFC of the API design</strong>.
+//       </p>
+//       <p>
+//         I've been prototyping UI controls for months now and I have working
+//         implementations of buttons, dropdowns and text inputs, so it shouldn't
+//         take very long to get them into the library.
+//       </p>
+
+//       ${addHeader(3, "Animation frame loop")}
+//       <p>
+//         Very common way of rendering UI in games is called immediate mode GUI.
+//         It basically means that UI elements are drawn every frame. In similar
+//         fashion, one simple way of using this library is to follow the same
+//         method.
+//       </p>
+//       ${codeExample(
+//         `const context = new Context(canvas, font);
+
+// function frame() {
+//   context.clear();
+
+//   // Draw UI continuously in the loop.
+//   const layout = new Layout(context);
+
+//   layout.add(
+//     <view style={{ padding: 20, backgroundColor: "#fff" }}>
+//       <text style={{ fontFamily: font, fontSize: 20, color: "#000" }}>Hello</text>
+//     </view>
+//   )
+
+//   layout.render();
+//   context.flush();
+
+//   window.requestAnimationFrame(frame);
+// }
+
+// frame();`,
+//         { language: "typescript" }
+//       )}
+//       ${addHeader(3, "Button")}
+//       ${codeExample(
+//         `layout.add(
+//   <button
+//     onClick={() => {
+//       alert("Hello!");
+//     }}
+//   >
+//     {({ hovered, pressed }) => (
+//       <view style={{
+//         paddingHorizontal: 16,
+//         paddingVertical: 8,
+//         backgroundColor: pressed ? zinc[900] : hovered ? zinc[700] : zinc[800],
+//       }}>
+//         <text style={{ fontFamily: font, fontSize: 16, color: "#fff" }}>Click me</text>
+//       </view>
+//     )}
+//   </button>
+// )`,
+//         { language: "typescript" }
+//       )}
+//       ${addHeader(3, "Input")}
+//       ${codeExample(
+//         `let value = "";
+
+// const onChange = (next: string) => {
+//   value = next;
+// }
+
+// // In the loop:
+// layout.add(
+//   <input placeholder="Type here" onChange={onChange} />
+// );`,
+//         { language: "typescript" }
+//       )}
+//       ${addHeader(3, "Checkbox")}
+//       ${codeExample(
+//         `let checked = false;
+
+// const onChange = (next: boolean) => {
+//   checked = next;
+// }
+
+// // In the loop:
+// layout.add(
+//   <checkbox checked={checked} onChange={onChange} />
+// );`,
+//         { language: "typescript" }
+//       )}

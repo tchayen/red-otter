@@ -9,6 +9,7 @@
     "tsc": "tsc",
     "build": "yarn font-atlas && yarn generate && vite build",
     "serve": "vite preview",
+    "watch": "nodemon -w src -e ts,tsx --exec 'yarn generate'",
     "generate": "yarn run ts-node --esm --swc --experimentalSpecifierResolution=node src/build.ts",
     "font-atlas": "yarn run ts-node --esm --swc --experimentalSpecifierResolution=node font-atlas/generate.ts"
   },
@@ -21,6 +22,7 @@
     "@types/prettier": "^2.7.2",
     "chalk": "^4.1.2",
     "highlight.js": "^11.7.0",
+    "nodemon": "^2.0.21",
     "prettier": "^2.8.4",
     "puppeteer-core": "^19.7.5",
     "ts-node": "^10.9.1",

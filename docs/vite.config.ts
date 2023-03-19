@@ -1,5 +1,6 @@
 import { fileURLToPath } from "url";
 import { defineConfig, Plugin } from "vite";
+
 /**
  * Vite plugin to configure esbuild to use the `f` function as the JSX factory.
  */

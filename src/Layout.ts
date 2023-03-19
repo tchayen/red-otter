@@ -125,7 +125,9 @@ export type Style = {
   /**
    * Supported formats: `#f00`, `#ff0000`, `rgb(255, 0, 0)`, `rgba(255, 0, 0, 0.5)`, `hsl(60, 100%, 50%)`, `hsl(60 100% 50%)`, `hsla(30, 60%, 90%, 0.8)`, `hsla(30 60% 90% 0.8)`, `hsla(30 60% 90% / 0.8)`.
    *
-   * You can provide option `readCSSVariables` to `Layout()` constructor and then you can use CSS variables in color values by their names, ie. `var(--my-color)` is accessed by `my-color`.
+   * You can pass `readCSSVariables` to `options` argument in `Layout()`
+   * constructor and then you can use CSS variables in color values by their
+   * names, ie. `var(--my-color)` is accessed by `my-color`.
    */
   backgroundColor?: string;
 
@@ -228,21 +230,27 @@ export type TextStyle = {
   color?: string;
 };
 
+type Input =
+  | Style
+  | (Style &
+      // Remove the optional properties and add them as required (plus change
+      // color from string to Vec4).
+      Omit<TextStyle, "fontSize"> & {
+        text: string;
+        fontSize: number;
+      })
+  | (Style & ShapeAttributes);
+
+type ResolvedInput = {
+  [K in keyof Input]-?: NonNullable<Input[K]>;
+};
+
 /**
  * Fixed view is a view with all layout properties calculated. Output of
  * `flush()`, used by `render()`.
  */
 export type FixedView = {
-  input:
-    | Style
-    | (Style &
-        // Remove the optional properties and add them as required (plus change
-        // color from string to Vec4).
-        Omit<TextStyle, "fontSize"> & {
-          text: string;
-          fontSize: number;
-        })
-    | (Style & ShapeAttributes);
+  input: Input;
   x: number;
   y: number;
   width: number;
@@ -724,15 +732,7 @@ export class Layout {
 
       forwardQueue.enqueue(element);
 
-      const { input } = element.value;
-
-      // TODO: adjust typing so at this point we know those are defined.
-      invariant(input.paddingBottom !== undefined, "Padding is undefined.");
-      invariant(input.paddingLeft !== undefined, "Padding is undefined.");
-      invariant(input.paddingRight !== undefined, "Padding is undefined.");
-      invariant(input.paddingTop !== undefined, "Padding is undefined.");
-
-      invariant(input.gap !== undefined, "Gap is undefined.");
+      const input = element.value.input as ResolvedInput;
 
       if (typeof input.width === "number") {
         element.value.width = input.width;
@@ -747,44 +747,23 @@ export class Layout {
 
         let p = element.firstChild;
         while (p) {
-          invariant(
-            p.value.input.marginBottom !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginLeft !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginRight !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginTop !== undefined,
-            "Margin is undefined."
-          );
-
-          if (p.value.width || typeof p.value.input.width === "number") {
+          const childInput = p.value.input as ResolvedInput;
+          if (p.value.width || typeof childInput.width === "number") {
             if (
               input.flexDirection === "row" &&
-              p.value.input.position === "relative"
+              childInput.position === "relative"
             ) {
               element.value.width +=
-                p.value.width +
-                p.value.input.marginLeft +
-                p.value.input.marginRight;
+                p.value.width + childInput.marginLeft + childInput.marginRight;
             }
 
             if (
               input.flexDirection === "column" &&
-              p.value.input.position === "relative"
+              childInput.position === "relative"
             ) {
-              // TODO: margin?
               element.value.width = Math.max(
                 element.value.width,
-                p.value.width +
-                  p.value.input.marginLeft +
-                  p.value.input.marginRight
+                p.value.width + childInput.marginLeft + childInput.marginRight
               );
             }
           }
@@ -807,49 +786,29 @@ export class Layout {
 
         let p = element.firstChild;
         while (p) {
-          invariant(
-            p.value.input.marginBottom !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginLeft !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginRight !== undefined,
-            "Margin is undefined."
-          );
-          invariant(
-            p.value.input.marginTop !== undefined,
-            "Margin is undefined."
-          );
+          const childInput = p.value.input as ResolvedInput;
 
-          if (p.value.height || typeof p.value.input.height === "number") {
+          if (p.value.height || typeof childInput.height === "number") {
             if (
               input.flexDirection === "column" &&
               p.value.input.position === "relative"
             ) {
               element.value.height +=
-                p.value.height +
-                p.value.input.marginTop +
-                p.value.input.marginBottom;
+                p.value.height + childInput.marginTop + childInput.marginBottom;
             }
 
             if (
               input.flexDirection === "row" &&
               p.value.input.position === "relative"
             ) {
-              // TODO: margin?
               element.value.height = Math.max(
                 element.value.height,
-                p.value.height +
-                  p.value.input.marginTop +
-                  p.value.input.marginBottom
+                p.value.height + childInput.marginTop + childInput.marginBottom
               );
             }
           }
 
-          if (p.value.input.position === "relative") {
+          if (childInput.position === "relative") {
             childrenCount += 1;
           }
 
@@ -878,7 +837,12 @@ export class Layout {
       const parentWidth = element.parent?.value.width ?? 0;
       const parentHeight = element.parent?.value.height ?? 0;
 
-      const { input } = element.value;
+      const input = element.value.input as ResolvedInput;
+
+      invariant(
+        input.flex ? input.flex >= 0 : true,
+        "Flex cannot be negative."
+      );
 
       if (typeof input.width === "string") {
         element.value.width = toPercentage(input.width) * parentWidth;
@@ -949,16 +913,6 @@ export class Layout {
         }
       }
 
-      invariant(input.gap !== undefined, "Gap is undefined.");
-      invariant(
-        input.flex ? input.flex >= 0 : true,
-        "Flex cannot be negative."
-      );
-      invariant(input.paddingBottom !== undefined, "Padding is undefined.");
-      invariant(input.paddingLeft !== undefined, "Padding is undefined.");
-      invariant(input.paddingRight !== undefined, "Padding is undefined.");
-      invariant(input.paddingTop !== undefined, "Padding is undefined.");
-
       // Apply align self.
       if (element.value.input.position !== "absolute" && element.parent) {
         if (element.parent.value.input.flexDirection === "row") {
@@ -973,7 +927,8 @@ export class Layout {
             element.value.y =
               element.value.y +
               element.parent.value.height -
-              element.value.height;
+              element.value.height -
+              2 * (element.parent.value.input.paddingBottom ?? 0);
           }
 
           if (input.alignSelf === "stretch") {
@@ -993,7 +948,8 @@ export class Layout {
             element.value.x =
               element.value.x +
               element.parent.value.width -
-              element.value.width;
+              element.value.width -
+              2 * (element.parent.value.input.paddingRight ?? 0);
           }
 
           if (input.alignSelf === "stretch") {
@@ -1109,16 +1065,6 @@ export class Layout {
 
         p = p.next;
       }
-
-      invariant(input.paddingBottom !== undefined, "Padding is undefined.");
-      invariant(input.paddingLeft !== undefined, "Padding is undefined.");
-      invariant(input.paddingRight !== undefined, "Padding is undefined.");
-      invariant(input.paddingTop !== undefined, "Padding is undefined.");
-
-      invariant(input.marginBottom !== undefined, "Margin is undefined.");
-      invariant(input.marginLeft !== undefined, "Margin is undefined.");
-      invariant(input.marginRight !== undefined, "Margin is undefined.");
-      invariant(input.marginTop !== undefined, "Margin is undefined.");
 
       element.value.x += input.marginLeft;
       element.value.y += input.marginTop;

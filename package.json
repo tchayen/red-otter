@@ -21,7 +21,8 @@
     "run-checks": "yarn tsc && yarn lint && yarn test",
     "docs:dev": "cd docs; yarn dev",
     "docs:build": "cd docs; yarn build",
-    "docs:generate": "cd docs; yarn generate"
+    "docs:generate": "cd docs; yarn generate",
+    "docs:watch": "cd docs; yarn watch"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.55.0",
