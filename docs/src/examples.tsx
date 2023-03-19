@@ -1195,7 +1195,7 @@ export function complexUIExample(canvas: HTMLCanvasElement, font: Font): void {
 }
 
 export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
-  const context = new Context(canvas, font);
+  const context = new NewContext(canvas, font);
   context.clear();
   const layout = new Layout(context, { readCSSVariables: true });
 
@@ -1245,6 +1245,7 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
 
   const dialog: Style = {
     backgroundColor: zinc[800],
+    borderRadius: 10,
   };
 
   const headerLine: Style = {
@@ -1257,8 +1258,11 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
 
   const closeButton: Style = {
     backgroundColor: zinc[700],
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
   };
 
   const separator: Style = {
@@ -1274,7 +1278,7 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
 
   const row: Style = {
     flexDirection: "row",
-    gap: 24,
+    gap: 12,
     padding: 20,
     alignSelf: "flex-end",
   };
@@ -1282,9 +1286,10 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   const buttonSecondary: Style = {
     backgroundColor: zinc[600],
     paddingHorizontal: 16,
-    paddingVertical: 8,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 16,
+    height: 32,
   };
 
   const buttonText: TextStyle = {
@@ -1295,10 +1300,11 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
 
   const buttonPrimary: Style = {
     paddingHorizontal: 16,
-    paddingVertical: 8,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "--yellow",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    height: 32,
   };
 
   const buttonPrimaryText: TextStyle = {
@@ -1316,7 +1322,8 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   const checkbox: Style = {
     height: 16,
     width: 16,
-    backgroundColor: "--yellow",
+    borderRadius: 2,
+    backgroundColor: "#fff",
   };
 
   const footer: Style = {
@@ -1433,16 +1440,31 @@ export function borderRadiusExample(
   const layout = new Layout(context);
 
   layout.add(
-    <view
-      style={{
-        backgroundColor: "#ff00ff",
-        width: 200,
-        height: 100,
-        top: 100,
-        left: 100,
-        borderRadius: 30,
-      }}
-    ></view>
+    <view>
+      <view
+        style={{
+          backgroundColor: "#ff00ff",
+          width: 200,
+          height: 100,
+          top: 100,
+          left: 100,
+          borderRadius: 30,
+        }}
+      ></view>
+      <view
+        style={{
+          backgroundColor: "#fff",
+          width: 100,
+          height: 100,
+          top: 200,
+          left: 100,
+          borderRadiusTopLeft: 10,
+          borderRadiusTopRight: 20,
+          borderRadiusBottomLeft: 30,
+          borderRadiusBottomRight: 40,
+        }}
+      ></view>
+    </view>
   );
 
   layout.render();

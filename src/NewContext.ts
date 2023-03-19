@@ -57,6 +57,13 @@ float contour(float width, float distance) {
   return smoothstep(buffer - width, buffer + width, distance);
 }
 
+float distanceFromRectangle(vec2 p, float radius) {
+  // Distance from the current pixel to the closest point on the edge of the rounded rectangle.
+  vec2 q = abs(p) - (rectangle_size / 2.0 - vec2(radius));
+
+  return length(max(vec2(0.0), -q)) + min(max(q.x, q.y), 0.0) - length(max(q, vec2(0.0))) + radius;
+}
+
 void main() {
   if (uv.x != -1.0 && uv.y != -1.0) {
     float distance = texture(u_texture, uv).a;
@@ -71,9 +78,9 @@ void main() {
     vec4 box = vec4(uv - d_uv, uv + d_uv);
 
     float a_sum = contour(width, texture(u_texture, box.xy).a)
-               + contour(width, texture(u_texture, box.zw).a)
-               + contour(width, texture(u_texture, box.xw).a)
-               + contour(width, texture(u_texture, box.zy).a);
+                + contour(width, texture(u_texture, box.zw).a)
+                + contour(width, texture(u_texture, box.xw).a)
+                + contour(width, texture(u_texture, box.zy).a);
 
     // Extra points have weight 0.5, main point 1, total 3.
     alpha = (alpha + 0.5 * a_sum) / 3.0;
@@ -87,17 +94,24 @@ void main() {
 
     // Show UV.
     // frag_color = vec4(1, 0, 0, 0.5);
+  } else if (rectangle_size.x < 0.0) {
+    frag_color = color;
   } else {
     vec2 center = rectangle_size / 2.0;
     vec2 p = gl_FragCoord.xy - corner - center;
-    vec2 size = rectangle_size / 2.0;
-    float radius = border_radius.x;
 
-    // Distance from the current pixel to the closest point on the edge of the rounded rectangle.
-    vec2 q = abs(p) - (size - vec2(radius));
+    // Pick border radius for the current corner.
+    float radius = border_radius.w;
+    if (p.x > 0.0 && p.y > 0.0) {
+      radius = border_radius.y;
+    } else if (p.x < 0.0 && p.y > 0.0) {
+      radius = border_radius.x;
+    } else if (p.x < 0.0 && p.y < 0.0) {
+      radius = border_radius.z;
+    }
 
-    float sdf = length(max(vec2(0.0), -q)) + min(max(q.x, q.y), 0.0) - length(max(q, vec2(0.0))) + radius;
-    float alpha = 1.0 - smoothstep(0.0, -0.1, sdf);
+    float sdf = distanceFromRectangle(p, radius);
+    float alpha = 1.0 - smoothstep(0.5, -0.5, sdf);
 
     frag_color = vec4(color.rgb, alpha * color.a);
   }
@@ -118,7 +132,7 @@ export class NewContext implements IContext {
   private positions: Vec2[] = [];
   private uvs: Vec2[] = [];
   private colors: Vec4[] = [];
-  private upperLeftCorners: Vec2[] = [];
+  private bottomLeftCorners: Vec2[] = [];
   private rectangleSizes: Vec2[] = [];
   private borderRadii: Vec4[] = [];
 
@@ -128,7 +142,7 @@ export class NewContext implements IContext {
   private readonly positionBuffer: WebGLBuffer | null = null;
   private readonly uvBuffer: WebGLBuffer | null = null;
   private readonly colorBuffer: WebGLBuffer | null = null;
-  private readonly upperLeftCornerBuffer: WebGLBuffer | null = null;
+  private readonly bottomLeftCornerBuffer: WebGLBuffer | null = null;
   private readonly rectangleSizeBuffer: WebGLBuffer | null = null;
   private readonly borderRadiusBuffer: WebGLBuffer | null = null;
 
@@ -166,7 +180,7 @@ export class NewContext implements IContext {
     this.positionBuffer = this.gl.createBuffer();
     this.uvBuffer = this.gl.createBuffer();
     this.colorBuffer = this.gl.createBuffer();
-    this.upperLeftCornerBuffer = this.gl.createBuffer();
+    this.bottomLeftCornerBuffer = this.gl.createBuffer();
     this.rectangleSizeBuffer = this.gl.createBuffer();
     this.borderRadiusBuffer = this.gl.createBuffer();
     this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -184,7 +198,7 @@ export class NewContext implements IContext {
     this.positions.push(...vertices.reverse());
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.upperLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+    this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
     this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
   }
@@ -198,7 +212,7 @@ export class NewContext implements IContext {
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.upperLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+    this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
     this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
   }
@@ -210,7 +224,7 @@ export class NewContext implements IContext {
     this.positions.push(...points);
     this.uvs.push(...points.map(() => NO_DATA_VEC2));
     this.colors.push(...points.map(() => color));
-    this.upperLeftCorners.push(...points.map(() => NO_DATA_VEC2));
+    this.bottomLeftCorners.push(...points.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...points.map(() => NO_DATA_VEC2));
     this.borderRadii.push(...points.map(() => NO_DATA_VEC4));
   }
@@ -234,9 +248,13 @@ export class NewContext implements IContext {
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.upperLeftCorners.push(
+    this.bottomLeftCorners.push(
       ...vertices.map(
-        () => new Vec2(vertices[0].x, 600 - vertices[0].y - size.y)
+        () =>
+          new Vec2(
+            vertices[0].x,
+            this.gl.canvas.height - vertices[0].y - size.y
+          )
       )
     );
     this.rectangleSizes.push(...vertices.map(() => size));
@@ -364,7 +382,7 @@ export class NewContext implements IContext {
       this.positions.push(...vertices);
       this.uvs.push(...uvs);
       this.colors.push(...vertices.map(() => parsedColor));
-      this.upperLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+      this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
       this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
       this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
     }
@@ -384,8 +402,8 @@ export class NewContext implements IContext {
     invariant(
       this.positions.length === this.uvs.length &&
         this.uvs.length === this.colors.length &&
-        this.colors.length === this.upperLeftCorners.length &&
-        this.upperLeftCorners.length === this.rectangleSizes.length &&
+        this.colors.length === this.bottomLeftCorners.length &&
+        this.bottomLeftCorners.length === this.rectangleSizes.length &&
         this.rectangleSizes.length === this.borderRadii.length,
       "Buffers are not equal in size."
     );
@@ -402,8 +420,8 @@ export class NewContext implements IContext {
       this.colors.map((v) => [v.x, v.y, v.z, v.w]).flat()
     );
 
-    const upperLeftCornerData = new Float32Array(
-      this.upperLeftCorners.map((v) => [v.x, v.y]).flat()
+    const bottomLeftCornerData = new Float32Array(
+      this.bottomLeftCorners.map((v) => [v.x, v.y]).flat()
     );
 
     const rectangleSizeData = new Float32Array(
@@ -420,7 +438,7 @@ export class NewContext implements IContext {
     const POSITION_SIZE = 2;
     const UV_SIZE = 2;
     const COLOR_SIZE = 4;
-    const UPPER_LEFT_CORNER_SIZE = 2;
+    const BOTTOM_LEFT_CORNER_SIZE = 2;
     const RECTANGLE_SIZE = 2;
     const BORDER_RADIUS_SIZE = 4;
 
@@ -450,19 +468,22 @@ export class NewContext implements IContext {
     this.gl.enableVertexAttribArray(2);
     this.gl.vertexAttribPointer(2, COLOR_SIZE, this.gl.FLOAT, false, 0, 0);
 
-    // Set up upper left corner buffer.
-    invariant(this.upperLeftCornerBuffer, "Upper left corner VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.upperLeftCornerBuffer);
+    // Set up bottom left corner buffer.
+    invariant(
+      this.bottomLeftCornerBuffer,
+      "Bottom left corner VBO is missing."
+    );
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bottomLeftCornerBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
-      upperLeftCornerData,
+      bottomLeftCornerData,
       this.gl.STATIC_DRAW
     );
 
     this.gl.enableVertexAttribArray(3);
     this.gl.vertexAttribPointer(
       3,
-      UPPER_LEFT_CORNER_SIZE,
+      BOTTOM_LEFT_CORNER_SIZE,
       this.gl.FLOAT,
       false,
       0,
@@ -511,7 +532,7 @@ export class NewContext implements IContext {
     this.positions = [];
     this.uvs = [];
     this.colors = [];
-    this.upperLeftCorners = [];
+    this.bottomLeftCorners = [];
     this.rectangleSizes = [];
     this.borderRadii = [];
   }
