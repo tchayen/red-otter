@@ -17,7 +17,9 @@ const zinc = {
 // restructure it so each example is an object instead of this weird function
 // with title and description.
 
-export function textExample(context: Context, font: Font): Layout {
+export function textExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context, { readCSSVariables: true });
 
   const text =
@@ -34,10 +36,16 @@ export function textExample(context: Context, font: Font): Layout {
   layout.text(text, font, 12, "#fff", 0, 130);
   layout.text(text, font, 10, "#fff", 0, 150);
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function justifyContentExample(context: Context, font: Font): Layout {
+export function justifyContentExample(
+  canvas: HTMLCanvasElement,
+  font: Font
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -116,10 +124,13 @@ export function justifyContentExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function alignItemsExample(context: Context, font: Font): Layout {
+export function alignItemsExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -179,10 +190,13 @@ export function alignItemsExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function alignSelfExample(context: Context, font: Font): Layout {
+export function alignSelfExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -243,10 +257,13 @@ export function alignSelfExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function flexExample(context: Context, font: Font): Layout {
+export function flexExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -289,10 +306,16 @@ export function flexExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function percentageSizeExample(context: Context, font: Font): Layout {
+export function percentageSizeExample(
+  canvas: HTMLCanvasElement,
+  font: Font
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -341,10 +364,16 @@ export function percentageSizeExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function positionRelativeExample(context: Context, font: Font): Layout {
+export function positionRelativeExample(
+  canvas: HTMLCanvasElement,
+  font: Font
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -387,13 +416,16 @@ export function positionRelativeExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
 export function paddingMarginAndGapExample(
-  context: Context,
+  canvas: HTMLCanvasElement,
   font: Font
-): Layout {
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -444,12 +476,15 @@ export function paddingMarginAndGapExample(
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 export function positionAbsoluteAndZIndexExample(
-  context: Context,
+  canvas: HTMLCanvasElement,
   font: Font
-): Layout {
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -500,13 +535,16 @@ export function positionAbsoluteAndZIndexExample(
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
 export function leftRightTopBottomExample(
-  context: Context,
+  canvas: HTMLCanvasElement,
   font: Font
-): Layout {
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -561,10 +599,16 @@ export function leftRightTopBottomExample(
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function mappingOverArrayExample(context: Context, font: Font): Layout {
+export function mappingOverArrayExample(
+  canvas: HTMLCanvasElement,
+  font: Font
+): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -650,13 +694,16 @@ export function mappingOverArrayExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
 export async function polygonsExample(
-  context: Context,
+  canvas: HTMLCanvasElement,
   font: Font
-): Promise<Layout> {
+): Promise<void> {
+  const context = new Context(canvas, font);
+  context.clear();
   const response = await fetch("/map.json");
   const map: {
     features: {
@@ -794,10 +841,13 @@ export async function polygonsExample(
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function complexUIExample(context: Context, font: Font): Layout {
+export function complexUIExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context);
 
   const container: Style = {
@@ -1140,10 +1190,13 @@ export function complexUIExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
-export function landingExample(context: Context, font: Font): Layout {
+export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
+  const context = new Context(canvas, font);
+  context.clear();
   const layout = new Layout(context, { readCSSVariables: true });
 
   const container: Style = {
@@ -1192,17 +1245,37 @@ export function landingExample(context: Context, font: Font): Layout {
 
   const dialog: Style = {
     backgroundColor: zinc[800],
-    padding: 24,
-    gap: 24,
+  };
+
+  const headerLine: Style = {
+    padding: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignSelf: "stretch",
+    alignItems: "center",
+  };
+
+  const closeButton: Style = {
+    backgroundColor: zinc[700],
+    width: 24,
+    height: 24,
+  };
+
+  const separator: Style = {
+    backgroundColor: zinc[700],
+    height: 1,
+    alignSelf: "stretch",
   };
 
   const paragraphs: Style = {
     gap: 16,
+    padding: 24,
   };
 
   const row: Style = {
     flexDirection: "row",
     gap: 24,
+    padding: 20,
     alignSelf: "flex-end",
   };
 
@@ -1283,31 +1356,57 @@ export function landingExample(context: Context, font: Font): Layout {
       </view>
       <view style={overlay}>
         <view style={dialog}>
-          <text style={headerText}>A modal</text>
+          <view style={headerLine}>
+            <text style={headerText}>This is a modal</text>
+            <view style={closeButton}>
+              <view>
+                <shape
+                  type="polygon"
+                  color={zinc[400]}
+                  points={[
+                    [6, 4],
+                    [12, 10],
+                    [18, 4],
+                    [20, 6],
+                    [14, 12],
+                    [20, 18],
+                    [18, 20],
+                    [12, 14],
+                    [6, 20],
+                    [4, 18],
+                    [10, 12],
+                    [4, 6],
+                  ]}
+                />
+              </view>
+            </view>
+          </view>
+          <view style={separator} />
           <view style={paragraphs}>
             <text style={text}>
               All elements here take part in automatic layout.
             </text>
-            <text style={text}>No hardocoded sizes or positions.</text>
+            <text style={text}>No manually typed sizes or positions.</text>
             <text style={text}>Everything is rendered by the library.</text>
-          </view>
-          <view style={checkboxLine}>
-            <view style={checkbox}>
-              <shape
-                type="polygon"
-                color="#000"
-                points={[
-                  [3.5, 6.5],
-                  [6.5, 9.5],
-                  [12.5, 3.5],
-                  [14, 5],
-                  [6.5, 12.5],
-                  [2, 8],
-                ]}
-              />
+            <view style={checkboxLine}>
+              <view style={checkbox}>
+                <shape
+                  type="polygon"
+                  color="#000"
+                  points={[
+                    [3.5, 6.5],
+                    [6.5, 9.5],
+                    [12.5, 3.5],
+                    [14, 5],
+                    [6.5, 12.5],
+                    [2, 8],
+                  ]}
+                />
+              </view>
+              <text style={text}>Even the tick icon.</text>
             </view>
-            <text style={text}>Even the tick icon.</text>
           </view>
+          <view style={separator} />
           <view style={row}>
             <view style={buttonSecondary}>
               <text style={buttonText}>Cancel</text>
@@ -1321,7 +1420,8 @@ export function landingExample(context: Context, font: Font): Layout {
     </view>
   );
 
-  return layout;
+  layout.render();
+  context.flush();
 }
 
 export const fixtures = [

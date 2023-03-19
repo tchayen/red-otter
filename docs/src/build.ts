@@ -99,7 +99,7 @@ function showCodeBlocks(): string {
 
       const code = fixtureSources[callback.name]
         .split("\n")
-        .slice(lineWithLayout + 1, -3) // Remove function declaration and return statement.
+        .slice(lineWithLayout + 1, -4) // Remove function declaration and return statement.
         .map((line) => line.replace(/^ {2}/, "")) // Remove indentation.
         .join("\n");
 
@@ -423,38 +423,6 @@ const replace = `
         Those are bold claims and current state is far from it, but this
         actually gives a good picture of the roadmap.
       </p>
-      ${addHeader(2, "Roadmap")}
-      <p>
-        Talking about roadmap, here is an unordered list of things that need a
-        lot attention before the 1.0 release.
-      </p>
-      <ul>
-        <li>
-          Some missing layout features: <code>flex-wrap</code>,
-          <code>flex-grow</code>, <code>flex-shrink</code>, <code>overflow:
-          hidden</code>, <code>aspect-ratio</code>.
-        </li>
-        <li>
-          <strong>Styling</strong>: <code>border-radius</code>,
-          <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
-        </li>
-        <li>
-          <strong>Interactivity</strong>: UI controls like button, text input.
-        </li>
-        <li>
-          Better <strong>text rendering</strong>: test more fonts, nested text
-          elements, text alignment.
-        </li>
-        <li>
-          <strong>Benchmarks</strong>: start measuring performance, find weak
-          spots and fix them.
-        </li>
-        <li>
-          <strong>Accessibility</strong>: it will be a hard topic to cover and I
-          might in the end abandon it, but I have some ideas about maintaining
-          a mirror DOM tree for screen reader support.
-        </li>
-      </ul>
       ${addHeader(2, "Install")}
       ${codeExample(`yarn add red-otter`, { language: "bash" })}
       <p>
@@ -1044,6 +1012,60 @@ layout.add(
       }
       ${addHeader(2, "API reference")}
       ${showApiReferences()}
+      ${addHeader(2, "What is missing")}
+      <p>
+        Talking about roadmap, here is an unordered list of things that need a
+        lot attention before the 1.0 release.
+      </p>
+      <ul>
+        <li>
+          Some missing layout features: <code>flex-wrap</code>,
+          <code>flex-grow</code>, <code>flex-shrink</code>, <code>overflow:
+          hidden</code>, <code>aspect-ratio</code>.
+        </li>
+        <li>
+          <strong>Styling</strong>: <code>border-radius</code>,
+          <code>border</code>, <code>box-shadow</code>, <code>opacity</code>.
+        </li>
+        <li>
+          <strong>Interactivity</strong>: UI controls like button, text input.
+        </li>
+        <li>
+          Better <strong>text rendering</strong>: test more fonts, nested text
+          elements, text alignment.
+        </li>
+        <li>
+          <strong>Benchmarks</strong>: start measuring performance, find weak
+          spots and fix them.
+        </li>
+        <li>
+          <strong>Accessibility</strong>: it will be a hard topic to cover and I
+          might in the end abandon it, but I have some ideas about maintaining
+          a mirror DOM tree for screen reader support.
+        </li>
+      </ul>
+      ${addHeader(2, "Roadmap")}
+      <ul>
+        <li>
+          First thing on my mind is a new renderer (new <code>Context</code>
+          class?) that will enable more styling features: rounded rectangles,
+          box shadows, borders. It's quite well researched topic so it should be
+          just a matter of time
+          [${linkExternal(
+            "https://www.warp.dev/blog/how-to-draw-styled-rectangles-using-the-gpu-and-metal",
+            "1"
+          )}],
+          [${linkExternal(
+            "https://madebyevan.com/shaders/fast-rounded-rectangle-shadows",
+            "2"
+          )}],
+          [${linkExternal(
+            "https://raphlinus.github.io/graphics/2020/04/21/blurred-rounded-rects.html",
+            "3"
+          )}],
+          [${linkExternal("http://stereopsis.com/shadowrect/", "4")}].
+        </li>
+      </ul>
       ${addHeader(2, "Testing")}
       <p>
         To write unit tests for layout, you will need a class implementing
@@ -1113,18 +1135,6 @@ layout.add(
           ${linkExternal(
             "https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817",
             "Drawing Text with Signed Distance Fields in Mapbox GL"
-          )}.
-      </li>
-      <li>
-          ${linkExternal(
-            "https://madebyevan.com/shaders/fast-rounded-rectangle-shadows/",
-            "Fast Rounded Rectangle Shadows"
-          )}.
-      </li>
-      <li>
-          ${linkExternal(
-            "https://zed.dev/blog/videogame",
-            "Leveraging Rust and the GPU to render user interfaces at 120 FPS"
           )}.
       </li>
       <p>

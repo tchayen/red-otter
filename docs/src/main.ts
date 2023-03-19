@@ -1,9 +1,20 @@
 import { toURLSafe, invariant } from "../utils";
-import { Context, Font } from "../../src";
+import { Font } from "../../src";
 import { fixtures } from "./examples";
 
 import "./main.css";
 import "./github-dark.css";
+
+const rendered = new Set<string>();
+
+function checkVisible(element: HTMLElement): boolean {
+  const rectangle = element.getBoundingClientRect();
+  const viewHeight = Math.max(
+    document.documentElement.clientHeight,
+    window.innerHeight
+  );
+  return !(rectangle.bottom < 0 || rectangle.top - viewHeight >= 0);
+}
 
 async function mainAsync(): Promise<void> {
   const isMobile = window.innerWidth < 768;
@@ -23,27 +34,28 @@ async function mainAsync(): Promise<void> {
       invariant(canvas instanceof HTMLCanvasElement, "Canvas not found.");
 
       const button = document.getElementById(`${callbackName}-button`);
-      invariant(button instanceof HTMLButtonElement, "Button not found.");
 
       const run = async (): Promise<void> => {
-        const context = new Context(canvas, font);
-        context.clear();
-
-        const start = performance.now();
-        const layout = await callback(context, font);
-        layout.render();
-        const end = performance.now();
-        context.flush();
-
-        console.debug(`Rendered ${title} in ${(end - start).toFixed(2)}ms.`);
-
-        button.remove();
+        await callback(canvas, font);
+        console.debug(`Rendered ${title}.`);
       };
 
       if (isMobile) {
-        button.addEventListener("click", run);
+        button?.addEventListener("click", () => {
+          run();
+          button.remove();
+        });
       } else {
-        run();
+        window.addEventListener("scroll", () => {
+          if (checkVisible(canvas) && !rendered.has(callbackName)) {
+            run();
+            rendered.add(callbackName);
+
+            if (button) {
+              button.remove();
+            }
+          }
+        });
       }
     }
   } catch (error) {

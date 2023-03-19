@@ -28,25 +28,25 @@ body {
   margin-top: 24px;
   margin-bottom: 24px;
   overflow-x: auto;
+  height: 600px;
+  position: relative;
   display: flex; /* Prevents black space from appearing below the <canvas>. */
-  justify-content: center;
-  align-items: center;
 }
 
 .run-button {
   position: absolute;
-  background-color: #fff;
-  font-family: Inter, sans-serif;
-  font-size: 16px;
+  top: 64px;
+  left: 64px;
+  border: none;
+  font-size: 18px;
   font-weight: 600;
+  border-radius: 8px;
+  background-color: var(--zinc-600);
+  color: #fff;
   padding-left: 16px;
   padding-right: 16px;
   padding-top: 8px;
   padding-bottom: 8px;
-  border-radius: 8px;
-  color: #000;
-  border: none;
-  cursor: pointer;
 }
 
 #content {

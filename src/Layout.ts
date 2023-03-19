@@ -44,6 +44,17 @@ if (typeof window !== "undefined") {
 }
 
 /**
+ * Here I am hijacking global `ę` value to make the element constructing
+ * function globally visible without requiring user to import it (and then have
+ * warnings about unused variable).
+ */
+declare global {
+  function ę(...args: Parameters<typeof addView>): ReturnType<typeof addView>;
+}
+
+globalThis.ę = addView;
+
+/**
  * Available components.
  */
 export type Component = "view" | "text" | "shape";
@@ -176,6 +187,7 @@ export type Style = {
    * Overrides `margin` and `marginHorizontal` properties.
    */
   paddingLeft?: number;
+
   /**
    * Overrides `margin` and `marginHorizontal` properties.
    */
@@ -185,6 +197,7 @@ export type Style = {
    * Overrides `margin` and `marginVertical` properties.
    */
   paddingTop?: number;
+
   /**
    *  Overrides `margin` and `marginVertical` properties.
    */
@@ -209,6 +222,7 @@ export type Style = {
    * Overrides `margin` and `marginHorizontal` properties.
    */
   marginLeft?: number;
+
   /**
    * Overrides `margin` and `marginHorizontal` properties.
    */
@@ -218,6 +232,7 @@ export type Style = {
    * Overrides `margin` and `marginVertical` properties.
    */
   marginTop?: number;
+
   /**
    *  Overrides `margin` and `marginVertical` properties.
    */
@@ -530,17 +545,6 @@ export function addView(
   }
 }
 
-/**
- * Here I am hijacking global `ę` value to make the element constructing
- * function globally visible without requiring user to import it (and then have
- * warnings about unused variable).
- */
-declare global {
-  function ę(...args: Parameters<typeof addView>): ReturnType<typeof addView>;
-}
-
-globalThis.ę = addView;
-
 type LayoutOptions = {
   readCSSVariables?: boolean;
 };
@@ -838,6 +842,7 @@ export class Layout {
       const parentHeight = element.parent?.value.height ?? 0;
 
       const input = element.value.input as ResolvedInput;
+      const parentInput = element.parent?.value.input as ResolvedInput;
 
       invariant(
         input.flex ? input.flex >= 0 : true,
@@ -915,7 +920,7 @@ export class Layout {
 
       // Apply align self.
       if (element.value.input.position !== "absolute" && element.parent) {
-        if (element.parent.value.input.flexDirection === "row") {
+        if (parentInput.flexDirection === "row") {
           if (input.alignSelf === "center") {
             element.value.y =
               element.value.y +
@@ -928,15 +933,19 @@ export class Layout {
               element.value.y +
               element.parent.value.height -
               element.value.height -
-              2 * (element.parent.value.input.paddingBottom ?? 0);
+              parentInput.paddingBottom -
+              parentInput.paddingTop;
           }
 
           if (input.alignSelf === "stretch") {
-            element.value.height = element.parent.value.height;
+            element.value.height =
+              element.parent.value.height -
+              parentInput.paddingBottom -
+              parentInput.paddingTop;
           }
         }
 
-        if (element.parent.value.input.flexDirection === "column") {
+        if (parentInput.flexDirection === "column") {
           if (input.alignSelf === "center") {
             element.value.x =
               element.value.x +
@@ -949,11 +958,15 @@ export class Layout {
               element.value.x +
               element.parent.value.width -
               element.value.width -
-              2 * (element.parent.value.input.paddingRight ?? 0);
+              parentInput.paddingLeft -
+              parentInput.paddingRight;
           }
 
           if (input.alignSelf === "stretch") {
-            element.value.width = element.parent.value.width;
+            element.value.width =
+              element.parent.value.width -
+              parentInput.paddingLeft -
+              parentInput.paddingRight;
           }
         }
       }
@@ -1244,6 +1257,12 @@ export class Layout {
         }
       }
 
+      // Round to whole pixels.
+      element.value.x = Math.round(element.value.x);
+      element.value.y = Math.round(element.value.y);
+      element.value.width = Math.round(element.value.width);
+      element.value.height = Math.round(element.value.height);
+
       // Hide parts of views that overflow parent. Similarly, fix UV
       // coordinates for text.
       // TODO: implement this.
@@ -1312,10 +1331,20 @@ export class Layout {
           );
         }
       } else {
+        if (view.backgroundColor.w === 0) {
+          continue;
+        }
+
         this.context.rectangle(
           new Vec2(view.x, view.y),
           new Vec2(view.width, view.height),
-          view.backgroundColor
+          view.backgroundColor,
+          new Vec4(
+            view.input.borderRadiusTopLeft,
+            view.input.borderRadiusTopRight,
+            view.input.borderRadiusBottomRight,
+            view.input.borderRadiusBottomLeft
+          )
         );
       }
     }

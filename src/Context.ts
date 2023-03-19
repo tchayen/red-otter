@@ -6,6 +6,7 @@ import { triangulateLine } from "./math/triangulateLine";
 import { triangulatePolygon } from "./math/triangulatePolygon";
 import { Font } from "./fonts/Font";
 import { parseColor } from "./parseColor";
+import { createProgram, createShader } from "./WebGLUtils";
 
 const DEBUG_TEXT_RENDERING_SHOW_CAPSIZE = false;
 const DEBUG_TEXT_RENDERING_SHOW_GLYPHS = false;
@@ -79,51 +80,6 @@ void main() {
 
 const NO_TEXTURE = new Vec2(-1, -1);
 
-function createShader(
-  gl: WebGL2RenderingContext,
-  type: number,
-  source: string
-): WebGLShader | null {
-  const shader = gl.createShader(type);
-  invariant(shader, "Shader creation failed.");
-
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-
-  if (success) {
-    return shader;
-  }
-
-  console.error(gl.getShaderInfoLog(shader));
-  gl.deleteShader(shader);
-
-  return null;
-}
-
-function createProgram(
-  gl: WebGL2RenderingContext,
-  vertexShader: WebGLShader,
-  fragmentShader: WebGLShader
-): WebGLProgram | null {
-  const program = gl.createProgram();
-  invariant(program, "Program creation failed.");
-
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-
-  const success = gl.getProgramParameter(program, gl.LINK_STATUS);
-  if (success) {
-    return program;
-  }
-
-  console.error(gl.getProgramInfoLog(program));
-  gl.deleteProgram(program);
-
-  return null;
-}
-
 export interface IContext {
   /**
    * Get canvas element.
@@ -136,8 +92,8 @@ export interface IContext {
   line(points: Vec2[], thickness: number, color: Vec4): void;
 
   /**
-   * Triangulates and draws given polygon.
-   * TODO: only takes CW/CCW. Make sure which. Flip direction if needed.
+   * Triangulates and draws given polygon. Assumes that polygon is convex.
+   * Vertices must be in clockwise order.
    */
   polygon(points: Vec2[], color: Vec4): void;
 
