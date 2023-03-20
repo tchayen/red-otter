@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import { performance } from "node:perf_hooks";
 import hljs from "highlight.js";
 import chalk from "chalk";
-
 import typescript from "highlight.js/lib/languages/typescript";
 import { PluginItem, transformSync } from "@babel/core";
 

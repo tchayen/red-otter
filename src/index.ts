@@ -1,5 +1,4 @@
 export * from "./Context";
-export * from "./NewContext";
 export * from "./Layout";
 
 export * from "./fonts/Font";

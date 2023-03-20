@@ -1,4 +1,4 @@
-import { NewContext, Context, Font, Layout, Style, TextStyle } from "../../src";
+import { Context, Font, Layout, Style, TextStyle } from "../../src";
 
 const zinc = {
   50: "#fafafa",
@@ -858,7 +858,7 @@ export async function polygonsExample(
 }
 
 export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
-  const context = new NewContext(canvas, font);
+  const context = new Context(canvas, font);
   context.clear();
   const layout = new Layout(context, { readCSSVariables: true });
 
@@ -1115,7 +1115,7 @@ export function borderRadiusAndBorderWidthExample(
   canvas: HTMLCanvasElement,
   font: Font
 ): void {
-  const context = new NewContext(canvas, font);
+  const context = new Context(canvas, font);
   context.clear();
   const layout = new Layout(context, { readCSSVariables: true });
 
