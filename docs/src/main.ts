@@ -36,7 +36,7 @@ async function mainAsync(): Promise<void> {
       const button = document.getElementById(`${callbackName}-button`);
 
       const run = async (): Promise<void> => {
-        await callback(canvas, font);
+        Promise.resolve(await callback(canvas, font));
         console.debug(`Rendered ${title}.`);
       };
 

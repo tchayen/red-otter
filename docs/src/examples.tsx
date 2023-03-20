@@ -1173,7 +1173,11 @@ export function borderRadiusAndBorderWidthExample(
   context.flush();
 }
 
-export const fixtures = [
+export const fixtures: {
+  title: string;
+  description: string;
+  callback(canvas: HTMLCanvasElement, font: Font): Promise<void> | void;
+}[] = [
   {
     callback: landingExample,
     title: "First example",
