@@ -3,12 +3,19 @@ import { Vec4 } from "./math/Vec4";
 /**
  * https://stackoverflow.com/a/54014428
  */
-function hslToRgb(h: number, s: number, l: number): number[] {
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   const a = s * Math.min(l, 1 - l);
   const f = (n: number, k = (n + h / 30) % 12): number =>
     l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
 
   return [f(0), f(8), f(4)];
+}
+
+function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
+  const f = (n: number, k = (n + h / 60) % 6): number =>
+    v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+
+  return [f(5), f(3), f(1)];
 }
 
 /**
@@ -30,6 +37,10 @@ function hslToRgb(h: number, s: number, l: number): number[] {
  * - `hsla(30, 60%, 90%, 0.8)`
  * - `hsla(30 60% 90% 0.8)`
  * - `hsla(30 60% 90% / 0.8)`
+ *
+ * ### HSV
+ *
+ * See HSL.
  */
 export function parseColor(color: string): Vec4 {
   if (color.startsWith("#")) {
@@ -79,6 +90,27 @@ export function parseColor(color: string): Vec4 {
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);
+  } else if (color.startsWith("hsv")) {
+    const separator = color.includes(",") ? "," : " ";
+    const hasAlpha = color[3] === "a";
+    const channels = color.slice(hasAlpha ? 5 : 4, -1).split(separator);
+
+    if (color.includes("/")) {
+      channels[3] = channels[4];
+      channels.pop();
+    }
+
+    const alpha = hasAlpha ? Number(channels[3]) : 1;
+    const converted = hsvToRgb(
+      Number(channels[0]),
+      Number(channels[1].slice(0, -1)) / 100,
+      Number(channels[2].slice(0, -1)) / 100
+    );
+
+    return new Vec4(converted[0], converted[1], converted[2], alpha);
+  } else if (color.startsWith("oklab")) {
+    // Soon :')
+    throw new Error(`Unsupported color: ${color}.`);
   } else if (window.cssVariables.has(color)) {
     return parseColor(window.cssVariables.get(color)?.trim() as string);
   } else {

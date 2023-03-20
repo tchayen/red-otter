@@ -182,9 +182,9 @@ export class Font {
   }
 
   /**
-   * Calculates layout information for a given text string and font size.
+   * Calculates shape information for a given text string and font size.
    */
-  getTextLayout(
+  getTextShape(
     text: string,
     fontSize: number
   ): {

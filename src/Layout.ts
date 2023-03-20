@@ -134,7 +134,16 @@ export type Style = {
   zIndex?: number;
 
   /**
-   * Supported formats: `#f00`, `#ff0000`, `rgb(255, 0, 0)`, `rgba(255, 0, 0, 0.5)`, `hsl(60, 100%, 50%)`, `hsl(60 100% 50%)`, `hsla(30, 60%, 90%, 0.8)`, `hsla(30 60% 90% 0.8)`, `hsla(30 60% 90% / 0.8)`.
+   * Supported formats are: hex, RGB, HSL, HSV.
+   *
+   * Hex can be in short form (e.g. `#fff`) or long form (e.g. `#ffffff`).
+   *
+   * RGB (`rgb(255, 0, 0)`) can also have alpha channel: `rgba(255, 0, 0, 0.5)`.
+   *
+   * HSL (`hsl(60, 100%, 50%)`) can also have alpha channel: `hsla(30, 60%, 90%, 0.8)`.
+   * Commas are optional (e.g. `hsl(60 100% 50%)`). Alpha channel can also be separated by `/` (e.g. `hsla(30 60% 90% / 0.8)`).
+   *
+   * Exactly the same rules apply to HSV as to HSL.
    *
    * You can pass `readCSSVariables` to `options` argument in `Layout()`
    * constructor and then you can use CSS variables in color values by their
@@ -153,6 +162,10 @@ export type Style = {
    *
    * If view is positioned `relative`, this property is an offset from the
    * calculated layout position (but it doesn't affect layout of siblings).
+   *
+   * If `width` is not defined and both `left` and `right` are set, then the
+   * element will stretch to fill the space between the two offsets. Similarly
+   * for `height`.
    */
   top?: number;
   /**
@@ -169,67 +182,67 @@ export type Style = {
   bottom?: number;
 
   /**
-   * TODO
+   * Color of the border. See `backgroundColor` for supported formats.
    */
   borderColor?: string;
 
   /**
-   * TODO
+   * Width of the border. Default value is <code>0</code>.
    */
   borderWidth?: number;
 
   /**
-   * TODO
+   * Border width at the top edge of the view.
    */
   borderTopWidth?: number;
 
   /**
-   * TODO
+   * Border width at the right edge of the view.
    */
   borderRightWidth?: number;
 
   /**
-   * TODO
+   * Border width at the bottom edge of the view.
    */
   borderBottomWidth?: number;
 
   /**
-   * TODO
+   * Border width at the left edge of the view.
    */
   borderLeftWidth?: number;
 
   /**
-   * TODO
+   * Corner radius. Default value is <code>0</code>.
    */
   borderRadius?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property.
    */
   borderRadiusTop?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property.
    */
   borderRadiusBottom?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property and `borderRadiusTop` property.
    */
   borderRadiusTopLeft?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property and `borderRadiusTop` property.
    */
   borderRadiusTopRight?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property and `borderRadiusBottom` property.
    */
   borderRadiusBottomLeft?: number;
 
   /**
-   * TODO
+   * Overrides `borderRadius` property and `borderRadiusBottom` property.
    */
   borderRadiusBottomRight?: number;
 
@@ -239,12 +252,12 @@ export type Style = {
   padding?: number;
 
   /**
-   * Overrides `padding` property but is less important than `paddingLeft` or `paddingRight`.
+   * Overrides `padding` property.
    */
   paddingHorizontal?: number;
 
   /**
-   * Overrides `padding` property, less important than `paddingTop` or `paddingBottom`.
+   * Overrides `padding` property.
    */
   paddingVertical?: number;
 
@@ -572,9 +585,8 @@ export function addView(
         ...style,
       };
 
-      const layout = font.getTextLayout(text, styleWithDefaults.fontSize);
-
-      const { width, height } = layout.boundingRectangle;
+      const shape = font.getTextShape(text, styleWithDefaults.fontSize);
+      const { width, height } = shape.boundingRectangle;
 
       return new TreeNode<FixedView>({
         input: {
@@ -759,9 +771,8 @@ export class Layout {
     const parent = this.current;
     invariant(parent !== null, "No parent view.");
 
-    const layout = font.getTextLayout(text, fontSize);
-
-    const { width, height } = layout.boundingRectangle;
+    const shape = font.getTextShape(text, fontSize);
+    const { width, height } = shape.boundingRectangle;
 
     const node = new TreeNode({
       input: {

@@ -409,24 +409,21 @@ export class NewContext implements IContext {
     invariant(this.fontAtlasTexture, "Font atlas texture does not exist.");
     invariant(metadata, "Font metadata does not exist.");
 
-    const layout = this.font.getTextLayout(text, fontSize);
+    const shape = this.font.getTextShape(text, fontSize);
 
     if (DEBUG_TEXT_RENDERING_SHOW_CAPSIZE) {
       this.rectangle(
         new Vec2(x, y),
-        new Vec2(
-          layout.boundingRectangle.width,
-          layout.boundingRectangle.height
-        ),
+        new Vec2(shape.boundingRectangle.width, shape.boundingRectangle.height),
         new Vec4(1, 0, 1, 0.3)
       );
     }
 
     const textUVs = text.split("").map((c) => this.font.getUV(c.charCodeAt(0)));
 
-    for (let i = 0; i < layout.positions.length; i++) {
-      const position = layout.positions[i].add(new Vec2(x, y));
-      const size = layout.sizes[i];
+    for (let i = 0; i < shape.positions.length; i++) {
+      const position = shape.positions[i].add(new Vec2(x, y));
+      const size = shape.sizes[i];
 
       const vertices = [
         new Vec2(position.x, position.y),

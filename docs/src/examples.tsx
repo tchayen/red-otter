@@ -800,7 +800,13 @@ export async function polygonsExample(
         if (shape.type === "building") {
           return (
             <view style={absolute}>
-              <view style={{ position: "absolute" }}>
+              <view
+                style={{
+                  position: "absolute",
+                  left: Math.min(...shape.points.map((p) => p[0])),
+                  top: Math.min(...shape.points.map((p) => p[1])),
+                }}
+              >
                 <shape
                   type="polygon"
                   points={shape.points.reverse()}
@@ -826,7 +832,13 @@ export async function polygonsExample(
         if (shape.type === "road") {
           return (
             <view style={absolute}>
-              <view style={{ position: "absolute" }}>
+              <view
+                style={{
+                  position: "absolute",
+                  left: Math.min(...shape.points.map((p) => p[0])),
+                  top: Math.min(...shape.points.map((p) => p[1])),
+                }}
+              >
                 <shape
                   type="line"
                   points={shape.points.reverse()}
@@ -838,357 +850,6 @@ export async function polygonsExample(
           );
         }
       })}
-    </view>
-  );
-
-  layout.render();
-  context.flush();
-}
-
-export function complexUIExample(canvas: HTMLCanvasElement, font: Font): void {
-  const context = new Context(canvas, font);
-  context.clear();
-  const layout = new Layout(context);
-
-  const container: Style = {
-    width: "100%",
-    height: "100%",
-    backgroundColor: zinc[900],
-    flexDirection: "row",
-    alignItems: "stretch",
-  };
-
-  const header: Style = {
-    height: 32,
-    paddingHorizontal: 8,
-    justifyContent: "center",
-    backgroundColor: zinc[800],
-    alignSelf: "stretch",
-  };
-
-  const headerText: TextStyle = {
-    fontFamily: font,
-    fontSize: 16,
-    color: "#fff",
-  };
-
-  const sectionsColumn: Style = {
-    alignItems: "stretch",
-    height: "100%",
-  };
-
-  const section: Style = {
-    alignItems: "stretch",
-  };
-
-  const verticalSeparator: Style = {
-    width: 1,
-    backgroundColor: zinc[700],
-    alignSelf: "stretch",
-  };
-
-  const horizontalSeparator: Style = {
-    height: 1,
-    backgroundColor: zinc[700],
-    alignSelf: "stretch",
-  };
-
-  // Timeline
-  const timeline: Style = {
-    alignSelf: "stretch",
-    backgroundColor: zinc[900],
-    height: 379, // TODO: this is hardcoded.
-  };
-
-  const timelineItems: Style = {
-    position: "absolute",
-    left: 20,
-    top: 50,
-    height: 83,
-    width: 260,
-  };
-
-  const timelineItem: Style = {
-    position: "absolute",
-    height: 20,
-    paddingHorizontal: 4,
-    justifyContent: "center",
-  };
-
-  const timelineInterval: Style = {
-    position: "absolute",
-    width: 1,
-    height: "100%",
-    backgroundColor: zinc[700],
-    top: 33,
-  };
-
-  const timelineText: TextStyle = {
-    fontFamily: font,
-    fontSize: 12,
-    color: "#000",
-  };
-
-  const timelineHeaderText: TextStyle = {
-    fontFamily: font,
-    fontSize: 12,
-    color: zinc[500],
-  };
-
-  // Table
-  const table: Style = {
-    flexDirection: "row",
-  };
-
-  const tableColumn: Style = {
-    alignItems: "stretch",
-  };
-
-  const tableCell: Style = {
-    height: 24,
-    justifyContent: "center",
-    paddingHorizontal: 8,
-    backgroundColor: zinc[900],
-  };
-
-  const even: Style = {
-    backgroundColor: zinc[800],
-  };
-
-  const tableHeaderCell: Style = {
-    ...tableCell,
-    backgroundColor: zinc[800],
-  };
-
-  const tableCellText: TextStyle = {
-    fontFamily: font,
-    fontSize: 14,
-    color: zinc[400],
-  };
-
-  const tableCellHeaderText: TextStyle = {
-    fontFamily: font,
-    fontSize: 14,
-    color: "#fff",
-  };
-
-  const tableCellLinkText: TextStyle = {
-    fontFamily: font,
-    fontSize: 14,
-    color: "#8ab4f8",
-  };
-
-  // Settings
-  const checkbox: Style = {
-    height: 16,
-    width: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#8ab4f8",
-  };
-
-  const settings: Style = {
-    gap: 20,
-    padding: 16,
-    backgroundColor: zinc[800],
-    flex: 1,
-    alignSelf: "stretch",
-  };
-
-  const settingsOption: Style = {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  };
-
-  const settingsTexts: Style = {
-    gap: 8,
-  };
-
-  const settingsSubHeaderText: TextStyle = {
-    fontFamily: font,
-    fontSize: 14,
-    color: "#fff",
-  };
-
-  const settingsDescriptionText: TextStyle = {
-    fontFamily: font,
-    fontSize: 12,
-    color: zinc[400],
-  };
-
-  layout.add(
-    <view style={container}>
-      <view style={sectionsColumn}>
-        <view style={[section, { flex: 1 }]}>
-          <view style={header}>
-            <text style={headerText}>Timeline</text>
-          </view>
-          <view style={horizontalSeparator} />
-          <view style={timeline}>
-            <view style={{ position: "absolute", left: 64, top: 8 }}>
-              <text style={timelineHeaderText}>800ms</text>
-            </view>
-            <view style={{ position: "absolute", left: 141, top: 8 }}>
-              <text style={timelineHeaderText}>810ms</text>
-            </view>
-            <view style={{ position: "absolute", left: 220, top: 8 }}>
-              <text style={timelineHeaderText}>820ms</text>
-            </view>
-            <view style={[timelineInterval, { left: 79 }]} />
-            <view style={[timelineInterval, { left: 159 }]} />
-            <view style={[timelineInterval, { left: 239 }]} />
-            <view style={timelineItems}>
-              <view
-                style={[
-                  timelineItem,
-                  { width: 260, backgroundColor: "#899df0" },
-                ]}
-              >
-                <text style={timelineText}>mainAsync</text>
-              </view>
-              <view
-                style={[
-                  timelineItem,
-                  { width: 205, backgroundColor: "#dc99fc", top: 21, left: 5 },
-                ]}
-              >
-                <text style={timelineText}>loadTexture</text>
-              </view>
-              <view
-                style={[
-                  timelineItem,
-                  { width: 175, backgroundColor: "#dcbb64", top: 42, left: 15 },
-                ]}
-              >
-                <text style={timelineText}>texImage2D</text>
-              </view>
-              <view
-                style={[
-                  timelineItem,
-                  { width: 105, backgroundColor: "#6eac72", top: 63, left: 45 },
-                ]}
-              >
-                <text style={timelineText}>Image Decode</text>
-              </view>
-            </view>
-          </view>
-        </view>
-        <view style={[horizontalSeparator, { backgroundColor: zinc[600] }]} />
-        <view style={section}>
-          <view style={header}>
-            <text style={headerText}>Statistics</text>
-          </view>
-          <view style={horizontalSeparator} />
-          <view style={table}>
-            <view style={tableColumn}>
-              <view style={tableHeaderCell}>
-                <text style={tableCellHeaderText}>Function</text>
-              </view>
-              <view style={horizontalSeparator} />
-              <view style={tableCell}>
-                <text style={tableCellText}>Image Decode</text>
-              </view>
-              <view style={[tableCell, even]}>
-                <text style={tableCellText}>texImage2D</text>
-              </view>
-              <view style={tableCell}>
-                <text style={tableCellText}>loadTexture</text>
-              </view>
-              <view style={[tableCell, even]}>
-                <text style={tableCellText}>mainAsync</text>
-              </view>
-            </view>
-            <view style={verticalSeparator} />
-            <view style={tableColumn}>
-              <view style={tableHeaderCell}>
-                <text style={tableCellHeaderText}>Location</text>
-              </view>
-              <view style={horizontalSeparator} />
-              <view style={tableCell}></view>
-              <view style={[tableCell, even]}></view>
-              <view style={tableCell}>
-                <text style={tableCellLinkText}>index.js:449:3</text>
-              </view>
-              <view style={[tableCell, even]}>
-                <text style={tableCellLinkText}>main.ts:5:16</text>
-              </view>
-            </view>
-            <view style={verticalSeparator} />
-            <view style={tableColumn}>
-              <view style={tableHeaderCell}>
-                <text style={tableCellHeaderText}>Total time</text>
-              </view>
-              <view style={horizontalSeparator} />
-              <view style={tableCell}>
-                <text style={tableCellText}>10.08ms</text>
-              </view>
-              <view style={[tableCell, even]}>
-                <text style={tableCellText}>16.66ms</text>
-              </view>
-              <view style={tableCell}>
-                <text style={tableCellText}>19.81ms</text>
-              </view>
-              <view style={[tableCell, even]}>
-                <text style={tableCellText}>24.23ms</text>
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-      <view style={[verticalSeparator, { backgroundColor: zinc[600] }]} />
-      <view style={[section, { flex: 1 }]}>
-        <view style={header}>
-          <text style={headerText}>Settings</text>
-        </view>
-        <view style={horizontalSeparator} />
-        <view style={settings}>
-          <view style={settingsOption}>
-            <view style={checkbox}>
-              <shape
-                type="polygon"
-                color="#000"
-                points={[
-                  [3.5, 6.5],
-                  [6.5, 9.5],
-                  [12.5, 3.5],
-                  [14, 5],
-                  [6.5, 12.5],
-                  [2, 8],
-                ]}
-              />
-            </view>
-            <view style={settingsTexts}>
-              <text style={settingsSubHeaderText}>Enable source maps</text>
-              <text style={settingsDescriptionText}>
-                This might require some changes to your bundler settings.
-              </text>
-            </view>
-          </view>
-          <view style={settingsOption}>
-            <view style={checkbox}>
-              <shape
-                type="polygon"
-                color="#000"
-                points={[
-                  [3.5, 6.5],
-                  [6.5, 9.5],
-                  [12.5, 3.5],
-                  [14, 5],
-                  [6.5, 12.5],
-                  [2, 8],
-                ]}
-              />
-            </view>
-            <view style={settingsTexts}>
-              <text style={settingsSubHeaderText}>Show internal functions</text>
-              <text style={settingsDescriptionText}>
-                Include browser APIs outside of your source code.
-              </text>
-            </view>
-          </view>
-        </view>
-      </view>
     </view>
   );
 
@@ -1450,44 +1111,61 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   context.flush();
 }
 
-export function borderRadiusExample(
+export function borderRadiusAndBorderWidthExample(
   canvas: HTMLCanvasElement,
   font: Font
 ): void {
   const context = new NewContext(canvas, font);
   context.clear();
-  const layout = new Layout(context);
+  const layout = new Layout(context, { readCSSVariables: true });
+
+  const text: TextStyle = {
+    fontFamily: font,
+    fontSize: 14,
+    color: "#fff",
+  };
 
   layout.add(
-    <view>
+    <view
+      style={{
+        padding: 20,
+        gap: 20,
+      }}
+    >
       <view
         style={{
-          backgroundColor: "#ff00ff",
-          width: 200,
-          height: 100,
-          top: 100,
-          left: 100,
-          borderRadius: 30,
+          backgroundColor: zinc[700],
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          borderBottomWidth: 2,
+          borderColor: "--yellow",
+          borderRadiusTop: 8,
         }}
-      ></view>
+      >
+        <text style={text}>This is a view with a border</text>
+      </view>
       <view
         style={{
-          backgroundColor: "#000",
-          width: 150,
-          height: 150,
-          top: 200,
-          left: 100,
-          borderColor: "#ffd000",
-          borderBottomWidth: 10,
-          borderLeftWidth: 20,
-          borderRightWidth: 30,
-          borderTopWidth: 40,
-          borderRadiusTopLeft: 10,
-          borderRadiusTopRight: 20,
-          borderRadiusBottomLeft: 30,
-          borderRadiusBottomRight: 40,
+          backgroundColor: zinc[600],
+          width: 240,
+          height: 120,
+          padding: 20,
+          borderColor: zinc[400],
+          borderBottomWidth: 2,
+          borderLeftWidth: 4,
+          borderRightWidth: 4,
+          borderTopWidth: 8,
+          borderRadiusTopLeft: 2,
+          borderRadiusTopRight: 4,
+          borderRadiusBottomLeft: 8,
+          borderRadiusBottomRight: 16,
+          gap: 8,
         }}
-      ></view>
+      >
+        <text style={text}>This is a view where each</text>
+        <text style={text}>corner and edge have different</text>
+        <text style={text}>border and radius</text>
+      </view>
     </view>
   );
 
@@ -1501,11 +1179,6 @@ export const fixtures = [
     title: "First example",
     description:
       "Example layout made with <code>red-otter</code>. Everything is rendered using the library.",
-  },
-  {
-    callback: complexUIExample,
-    title: "Complex UI",
-    description: "Example of a bit more complex UI.",
   },
   {
     callback: textExample,
@@ -1578,9 +1251,9 @@ export const fixtures = [
       'Example of drawing arbitrary shapes – here a map from <a href="https://www.openstreetmap.org/#map=18/60.26608/24.98888" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> data with building numbers overlayed on top of their shapes.',
   },
   {
-    callback: borderRadiusExample,
-    title: "Border radius",
+    callback: borderRadiusAndBorderWidthExample,
+    title: "Border radius and border width",
     description:
-      "Border radius can be specified for each corner individually, or for all corners at once.",
+      "Border radius can be specified for each corner individually, or for all corners at once. Border width similarly can be specified for each edge or for all at once. You also need to specify <code>borderColor</code> to see the border.",
   },
 ];

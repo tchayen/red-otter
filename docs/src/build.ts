@@ -232,12 +232,16 @@ function formatMethodName(method: Method): string {
 }
 
 function showApiReferences(): string {
+  const styleProperties =
+    apiExports.types.find((t) => t.name === "Style")?.properties ?? [];
+
   return `${addHeader(3, "Style")}
-  <p>Styling available for views.</p>
+  <p>
+    Styling available for views. ${styleProperties.length} properties in total.
+  </p>
   <div class="style-table">
-    ${apiExports.types
-      .find((t) => t.name === "Style")
-      ?.properties.map(
+    ${styleProperties
+      .map(
         (p) =>
           `<div>${p.name}</div>
           <div>${p.type}</div>
