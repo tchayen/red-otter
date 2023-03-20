@@ -3,7 +3,7 @@ import { Vec4 } from "./math/Vec4";
 import { Queue } from "./Queue";
 import { Font } from "./fonts/Font";
 import { parseColor } from "./parseColor";
-import { IContext } from "./Context";
+import { IContext } from "./IContext";
 import { Vec2 } from "./math/Vec2";
 
 type ViewAttributes = { style?: Style | Style[] };

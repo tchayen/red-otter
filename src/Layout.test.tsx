@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IContext } from "./Context";
+import { IContext } from "./IContext";
 import { Layout } from "./Layout";
 
 class MockContext implements IContext {
