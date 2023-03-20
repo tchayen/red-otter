@@ -105,7 +105,14 @@ export interface IContext {
   /**
    * Draw rectangle.
    */
-  rectangle(position: Vec2, size: Vec2, color: Vec4): void;
+  rectangle(
+    position: Vec2,
+    size: Vec2,
+    color: Vec4,
+    borderRadius?: Vec4,
+    borderWidth?: Vec4,
+    borderColor?: Vec4
+  ): void;
 
   /**
    * Clears the screen.

@@ -19,6 +19,8 @@ layout (location = 2) in vec4 a_color;
 layout (location = 3) in vec2 a_corner;
 layout (location = 4) in vec2 a_rectangle_size;
 layout (location = 5) in vec4 a_border_radius;
+layout (location = 6) in vec4 a_border_width;
+layout (location = 7) in vec4 a_border_color;
 
 uniform mat4 u_matrix;
 
@@ -27,6 +29,8 @@ out vec4 color;
 out vec2 corner;
 out vec2 rectangle_size;
 out vec4 border_radius;
+out vec4 border_width;
+out vec4 border_color;
 
 void main() {
   uv = a_uv;
@@ -34,6 +38,8 @@ void main() {
   corner = a_corner;
   rectangle_size = a_rectangle_size;
   border_radius = a_border_radius;
+  border_width = a_border_width;
+  border_color = a_border_color;
 
   gl_Position = u_matrix * vec4(a_position, 0, 1);
 }`;
@@ -46,6 +52,8 @@ in vec4 color;
 in vec2 corner;
 in vec2 rectangle_size;
 in vec4 border_radius;
+in vec4 border_width;
+in vec4 border_color;
 
 out vec4 frag_color;
 
@@ -57,11 +65,10 @@ float contour(float width, float distance) {
   return smoothstep(buffer - width, buffer + width, distance);
 }
 
-float distanceFromRectangle(vec2 p, float radius) {
+float distanceFromRectangle(vec2 p, float radius, vec2 border) {
   // Distance from the current pixel to the closest point on the edge of the rounded rectangle.
-  vec2 q = abs(p) - (rectangle_size / 2.0 - vec2(radius));
-
-  return length(max(vec2(0.0), -q)) + min(max(q.x, q.y), 0.0) - length(max(q, vec2(0.0))) + radius;
+  vec2 q = abs(p - border) - (rectangle_size / 2.0) + vec2(radius);
+  return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - radius;
 }
 
 void main() {
@@ -110,10 +117,28 @@ void main() {
       radius = border_radius.z;
     }
 
-    float sdf = distanceFromRectangle(p, radius);
-    float alpha = 1.0 - smoothstep(0.5, -0.5, sdf);
+    vec2 border = vec2(0, 0);
+    if (p.y > 0.0) {
+      border.y -= border_width.x;
+    } else {
+      border.y += border_width.z;
+    }
 
-    frag_color = vec4(color.rgb, alpha * color.a);
+    if (p.x > 0.0) {
+      border.x -= border_width.y;
+    } else {
+      border.x += border_width.w;
+    }
+
+    float outer_distance = distanceFromRectangle(p, radius, vec2(0.0));
+    float inner_distance = distanceFromRectangle(p, radius, border);
+
+    frag_color = color;
+    if (length(border) > 0.0) {
+      frag_color = mix(color, border_color, smoothstep(-0.5, 0.5, inner_distance));
+    }
+
+    frag_color.a *= 1.0 - smoothstep(-0.5, 0.5, outer_distance);
   }
 }`;
 
@@ -129,12 +154,53 @@ export class NewContext implements IContext {
   public readonly gl: WebGL2RenderingContext;
   private readonly program: WebGLProgram | null = null;
 
+  /**
+   * In pixels [0, width], [0, height].
+   */
   private positions: Vec2[] = [];
+
+  /**
+   * In range [0, 1].
+   */
   private uvs: Vec2[] = [];
+
+  /**
+   * In range [0, 1].
+   */
   private colors: Vec4[] = [];
-  private bottomLeftCorners: Vec2[] = [];
+
+  /**
+   * Bottom left corner.
+   *
+   * new Vec2(-1, -1) for non-rectangles.
+   */
+  private corners: Vec2[] = [];
+
+  /**
+   * In pixels.
+   *
+   * new Vec2(-1, -1) for non-rectangles.
+   */
   private rectangleSizes: Vec2[] = [];
-  private borderRadii: Vec4[] = [];
+
+  /**
+   * In pixels. Top, right, bottom, left.
+   *
+   * new Vec4(-1, -1, -1, -1) for non-rectangles.
+   */
+  private radii: Vec4[] = [];
+
+  /**
+   * In pixels. Top, right, bottom, left.
+   *
+   * new Vec4(-1, -1, -1, -1) for non-rectangles.
+   */
+  private borderWidths: Vec4[] = [];
+
+  /**
+   * In range [0, 1].
+   */
+  private borderColors: Vec4[] = [];
 
   private readonly fontAtlasTexture: WebGLTexture | null = null;
 
@@ -144,7 +210,9 @@ export class NewContext implements IContext {
   private readonly colorBuffer: WebGLBuffer | null = null;
   private readonly bottomLeftCornerBuffer: WebGLBuffer | null = null;
   private readonly rectangleSizeBuffer: WebGLBuffer | null = null;
-  private readonly borderRadiusBuffer: WebGLBuffer | null = null;
+  private readonly radiiBuffer: WebGLBuffer | null = null;
+  private readonly borderWidthsBuffer: WebGLBuffer | null = null;
+  private readonly borderColorsBuffer: WebGLBuffer | null = null;
 
   /**
    * Creates new context.
@@ -182,7 +250,9 @@ export class NewContext implements IContext {
     this.colorBuffer = this.gl.createBuffer();
     this.bottomLeftCornerBuffer = this.gl.createBuffer();
     this.rectangleSizeBuffer = this.gl.createBuffer();
-    this.borderRadiusBuffer = this.gl.createBuffer();
+    this.radiiBuffer = this.gl.createBuffer();
+    this.borderWidthsBuffer = this.gl.createBuffer();
+    this.borderColorsBuffer = this.gl.createBuffer();
     this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 
@@ -198,9 +268,11 @@ export class NewContext implements IContext {
     this.positions.push(...vertices.reverse());
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+    this.corners.push(...vertices.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-    this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
+    this.radii.push(...vertices.map(() => NO_DATA_VEC4));
+    this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
+    this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
   }
 
   polygon(points: Vec2[], color: Vec4): void {
@@ -212,9 +284,11 @@ export class NewContext implements IContext {
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+    this.corners.push(...vertices.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-    this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
+    this.radii.push(...vertices.map(() => NO_DATA_VEC4));
+    this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
+    this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
   }
 
   triangles(points: Vec2[], color: Vec4): void {
@@ -224,16 +298,20 @@ export class NewContext implements IContext {
     this.positions.push(...points);
     this.uvs.push(...points.map(() => NO_DATA_VEC2));
     this.colors.push(...points.map(() => color));
-    this.bottomLeftCorners.push(...points.map(() => NO_DATA_VEC2));
+    this.corners.push(...points.map(() => NO_DATA_VEC2));
     this.rectangleSizes.push(...points.map(() => NO_DATA_VEC2));
-    this.borderRadii.push(...points.map(() => NO_DATA_VEC4));
+    this.radii.push(...points.map(() => NO_DATA_VEC4));
+    this.borderWidths.push(...points.map(() => NO_DATA_VEC4));
+    this.borderColors.push(...points.map(() => NO_DATA_VEC4));
   }
 
   rectangle(
     position: Vec2,
     size: Vec2,
     color: Vec4,
-    borderRadius?: Vec4
+    borderRadius?: Vec4,
+    borderWidth?: Vec4,
+    borderColor?: Vec4
   ): void {
     const vertices = [
       new Vec2(position.x, position.y),
@@ -248,7 +326,7 @@ export class NewContext implements IContext {
     this.positions.push(...vertices);
     this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
     this.colors.push(...vertices.map(() => color));
-    this.bottomLeftCorners.push(
+    this.corners.push(
       ...vertices.map(
         () =>
           new Vec2(
@@ -258,7 +336,9 @@ export class NewContext implements IContext {
       )
     );
     this.rectangleSizes.push(...vertices.map(() => size));
-    this.borderRadii.push(...vertices.map(() => borderRadius ?? NO_DATA_VEC4));
+    this.radii.push(...vertices.map(() => borderRadius ?? NO_DATA_VEC4));
+    this.borderWidths.push(...vertices.map(() => borderWidth ?? NO_DATA_VEC4));
+    this.borderColors.push(...vertices.map(() => borderColor ?? NO_DATA_VEC4));
   }
 
   clear(): void {
@@ -382,9 +462,11 @@ export class NewContext implements IContext {
       this.positions.push(...vertices);
       this.uvs.push(...uvs);
       this.colors.push(...vertices.map(() => parsedColor));
-      this.bottomLeftCorners.push(...vertices.map(() => NO_DATA_VEC2));
+      this.corners.push(...vertices.map(() => NO_DATA_VEC2));
       this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-      this.borderRadii.push(...vertices.map(() => NO_DATA_VEC4));
+      this.radii.push(...vertices.map(() => NO_DATA_VEC4));
+      this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
+      this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
     }
   }
 
@@ -402,9 +484,11 @@ export class NewContext implements IContext {
     invariant(
       this.positions.length === this.uvs.length &&
         this.uvs.length === this.colors.length &&
-        this.colors.length === this.bottomLeftCorners.length &&
-        this.bottomLeftCorners.length === this.rectangleSizes.length &&
-        this.rectangleSizes.length === this.borderRadii.length,
+        this.colors.length === this.corners.length &&
+        this.corners.length === this.rectangleSizes.length &&
+        this.rectangleSizes.length === this.radii.length &&
+        this.radii.length === this.borderWidths.length &&
+        this.borderWidths.length === this.borderColors.length,
       "Buffers are not equal in size."
     );
 
@@ -412,61 +496,66 @@ export class NewContext implements IContext {
       return;
     }
 
-    const positionData = new Float32Array(
+    const positionsData = new Float32Array(
       this.positions.map((v) => [v.x, v.y]).flat()
     );
-    const uvData = new Float32Array(this.uvs.map((v) => [v.x, v.y]).flat());
-    const colorData = new Float32Array(
+    const uvsData = new Float32Array(this.uvs.map((v) => [v.x, v.y]).flat());
+    const colorsData = new Float32Array(
       this.colors.map((v) => [v.x, v.y, v.z, v.w]).flat()
     );
 
-    const bottomLeftCornerData = new Float32Array(
-      this.bottomLeftCorners.map((v) => [v.x, v.y]).flat()
+    const cornersData = new Float32Array(
+      this.corners.map((v) => [v.x, v.y]).flat()
     );
 
-    const rectangleSizeData = new Float32Array(
+    const rectangleSizesData = new Float32Array(
       this.rectangleSizes.map((v) => [v.x, v.y]).flat()
     );
 
-    const borderRadiusData = new Float32Array(
-      this.borderRadii.map((v) => [v.x, v.y, v.z, v.w]).flat()
+    const radiiData = new Float32Array(
+      this.radii.map((v) => [v.x, v.y, v.z, v.w]).flat()
+    );
+
+    const borderWidthsData = new Float32Array(
+      this.borderWidths.map((v) => [v.x, v.y, v.z, v.w]).flat()
+    );
+
+    const borderColorsData = new Float32Array(
+      this.borderColors.map((v) => [v.x, v.y, v.z, v.w]).flat()
     );
 
     invariant(this.vao, "VAO is missing");
     this.gl.bindVertexArray(this.vao);
 
-    const POSITION_SIZE = 2;
-    const UV_SIZE = 2;
-    const COLOR_SIZE = 4;
-    const BOTTOM_LEFT_CORNER_SIZE = 2;
-    const RECTANGLE_SIZE = 2;
-    const BORDER_RADIUS_SIZE = 4;
+    const VEC_2_SIZE = 2;
+    const VEC_4_SIZE = 4;
 
     // TODO: revisit possibility of using one buffer with stride.
 
     // Set up position buffer.
     invariant(this.positionBuffer, "Position VBO is missing.");
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, positionData, this.gl.STATIC_DRAW);
-
+    this.gl.bufferData(
+      this.gl.ARRAY_BUFFER,
+      positionsData,
+      this.gl.STATIC_DRAW
+    );
     this.gl.enableVertexAttribArray(0);
-    this.gl.vertexAttribPointer(0, POSITION_SIZE, this.gl.FLOAT, false, 0, 0);
+    this.gl.vertexAttribPointer(0, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Set up uv buffer.
     invariant(this.uvBuffer, "UV VBO is missing.");
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.uvBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, uvData, this.gl.STATIC_DRAW);
-
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, uvsData, this.gl.STATIC_DRAW);
     this.gl.enableVertexAttribArray(1);
-    this.gl.vertexAttribPointer(1, UV_SIZE, this.gl.FLOAT, false, 0, 0);
+    this.gl.vertexAttribPointer(1, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Set up color buffer.
     invariant(this.colorBuffer, "Color VBO is missing.");
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, colorData, this.gl.STATIC_DRAW);
-
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, colorsData, this.gl.STATIC_DRAW);
     this.gl.enableVertexAttribArray(2);
-    this.gl.vertexAttribPointer(2, COLOR_SIZE, this.gl.FLOAT, false, 0, 0);
+    this.gl.vertexAttribPointer(2, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Set up bottom left corner buffer.
     invariant(
@@ -474,52 +563,49 @@ export class NewContext implements IContext {
       "Bottom left corner VBO is missing."
     );
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bottomLeftCornerBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      bottomLeftCornerData,
-      this.gl.STATIC_DRAW
-    );
-
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, cornersData, this.gl.STATIC_DRAW);
     this.gl.enableVertexAttribArray(3);
-    this.gl.vertexAttribPointer(
-      3,
-      BOTTOM_LEFT_CORNER_SIZE,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
+    this.gl.vertexAttribPointer(3, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Set up rectangle buffer.
     invariant(this.rectangleSizeBuffer, "Rectangle VBO is missing.");
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.rectangleSizeBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
-      rectangleSizeData,
+      rectangleSizesData,
       this.gl.STATIC_DRAW
     );
-
     this.gl.enableVertexAttribArray(4);
-    this.gl.vertexAttribPointer(4, RECTANGLE_SIZE, this.gl.FLOAT, false, 0, 0);
+    this.gl.vertexAttribPointer(4, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Set up border radius buffer.
-    invariant(this.borderRadiusBuffer, "Border radius VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.borderRadiusBuffer);
+    invariant(this.radiiBuffer, "Border radius VBO is missing.");
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.radiiBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, radiiData, this.gl.STATIC_DRAW);
+    this.gl.enableVertexAttribArray(5);
+    this.gl.vertexAttribPointer(5, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
+
+    // Set up border widthbuffer.
+    invariant(this.borderWidthsBuffer, "Border width VBO is missing.");
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.borderWidthsBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
-      borderRadiusData,
+      borderWidthsData,
       this.gl.STATIC_DRAW
     );
+    this.gl.enableVertexAttribArray(6);
+    this.gl.vertexAttribPointer(6, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
 
-    this.gl.enableVertexAttribArray(5);
-    this.gl.vertexAttribPointer(
-      5,
-      BORDER_RADIUS_SIZE,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
+    // Set up border buffer.
+    invariant(this.borderColorsBuffer, "Border width VBO is missing.");
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.borderColorsBuffer);
+    this.gl.bufferData(
+      this.gl.ARRAY_BUFFER,
+      borderColorsData,
+      this.gl.STATIC_DRAW
     );
+    this.gl.enableVertexAttribArray(7);
+    this.gl.vertexAttribPointer(7, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
 
     // Render.
     invariant(this.program, "Program does not exist.");
@@ -532,9 +618,11 @@ export class NewContext implements IContext {
     this.positions = [];
     this.uvs = [];
     this.colors = [];
-    this.bottomLeftCorners = [];
+    this.corners = [];
     this.rectangleSizes = [];
-    this.borderRadii = [];
+    this.radii = [];
+    this.borderWidths = [];
+    this.borderColors = [];
   }
 
   debugDrawFontAtlas(): void {

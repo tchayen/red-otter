@@ -982,6 +982,8 @@ export function complexUIExample(canvas: HTMLCanvasElement, font: Font): void {
   const checkbox: Style = {
     height: 16,
     width: 16,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#8ab4f8",
   };
 
@@ -1212,6 +1214,8 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
     paddingVertical: 8,
     backgroundColor: zinc[800],
     alignSelf: "stretch",
+    borderBottomWidth: 1,
+    borderColor: zinc[700],
   };
 
   const content: Style = {
@@ -1221,7 +1225,7 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   };
 
   const headerText: TextStyle = {
-    color: zinc[100],
+    color: "#fff",
     fontFamily: font,
     fontSize: 24,
   };
@@ -1246,6 +1250,8 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   const dialog: Style = {
     backgroundColor: zinc[800],
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: zinc[700],
   };
 
   const headerLine: Style = {
@@ -1258,11 +1264,13 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
 
   const closeButton: Style = {
     backgroundColor: zinc[700],
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: zinc[600],
   };
 
   const separator: Style = {
@@ -1290,6 +1298,8 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
     alignItems: "center",
     borderRadius: 16,
     height: 32,
+    borderWidth: 1,
+    borderColor: zinc[500],
   };
 
   const buttonText: TextStyle = {
@@ -1302,7 +1312,7 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
     paddingHorizontal: 16,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "--yellow",
     borderRadius: 16,
     height: 32,
   };
@@ -1322,8 +1332,10 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
   const checkbox: Style = {
     height: 16,
     width: 16,
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 2,
-    backgroundColor: "#fff",
+    backgroundColor: "--yellow",
   };
 
   const footer: Style = {
@@ -1334,6 +1346,8 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
     backgroundColor: zinc[800],
     alignSelf: "stretch",
     justifyContent: "space-around",
+    borderTopWidth: 1,
+    borderColor: zinc[700],
   };
 
   layout.add(
@@ -1344,14 +1358,21 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
         <text style={text}>Run</text>
         <text style={text}>Terminal</text>
         <text style={text}>Window</text>
-        <text style={text}>Help</text>
+        <text style={text}>Help↗</text>
       </view>
       <view style={content}>
         <text style={headerText}>Welcome to Red Otter!</text>
-        <text style={text}>I can render rectangles and letter.</text>
+        <text style={text}>
+          I am a self-contained WebGL flexbox layout engine. I can render
+          rectangles, letters and polygons.
+        </text>
         <text style={text}>
           I can do flexbox layout, position: absolute, z-index. Everything you
           would expect from a layout engine!
+        </text>
+        <text style={text}>
+          I am also quite not bad at styling: as you can see I can handle
+          rounded corners and borders.
         </text>
       </view>
       <view style={footer}>
@@ -1366,26 +1387,24 @@ export function landingExample(canvas: HTMLCanvasElement, font: Font): void {
           <view style={headerLine}>
             <text style={headerText}>This is a modal</text>
             <view style={closeButton}>
-              <view>
-                <shape
-                  type="polygon"
-                  color={zinc[400]}
-                  points={[
-                    [6, 4],
-                    [12, 10],
-                    [18, 4],
-                    [20, 6],
-                    [14, 12],
-                    [20, 18],
-                    [18, 20],
-                    [12, 14],
-                    [6, 20],
-                    [4, 18],
-                    [10, 12],
-                    [4, 6],
-                  ]}
-                />
-              </view>
+              <shape
+                type="polygon"
+                color={"#fff"}
+                points={[
+                  [3, 4],
+                  [4, 3],
+                  [8, 7],
+                  [12, 3],
+                  [13, 4],
+                  [9, 8],
+                  [13, 12],
+                  [12, 13],
+                  [8, 9],
+                  [4, 13],
+                  [3, 12],
+                  [7, 8],
+                ]}
+              />
             </view>
           </view>
           <view style={separator} />
@@ -1453,11 +1472,16 @@ export function borderRadiusExample(
       ></view>
       <view
         style={{
-          backgroundColor: "#fff",
-          width: 100,
-          height: 100,
+          backgroundColor: "#000",
+          width: 150,
+          height: 150,
           top: 200,
           left: 100,
+          borderColor: "#ffd000",
+          borderBottomWidth: 10,
+          borderLeftWidth: 20,
+          borderRightWidth: 30,
+          borderTopWidth: 40,
           borderRadiusTopLeft: 10,
           borderRadiusTopRight: 20,
           borderRadiusBottomLeft: 30,

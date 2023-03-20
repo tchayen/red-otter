@@ -171,27 +171,32 @@ export type Style = {
   /**
    * TODO
    */
-  border?: number;
+  borderColor?: string;
 
   /**
    * TODO
    */
-  borderTop?: number;
+  borderWidth?: number;
 
   /**
    * TODO
    */
-  borderRight?: number;
+  borderTopWidth?: number;
 
   /**
    * TODO
    */
-  borderBottom?: number;
+  borderRightWidth?: number;
 
   /**
    * TODO
    */
-  borderLeft?: number;
+  borderBottomWidth?: number;
+
+  /**
+   * TODO
+   */
+  borderLeftWidth?: number;
 
   /**
    * TODO
@@ -332,6 +337,7 @@ export type FixedView = {
   height: number;
   zIndex: number;
   backgroundColor: Vec4;
+  borderColor?: Vec4;
 };
 
 /**
@@ -362,7 +368,7 @@ const textStyleDefaults = {
   color: "#fff",
 };
 
-function resolvePaddingAndMargin(input: Style): Style {
+function resolveOverridenValues(input: Style): Style {
   input.paddingTop =
     input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
   input.paddingBottom =
@@ -401,6 +407,11 @@ function resolvePaddingAndMargin(input: Style): Style {
     input.borderRadiusBottom ??
     input.borderRadius ??
     0;
+
+  input.borderTopWidth = input.borderTopWidth ?? input.borderWidth ?? 0;
+  input.borderBottomWidth = input.borderBottomWidth ?? input.borderWidth ?? 0;
+  input.borderLeftWidth = input.borderLeftWidth ?? input.borderWidth ?? 0;
+  input.borderRightWidth = input.borderRightWidth ?? input.borderWidth ?? 0;
 
   return input;
 }
@@ -506,10 +517,15 @@ export function addView(
         ? parseColor(flattenedStyle.backgroundColor)
         : fixedViewDefaults.backgroundColor;
 
+      const borderColor = flattenedStyle.borderColor
+        ? parseColor(flattenedStyle.borderColor)
+        : undefined;
+
       const node = new TreeNode<FixedView>({
-        input: { ...viewDefaults, ...resolvePaddingAndMargin(flattenedStyle) },
+        input: { ...viewDefaults, ...resolveOverridenValues(flattenedStyle) },
         ...fixedViewDefaults,
         backgroundColor,
+        borderColor,
       });
 
       for (const child of children) {
@@ -560,9 +576,9 @@ export function addView(
 
       const { width, height } = layout.boundingRectangle;
 
-      const node = new TreeNode<FixedView>({
+      return new TreeNode<FixedView>({
         input: {
-          ...resolvePaddingAndMargin(viewDefaults),
+          ...resolveOverridenValues(viewDefaults),
           ...styleWithDefaults,
           color: styleWithDefaults.color,
           text,
@@ -573,7 +589,6 @@ export function addView(
         width,
         height,
       });
-      return node;
     }
     case "shape": {
       if (
@@ -611,12 +626,11 @@ export function addView(
 
       return new TreeNode<FixedView>({
         input: {
-          ...resolvePaddingAndMargin(viewDefaults),
-          points,
+          ...viewDefaults,
+          points: points.map(([x, y]) => [x - minX, y - minY]),
           type,
-          // TODO: remove
-          // width,
-          // height,
+          width,
+          height,
           thickness:
             "thickness" in attributes ? attributes.thickness : undefined,
         },
@@ -646,7 +660,7 @@ export class Layout {
    */
   constructor(private readonly context: IContext, options?: LayoutOptions) {
     const node = new TreeNode<FixedView>({
-      input: { ...resolvePaddingAndMargin(viewDefaults) },
+      input: { ...resolveOverridenValues(viewDefaults) },
       ...fixedViewDefaults,
       width: context.getCanvas().clientWidth,
       height: context.getCanvas().clientHeight,
@@ -705,10 +719,15 @@ export class Layout {
       ? parseColor(style.backgroundColor)
       : fixedViewDefaults.backgroundColor;
 
+    const borderColor = style.borderColor
+      ? parseColor(style.borderColor)
+      : undefined;
+
     const node = new TreeNode({
-      input: { ...viewDefaults, ...resolvePaddingAndMargin(style) },
+      input: { ...viewDefaults, ...resolveOverridenValues(style) },
       ...fixedViewDefaults,
       backgroundColor,
+      borderColor,
     });
     parent.addChild(node);
 
@@ -746,7 +765,7 @@ export class Layout {
 
     const node = new TreeNode({
       input: {
-        ...resolvePaddingAndMargin(viewDefaults),
+        ...resolveOverridenValues(viewDefaults),
         fontSize: fontSize,
         color,
         text,
@@ -1419,16 +1438,25 @@ export class Layout {
           continue;
         }
 
+        const input = view.input as ResolvedInput;
+
         this.context.rectangle(
           new Vec2(view.x, view.y),
           new Vec2(view.width, view.height),
           view.backgroundColor,
           new Vec4(
-            view.input.borderRadiusTopLeft,
-            view.input.borderRadiusTopRight,
-            view.input.borderRadiusBottomRight,
-            view.input.borderRadiusBottomLeft
-          )
+            input.borderRadiusTopLeft,
+            input.borderRadiusTopRight,
+            input.borderRadiusBottomRight,
+            input.borderRadiusBottomLeft
+          ),
+          new Vec4(
+            input.borderTopWidth,
+            input.borderRightWidth,
+            input.borderBottomWidth,
+            input.borderLeftWidth
+          ),
+          view.borderColor
         );
       }
     }
