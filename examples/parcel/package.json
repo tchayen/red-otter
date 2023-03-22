@@ -1,0 +1,14 @@
+{
+  "name": "@red-otter/parcel",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "source": "main.tsx",
+  "scripts": {
+    "start": "parcel index.html --no-cache",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}

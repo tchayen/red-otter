@@ -1,0 +1,49 @@
+{
+  "name": "red-otter",
+  "description": "Self-contained WebGL flexbox layout engine.",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.umd.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "lib:build": "vite build",
+    "tsc": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run --no-threads",
+    "run-checks": "yarn tsc && yarn lint && yarn test",
+    "docs:dev": "cd docs; yarn dev",
+    "docs:build": "cd docs; yarn build",
+    "docs:generate": "cd docs; yarn generate",
+    "docs:watch": "cd docs; yarn watch"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.4",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0",
+    "vite-plugin-dts": "^2.1.0",
+    "vitest": "^0.29.3"
+  },
+  "homepage": "https://red-otter.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tchayen/red-otter",
+    "directory": "packages/red-otter"
+  },
+  "files": [
+    "/dist"
+  ],
+  "license": "MIT"
+}
