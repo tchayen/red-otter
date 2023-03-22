@@ -1,7 +1,5 @@
 # red-otter
 
-![Logo](.github/assets/logo.png)
-
 Self-contained WebGL flexbox layout engine.
 
 ## Documentation
