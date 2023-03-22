@@ -35,7 +35,7 @@ export class Font {
           UVBinaryURL: string;
         }
       | {
-          spacingMetadata: Record<string, string>;
+          spacingMetadata: FontAtlasMetadata;
           spacingBinaryURL: string;
           fontAtlasTextureURL: string;
           UVBinaryURL: string;
@@ -56,7 +56,7 @@ export class Font {
           UVBinaryURL: string;
         }
       | {
-          spacingMetadata: Record<string, string>;
+          spacingMetadata: FontAtlasMetadata;
           spacingBinaryURL: string;
           fontAtlasTextureURL: string;
           UVBinaryURL: string;
