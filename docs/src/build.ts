@@ -121,7 +121,8 @@ function showCodeBlocks(): string {
     </div>
     <details class="code-details">
       <summary class="code-summary">Show code</summary>
-      ${highlighted}
+      <button class="copy-code" id="${slug}-copy"><img src="/copy.svg" /> Copy</button>
+      <div id="${slug}-code">${highlighted}</div>
     </details>`;
     })
     .join("\n");

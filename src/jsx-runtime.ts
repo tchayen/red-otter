@@ -3,13 +3,13 @@ import { invariant } from "./invariant";
 import {
   FixedView,
   fixedViewDefaults,
-  resolveStylingValues,
   TextStyle,
   textStyleDefaults,
   TreeNode,
   viewDefaults,
 } from "./Layout";
 import { parseColor } from "./parseColor";
+import { resolveStylingValues } from "./resolveStylingValues";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

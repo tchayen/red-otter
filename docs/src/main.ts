@@ -34,11 +34,19 @@ async function mainAsync(): Promise<void> {
       const canvas = document.getElementById(`${callbackName}-canvas`);
       invariant(canvas instanceof HTMLCanvasElement, "Canvas not found.");
 
-      const button = document.getElementById(`${callbackName}-button`);
+      const runButton = document.getElementById(`${callbackName}-button`);
+      const copyButton = document.getElementById(`${callbackName}-copy`);
 
-      button?.addEventListener("click", () => {
+      runButton?.addEventListener("click", () => {
         run();
-        button.remove();
+        runButton.remove();
+      });
+
+      copyButton?.addEventListener("click", () => {
+        const code = document.getElementById(`${callbackName}-code`);
+        const pre = code?.querySelector("pre");
+
+        navigator.clipboard.writeText(pre?.innerText ?? "");
       });
 
       const run = async (): Promise<void> => {
@@ -57,8 +65,8 @@ async function mainAsync(): Promise<void> {
             run();
             rendered.add(callbackName);
 
-            if (button) {
-              button.remove();
+            if (runButton) {
+              runButton.remove();
             }
           }
         });

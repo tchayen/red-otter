@@ -43,11 +43,23 @@ body {
   font-weight: 600;
   border-radius: var(--radius);
   background-color: var(--zinc-600);
+  border: 1px solid var(--zinc-500);
   color: #fff;
   padding-left: 16px;
   padding-right: 16px;
   padding-top: 8px;
   padding-bottom: 8px;
+  cursor: pointer;
+}
+
+.run-button:hover {
+  background-color: var(--zinc-500);
+  border-color: var(--zinc-400);
+}
+
+.run-button:active {
+  background-color: var(--zinc-400);
+  border-color: var(--zinc-300);
 }
 
 #content {
@@ -292,6 +304,7 @@ a[target]:after {
   width: 100%;
   margin-top: 24px;
   margin-bottom: 24px;
+  position: relative;
 }
 
 .code-summary {
@@ -302,6 +315,37 @@ a[target]:after {
   background-color: var(--zinc-600);
   border-radius: var(--radius);
   border: 1px solid var(--zinc-500);
+}
+
+.copy-code {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  background-color: var(--zinc-800);
+  border: 1px solid var(--zinc-700);
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: var(--radius);
+}
+
+.copy-code:hover {
+  background-color: var(--zinc-700);
+  border-color: var(--zinc-600);
+}
+
+.copy-code:active {
+  background-color: var(--zinc-600);
+  border-color: var(--zinc-500);
 }
 
 pre {
