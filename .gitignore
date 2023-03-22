@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.vercel/
+.DS_Store
+yarn-error.log
+
+docs/index.html
+
+font-atlas.png
+spacing.dat
+spacing.json
+uv.dat
+
+red-otter-*.tgz
+
+.parcel-cache
