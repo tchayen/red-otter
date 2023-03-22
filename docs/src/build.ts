@@ -441,7 +441,7 @@ const replace = `
       <p>
         For a quick start, try playing with CodeSandbox example:
       </p>
-      <a class="no-after" href="https://codesandbox.io/s/red-otter-example-rjrbsg?fontsize=14&hidenavigation=1&module=%2Fsrc%2Fmain.tsx&theme=dark" target="_blank" rel="noopener noreferrer">
+      <a class="no-after" href="https://codesandbox.io/s/red-otter-starter-rjrbsg?fontsize=14&hidenavigation=1&module=%2Fsrc%2Fmain.tsx&theme=dark" target="_blank" rel="noopener noreferrer">
         <img alt="Edit red-otter-example" src="https://codesandbox.io/static/img/play-codesandbox.svg">
       </a>
       ${addHeader(3, "Enabling JSX")}
