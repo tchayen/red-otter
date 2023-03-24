@@ -39,7 +39,13 @@ module.exports = {
     "no-self-compare": "warn",
     "no-useless-return": "warn",
     "import/no-cycle": "error",
-    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
+      {
+        allowExpressions: true,
+        allowIIFEs: true,
+      },
+    ],
     "@typescript-eslint/consistent-type-assertions": "warn",
     "@typescript-eslint/await-thenable": "warn",
     "@typescript-eslint/method-signature-style": ["warn", "method"],
