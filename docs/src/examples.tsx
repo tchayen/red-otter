@@ -1175,7 +1175,7 @@ export const fixtures: {
     callback: alignItemsExample,
     title: "Align items",
     description:
-      "Place content along the cross axis. Stretch makes item fill cross axis of parent if <code>width</code>/<code>height</code> is not specified.",
+      "Place content along the cross axis. Stretch makes item fill cross axis of parent if <code>width</code> or <code>height</code> is not specified.",
   },
   {
     callback: alignSelfExample,

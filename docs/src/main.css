@@ -6,6 +6,7 @@ body {
   font-family: "Inter", sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   color: #fff;
   background-color: var(--zinc-700);
   display: flex;
@@ -212,7 +213,7 @@ h2 > a:hover::before {
   transition: 0.2s;
   position: absolute;
   left: -16px;
-  top: 6px;
+  top: 36px;
 }
 
 h3 {
