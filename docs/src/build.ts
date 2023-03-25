@@ -1123,6 +1123,21 @@ layout.add(
       }
       ${addHeader(2, "API reference")}
       ${showApiReferences()}
+      ${addHeader(2, "Limitations")}
+      <p>
+        This is a GPU-based renderer. Not everything is worthwhile to express
+        in shaders. There is a lot of edge cases in border radius, borders and
+        hiding overflow.
+      </p>
+      <p>
+        This is not full HTML. Following design of ${linkExternal(
+          "https://yogalayout.com",
+          "Yoga"
+        )} layout engine, <code>red-otter</code> only implements Flexbox layout
+        and makes all views <code>position: relative</code> by default, which
+        limits what kind of layouts are possible to express (but as React Native
+        shows, this should not be a problem for most apps).
+      </p>
       ${addHeader(2, "What is missing")}
       <p>
         Talking about roadmap, here is an unordered list of things that need a

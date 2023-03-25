@@ -5,6 +5,7 @@ import { Layout } from "./Layout";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { jsx } from "./jsx-runtime";
+import { Font } from "src/fonts/Font";
 
 class MockContext implements IContext {
   getCanvas(): HTMLCanvasElement {
@@ -39,6 +40,9 @@ class MockContext implements IContext {
   }
   loadTexture(): WebGLTexture {
     return {};
+  }
+  getFont(): Font {
+    return {} as Font;
   }
 }
 

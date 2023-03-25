@@ -83,12 +83,8 @@ export class FontAtlas {
   render(): { canvas: HTMLCanvasElement; spacing: Spacing } {
     // Set up canvas.
     const canvas = document.createElement("canvas");
-    canvas.width = this.atlas.width * window.devicePixelRatio;
-    canvas.height = this.atlas.height * window.devicePixelRatio;
-    canvas.setAttribute(
-      "style",
-      `width: ${this.atlas.width}px; height: ${this.atlas.height}px;`
-    );
+    canvas.width = this.atlas.width;
+    canvas.height = this.atlas.height;
 
     // Get 2D context.
     const context = canvas.getContext("2d");

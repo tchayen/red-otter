@@ -1,4 +1,4 @@
-import { Font, Context, Vec4 } from "../../src";
+import { Font, Context, Vec4, Vec2 } from "../../src";
 
 async function run(): Promise<void> {
   const start = performance.now();
@@ -14,8 +14,8 @@ async function run(): Promise<void> {
   console.debug(`Loaded font client-side in ${performance.now() - start}ms.`);
 
   const canvas = document.createElement("canvas");
-  canvas.width = 800 * window.devicePixelRatio;
-  canvas.height = 600 * window.devicePixelRatio;
+  canvas.width = 800;
+  canvas.height = 600;
   canvas.setAttribute("style", `width: ${800}px; height: ${600}px;`);
 
   const div = document.getElementById("app");
@@ -27,7 +27,7 @@ async function run(): Promise<void> {
 
   const context = new Context(canvas, font);
   context.clear();
-  context.text("Hello World!", 100, 100, 32, new Vec4(1, 1, 1, 1));
+  context.text("Hello World!", new Vec2(100, 100), 32, new Vec4(1, 1, 1, 1));
   context.flush();
 }
 

@@ -10,6 +10,7 @@ import {
 } from "./Layout";
 import { parseColor } from "./parseColor";
 import { resolveStylingValues } from "./resolveStylingValues";
+import { hash } from "./hash";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -22,7 +23,7 @@ declare global {
   }
 }
 
-type ViewAttributes = { style?: Style | Style[] };
+type ViewAttributes = { style?: Style | Style[]; id?: string };
 type TextAttributes = { style?: TextStyle | TextStyle[] };
 type ShapeAttributes = { points: [number, number][]; color: string } & (
   | {
@@ -36,6 +37,13 @@ type ShapeAttributes = { points: [number, number][]; color: string } & (
 
 type Component = "view" | "text" | "shape";
 
+export function jsx(
+  component: (
+    attributes: ViewAttributes | TextAttributes | ShapeAttributes | null
+  ) => TreeNode<FixedView>,
+  attributes: ViewAttributes,
+  ...children: TreeNode<FixedView>[]
+): TreeNode<FixedView>;
 export function jsx(
   component: "view",
   attributes: ViewAttributes,
@@ -60,10 +68,18 @@ export function jsx(
  *
  */
 export function jsx(
-  component: Component,
+  component:
+    | Component
+    | ((
+        attributes: ViewAttributes | TextAttributes | ShapeAttributes | null
+      ) => TreeNode<FixedView>),
   attributes: ViewAttributes | TextAttributes | ShapeAttributes | null,
   ...children: TreeNode<FixedView>[] | [TreeNode<FixedView>[]] | string[]
 ): TreeNode<FixedView> {
+  if (typeof component === "function") {
+    return component(attributes);
+  }
+
   switch (component) {
     case "view": {
       if (
@@ -109,6 +125,10 @@ export function jsx(
         borderColor,
       });
 
+      if (attributes && "id" in attributes && attributes.id) {
+        node.id = hash(attributes.id);
+      }
+
       for (const child of children) {
         // First element can be an array of children.
         if (Array.isArray(child)) {
@@ -119,7 +139,10 @@ export function jsx(
             }
           }
         } else {
-          invariant(typeof child !== "string", "Unreachable.");
+          invariant(
+            typeof child !== "string",
+            "Text must be wrapped in <text>."
+          );
 
           if (child) {
             // TODO: fix types as according to them this should never be null.

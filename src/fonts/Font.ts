@@ -240,39 +240,45 @@ export class Font {
     const padding = (ATLAS_GAP * fontSize) / ATLAS_FONT_SIZE;
 
     for (let i = 0; i < text.length; i++) {
-      const glyph = this.glyphs.get(text[i].charCodeAt(0));
+      const character = text[i].charCodeAt(0);
+      const glyph = this.glyphs.get(character);
       invariant(glyph, `Glyph not found for character ${text[i]}`);
 
       const { y, width, height, lsb, rsb } = glyph;
 
       // I used to add `x` to position, but it introduces offsets that actually
       // look bad. For example `j` has a big negative x offset, so it overlaps
-      // with the previous letter. Without `x` spacing between letters seems much more even.
+      // with the previous letter. Without `x` spacing between letters seems
+      // much more even.
 
       positions.push(
         new Vec2(
-          positionX + (i !== 0 ? lsb : 0) * scale - padding,
+          positionX + lsb * scale - padding,
           (this.metadata.capHeight - y - height) * scale - padding
         )
       );
 
-      // 2 * padding is to account for padding from both sides of the glyph.
-      sizes.push(
-        new Vec2(width * scale + padding * 2, height * scale + padding * 2)
-      );
-
-      positionX += ((i !== 0 ? lsb : 0) + width + rsb) * scale;
+      if (character === 32) {
+        // This is exception for Inter which has a big width and a big negative
+        // rsb for space.
+        sizes.push(new Vec2((width + lsb + rsb) * scale + padding * 2, 0));
+      } else {
+        // 2 * padding is to account for padding from both sides of the glyph.
+        sizes.push(
+          new Vec2(width * scale + padding * 2, height * scale + padding * 2)
+        );
+      }
+      positionX += (lsb + width + rsb) * scale;
     }
 
-    // Skip the last padding.
-    const width =
-      positions[positions.length - 1].x + sizes[sizes.length - 1].x - padding;
+    const width = positions[positions.length - 1].x + sizes[sizes.length - 1].x;
     const height =
       (this.metadata.capHeight * fontSize) / this.metadata.unitsPerEm;
 
     return {
       positions,
       sizes,
+      // Round up avoid layout gaps.
       boundingRectangle: {
         width: Math.ceil(width),
         height: Math.ceil(height),

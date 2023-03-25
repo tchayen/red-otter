@@ -1,3 +1,4 @@
+import { Font } from "./fonts/Font";
 import { Vec2 } from "./math/Vec2";
 import { Vec4 } from "./math/Vec4";
 
@@ -6,6 +7,11 @@ export interface IContext {
    * Get canvas element.
    */
   getCanvas(): HTMLCanvasElement;
+
+  /**
+   * Get font.
+   */
+  getFont(): Font;
 
   /**
    * Draw line connecting given list of points.
@@ -54,8 +60,19 @@ export interface IContext {
 
   /**
    * Writes text on the screen.
+   *
+   * Optionally accepts `trimStart` and `trimEnd`, which represent top left and
+   * bottom right corners of the text bounding box. Text will be trimmed to fit
+   * inside the box.
    */
-  text(text: string, x: number, y: number, fontSize: number, color: Vec4): void;
+  text(
+    text: string,
+    position: Vec2,
+    fontSize: number,
+    color: Vec4,
+    trimStart?: Vec2,
+    trimEnd?: Vec2
+  ): void;
 
   /**
    * Renders to screen and resets buffers.

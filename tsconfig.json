@@ -22,6 +22,7 @@
     "docs",
     "examples/font-atlas-runtime",
     "examples/font-atlas-vercel-ci",
-    "examples/parcel"
+    "examples/parcel",
+    "examples/interactivity"
   ]
 }
