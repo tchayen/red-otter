@@ -23,6 +23,7 @@ export type TextStyle = {
   fontFamily: Font;
   fontSize?: number;
   color?: string;
+  trimRectangle?: [number, number, number, number];
 };
 
 type Input =
@@ -49,8 +50,7 @@ type ResolvedInput = {
 };
 
 /**
- * Fixed view is a view with all layout properties calculated. Output of
- * `flush()`, used by `render()`.
+ * Fixed view is a view with all layout properties calculated.
  */
 export type FixedView = {
   input: Input;
@@ -91,6 +91,7 @@ export const textStyleDefaults = {
  * A tiny tree implementation which supports only adding children.
  */
 export class TreeNode<T> {
+  id = -1;
   next: TreeNode<T> | null;
   prev: TreeNode<T> | null;
   firstChild: TreeNode<T> | null;
@@ -136,7 +137,7 @@ type LayoutOptions = {
  * (`view()` and `text()`).
  */
 export class Layout {
-  private readonly root: TreeNode<FixedView> | null;
+  readonly root: TreeNode<FixedView> | null;
   private current: TreeNode<FixedView> | null;
 
   /**
@@ -238,7 +239,9 @@ export class Layout {
     fontSize: number,
     color: string,
     x?: number,
-    y?: number
+    y?: number,
+    trimStart?: number,
+    trimEnd?: number
   ): void {
     const parent = this.current;
     invariant(parent !== null, "No parent view.");
@@ -254,6 +257,8 @@ export class Layout {
         text,
         width,
         height,
+        trimStart,
+        trimEnd,
       },
       ...fixedViewDefaults,
       x: x ?? 0,
@@ -295,7 +300,6 @@ export class Layout {
 
   /**
    * Calculates layout tree by applying all sizing and direction properties.
-   * Returns the root node of the tree. Pass it to `render()` method.
    */
   calculate(): void {
     const quadQueue = new Queue<TreeNode<FixedView>>();
@@ -427,12 +431,14 @@ export class Layout {
       let totalFlex = 0;
       let childrenCount = 0;
 
+      const parent = element.parent;
+
       // Undefined is ruled out by the previous pass.
-      const parentWidth = element.parent?.value.width ?? 0;
-      const parentHeight = element.parent?.value.height ?? 0;
+      const parentWidth = parent?.value.width ?? 0;
+      const parentHeight = parent?.value.height ?? 0;
 
       const input = element.value.input as ResolvedInput;
-      const parentInput = element.parent?.value.input as ResolvedInput;
+      const parentInput = parent?.value.input as ResolvedInput;
 
       invariant(
         input.flex ? input.flex >= 0 : true,
@@ -454,28 +460,28 @@ export class Layout {
           input.right !== undefined &&
           input.width === undefined
         ) {
-          element.value.x = (element.parent?.value.x ?? 0) + input.left;
+          element.value.x = (parent?.value.x ?? 0) + input.left;
           element.value.width = parentWidth - input.left - input.right;
         } else if (input.left !== undefined) {
           if (input.position === "absolute") {
-            element.value.x = (element.parent?.value.x ?? 0) + input.left;
+            element.value.x = (parent?.value.x ?? 0) + input.left;
           } else {
             element.value.x += input.left;
           }
         } else if (input.right !== undefined) {
           if (input.position === "absolute") {
             element.value.x =
-              (element.parent?.value.x ?? 0) +
+              (parent?.value.x ?? 0) +
               parentWidth -
               input.right -
               element.value.width;
           } else {
-            element.value.x = (element.parent?.value.x ?? 0) - input.right;
+            element.value.x = (parent?.value.x ?? 0) - input.right;
           }
         } else if (input.position === "absolute") {
           // If position is "absolute" but offsets are not specified, set
           // position to parent's top left corner.
-          element.value.x = element.parent?.value.x ?? 0;
+          element.value.x = parent?.value.x ?? 0;
         }
 
         if (
@@ -483,33 +489,33 @@ export class Layout {
           input.bottom !== undefined &&
           input.height === undefined
         ) {
-          element.value.y = (element.parent?.value.y ?? 0) + input.top;
+          element.value.y = (parent?.value.y ?? 0) + input.top;
           element.value.height = parentHeight - input.top - input.bottom;
         } else if (input.top !== undefined) {
           if (input.position === "absolute") {
-            element.value.y = (element.parent?.value.y ?? 0) + input.top;
+            element.value.y = (parent?.value.y ?? 0) + input.top;
           } else {
             element.value.y += input.top;
           }
         } else if (input.bottom !== undefined) {
           if (input.position === "absolute") {
             element.value.y =
-              (element.parent?.value.y ?? 0) +
+              (parent?.value.y ?? 0) +
               parentHeight -
               input.bottom -
               element.value.height;
           } else {
-            element.value.y = (element.parent?.value.y ?? 0) - input.bottom;
+            element.value.y = (parent?.value.y ?? 0) - input.bottom;
           }
         } else if (input.position === "absolute") {
           // If position is "absolute" but offsets are not specified, set
           // position to parent's top left corner.
-          element.value.y = element.parent?.value.y ?? 0;
+          element.value.y = parent?.value.y ?? 0;
         }
       }
 
       // Apply align self.
-      if (element.value.input.position !== "absolute" && element.parent) {
+      if (element.value.input.position !== "absolute" && parent) {
         if (parentInput.flexDirection === "row") {
           if (input.alignSelf === "center") {
             element.value.y =
@@ -521,7 +527,7 @@ export class Layout {
           if (input.alignSelf === "flex-end") {
             element.value.y =
               element.value.y +
-              element.parent.value.height -
+              parent.value.height -
               element.value.height -
               parentInput.paddingBottom -
               parentInput.paddingTop;
@@ -529,7 +535,7 @@ export class Layout {
 
           if (input.alignSelf === "stretch") {
             element.value.height =
-              element.parent.value.height -
+              parent.value.height -
               parentInput.paddingBottom -
               parentInput.paddingTop;
           }
@@ -546,7 +552,7 @@ export class Layout {
           if (input.alignSelf === "flex-end") {
             element.value.x =
               element.value.x +
-              element.parent.value.width -
+              parent.value.width -
               element.value.width -
               parentInput.paddingLeft -
               parentInput.paddingRight;
@@ -554,7 +560,7 @@ export class Layout {
 
           if (input.alignSelf === "stretch") {
             element.value.width =
-              element.parent.value.width -
+              parent.value.width -
               parentInput.paddingLeft -
               parentInput.paddingRight;
           }
@@ -588,7 +594,7 @@ export class Layout {
       }
 
       // Take zIndex from parent if not set.
-      element.value.zIndex = input.zIndex ?? element.parent?.value.zIndex ?? 0;
+      element.value.zIndex = input.zIndex ?? parent?.value.zIndex ?? 0;
 
       let availableWidth = element.value.width;
       let availableHeight = element.value.height;
@@ -863,9 +869,37 @@ export class Layout {
       element.value.width = Math.round(element.value.width);
       element.value.height = Math.round(element.value.height);
 
-      // Hide parts of views that overflow parent. Similarly, fix UV
-      // coordinates for text.
-      // TODO: implement this.
+      // Trim to parent. Skip text as it would move it and we want to trim it
+      // properly.
+      // TODO: this only works for direct descendants. It needs different design
+      // to be a true implementation of `overflow: hidden`.
+      // if (parent && !("text" in element.value.input)) {
+      //   if (element.value.x < parent.value.x) {
+      //     element.value.width -= parent.value.x - element.value.x;
+      //     element.value.x = parent.value.x;
+      //   }
+
+      //   if (element.value.y < parent.value.y) {
+      //     element.value.height -= parent.value.y - element.value.y;
+      //     element.value.y = parent.value.y;
+      //   }
+
+      //   if (
+      //     element.value.x + element.value.width >
+      //     parent.value.x + parent.value.width
+      //   ) {
+      //     element.value.width =
+      //       parent.value.x + parent.value.width - element.value.x;
+      //   }
+
+      //   if (
+      //     element.value.y + element.value.height >
+      //     parent.value.y + parent.value.height
+      //   ) {
+      //     element.value.height =
+      //       parent.value.y + parent.value.height - element.value.y;
+      //   }
+      // }
     }
   }
 
@@ -900,7 +934,6 @@ export class Layout {
         }
 
         queue.enqueue(p);
-
         p = p.prev;
       }
     }
@@ -909,13 +942,27 @@ export class Layout {
 
     for (const view of list) {
       if ("text" in view.input) {
-        this.context.text(
-          view.input.text,
-          view.x,
-          view.y,
-          view.input.fontSize,
-          view.input.color ? parseColor(view.input.color) : new Vec4(0, 0, 0, 0)
-        );
+        if (view.input.color) {
+          if (view.input.trimRectangle) {
+            const { trimRectangle } = view.input;
+
+            this.context.text(
+              view.input.text,
+              new Vec2(view.x, view.y),
+              view.input.fontSize,
+              parseColor(view.input.color),
+              new Vec2(trimRectangle[0], trimRectangle[1]),
+              new Vec2(trimRectangle[2], trimRectangle[3])
+            );
+          } else {
+            this.context.text(
+              view.input.text,
+              new Vec2(view.x, view.y),
+              view.input.fontSize,
+              parseColor(view.input.color)
+            );
+          }
+        }
       } else if ("points" in view.input) {
         if (view.input.type === "polygon") {
           this.context.polygon(

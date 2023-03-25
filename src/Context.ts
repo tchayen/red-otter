@@ -225,6 +225,11 @@ export class Context implements IContext {
   private readonly borderColorsBuffer: WebGLBuffer | null = null;
 
   /**
+   * Updated in `clear()`.
+   */
+  private contextHeight = 0;
+
+  /**
    * Creates new context.
    */
   constructor(canvas: HTMLCanvasElement, private readonly font: Font) {
@@ -271,6 +276,10 @@ export class Context implements IContext {
 
   getCanvas(): HTMLCanvasElement {
     return this.gl.canvas as HTMLCanvasElement;
+  }
+
+  getFont(): Font {
+    return this.font;
   }
 
   line(points: Vec2[], thickness: number, color: Vec4): void {
@@ -346,7 +355,7 @@ export class Context implements IContext {
         () =>
           new Vec2(
             vertices[0].x * scale,
-            (this.getCanvas().clientHeight - vertices[0].y - size.y) * scale
+            (this.contextHeight - vertices[0].y - size.y) * scale
           )
       )
     );
@@ -387,6 +396,8 @@ export class Context implements IContext {
       canvas.height = canvas.clientHeight * scale;
     }
 
+    this.contextHeight = canvas.clientHeight;
+
     this.gl.clearColor(0, 0, 0, 1);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -415,10 +426,11 @@ export class Context implements IContext {
 
   text(
     text: string,
-    x: number,
-    y: number,
+    position: Vec2,
     fontSize: number,
-    color: Vec4
+    color: Vec4,
+    trimStart?: Vec2,
+    trimEnd?: Vec2
   ): void {
     const metadata = this.font.getMetadata();
 
@@ -430,7 +442,7 @@ export class Context implements IContext {
 
     if (DEBUG_TEXT_RENDERING_SHOW_CAPSIZE) {
       this.rectangle(
-        new Vec2(x, y),
+        position,
         new Vec2(shape.boundingRectangle.width, shape.boundingRectangle.height),
         new Vec4(1, 0, 1, 0.3)
       );
@@ -439,28 +451,80 @@ export class Context implements IContext {
     const textUVs = text.split("").map((c) => this.font.getUV(c.charCodeAt(0)));
 
     for (let i = 0; i < shape.positions.length; i++) {
-      const position = shape.positions[i].add(new Vec2(x, y));
-      const size = shape.sizes[i];
+      let shapePosition = shape.positions[i].add(position);
+      let size = shape.sizes[i];
+
+      const isInTrimBoundsX =
+        (trimStart === undefined || shapePosition.x + size.x >= trimStart.x) &&
+        (trimEnd === undefined || shapePosition.x <= trimEnd.x);
+
+      const isInTrimBoundsY =
+        (trimStart === undefined || shapePosition.y + size.y >= trimStart.y) &&
+        (trimEnd === undefined || shapePosition.y <= trimEnd.y);
+
+      const isInTrimBounds = isInTrimBoundsX && isInTrimBoundsY;
+
+      let uv = textUVs[i];
+      invariant(uv, "UV does not exist.");
+
+      if (isInTrimBounds) {
+        if (trimStart !== undefined) {
+          const diffX = trimStart.x - shapePosition.x;
+          const diffY = trimStart.y - shapePosition.y;
+
+          if (diffX > 0) {
+            const uvDiffX = (diffX / size.x) * uv.z;
+            uv = new Vec4(uv.x + uvDiffX, uv.y, uv.z - uvDiffX, uv.w);
+            size = new Vec2(size.x - diffX, size.y);
+            shapePosition = new Vec2(trimStart.x, shapePosition.y);
+          }
+
+          if (diffY > 0) {
+            const uvDiffY = (diffY / size.y) * uv.w;
+            uv = new Vec4(uv.x, uv.y + uvDiffY, uv.z, uv.w - uvDiffY);
+            size = new Vec2(size.x, size.y - diffY);
+            shapePosition = new Vec2(shapePosition.x, trimStart.y);
+          }
+        }
+
+        if (trimEnd !== undefined) {
+          const diffX = shapePosition.x + size.x - trimEnd.x;
+          const diffY = shapePosition.y + size.y - trimEnd.y;
+
+          if (diffX > 0) {
+            const uvDiffX = (diffX / size.x) * uv.z;
+            uv = new Vec4(uv.x, uv.y, uv.z - uvDiffX, uv.w);
+            size = new Vec2(size.x - diffX, size.y);
+          }
+
+          if (diffY > 0) {
+            const uvDiffY = (diffY / size.y) * uv.w;
+            uv = new Vec4(uv.x, uv.y, uv.z, uv.w - uvDiffY);
+            size = new Vec2(size.x, size.y - diffY);
+          }
+        }
+      } else {
+        size = new Vec2(0, 0);
+      }
 
       const vertices = [
-        new Vec2(position.x, position.y),
-        new Vec2(position.x, position.y + size.y),
-        new Vec2(position.x + size.x, position.y),
+        new Vec2(shapePosition.x, shapePosition.y),
+        new Vec2(shapePosition.x, shapePosition.y + size.y),
+        new Vec2(shapePosition.x + size.x, shapePosition.y),
 
-        new Vec2(position.x, position.y + size.y),
-        new Vec2(position.x + size.x, position.y + size.y),
-        new Vec2(position.x + size.x, position.y),
+        new Vec2(shapePosition.x, shapePosition.y + size.y),
+        new Vec2(shapePosition.x + size.x, shapePosition.y + size.y),
+        new Vec2(shapePosition.x + size.x, shapePosition.y),
       ];
 
       if (DEBUG_TEXT_RENDERING_SHOW_GLYPHS) {
         this.rectangle(
-          new Vec2(position.x, position.y),
+          new Vec2(shapePosition.x, shapePosition.y),
           size,
           new Vec4(0, 1, 0, 0.3)
         );
       }
 
-      const uv = textUVs[i];
       invariant(uv, "UV does not exist.");
 
       const uvs = [

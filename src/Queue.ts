@@ -74,6 +74,12 @@ export class Queue<T> {
     return null;
   }
 
+  clear(): void {
+    this.start = null;
+    this.end = null;
+    this.size = 0;
+  }
+
   isEmpty(): boolean {
     return this.size === 0;
   }
