@@ -63,7 +63,8 @@ describe("Layout", () => {
     const layout = new Layout(context);
 
     layout.add(<view />);
-    const tree = layout.flush();
+    layout.calculate();
+    const tree = layout.getRoot();
     expect(tree).toBeTruthy();
   });
 

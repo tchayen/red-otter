@@ -289,11 +289,15 @@ export class Layout {
     parent.addChild(node);
   }
 
+  getRoot(): TreeNode<FixedView> | null {
+    return this.root;
+  }
+
   /**
    * Calculates layout tree by applying all sizing and direction properties.
    * Returns the root node of the tree. Pass it to `render()` method.
    */
-  flush(): TreeNode<FixedView> {
+  calculate(): void {
     const quadQueue = new Queue<TreeNode<FixedView>>();
     const reverseQueue = new Queue<TreeNode<FixedView>>();
     const forwardQueue = new Queue<TreeNode<FixedView>>();
@@ -863,8 +867,6 @@ export class Layout {
       // coordinates for text.
       // TODO: implement this.
     }
-
-    return this.root as TreeNode<FixedView>;
   }
 
   /**
@@ -872,13 +874,14 @@ export class Layout {
    * what takes UI to appear on the screen.
    */
   render(): void {
-    const tree = this.flush();
+    this.calculate();
     const list: FixedView[] = [];
 
     // Traverse the tree in DFS order to respect local order of components
     // (unlike in level order traversal).
     const queue = new Queue<TreeNode<FixedView>>();
-    queue.enqueue(tree);
+    queue.enqueue(this.root as TreeNode<FixedView>);
+
     while (!queue.isEmpty()) {
       const node = queue.dequeueFront();
       invariant(node, "Node should not be null.");
@@ -888,11 +891,11 @@ export class Layout {
       let p = node.lastChild;
       while (p) {
         if (
-          p.value.width < 0.01 ||
-          p.value.height < 0.01 ||
+          p.value.width < 0.1 ||
+          p.value.height < 0.1 ||
           p.value.input.display === "none"
         ) {
-          p = p.next;
+          p = p.prev;
           continue;
         }
 
