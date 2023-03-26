@@ -131,10 +131,7 @@ export function jsx(
       return node;
     }
     case "text": {
-      const text = children[0] ?? "";
-      if (typeof text !== "string") {
-        throw new Error("Child must be a string.");
-      }
+      const text = children.map((child) => String(child)).join("") ?? "";
 
       const style = {} as TextStyle;
       if (
