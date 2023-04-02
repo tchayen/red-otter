@@ -165,64 +165,23 @@ export class Context implements IContext {
   private readonly program: WebGLProgram | null = null;
 
   /**
-   * In pixels [0, width], [0, height].
-   */
-  private positions: Vec2[] = [];
-
-  /**
-   * In range [0, 1].
-   */
-  private uvs: Vec2[] = [];
-
-  /**
-   * In range [0, 1].
-   */
-  private colors: Vec4[] = [];
-
-  /**
-   * Bottom left corner.
+   * Buffer using strides.
    *
-   * new Vec2(-1, -1) for non-rectangles.
+   * - **Position** - In pixels `[0, width], [0, height]`.
+   * - **UV** - In range `[0, 1]`.
+   * - **Color** - In range `[0, 1]`.
+   * - **Corner** - Bottom left corner. `new Vec2(-1, -1)` for non-rectangles.
+   * - **Rectangle** size - In pixels. `new Vec2(-1, -1)` for non-rectangles.
+   * - **Radius** - In pixels. Top, right, bottom, left. `new Vec4(-1, -1, -1, -1)` for non-rectangles.
+   * - **Border width** - In pixels. Top, right, bottom, left. `new Vec4(-1, -1, -1, -1)` for non-rectangles.
+   * - **Border color** - In range `[0, 1]`.
    */
-  private corners: Vec2[] = [];
-
-  /**
-   * In pixels.
-   *
-   * new Vec2(-1, -1) for non-rectangles.
-   */
-  private rectangleSizes: Vec2[] = [];
-
-  /**
-   * In pixels. Top, right, bottom, left.
-   *
-   * new Vec4(-1, -1, -1, -1) for non-rectangles.
-   */
-  private radii: Vec4[] = [];
-
-  /**
-   * In pixels. Top, right, bottom, left.
-   *
-   * new Vec4(-1, -1, -1, -1) for non-rectangles.
-   */
-  private borderWidths: Vec4[] = [];
-
-  /**
-   * In range [0, 1].
-   */
-  private borderColors: Vec4[] = [];
+  private vertexAttributes: number[] = [];
 
   private readonly fontAtlasTexture: WebGLTexture | null = null;
 
   private readonly vao: WebGLVertexArrayObject | null = null;
-  private readonly positionBuffer: WebGLBuffer | null = null;
-  private readonly uvBuffer: WebGLBuffer | null = null;
-  private readonly colorBuffer: WebGLBuffer | null = null;
-  private readonly bottomLeftCornerBuffer: WebGLBuffer | null = null;
-  private readonly rectangleSizeBuffer: WebGLBuffer | null = null;
-  private readonly radiiBuffer: WebGLBuffer | null = null;
-  private readonly borderWidthsBuffer: WebGLBuffer | null = null;
-  private readonly borderColorsBuffer: WebGLBuffer | null = null;
+  private readonly interleavedBuffer: WebGLBuffer | null = null;
 
   /**
    * Updated in `clear()`.
@@ -263,14 +222,8 @@ export class Context implements IContext {
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     this.vao = this.gl.createVertexArray();
-    this.positionBuffer = this.gl.createBuffer();
-    this.uvBuffer = this.gl.createBuffer();
-    this.colorBuffer = this.gl.createBuffer();
-    this.bottomLeftCornerBuffer = this.gl.createBuffer();
-    this.rectangleSizeBuffer = this.gl.createBuffer();
-    this.radiiBuffer = this.gl.createBuffer();
-    this.borderWidthsBuffer = this.gl.createBuffer();
-    this.borderColorsBuffer = this.gl.createBuffer();
+    this.interleavedBuffer = this.gl.createBuffer();
+
     this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 
@@ -287,14 +240,18 @@ export class Context implements IContext {
 
     const vertices = triangulateLine(points, thickness);
 
-    this.positions.push(...vertices.reverse());
-    this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
-    this.colors.push(...vertices.map(() => color));
-    this.corners.push(...vertices.map(() => NO_DATA_VEC2));
-    this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-    this.radii.push(...vertices.map(() => NO_DATA_VEC4));
-    this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
-    this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
+    for (let i = vertices.length - 1; i >= 0; i--) {
+      this.pushVertexData(
+        vertices[i],
+        NO_DATA_VEC2,
+        color,
+        NO_DATA_VEC2,
+        NO_DATA_VEC2,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4
+      );
+    }
   }
 
   polygon(points: Vec2[], color: Vec4): void {
@@ -303,28 +260,36 @@ export class Context implements IContext {
     const vertices = points.length === 3 ? points : triangulatePolygon(points);
     invariant(vertices.length % 3 === 0, "Triangles must have 3 points.");
 
-    this.positions.push(...vertices);
-    this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
-    this.colors.push(...vertices.map(() => color));
-    this.corners.push(...vertices.map(() => NO_DATA_VEC2));
-    this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-    this.radii.push(...vertices.map(() => NO_DATA_VEC4));
-    this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
-    this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
+    for (let i = 0; i < vertices.length; i++) {
+      this.pushVertexData(
+        vertices[i],
+        NO_DATA_VEC2,
+        color,
+        NO_DATA_VEC2,
+        NO_DATA_VEC2,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4
+      );
+    }
   }
 
   triangles(points: Vec2[], color: Vec4): void {
     invariant(points.length >= 3, "Triangles must have at least 3 points.");
     invariant(points.length % 3 === 0, "Points array must be divisive by 3.");
 
-    this.positions.push(...points);
-    this.uvs.push(...points.map(() => NO_DATA_VEC2));
-    this.colors.push(...points.map(() => color));
-    this.corners.push(...points.map(() => NO_DATA_VEC2));
-    this.rectangleSizes.push(...points.map(() => NO_DATA_VEC2));
-    this.radii.push(...points.map(() => NO_DATA_VEC4));
-    this.borderWidths.push(...points.map(() => NO_DATA_VEC4));
-    this.borderColors.push(...points.map(() => NO_DATA_VEC4));
+    for (let i = 0; i < points.length; i++) {
+      this.pushVertexData(
+        points[i],
+        NO_DATA_VEC2,
+        color,
+        NO_DATA_VEC2,
+        NO_DATA_VEC2,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4,
+        NO_DATA_VEC4
+      );
+    }
   }
 
   rectangle(
@@ -347,30 +312,35 @@ export class Context implements IContext {
       new Vec2(position.x + size.x, position.y),
     ];
 
-    this.positions.push(...vertices);
-    this.uvs.push(...vertices.map(() => NO_DATA_VEC2));
-    this.colors.push(...vertices.map(() => color));
-    this.corners.push(
-      ...vertices.map(
-        () =>
-          new Vec2(
-            vertices[0].x * scale,
-            (this.contextHeight - vertices[0].y - size.y) * scale
-          )
-      )
-    );
-    this.rectangleSizes.push(...vertices.map(() => size.scale(scale)));
-    this.radii.push(
-      ...vertices.map(() =>
-        borderRadius ? borderRadius.scale(scale) : NO_DATA_VEC4
-      )
-    );
-    this.borderWidths.push(
-      ...vertices.map(() =>
-        borderWidth ? borderWidth.scale(scale) : NO_DATA_VEC4
-      )
-    );
-    this.borderColors.push(...vertices.map(() => borderColor ?? NO_DATA_VEC4));
+    for (let i = 0; i < vertices.length; i++) {
+      this.pushVertexData(
+        vertices[i],
+        NO_DATA_VEC2,
+        color,
+        new Vec2(
+          vertices[0].x * scale,
+          (this.contextHeight - vertices[0].y - size.y) * scale
+        ),
+        new Vec2(size.x * scale, size.y * scale),
+        borderRadius
+          ? new Vec4(
+              borderRadius.x * scale,
+              borderRadius.y * scale,
+              borderRadius.z * scale,
+              borderRadius.w * scale
+            )
+          : NO_DATA_VEC4,
+        borderWidth
+          ? new Vec4(
+              borderWidth.x * scale,
+              borderWidth.y * scale,
+              borderWidth.z * scale,
+              borderWidth.w * scale
+            )
+          : NO_DATA_VEC4,
+        borderColor ? borderColor : NO_DATA_VEC4
+      );
+    }
   }
 
   clear(): void {
@@ -537,153 +507,61 @@ export class Context implements IContext {
         new Vec2(uv.x + uv.z, uv.y),
       ];
 
-      this.positions.push(...vertices);
-      this.uvs.push(...uvs);
-      this.colors.push(...vertices.map(() => color));
-      this.corners.push(...vertices.map(() => NO_DATA_VEC2));
-      this.rectangleSizes.push(...vertices.map(() => NO_DATA_VEC2));
-      this.radii.push(...vertices.map(() => NO_DATA_VEC4));
-      this.borderWidths.push(...vertices.map(() => NO_DATA_VEC4));
-      this.borderColors.push(...vertices.map(() => NO_DATA_VEC4));
+      for (let i = 0; i < vertices.length; i++) {
+        this.pushVertexData(
+          vertices[i],
+          uvs[i],
+          color,
+          NO_DATA_VEC2,
+          NO_DATA_VEC2,
+          NO_DATA_VEC4,
+          NO_DATA_VEC4,
+          NO_DATA_VEC4
+        );
+      }
     }
   }
 
   flush(): void {
+    const VEC_2_SIZE = 2;
+    const VEC_4_SIZE = 4;
+    const FLOATS_PER_TRIANGLE_RENDERED = VEC_2_SIZE * 2 + VEC_4_SIZE * 5;
+    const stride =
+      FLOATS_PER_TRIANGLE_RENDERED * Float32Array.BYTES_PER_ELEMENT;
+
     invariant(this.program, "Program does not exist.");
     invariant(this.gl, "WebGL context does not exist.");
     invariant(
-      this.positions.length === this.colors.length,
-      "Buffers are not equal in size."
-    );
-    invariant(
-      this.positions.length % 3 === 0,
-      "Buffers are not divisible by 3."
-    );
-    invariant(
-      this.positions.length === this.uvs.length &&
-        this.uvs.length === this.colors.length &&
-        this.colors.length === this.corners.length &&
-        this.corners.length === this.rectangleSizes.length &&
-        this.rectangleSizes.length === this.radii.length &&
-        this.radii.length === this.borderWidths.length &&
-        this.borderWidths.length === this.borderColors.length,
-      "Buffers are not equal in size."
+      this.vertexAttributes.length % FLOATS_PER_TRIANGLE_RENDERED === 0,
+      "Buffer is not divisible by number of float parameters needed for each triangle."
     );
 
-    if (this.positions.length === 0) {
+    if (this.vertexAttributes.length === 0) {
       return;
     }
-
-    const positionsData = new Float32Array(
-      this.positions.map((v) => [v.x, v.y]).flat()
-    );
-    const uvsData = new Float32Array(this.uvs.map((v) => [v.x, v.y]).flat());
-    const colorsData = new Float32Array(
-      this.colors.map((v) => [v.x, v.y, v.z, v.w]).flat()
-    );
-
-    const cornersData = new Float32Array(
-      this.corners.map((v) => [v.x, v.y]).flat()
-    );
-
-    const rectangleSizesData = new Float32Array(
-      this.rectangleSizes.map((v) => [v.x, v.y]).flat()
-    );
-
-    const radiiData = new Float32Array(
-      this.radii.map((v) => [v.x, v.y, v.z, v.w]).flat()
-    );
-
-    const borderWidthsData = new Float32Array(
-      this.borderWidths.map((v) => [v.x, v.y, v.z, v.w]).flat()
-    );
-
-    const borderColorsData = new Float32Array(
-      this.borderColors.map((v) => [v.x, v.y, v.z, v.w]).flat()
-    );
 
     invariant(this.vao, "VAO is missing");
     this.gl.bindVertexArray(this.vao);
 
-    const VEC_2_SIZE = 2;
-    const VEC_4_SIZE = 4;
-
-    // TODO: revisit possibility of using one buffer with stride.
-
-    // Set up position buffer.
-    invariant(this.positionBuffer, "Position VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+    // Set up interleaved buffer.
+    invariant(this.interleavedBuffer, "Interleaved VBO is missing.");
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.interleavedBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
-      positionsData,
+      new Float32Array(this.vertexAttributes),
       this.gl.STATIC_DRAW
     );
-    this.gl.enableVertexAttribArray(0);
-    this.gl.vertexAttribPointer(0, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
 
-    // Set up uv buffer.
-    invariant(this.uvBuffer, "UV VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.uvBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, uvsData, this.gl.STATIC_DRAW);
-    this.gl.enableVertexAttribArray(1);
-    this.gl.vertexAttribPointer(1, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
+    let offset = 0;
 
-    // Set up color buffer.
-    invariant(this.colorBuffer, "Color VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, colorsData, this.gl.STATIC_DRAW);
-    this.gl.enableVertexAttribArray(2);
-    this.gl.vertexAttribPointer(2, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
-
-    // Set up bottom left corner buffer.
-    invariant(
-      this.bottomLeftCornerBuffer,
-      "Bottom left corner VBO is missing."
-    );
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bottomLeftCornerBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, cornersData, this.gl.STATIC_DRAW);
-    this.gl.enableVertexAttribArray(3);
-    this.gl.vertexAttribPointer(3, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
-
-    // Set up rectangle buffer.
-    invariant(this.rectangleSizeBuffer, "Rectangle VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.rectangleSizeBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      rectangleSizesData,
-      this.gl.STATIC_DRAW
-    );
-    this.gl.enableVertexAttribArray(4);
-    this.gl.vertexAttribPointer(4, VEC_2_SIZE, this.gl.FLOAT, false, 0, 0);
-
-    // Set up border radius buffer.
-    invariant(this.radiiBuffer, "Border radius VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.radiiBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, radiiData, this.gl.STATIC_DRAW);
-    this.gl.enableVertexAttribArray(5);
-    this.gl.vertexAttribPointer(5, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
-
-    // Set up border widthbuffer.
-    invariant(this.borderWidthsBuffer, "Border width VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.borderWidthsBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      borderWidthsData,
-      this.gl.STATIC_DRAW
-    );
-    this.gl.enableVertexAttribArray(6);
-    this.gl.vertexAttribPointer(6, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
-
-    // Set up border buffer.
-    invariant(this.borderColorsBuffer, "Border width VBO is missing.");
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.borderColorsBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      borderColorsData,
-      this.gl.STATIC_DRAW
-    );
-    this.gl.enableVertexAttribArray(7);
-    this.gl.vertexAttribPointer(7, VEC_4_SIZE, this.gl.FLOAT, false, 0, 0);
+    offset = this.setAttribute(0, VEC_2_SIZE, false, stride, offset);
+    offset = this.setAttribute(1, VEC_2_SIZE, false, stride, offset);
+    offset = this.setAttribute(2, VEC_4_SIZE, false, stride, offset);
+    offset = this.setAttribute(3, VEC_2_SIZE, false, stride, offset);
+    offset = this.setAttribute(4, VEC_2_SIZE, false, stride, offset);
+    offset = this.setAttribute(5, VEC_4_SIZE, false, stride, offset);
+    offset = this.setAttribute(6, VEC_4_SIZE, false, stride, offset);
+    this.setAttribute(7, VEC_4_SIZE, false, stride, offset);
 
     // Render.
     invariant(this.program, "Program does not exist.");
@@ -691,45 +569,12 @@ export class Context implements IContext {
     this.gl.useProgram(this.program);
     this.gl.bindVertexArray(this.vao);
 
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length);
+    const triangleCount =
+      this.vertexAttributes.length / FLOATS_PER_TRIANGLE_RENDERED;
 
-    this.positions = [];
-    this.uvs = [];
-    this.colors = [];
-    this.corners = [];
-    this.rectangleSizes = [];
-    this.radii = [];
-    this.borderWidths = [];
-    this.borderColors = [];
-  }
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, triangleCount);
 
-  debugDrawFontAtlas(): void {
-    const position = new Vec2(0, 0);
-    const size = new Vec2(300, 300);
-    const color = new Vec4(1, 1, 1, 1);
-
-    const vertices = [
-      new Vec2(position.x, position.y),
-      new Vec2(position.x, position.y + size.y),
-      new Vec2(position.x + size.x, position.y),
-
-      new Vec2(position.x, position.y + size.y),
-      new Vec2(position.x + size.x, position.y + size.y),
-      new Vec2(position.x + size.x, position.y),
-    ];
-    const uvs = [
-      new Vec2(0, 0),
-      new Vec2(0, 1),
-      new Vec2(1, 0),
-
-      new Vec2(0, 1),
-      new Vec2(1, 1),
-      new Vec2(1, 0),
-    ];
-
-    this.positions.push(...vertices);
-    this.uvs.push(...uvs);
-    this.colors.push(...vertices.map(() => color));
+    this.vertexAttributes = [];
   }
 
   loadTexture(image: HTMLImageElement): WebGLTexture {
@@ -782,5 +627,70 @@ export class Context implements IContext {
     this.gl.generateMipmap(this.gl.TEXTURE_2D);
 
     return texture;
+  }
+
+  private setAttribute(
+    index: number,
+    size: number,
+    normalized: boolean,
+    stride: number,
+    offset: number
+  ): number {
+    this.gl.enableVertexAttribArray(index);
+    this.gl.vertexAttribPointer(
+      index,
+      size,
+      this.gl.FLOAT,
+      normalized,
+      stride,
+      offset
+    );
+    return offset + size * Float32Array.BYTES_PER_ELEMENT;
+  }
+
+  private pushVertexData(
+    position: Vec2,
+    uv: Vec2,
+    color: Vec4,
+    corner: Vec2,
+    size: Vec2,
+    radius: Vec4,
+    borderWidth: Vec4,
+    borderColor: Vec4
+  ): void {
+    this.vertexAttributes.push(
+      // Position
+      position.x,
+      position.y,
+      // UV
+      uv.x,
+      uv.y,
+      // Color
+      color.x,
+      color.y,
+      color.z,
+      color.w,
+      // Corner
+      corner.x,
+      corner.y,
+      // Rectangle size
+      size.x,
+      size.y,
+      // Radius
+      radius.x,
+      radius.y,
+      radius.z,
+      radius.w,
+      // Border width
+      borderWidth.x,
+      borderWidth.y,
+      borderWidth.z,
+      borderWidth.w,
+      // Border color
+      borderColor.x,
+      borderColor.y,
+      borderColor.z,
+      borderColor.w
+    );
   }
 }
