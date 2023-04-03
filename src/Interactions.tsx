@@ -1,10 +1,10 @@
-import { Queue } from "../../src/Queue";
-import { invariant } from "../../src/invariant";
-import { FixedView, Layout, TreeNode } from "../../src/Layout";
-import { hash } from "../../src/hash";
-import { IContext } from "../../src/IContext";
-import { jsx } from "../../src/jsx-runtime";
-import { Vec2 } from "../../src/math/Vec2";
+import { Queue } from "./Queue";
+import { invariant } from "./invariant";
+import { FixedView, Layout, TreeNode } from "./Layout";
+import { hash } from "./hash";
+import { IContext } from "./IContext";
+import { jsx } from "./jsx-runtime";
+import { Vec2 } from "./math/Vec2";
 import {
   Key,
   MODIFIER_ALT,
@@ -13,7 +13,7 @@ import {
   MODIFIER_SHIFT,
   updateSelection,
   updateText,
-} from "../../src/textSelectionUtils";
+} from "./textSelectionUtils";
 
 type Rectangle = {
   x1: number;

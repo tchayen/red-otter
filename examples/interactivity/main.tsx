@@ -1,4 +1,3 @@
-import { Interactions } from "./Interactions";
 import {
   Context,
   Font,
@@ -6,6 +5,7 @@ import {
   Layout,
   Style,
   TextStyle,
+  Interactions,
   TTF,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   jsx,
@@ -130,14 +130,6 @@ loadFont().then((font) => {
           }}
         />
         <text style={text}>{String(counter)}</text>
-        {/* <Button
-          id="test-button-id-2"
-          label="Second button"
-          onClick={() => {
-            counter2 += 1;
-          }}
-        />
-        <text style={text}>{String(counter2)}</text> */}
         <Select
           id="test-select-id"
           options={[
@@ -150,18 +142,6 @@ loadFont().then((font) => {
             selectedValue = value;
           }}
         />
-        {/* <Select
-          id="test-select-id-2"
-          options={[
-            { value: "option1", label: "Apple" },
-            { value: "option2", label: "Banana" },
-            { value: "option3", label: "Cherry" },
-          ]}
-          value={selectedValue2}
-          onChange={(value) => {
-            selectedValue2 = value;
-          }}
-        /> */}
         <Input
           id="test-input-id"
           value={inputValue}
@@ -169,13 +149,6 @@ loadFont().then((font) => {
             inputValue = value;
           }}
         />
-        {/* <Input
-          id="test-input-id-2"
-          value={otherInputValue}
-          onChange={(value) => {
-            otherInputValue = value;
-          }}
-        /> */}
         <Checkbox
           id="test-checkbox-id"
           label="Allow cookies"
@@ -184,14 +157,6 @@ loadFont().then((font) => {
             checked = !checked;
           }}
         />
-        {/* <Checkbox
-          id="test-checkbox-id-2"
-          label="Permit biscuits"
-          checked={checked2}
-          onChange={() => {
-            checked2 = !checked2;
-          }}
-        /> */}
         <Slider
           id="test-slider-id"
           min={20}
@@ -209,15 +174,6 @@ loadFont().then((font) => {
             checked = !checked;
           }}
         />
-        {/* <Slider
-          id="test-slider-id-2"
-          min={0}
-          max={100}
-          value={sliderValue2}
-          onChange={(value) => {
-            sliderValue2 = value;
-          }}
-        /> */}
         <Tooltip
           id="tooltip-id"
           content={<text style={text}>When you know</text>}
