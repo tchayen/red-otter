@@ -153,6 +153,16 @@ transformSync(fixturesSource, {
 
 step("Extract API reference");
 
+const classAllowlist = [
+  "Layout",
+  "Context",
+  "Font",
+  "FontAtlas",
+  "TTF",
+  "Vec2",
+  "Vec4",
+];
+
 const stylePath = path.resolve(path.join(__dirname, "../../src/Style.ts"));
 const layoutPath = path.resolve(path.join(__dirname, "../../src/Layout.ts"));
 const contextPath = path.resolve(path.join(__dirname, "../../src/Context.ts"));
@@ -160,6 +170,9 @@ const fontPath = path.resolve(path.join(__dirname, "../../src/fonts/Font.ts"));
 const fontAtlasPath = path.resolve(
   path.join(__dirname, "../../src/fonts/FontAtlas.ts")
 );
+const ttfPath = path.resolve(path.join(__dirname, "../../src/fonts/TTF.ts"));
+const vec2Path = path.resolve(path.join(__dirname, "../../src/math/Vec2.ts"));
+const vec4Path = path.resolve(path.join(__dirname, "../../src/math/Vec4.ts"));
 
 const apiExports = extractExports([
   stylePath,
@@ -167,6 +180,9 @@ const apiExports = extractExports([
   fontPath,
   contextPath,
   fontAtlasPath,
+  ttfPath,
+  vec2Path,
+  vec4Path,
 ]);
 
 function escapeDescription(description: string): string {
@@ -257,7 +273,7 @@ function showApiReferences(): string {
       .join("")}
   </div>
   ${apiExports.classes
-    .filter((c) => ["Layout", "Context", "Font", "FontAtlas"].includes(c.name))
+    .filter((c) => classAllowlist.includes(c.name))
     .map((c) => {
       return `${addHeader(3, c.name)}
       <p>${escapeDescription(c.description)}</p>

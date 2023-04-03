@@ -1,3 +1,6 @@
+/**
+ * A 4-dimensional vector.
+ */
 export class Vec4 {
   constructor(
     public readonly x: number,

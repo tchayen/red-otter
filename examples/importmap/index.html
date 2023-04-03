@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactivity</title>
+  </head>
+  <body>
+    <style>
+      body {
+        margin: 0;
+        background-color: #000;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+    <div id="app"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "red-otter": "https://cdn.jsdelivr.net/npm/red-otter"
+        }
+      }
+    </script>
+    <script type="module">
+      import { Context, TTF, Font, FontAtlas, Vec2, Vec4 } from "red-otter";
+
+      async function loadFont() {
+        const start = performance.now();
+
+        // Add font to the document so we will use browser to rasterize the font.
+        const fontFace = new FontFace("Inter", 'url("/inter.ttf")');
+        await fontFace.load();
+        document.fonts.add(fontFace);
+
+        // Download font file for parsing.
+        const file = await fetch("/inter.ttf");
+        const buffer = await file.arrayBuffer();
+
+        const ttf = new TTF(buffer);
+        if (!ttf.ok) {
+          throw new Error("Failed to parse font file.");
+        }
+
+        // Render font atlas.
+        const atlas = new FontAtlas(ttf);
+        const { canvas, spacing } = atlas.render();
+
+        const image = new Image();
+        image.src = canvas.toDataURL();
+
+        const font = new Font(spacing, image);
+        console.debug(
+          `Loaded font client-side in ${performance.now() - start}ms.`
+        );
+        return font;
+      }
+
+      loadFont().then((font) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 800 * window.devicePixelRatio;
+        canvas.height = 600 * window.devicePixelRatio;
+
+        const div = document.getElementById("app");
+        if (!div) {
+          throw new Error("Missing #app div.");
+        }
+
+        div.appendChild(canvas);
+
+        const context = new Context(canvas, font);
+        context.clear();
+        context.text(
+          "Hello World!",
+          new Vec2(100, 100),
+          32,
+          new Vec4(1, 1, 1, 1)
+        );
+        context.flush();
+      });
+    </script>
+  </body>
+</html>
