@@ -4,6 +4,11 @@ import { Vec4 } from "./math/Vec4";
 
 export interface IContext {
   /**
+   * Get WebGL2 context.
+   */
+  getWebGLContext(): WebGL2RenderingContext;
+
+  /**
    * Get canvas element.
    */
   getCanvas(): HTMLCanvasElement;

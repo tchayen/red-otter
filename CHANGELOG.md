@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.8
+
+- Add `Context#getWebGLContext()` so WebGL context can be accessed from outside.
+
 ## 0.0.7
 
 - Move `Interactions` class to the main package.

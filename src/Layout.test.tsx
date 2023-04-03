@@ -44,6 +44,9 @@ class MockContext implements IContext {
   getFont(): Font {
     return {} as Font;
   }
+  getWebGLContext(): WebGL2RenderingContext {
+    return {} as WebGL2RenderingContext;
+  }
 }
 
 describe("Layout", () => {

@@ -1194,7 +1194,7 @@ layout.add(
       </p>
       ${codeExample(
         `class MockContext implements IContext {
-  getCanvas() {
+  getCanvas(): HTMLCanvasElement {
     return {
       clientWidth: 800,
       clientHeight: 600,
@@ -1226,6 +1226,12 @@ layout.add(
   }
   loadTexture() {
     return {} as WebGLTexture;
+  }
+  getFont() {
+    return {} as Font;
+  }
+  getWebGLContext() {
+    return {} as WebGL2RenderingContext;
   }
 }`,
 

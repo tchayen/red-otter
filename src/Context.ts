@@ -227,6 +227,10 @@ export class Context implements IContext {
     this.setProjection(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
 
+  getWebGLContext(): WebGL2RenderingContext {
+    return this.gl;
+  }
+
   getCanvas(): HTMLCanvasElement {
     return this.gl.canvas as HTMLCanvasElement;
   }
