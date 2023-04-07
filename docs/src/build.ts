@@ -160,7 +160,9 @@ const classAllowlist = [
   "FontAtlas",
   "TTF",
   "Vec2",
+  "Vec3",
   "Vec4",
+  "Mat4",
 ];
 
 const stylePath = path.resolve(path.join(__dirname, "../../src/Style.ts"));
@@ -172,7 +174,9 @@ const fontAtlasPath = path.resolve(
 );
 const ttfPath = path.resolve(path.join(__dirname, "../../src/fonts/TTF.ts"));
 const vec2Path = path.resolve(path.join(__dirname, "../../src/math/Vec2.ts"));
+const vec3Path = path.resolve(path.join(__dirname, "../../src/math/Vec3.ts"));
 const vec4Path = path.resolve(path.join(__dirname, "../../src/math/Vec4.ts"));
+const mat4Path = path.resolve(path.join(__dirname, "../../src/math/Mat4.ts"));
 
 const apiExports = extractExports([
   stylePath,
@@ -182,7 +186,9 @@ const apiExports = extractExports([
   fontAtlasPath,
   ttfPath,
   vec2Path,
+  vec3Path,
   vec4Path,
+  mat4Path,
 ]);
 
 function escapeDescription(description: string): string {

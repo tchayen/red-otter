@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.9
+
+- Sneak in some more math utils. Long term I suppose they will need to be extracted to another package, but so far I am happily avoiding messing with monorepo restructure.
+
 ## 0.0.8
 
 - Add `Context#getWebGLContext()` so WebGL context can be accessed from outside.
