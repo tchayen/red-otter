@@ -1,4 +1,5 @@
 import { Vec3 } from "./Vec3";
+import { Vec4 } from "./Vec4";
 
 export class Mat4 {
   constructor(public readonly data: number[]) {}
@@ -13,6 +14,75 @@ export class Mat4 {
 
   static translate(x: number, y: number, z: number): Mat4 {
     return new Mat4([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]);
+  }
+
+  static xRotation(angle: number): Mat4 {
+    return new Mat4([
+      1,
+      0,
+      0,
+      0,
+      0,
+      Math.cos(angle),
+      Math.sin(angle),
+      0,
+      0,
+      -Math.sin(angle),
+      Math.cos(angle),
+      0,
+      0,
+      0,
+      0,
+      1,
+    ]);
+  }
+
+  static yRotation(angle: number): Mat4 {
+    return new Mat4([
+      Math.cos(angle),
+      0,
+      -Math.sin(angle),
+      0,
+      0,
+      1,
+      0,
+      0,
+      Math.sin(angle),
+      0,
+      Math.cos(angle),
+      0,
+      0,
+      0,
+      0,
+      1,
+    ]);
+  }
+
+  static zRotation(angle: number): Mat4 {
+    return new Mat4([
+      Math.cos(angle),
+      -Math.sin(angle),
+      0,
+      0,
+      Math.sin(angle),
+      Math.cos(angle),
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+    ]);
+  }
+
+  static rotate(x: number, y: number, z: number): Mat4 {
+    return this.xRotation(x)
+      .multiply(this.yRotation(y))
+      .multiply(this.zRotation(z));
   }
 
   static orthographic(
@@ -49,8 +119,8 @@ export class Mat4 {
     near: number,
     far: number
   ): Mat4 {
-    const f = 1 / Math.tan(fov / 2);
-    const range_inv = 1 / (near - far);
+    const f = 1.0 / Math.tan(fov / 2);
+    const nf = 1.0 / (near - far);
 
     return new Mat4([
       f / aspect,
@@ -63,47 +133,50 @@ export class Mat4 {
       0,
       0,
       0,
-      (near + far) * range_inv,
+      (far + near) * nf,
       -1,
       0,
       0,
-      near * far * range_inv * 2,
+      2 * far * near * nf,
       0,
     ]);
   }
 
-  static lookAt(cameraPosition: Vec3, target: Vec3, up: Vec3): Mat4 {
-    const negativeCamera = new Vec3(0, 0, 0).subtract(cameraPosition);
-    const p = Mat4.translate(
-      negativeCamera.x,
-      negativeCamera.y,
-      negativeCamera.z
-    );
-    const d = target.subtract(cameraPosition);
-    const f = d.normalize();
-    const r = f.cross(up).normalize();
-    const u = r.cross(f).normalize();
+  static lookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
+    const zAxis = position.subtract(target).normalize();
+    const xAxis = up.cross(zAxis).normalize();
+    const yAxis = zAxis.cross(xAxis).normalize();
 
-    const m = new Mat4([
-      r.x,
-      u.x,
-      -f.x,
+    return new Mat4([
+      xAxis.x,
+      xAxis.y,
+      xAxis.z,
       0,
-      r.y,
-      u.y,
-      -f.y,
+      yAxis.x,
+      yAxis.y,
+      yAxis.z,
       0,
-      r.z,
-      u.z,
-      -f.z,
+      zAxis.x,
+      zAxis.y,
+      zAxis.z,
       0,
-      0,
-      0,
-      0,
+      position.x,
+      position.y,
+      position.z,
       1,
     ]);
+  }
 
-    return m.multiply(p);
+  translate(offset: Vec3): Mat4 {
+    return Mat4.translate(offset.x, offset.y, offset.z).multiply(this);
+  }
+
+  rotate(angle: Vec3): Mat4 {
+    return Mat4.rotate(angle.x, angle.y, angle.z).multiply(this);
+  }
+
+  scale(scale: Vec3): Mat4 {
+    return Mat4.scale(scale.x, scale.y, scale.z).multiply(this);
   }
 
   transpose(): Mat4 {
@@ -125,6 +198,27 @@ export class Mat4 {
       this.data[11],
       this.data[15],
     ]);
+  }
+
+  multiplyVec4(vec: Vec4): Vec4 {
+    return new Vec4(
+      this.data[0] * vec.x +
+        this.data[1] * vec.y +
+        this.data[2] * vec.z +
+        this.data[3] * vec.w,
+      this.data[4] * vec.x +
+        this.data[5] * vec.y +
+        this.data[6] * vec.z +
+        this.data[7] * vec.w,
+      this.data[8] * vec.x +
+        this.data[9] * vec.y +
+        this.data[10] * vec.z +
+        this.data[11] * vec.w,
+      this.data[12] * vec.x +
+        this.data[13] * vec.y +
+        this.data[14] * vec.z +
+        this.data[15] * vec.w
+    );
   }
 
   multiply(other: Mat4): Mat4 {

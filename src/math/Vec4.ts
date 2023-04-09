@@ -1,3 +1,5 @@
+import { Vec3 } from "./Vec3";
+
 /**
  * A 4-dimensional vector.
  */
@@ -16,5 +18,9 @@ export class Vec4 {
       this.z * scalar,
       this.w * scalar
     );
+  }
+
+  xyz(): Vec3 {
+    return new Vec3(this.x, this.y, this.z);
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.10
+
+- More methods in the `Mat4` class. New exports of math utils from main package: `packShelves`, `triangulateLine`, `triangulatePolygon`.
+
 ## 0.0.9
 
 - Sneak in some more math utils. Long term I suppose they will need to be extracted to another package, but so far I am happily avoiding messing with monorepo restructure.

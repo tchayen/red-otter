@@ -13,6 +13,10 @@ export { Vec3 } from "./math/Vec3";
 export { Vec4 } from "./math/Vec4";
 export { Mat4 } from "./math/Mat4";
 
+export { packShelves } from "./math/packShelves";
+export { triangulateLine } from "./math/triangulateLine";
+export { triangulatePolygon } from "./math/triangulatePolygon";
+
 export type { TextStyle } from "./Layout";
 export type { IContext } from "./IContext";
 export type { Style } from "./Style";
