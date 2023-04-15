@@ -113,6 +113,9 @@ export class Mat4 {
     ]);
   }
 
+  /**
+   * `fov` is in radians.
+   */
   static perspective(
     fov: number,
     aspect: number,

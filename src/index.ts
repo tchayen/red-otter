@@ -12,6 +12,7 @@ export { Vec2 } from "./math/Vec2";
 export { Vec3 } from "./math/Vec3";
 export { Vec4 } from "./math/Vec4";
 export { Mat4 } from "./math/Mat4";
+export * as utils from "./math/utils";
 
 export { packShelves } from "./math/packShelves";
 export { triangulateLine } from "./math/triangulateLine";

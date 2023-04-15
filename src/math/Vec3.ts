@@ -47,8 +47,8 @@ export class Vec3 {
     return this.subtract(other).length();
   }
 
-  toString(): string {
-    return `(${this.x}, ${this.y}, ${this.z})`;
+  lerp(other: Vec3, t: number): Vec3 {
+    return this.add(other.subtract(this).scale(t));
   }
 
   equalsEpsilon(other: Vec3, epsilon: number): boolean {
@@ -61,5 +61,9 @@ export class Vec3 {
 
   equals(other: Vec3): boolean {
     return this.equalsEpsilon(other, EPSILON);
+  }
+
+  toString(): string {
+    return `(${this.x}, ${this.y}, ${this.z})`;
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.11
+
+- Expand math utils further. Make each of the `Vec2`, `Vec3` and `Vec4` support the same set of methods. Add `math/utils.ts` file which supports basic 1D methods such as degree to radian conversion.
+
 ## 0.0.10
 
 - More methods in the `Mat4` class. New exports of math utils from main package: `packShelves`, `triangulateLine`, `triangulatePolygon`.
