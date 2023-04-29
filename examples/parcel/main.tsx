@@ -1,3 +1,7 @@
+// NOTE: this is NOT needed if you are using red-otter outside of this
+// repository. You can safely remove the next line.
+/** @jsxImportSource ../../src */
+
 import {
   Context,
   Font,
@@ -6,8 +10,6 @@ import {
   Style,
   TextStyle,
   TTF,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  jsx,
 } from "../../src";
 
 const zinc = {

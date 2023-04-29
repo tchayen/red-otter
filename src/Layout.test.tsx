@@ -1,11 +1,13 @@
+// NOTE: this is NOT needed if you are using red-otter outside of this
+// repository. You can safely remove the next line.
+/** @jsxImportSource . */
+
 import { describe, expect, it } from "vitest";
 
 import { IContext } from "./IContext";
 import { Layout } from "./Layout";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { jsx } from "./jsx-runtime";
-import { Font } from "src/fonts/Font";
+import { Font } from "./fonts/Font";
 
 class MockContext implements IContext {
   getCanvas(): HTMLCanvasElement {

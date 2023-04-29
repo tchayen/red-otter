@@ -488,8 +488,8 @@ const replace = `
         `{
   compilerOptions: {
     // ...
-    "jsx": "react",
-    "jsxFactory": "jsx"
+    "jsx": "react-jsx",
+    "jsxImportSource": "red-otter"
   }
 }`,
         { language: "json", fileName: "tsconfig.json" }
@@ -509,7 +509,8 @@ function jsx(): Plugin {
     config() {
       return {
         esbuild: {
-          jsxFactory: "jsx",
+          jsx: "automatic",
+          jsxImportSource: "red-otter",
         },
       };
     },

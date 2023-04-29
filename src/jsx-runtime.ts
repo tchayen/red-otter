@@ -16,16 +16,16 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      view: ViewAttributes;
-      text: TextAttributes;
-      shape: ShapeAttributes;
+      view: ViewProps;
+      text: TextProps;
+      shape: ShapeProps;
     }
   }
 }
 
-type ViewAttributes = { style?: Style | Style[]; id?: string };
-type TextAttributes = { style?: TextStyle | TextStyle[] };
-type ShapeAttributes = { points: [number, number][]; color: string } & (
+export type ViewProps = { style?: Style | Style[]; id?: string };
+export type TextProps = { style?: TextStyle | TextStyle[] };
+export type ShapeProps = { points: [number, number][]; color: string } & (
   | {
       thickness: number;
       type: "line";
@@ -35,60 +35,32 @@ type ShapeAttributes = { points: [number, number][]; color: string } & (
     }
 );
 
-type Component = "view" | "text" | "shape";
-
-export function jsx(
-  component: (
-    attributes: ViewAttributes | TextAttributes | ShapeAttributes | null
-  ) => TreeNode<FixedView>,
-  attributes: ViewAttributes,
-  ...children: TreeNode<FixedView>[]
-): TreeNode<FixedView>;
-export function jsx(
-  component: "view",
-  attributes: ViewAttributes,
-  ...children: TreeNode<FixedView>[]
-): TreeNode<FixedView>;
-export function jsx(
-  component: "view",
-  attributes: ViewAttributes,
-  children: TreeNode<FixedView>[]
-): TreeNode<FixedView>;
-export function jsx(
-  component: "text",
-  attributes: TextAttributes,
-  ...children: [string]
-): TreeNode<FixedView>;
-export function jsx(
-  component: "shape",
-  attributes: ShapeAttributes
-): TreeNode<FixedView>;
+export type BuiltInTag = "view" | "text" | "shape";
+export type Component = (
+  props: ViewProps | TextProps | ShapeProps | null
+) => TreeNode<FixedView>;
 
 /**
  *
  */
-export function jsx(
-  component:
-    | Component
-    | ((
-        attributes: ViewAttributes | TextAttributes | ShapeAttributes | null
-      ) => TreeNode<FixedView>),
-  attributes: ViewAttributes | TextAttributes | ShapeAttributes | null,
+export function createElement(
+  type: BuiltInTag | Component,
+  props: ViewProps | TextProps | ShapeProps | null,
   ...children: TreeNode<FixedView>[] | [TreeNode<FixedView>[]] | string[]
 ): TreeNode<FixedView> {
-  if (typeof component === "function") {
-    return component(attributes);
+  if (typeof type === "function") {
+    return type(props);
   }
 
-  switch (component) {
+  switch (type) {
     case "view": {
       if (
-        attributes &&
-        "style" in attributes &&
-        attributes.style &&
-        ("fontFamily" in attributes.style ||
-          "fontSize" in attributes.style ||
-          "color" in attributes.style)
+        props &&
+        "style" in props &&
+        props.style &&
+        ("fontFamily" in props.style ||
+          "fontSize" in props.style ||
+          "color" in props.style)
       ) {
         throw new Error(
           "View does not accept text styles. Provide them directly to the <text> element."
@@ -96,18 +68,14 @@ export function jsx(
       }
 
       const flattenedStyle: Style = {};
-      if (
-        attributes === null ||
-        !("style" in attributes) ||
-        !attributes.style
-      ) {
+      if (props === null || !("style" in props) || !props.style) {
         // Do nothing.
-      } else if (Array.isArray(attributes.style)) {
-        for (const s of attributes.style) {
+      } else if (Array.isArray(props.style)) {
+        for (const s of props.style) {
           Object.assign(flattenedStyle, s);
         }
       } else {
-        Object.assign(flattenedStyle, attributes.style);
+        Object.assign(flattenedStyle, props.style);
       }
 
       const backgroundColor = flattenedStyle.backgroundColor
@@ -125,11 +93,12 @@ export function jsx(
         borderColor,
       });
 
-      if (attributes && "id" in attributes && attributes.id) {
-        node.id = hash(attributes.id);
+      if (props && "id" in props && props.id) {
+        node.id = hash(props.id);
       }
 
-      for (const child of children) {
+      const childrenFlat = children.flat();
+      for (const child of childrenFlat) {
         // First element can be an array of children.
         if (Array.isArray(child)) {
           for (const c of child) {
@@ -157,18 +126,14 @@ export function jsx(
       const text = children.map((child) => String(child)).join("") ?? "";
 
       const style = {} as TextStyle;
-      if (
-        attributes === null ||
-        !("style" in attributes) ||
-        !attributes.style
-      ) {
+      if (props === null || !("style" in props) || !props.style) {
         // Do nothing.
-      } else if (Array.isArray(attributes.style)) {
-        for (const s of attributes.style) {
+      } else if (Array.isArray(props.style)) {
+        for (const s of props.style) {
           Object.assign(style, s);
         }
       } else {
-        Object.assign(style, attributes.style);
+        Object.assign(style, props.style);
       }
 
       const font = style.fontFamily;
@@ -198,23 +163,23 @@ export function jsx(
     }
     case "shape": {
       if (
-        attributes === null ||
-        !("type" in attributes) ||
-        !("points" in attributes) ||
-        !("color" in attributes)
+        props === null ||
+        !("type" in props) ||
+        !("points" in props) ||
+        !("color" in props)
       ) {
         throw new Error("Shape must have type, points and color.");
       }
 
-      if (attributes.type === "polygon" && "thickness" in attributes) {
+      if (props.type === "polygon" && "thickness" in props) {
         throw new Error("Polygon does not accept thickness.");
       }
 
-      if ("style" in attributes) {
+      if ("style" in props) {
         throw new Error("Shape does not accept style.");
       }
 
-      const { points, color, type } = attributes;
+      const { points, color, type } = props;
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
@@ -237,8 +202,7 @@ export function jsx(
           type,
           width,
           height,
-          thickness:
-            "thickness" in attributes ? attributes.thickness : undefined,
+          thickness: "thickness" in props ? props.thickness : undefined,
         },
         ...fixedViewDefaults,
         width,
@@ -248,3 +212,19 @@ export function jsx(
     }
   }
 }
+
+/**
+ * Used by new JSX transform. Similar to https://github.com/facebook/react/blob/main/packages/react/src/jsx/ReactJSXElement.js
+ */
+export function jsx(
+  type: BuiltInTag | Component,
+  props: Record<string, unknown> | null
+): ReturnType<typeof createElement> {
+  return createElement(
+    type,
+    props as ViewProps,
+    props?.children as TreeNode<FixedView>[]
+  );
+}
+
+export const jsxs = jsx;
