@@ -19,7 +19,7 @@
   - "jsx": "react",
   - "jsxFactory": "jsx",
   + "jsx": "react-jsx",
-  + "jsxImportSource": "red-otter",
+  + "jsxImportSource": "red-otter/dist",
   ```
   and `vite.config.ts` plugin like this:
   ```diff

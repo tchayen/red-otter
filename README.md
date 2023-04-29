@@ -19,7 +19,7 @@ For editor to correctly highlight TypeScript code, add to `compilerOptions` in `
 ```json
 {
   "jsx": "react-jsx",
-  "jsxImportSource": "red-otter"
+  "jsxImportSource": "red-otter/dist"
 }
 ```
 

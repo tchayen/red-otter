@@ -489,7 +489,7 @@ const replace = `
   compilerOptions: {
     // ...
     "jsx": "react-jsx",
-    "jsxImportSource": "red-otter"
+    "jsxImportSource": "red-otter/dist"
   }
 }`,
         { language: "json", fileName: "tsconfig.json" }
