@@ -8,9 +8,12 @@ import packageJson from "./package.json";
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
+      entry: [
+        resolve(__dirname, "src/index.ts"),
+        resolve(__dirname, "src/jsx-runtime.ts"),
+      ],
       name: packageJson.name,
-      fileName: "index",
+      fileName: (_, entryName) => `${entryName}.js`,
     },
   },
   plugins: [

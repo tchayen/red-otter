@@ -2,8 +2,6 @@ export { Context } from "./Context";
 export { Layout } from "./Layout";
 export { Interactions } from "./Interactions";
 
-export { jsx } from "./jsx-runtime";
-
 export { Font } from "./fonts/Font";
 export { FontAtlas } from "./fonts/FontAtlas";
 export { TTF } from "./fonts/TTF";

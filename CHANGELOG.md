@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.0.12
+
+- Switch to the new JSX transform. As a consequence, now `tsconfig.json` fragment looks like this:
+  ```diff
+  - "jsx": "react",
+  - "jsxFactory": "jsx",
+  + "jsx": "react-jsx",
+  + "jsxImportSource": "red-otter",
+  ```
+  and `vite.config.ts` plugin like this:
+  ```diff
+  - jsxFactory: "jsx",
+  + jsx: "automatic",
+  + jsxImportSource: "red-otter",
+  ```
+
 ## 0.0.11
 
 - Expand math utils further. Make each of the `Vec2`, `Vec3` and `Vec4` support the same set of methods. Add `math/utils.ts` file which supports basic 1D methods such as degree to radian conversion.

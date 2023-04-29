@@ -10,7 +10,8 @@ function jsx(): Plugin {
     config() {
       return {
         esbuild: {
-          jsxFactory: "jsx",
+          jsx: "automatic",
+          jsxImportSource: "red-otter",
         },
       };
     },

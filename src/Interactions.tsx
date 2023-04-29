@@ -1,9 +1,12 @@
+// NOTE: this is NOT needed if you are using red-otter outside of this
+// repository. You can safely remove the next line.
+/** @jsxImportSource . */
+
 import { Queue } from "./Queue";
 import { invariant } from "./invariant";
 import { FixedView, Layout, TreeNode } from "./Layout";
 import { hash } from "./hash";
 import { IContext } from "./IContext";
-import { jsx } from "./jsx-runtime";
 import { Vec2 } from "./math/Vec2";
 import {
   Key,
