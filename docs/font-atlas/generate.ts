@@ -31,7 +31,7 @@ async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
     return {
       executablePath: await chromium.executablePath(),
       args: [...chromium.args, "--no-sandbox"],
-      headless: chromium.headless,
+      headless: "new",
     };
   } else if (process.platform === "darwin") {
     return {
@@ -112,8 +112,8 @@ async function run(): Promise<void> {
   const uvBinary = new Float32Array(uvs);
   saveFile(UV_FILE, uvBinary, "binary");
 
-  browser.close();
-  server.close();
+  await browser.close();
+  await server.close();
 }
 
 run();
