@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.16
+
+- Fix paths in `package.json` field `exports`.
+
 ## 0.0.15
 
 - Export `jsx-dev-runtime`.

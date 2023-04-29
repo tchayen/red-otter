@@ -1,7 +1,7 @@
 {
   "name": "red-otter",
   "description": "Self-contained WebGL flexbox layout engine.",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -11,12 +11,12 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.cjs"
     },
-    "./jsx-runtime": {
+    "./dist/jsx-runtime": {
       "import": "./dist/jsx-runtime.js",
       "require": "./dist/jsx-runtime.cjs",
       "types": "./dist/jsx-runtime.d.ts"
     },
-    "./jsx-dev-runtime": {
+    "./dist/jsx-dev-runtime": {
       "import": "./dist/jsx-dev-runtime.js",
       "require": "./dist/jsx-dev-runtime.cjs",
       "types": "./dist/jsx-dev-runtime.d.ts"
