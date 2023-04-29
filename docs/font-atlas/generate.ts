@@ -30,8 +30,13 @@ async function getPuppeteerOptions(): Promise<Partial<PuppeteerLaunchOptions>> {
   if (process.env.CI === "1") {
     return {
       executablePath: await chromium.executablePath(),
-      args: [...chromium.args, "--no-sandbox"],
-      headless: chromium.headless,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process",
+      ],
+      headless: "new",
     };
   } else if (process.platform === "darwin") {
     return {
