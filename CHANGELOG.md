@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.15
+
+- Export `jsx-dev-runtime`.
+
 ## 0.0.14
 
 - Restore two entrypoints and replace UMD with CJS.
