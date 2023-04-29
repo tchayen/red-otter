@@ -112,8 +112,8 @@ async function run(): Promise<void> {
   const uvBinary = new Float32Array(uvs);
   saveFile(UV_FILE, uvBinary, "binary");
 
-  await browser.close();
-  await server.close();
+  browser.close();
+  server.close();
 }
 
 run();
