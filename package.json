@@ -1,26 +1,28 @@
 {
   "name": "red-otter",
   "description": "Self-contained WebGL flexbox layout engine.",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.umd.cjs"
+      "require": "./dist/index.cjs"
     },
     "./jsx-runtime": {
       "import": "./dist/jsx-runtime.js",
-      "types": "./dist/jsx-runtime.d.ts"
+      "require": "./dist/jsx-runtime.cjs"
     },
     "./jsx-dev-runtime": {
       "import": "./dist/jsx-runtime.js",
-      "types": "./dist/jsx-runtime.d.ts"
+      "require": "./dist/jsx-runtime.cjs"
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "lib:build": "vite build",
     "tsc": "tsc --noEmit",
@@ -49,8 +51,5 @@
     "type": "git",
     "url": "https://github.com/tchayen/red-otter"
   },
-  "files": [
-    "/dist"
-  ],
   "license": "MIT"
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.14
+
+- Restore two entrypoints and replace UMD with CJS.
+
 ## 0.0.13
 
 - Fix UMD export.

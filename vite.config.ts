@@ -6,8 +6,11 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      formats: ["es", "umd"],
+      entry: [
+        resolve(__dirname, "src/index.ts"),
+        resolve(__dirname, "src/jsx-runtime.ts"),
+      ],
+      formats: ["es", "cjs"],
       name: "RedOtter",
     },
   },
