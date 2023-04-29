@@ -2,18 +2,13 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-import packageJson from "./package.json";
-
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
   build: {
     lib: {
-      entry: [
-        resolve(__dirname, "src/index.ts"),
-        resolve(__dirname, "src/jsx-runtime.ts"),
-      ],
-      name: packageJson.name,
-      fileName: (_, entryName) => `${entryName}.js`,
+      entry: resolve(__dirname, "src/index.ts"),
+      formats: ["es", "umd"],
+      name: "RedOtter",
     },
   },
   plugins: [

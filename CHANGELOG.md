@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.13
+
+- Fix UMD export.
+
 ## 0.0.12
 
 - Switch to the new JSX transform. As a consequence, now `tsconfig.json` fragment looks like this:
