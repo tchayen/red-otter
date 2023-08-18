@@ -692,11 +692,7 @@ export class Interactions {
         {highlight}
         {cursor}
         {previous && (
-          <view
-            style={{
-              left: -state.horizontalScroll,
-            }}
-          >
+          <view style={{ left: -state.horizontalScroll }}>
             <text
               style={{
                 fontSize: UI_FONT_SIZE,
@@ -792,8 +788,6 @@ export class Interactions {
               alignItems: "stretch",
               position: "absolute",
               zIndex: 1,
-              padding: 4,
-              gap: 4,
               backgroundColor: colors.slate7,
               borderRadius: UI_BORDER_RADIUS,
             }}
