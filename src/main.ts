@@ -77,7 +77,6 @@ const ui = new UIRenderer(
 const events = new EventManager();
 const tree = retainedModeGui(ui);
 const node = applyZIndex(tree);
-console.log(node);
 
 function render(): void {
   invariant(context, "WebGPU is not supported in this browser.");
