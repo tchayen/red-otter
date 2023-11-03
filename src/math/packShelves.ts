@@ -30,8 +30,10 @@ export function packShelves(sizes: Vec2[]): Packing {
 
   rectangles.sort((a, b) => b.height - a.height);
 
-  // Aim for a squarish resulting container. Slightly adjusted for sub-100%
-  // space utilization.
+  /*
+   * Aim for a squarish resulting container. Slightly adjusted for sub-100%
+   * space utilization.
+   */
   const startWidth = Math.max(Math.ceil(Math.sqrt(area / 0.95)), maxWidth);
 
   const regions = [

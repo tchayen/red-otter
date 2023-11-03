@@ -9,18 +9,24 @@ import { Text } from "./Text";
 /**
  * @param tree tree of views to layout.
  * @param fontLookups used for calculating text sizes.
+ *
+ * This function traverses the tree and calculates layout information - width,
+ * height, x, y of each element - and stores it in `__state.layout` property.
  */
 export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
   const firstPass = new Queue<View | Text>();
   const secondPass = new Queue<View | Text>();
   const thirdPass = new Queue<View | Text>();
 
+  // TODO: inspect what would it take to get rid of root and use tree directly.
   const root = new View({ style: { height: rootSize.y, width: rootSize.x } });
 
   root.add(tree);
 
-  // NOTE:
-  // Code style detail: `e` is an element, `c` is a child, `p` is a parent.
+  /*
+   * NOTE:
+   * Code style detail: `e` is an element, `c` is a child, `p` is a parent.
+   */
 
   // Traverse tree in level order and generate the reverse queue.
   firstPass.enqueue(root);
@@ -58,10 +64,12 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e.__state.layout.height = toPercentage(e.style.height) * parentHeight;
     }
 
-    // Ideally text shaping should be done outside of the layout function.
-    // Unfortunately this makes things so much easier since the height
-    // calculated here will be used for further calcualations of other elements
-    // so it's not obvious whether this could be done before or after layout.
+    /*
+     * Ideally text shaping should be done outside of the layout function.
+     * Unfortunately this makes things so much easier since the height
+     * calculated here will be used for further calcualations of other elements
+     * so it's not obvious whether this could be done before or after layout.
+     */
     if ("text" in e) {
       if (p?.__state.layout.width !== undefined) {
         const maxWidth =
@@ -84,8 +92,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     }
   }
 
-  // Second tree pass: resolve wrapping children.
-  // Going bottom-up, level order.
+  /*
+   * Second tree pass: resolve wrapping children.
+   * Going bottom-up, level order.
+   */
   while (!secondPass.isEmpty()) {
     const e = secondPass.dequeueFront();
     invariant(e, "Empty queue.");
@@ -176,8 +186,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     }
   }
 
-  // Third tree pass: resolve flex.
-  // Going top-down, level order.
+  /*
+   * Third tree pass: resolve flex.
+   * Going top-down, level order.
+   */
   while (!thirdPass.isEmpty()) {
     const e = thirdPass.dequeueFront();
     invariant(e, "Empty queue.");
@@ -226,8 +238,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e.__state.layout.width
           : (p?.__state.layout.x ?? 0) - e.style.right;
     } else if (e.style.position === "absolute") {
-      // If position is "absolute" but offsets are not specified, set
-      // position to parent's top left corner.
+      /*
+       * If position is "absolute" but offsets are not specified, set
+       * position to parent's top left corner.
+       */
       e.__state.layout.x = p?.__state.layout.x ?? 0;
     }
     if (
@@ -252,8 +266,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e.__state.layout.height
           : (p?.__state.layout.y ?? 0) - e.style.bottom;
     } else if (e.style.position === "absolute") {
-      // If position is "absolute" but offsets are not specified, set
-      // position to parent's top left corner.
+      /*
+       * If position is "absolute" but offsets are not specified, set
+       * position to parent's top left corner.
+       */
       e.__state.layout.y = p?.__state.layout.y ?? 0;
     }
 
@@ -335,7 +351,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         childrenCount += 1;
       }
 
-      // TODO: maybe flex can be reset to 0 instead of undefined and this can be checked somehow else?
+      /*
+       * TODO: maybe flex can be reset to 0 instead of undefined and this can
+       * be checked somehow else?
+       */
       if (
         e.style.flexDirection === "row" &&
         c.style.flex === undefined &&
@@ -436,7 +455,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
     }
 
-    // NOTE: order of applying justify content, this and align items is important.
+    /*
+     * NOTE: order of applying justify content, this and align items is
+     * important.
+     */
     if (
       e.style.justifyContent === "space-between" ||
       e.style.justifyContent === "space-around" ||

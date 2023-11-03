@@ -23,6 +23,9 @@ devDependencies:
   eslint-import-resolver-typescript:
     specifier: ^3.6.1
     version: 3.6.1(@typescript-eslint/parser@6.9.1)(eslint-plugin-import@2.29.0)(eslint@8.52.0)
+  eslint-plugin-comment-length:
+    specifier: ^1.6.1
+    version: 1.6.1(eslint@8.52.0)(typescript@5.2.2)
   eslint-plugin-import:
     specifier: ^2.29.0
     version: 2.29.0(@typescript-eslint/parser@6.9.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.52.0)
@@ -1255,6 +1258,18 @@ packages:
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.9.1)(eslint-plugin-import@2.29.0)(eslint@8.52.0)
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-plugin-comment-length@1.6.1(eslint@8.52.0)(typescript@5.2.2):
+    resolution: {integrity: sha512-5Tn1ouS2x4N+qR9NZdtwOrZQ12Ic8dK4cGqwFFF3Ng20k41+wFbXSTAYZiwiTs0K15cjmotFJ4r4qAMu/9ziLQ==}
+    peerDependencies:
+      eslint: '>=8.0.0'
+    dependencies:
+      '@typescript-eslint/utils': 6.9.1(eslint@8.52.0)(typescript@5.2.2)
+      eslint: 8.52.0
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
     dev: true
 
   /eslint-plugin-import@2.29.0(@typescript-eslint/parser@6.9.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.52.0):

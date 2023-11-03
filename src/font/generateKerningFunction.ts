@@ -104,8 +104,10 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
       return 0;
     }
 
-    // It's specified in the spec that if class is not defined for a glyph, it
-    // should be set to 0.
+    /*
+     * It's specified in the spec that if class is not defined for a glyph, it
+     * should be set to 0.
+     */
     const firstClass = firstGlyphClassMapping.get(firstGlyphID) ?? 0;
     const secondClass = secondGlyphClassMapping.get(secondGlyphID) ?? 0;
 

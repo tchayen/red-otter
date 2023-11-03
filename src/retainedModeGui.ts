@@ -23,40 +23,6 @@ export function retainedModeGui(ui: UIRenderer): View {
     },
   });
 
-  const view = new View({
-    style: {
-      backgroundColor: "#333",
-      padding: 50,
-    },
-  });
-
-  container.add(view);
-
-  const button = new View({
-    onClick() {
-      console.log("Clicked!");
-      this.style.backgroundColor = "#ff0000";
-    },
-    style: {
-      backgroundColor: "#666",
-      borderRadius: 10,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-    },
-  });
-
-  view.add(button);
-
-  const text = new Text("Join lobby", {
-    lookups,
-    style: {
-      color: "#fff",
-      fontName: "InterBold",
-      fontSize: 15,
-    },
-  });
-  button.add(text);
-
   // Test 1
   {
     const inputGroupStyle = {

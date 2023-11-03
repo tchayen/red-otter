@@ -15,6 +15,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:import/errors",
     "plugin:import/typescript",
+    "plugin:comment-length/recommended",
   ],
   parser: "@typescript-eslint/parser",
   plugins: [
@@ -35,6 +36,7 @@ module.exports = {
     curly: Rule.Error,
     "import/no-duplicates": Rule.Error,
     "import/no-extraneous-dependencies": Rule.Error,
+    "multiline-comment-style": [Rule.Warn, "starred-block"],
     "sort-keys-fix/sort-keys-fix": Rule.Error,
     "typescript-sort-keys/interface": Rule.Error,
     "typescript-sort-keys/string-enum": Rule.Error,

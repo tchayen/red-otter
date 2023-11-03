@@ -21,6 +21,7 @@ export function drawLayoutTree(
         {
           lineHeight: rect.style.lineHeight,
           maxWidth: rect.style.maxWidth,
+          // eslint-disable-next-line multiline-comment-style
           // trimEnd: r.textStyle.trimEnd
           //   ? position.add(r.textStyle.trimEnd)
           //   : undefined,

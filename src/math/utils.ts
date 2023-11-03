@@ -37,7 +37,8 @@ export function toDegrees(radians: number): number {
 }
 
 /**
- * Returns the next power of two that is greater than or equal to the given value.
+ * Returns the next power of two that is greater than or equal to the given
+ * value.
  */
 export function nextPowerOfTwo(value: number): number {
   return Math.pow(2, Math.ceil(Math.log(value) / Math.log(2)));

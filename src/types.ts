@@ -79,7 +79,8 @@ export type LayoutProps = {
 };
 
 /**
- * All shorthand properties are expanded. All properties with defaults are required.
+ * All shorthand properties are expanded. All properties with defaults are
+ * required.
  */
 export type ExactLayoutProps = Required<
   Omit<

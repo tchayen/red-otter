@@ -6,9 +6,11 @@ import { Shape, shapeText } from "./font/shapeText";
 import { Settings } from "./consts";
 import { createTextureFromImageBitmap } from "./createTextureFromBitmap";
 
-// First number is the size of Rectangle struct (with padding).
-// Second is in this case maximum number of allowed elements (can easily go into
-// high thousands).
+/*
+ * First number is the size of Rectangle struct (with padding).
+ * Second is in this case maximum number of allowed elements (can easily go into
+ * high thousands).
+ */
 const RECTANGLE_BUFFER_SIZE = 16 * 1024;
 const TEXT_BUFFER_SIZE = 16 * 100_000;
 
@@ -532,8 +534,10 @@ export class UIRenderer {
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [
         {
-          // clearValue: { r: 1, g: 1, b: 1, a: 1 },
-          // loadOp: "clear",
+          /*
+           * clearValue: { r: 1, g: 1, b: 1, a: 1 },
+           * loadOp: "clear",
+           */
           loadOp: "load",
 
           resolveTarget: this.context
