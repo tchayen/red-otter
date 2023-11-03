@@ -1,12 +1,13 @@
-import { UserEvent, UserEventType } from "./ui/types";
-import { Vec2 } from "./math/Vec2";
 import {
+  UserEvent,
+  UserEventType,
   ExactDecorativeProps,
   ExactLayoutProps,
   ViewStyleProps,
   normalizeLayoutProps,
   normalizeDecorativeProps,
 } from "./types";
+import { Vec2 } from "./math/Vec2";
 import { Text } from "./Text";
 
 export class View {

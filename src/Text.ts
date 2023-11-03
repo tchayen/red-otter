@@ -1,7 +1,5 @@
 import { shapeText } from "./font/shapeText";
 
-import { FixedRectangle } from "./ui/types";
-import { Tree } from "./utils/Tree";
 import { Lookups } from "./font/types";
 import {
   ExactLayoutProps,
@@ -46,10 +44,6 @@ export class Text {
     this.style = normalizeLayoutProps(props.style);
     this.style.width = width;
     this.style.height = height;
-  }
-
-  add(): Tree<FixedRectangle> {
-    throw new Error("Text node cannot have children.");
   }
 
   handleEvent(): void {

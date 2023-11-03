@@ -4,7 +4,7 @@ import { View } from "./View";
 import { Lookups } from "./font/types";
 import { layout } from "./layout";
 import { Vec2 } from "./math/Vec2";
-import { RectangleStyleSheet, TextStyle } from "./ui/types";
+import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
 
 export let lookups: Lookups;
@@ -63,7 +63,7 @@ export function retainedModeGui(ui: UIRenderer): View {
       alignItems: "center",
       flexDirection: "row",
       gap: 10,
-    } as RectangleStyleSheet;
+    } as ViewStyleProps;
 
     const inputStyle = {
       backgroundColor: "#444",
@@ -74,13 +74,13 @@ export function retainedModeGui(ui: UIRenderer): View {
       justifyContent: "center",
       paddingHorizontal: 10,
       width: 60,
-    } as RectangleStyleSheet;
+    } as ViewStyleProps;
 
     const textStyle = {
       color: "#fff",
       fontName: "Inter",
       fontSize: 14,
-    } as TextStyle;
+    } as TextStyleProps;
 
     const root = new View({
       style: {

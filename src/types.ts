@@ -161,9 +161,9 @@ export type TextStyleProps = {
   color: string;
   fontName: string;
   fontSize: number;
-  lineHeight: number;
-  textAlign: "left" | "center" | "right";
-  textTransform: "none" | "uppercase" | "lowercase" | "capitalize";
+  lineHeight?: number;
+  textAlign?: "left" | "center" | "right";
+  textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
 } & LayoutProps;
 
 export type ViewStyleProps = LayoutProps & DecorativeProps;
