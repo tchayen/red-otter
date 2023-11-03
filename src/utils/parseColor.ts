@@ -46,22 +46,22 @@ export function parseColor(color: string): Vec4 {
   if (color.startsWith("#")) {
     if (color.length === 9) {
       // Hex with alpha
-      const r = parseInt(color.slice(1, 3), 16) / 255;
-      const g = parseInt(color.slice(3, 5), 16) / 255;
-      const b = parseInt(color.slice(5, 7), 16) / 255;
-      const a = parseInt(color.slice(7, 9), 16) / 255;
+      const r = Number.parseInt(color.slice(1, 3), 16) / 255;
+      const g = Number.parseInt(color.slice(3, 5), 16) / 255;
+      const b = Number.parseInt(color.slice(5, 7), 16) / 255;
+      const a = Number.parseInt(color.slice(7, 9), 16) / 255;
 
       return new Vec4(r, g, b, a);
     } else if (color.length === 7) {
-      const r = parseInt(color.slice(1, 3), 16) / 255;
-      const g = parseInt(color.slice(3, 5), 16) / 255;
-      const b = parseInt(color.slice(5, 7), 16) / 255;
+      const r = Number.parseInt(color.slice(1, 3), 16) / 255;
+      const g = Number.parseInt(color.slice(3, 5), 16) / 255;
+      const b = Number.parseInt(color.slice(5, 7), 16) / 255;
 
       return new Vec4(r, g, b, 1);
     } else if (color.length === 4) {
-      const r = parseInt(color.slice(1, 2).repeat(2), 16) / 255;
-      const g = parseInt(color.slice(2, 3).repeat(2), 16) / 255;
-      const b = parseInt(color.slice(3, 4).repeat(2), 16) / 255;
+      const r = Number.parseInt(color.slice(1, 2).repeat(2), 16) / 255;
+      const g = Number.parseInt(color.slice(2, 3).repeat(2), 16) / 255;
+      const b = Number.parseInt(color.slice(3, 4).repeat(2), 16) / 255;
 
       return new Vec4(r, g, b, 1);
     } else {
@@ -73,7 +73,7 @@ export function parseColor(color: string): Vec4 {
     const channels = color
       .slice(hasAlpha ? 5 : 4, -1)
       .split(separator)
-      .map((s) => Number(s));
+      .map(Number);
 
     if (!hasAlpha && channels.length === 4) {
       throw new Error("Unexpected alpha for RGB color.");

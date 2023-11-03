@@ -1,15 +1,13 @@
-import { FixedRectangle } from "./ui/types";
+import { Text } from "./Text";
+import { View } from "./View";
 import { Queue } from "./utils/Queue";
-import { Tree } from "./utils/Tree";
 
-export function applyZIndex(
-  root: Tree<FixedRectangle>
-): Tree<FixedRectangle>[] {
-  const rectangles: Tree<FixedRectangle>[] = [];
+export function applyZIndex(root: View): (View | Text)[] {
+  const rectangles: (View | Text)[] = [];
 
   // Traverse the tree in DFS order to respect local order of components
   // (unlike in level order traversal).
-  const queue = new Queue<Tree<FixedRectangle>>();
+  const queue = new Queue<View | Text>();
   queue.enqueue(root);
 
   while (!queue.isEmpty()) {
@@ -22,7 +20,7 @@ export function applyZIndex(
 
     let p = node.lastChild;
     while (p) {
-      if (p.value.input.display === "none") {
+      if (p.style.display === "none") {
         p = p.prev;
         continue;
       }
@@ -32,7 +30,7 @@ export function applyZIndex(
     }
   }
 
-  rectangles.sort((a, b) => a.value.zIndex - b.value.zIndex);
+  rectangles.sort((a, b) => a.style.zIndex - b.style.zIndex);
 
   return rectangles;
 }

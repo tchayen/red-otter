@@ -1,7 +1,7 @@
 interface QueueNode<T> {
   data: T;
-  prev: QueueNode<T> | null;
   next: QueueNode<T> | null;
+  prev: QueueNode<T> | null;
 }
 
 export class Queue<T> {

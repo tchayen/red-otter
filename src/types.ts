@@ -27,6 +27,11 @@ export type LayoutProps = {
     | "space-evenly";
   alignItems?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
   alignSelf?: "flex-start" | "center" | "flex-end" | "stretch" | "baseline";
+  borderBottomWidth?: number;
+  borderLeftWidth?: number;
+  borderRightWidth?: number;
+  borderTopWidth?: number;
+  borderWidth?: number;
   bottom?: number;
   columnGap?: number;
   display?: "flex" | "none";
@@ -79,26 +84,29 @@ export type LayoutProps = {
 export type ExactLayoutProps = Required<
   Omit<
     LayoutProps,
-    | "padding"
-    | "paddingHorizontal"
-    | "paddingVertical"
+    | "bottom"
+    | "flex"
+    | "gap"
+    | "height"
+    | "left"
     | "margin"
     | "marginHorizontal"
     | "marginVertical"
-    | "gap"
-    | "bottom"
-    | "left"
-    | "right"
-    | "top"
-    | "width"
-    | "height"
     | "maxHeight"
     | "maxWidth"
     | "minHeight"
     | "minWidth"
+    | "padding"
+    | "paddingHorizontal"
+    | "paddingVertical"
+    | "right"
+    | "top"
+    | "width"
+    | "zIndex"
   >
 > & {
   bottom: LayoutProps["bottom"];
+  flex: LayoutProps["flex"];
   height: LayoutProps["height"];
   left: LayoutProps["left"];
   maxHeight: LayoutProps["maxHeight"];
@@ -108,7 +116,25 @@ export type ExactLayoutProps = Required<
   right: LayoutProps["right"];
   top: LayoutProps["top"];
   width: LayoutProps["width"];
+  zIndex: LayoutProps["zIndex"];
 };
+
+export type DecorativeProps = {
+  backgroundColor?: string;
+  borderBottomLeftRadius?: number;
+  borderBottomRightRadius?: number;
+  borderColor?: string;
+  borderRadius?: number;
+  borderTopLeftRadius?: number;
+  borderTopRightRadius?: number;
+  boxShadowColor?: string;
+  boxShadowOffsetX?: number;
+  boxShadowOffsetY?: number;
+  boxShadowRadius?: number;
+  opacity?: number;
+};
+
+export type ExactDecorativeProps = Required<DecorativeProps>;
 
 export type Rectangle = {
   height: number;
@@ -140,53 +166,23 @@ export type TextStyleProps = {
   textTransform: "none" | "uppercase" | "lowercase" | "capitalize";
 } & LayoutProps;
 
-export type DecorativeProps = {
-  backgroundColor: string;
-  borderBottomLeftRadius: number;
-
-  borderBottomRightRadius: number;
-  borderBottomWidth: number;
-  borderColor: string;
-  borderLeftWidth: number;
-
-  borderRadius: number;
-  borderRightWidth: number;
-  borderTopLeftRadius: number;
-  borderTopRightRadius: number;
-  borderTopWidth: number;
-  borderWidth: number;
-
-  boxShadowColor: string;
-  boxShadowOffsetX: number;
-  boxShadowOffsetY: number;
-  boxShadowRadius: number;
-  opacity: number;
-};
-
-export type ViewStyleProps = ExactLayoutProps & DecorativeProps;
-
-type View = {
-  onClick(event: ClickEvent): void;
-  pointerEvents: boolean;
-  style: ViewStyleProps;
-  tabIndex: number;
-};
-
-type Text = {
-  style: TextStyleProps;
-  text: string;
-};
+export type ViewStyleProps = LayoutProps & DecorativeProps;
 
 const defaultLayoutProps: ExactLayoutProps = {
   alignContent: "flex-start",
   alignItems: "flex-start",
   alignSelf: "flex-start",
+  borderBottomWidth: 0,
+  borderLeftWidth: 0,
+  borderRightWidth: 0,
+  borderTopWidth: 0,
+  borderWidth: 0,
   bottom: undefined,
   columnGap: 0,
   display: "flex",
-  flex: 0,
+  flex: undefined,
   flexBasis: 0,
-  flexDirection: "row",
+  flexDirection: "column",
   flexGrow: 0,
   flexShrink: 0,
   flexWrap: "nowrap",
@@ -211,11 +207,28 @@ const defaultLayoutProps: ExactLayoutProps = {
   rowGap: 0,
   top: undefined,
   width: undefined,
-  zIndex: 0,
+  zIndex: undefined,
 };
 
-function normalizeLayoutProps(input: LayoutProps): ExactLayoutProps {
-  const result: ExactLayoutProps = { ...defaultLayoutProps, ...input };
+const defaultDecorativeProps: DecorativeProps = {
+  backgroundColor: "transparent",
+  borderBottomLeftRadius: 0,
+  borderBottomRightRadius: 0,
+  borderColor: "transparent",
+  borderRadius: 0,
+  borderTopLeftRadius: 0,
+  borderTopRightRadius: 0,
+  boxShadowColor: "#000",
+  boxShadowOffsetX: 0,
+  boxShadowOffsetY: 0,
+  boxShadowRadius: 0,
+  opacity: 1,
+};
+
+export function normalizeLayoutProps<T extends LayoutProps>(
+  input: LayoutProps
+): T {
+  const result = { ...defaultLayoutProps, ...input } as T;
 
   result.paddingTop =
     input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
@@ -235,8 +248,29 @@ function normalizeLayoutProps(input: LayoutProps): ExactLayoutProps {
   result.marginRight =
     input.marginRight ?? input.marginHorizontal ?? input.margin ?? 0;
 
+  result.borderBottomWidth = input.borderBottomWidth ?? input.borderWidth ?? 0;
+  result.borderTopWidth = input.borderTopWidth ?? input.borderWidth ?? 0;
+  result.borderLeftWidth = input.borderLeftWidth ?? input.borderWidth ?? 0;
+  result.borderRightWidth = input.borderRightWidth ?? input.borderWidth ?? 0;
+
   result.columnGap = input.columnGap ?? input.gap ?? 0;
   result.rowGap = input.rowGap ?? input.gap ?? 0;
+
+  return result;
+}
+
+export function normalizeDecorativeProps<T extends DecorativeProps>(
+  input: DecorativeProps
+): T {
+  const result = { ...defaultDecorativeProps, ...input } as T;
+
+  result.borderTopLeftRadius = input.borderTopLeftRadius ?? input.borderRadius;
+  result.borderTopRightRadius =
+    input.borderTopRightRadius ?? input.borderRadius;
+  result.borderBottomLeftRadius =
+    input.borderBottomLeftRadius ?? input.borderRadius;
+  result.borderBottomRightRadius =
+    input.borderBottomRightRadius ?? input.borderRadius;
 
   return result;
 }

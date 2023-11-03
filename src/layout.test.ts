@@ -1,25 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { Tree } from "./utils/Tree";
-import type {
-  FixedRectangle,
-  RectangleStyleSheet,
-  TextStyle,
-} from "./ui/types";
-import {
-  fixedRectangleDefaults,
-  rectangleDefaults,
-  resolveRectangleStyling,
-  resolveSpacing,
-  textDefaults,
-} from "./styling";
-import { parseColor } from "./utils/parseColor";
-import { shapeText } from "./font/shapeText";
 
 import interTTF from "../public/interTTF.json";
 import { prepareLookups } from "./font/prepareLookups";
 import { TTF } from "./font/parseTTF";
 import { layout } from "./layout";
 import { Vec2 } from "./math/Vec2";
+import { View } from "./View";
+import { Text } from "./Text";
+import { TextStyleProps, ViewStyleProps } from "./types";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -31,33 +19,12 @@ const lookups = prepareLookups(
   }
 );
 
-function view(style: RectangleStyleSheet): Tree<FixedRectangle> {
-  return new Tree<FixedRectangle>({
-    ...fixedRectangleDefaults,
-    input: { ...rectangleDefaults, ...resolveSpacing(style) },
-    styles: resolveRectangleStyling(style),
-  });
+function v(style: ViewStyleProps): View {
+  return new View({ style });
 }
 
-function text(value: string, style: TextStyle): Tree<FixedRectangle> {
-  const shape = shapeText({
-    fontName: style.fontName,
-    fontSize: style.fontSize,
-    lookups,
-    text: value,
-  });
-  const { width, height } = shape.boundingRectangle;
-
-  const input = { ...rectangleDefaults, ...resolveSpacing({}), height, width };
-
-  return new Tree<FixedRectangle>({
-    ...fixedRectangleDefaults,
-    height,
-    input,
-    text: value,
-    textStyle: { ...textDefaults, ...style, color: parseColor(style.color) },
-    width,
-  });
+function t(value: string, style: TextStyleProps): Text {
+  return new Text(value, { lookups, style });
 }
 
 describe("Layout", () => {
@@ -75,7 +42,7 @@ describe("Layout", () => {
       alignItems: "center",
       flexDirection: "row",
       gap: 10,
-    } as RectangleStyleSheet;
+    } as ViewStyleProps;
 
     const inputStyle = {
       backgroundColor: "#444",
@@ -83,15 +50,15 @@ describe("Layout", () => {
       justifyContent: "center",
       paddingHorizontal: 10,
       width: 60,
-    } as RectangleStyleSheet;
+    } as ViewStyleProps;
 
     const textStyle = {
       color: "#fff",
       fontName: "Inter",
       fontSize: 14,
-    } as TextStyle;
+    } as TextStyleProps;
 
-    const root = view({
+    const root = v({
       alignItems: "center",
       backgroundColor: "#000",
       height: 400,
@@ -99,7 +66,7 @@ describe("Layout", () => {
       width: 600,
     });
 
-    const inner = view({
+    const inner = v({
       backgroundColor: "#222",
       flexDirection: "row",
       gap: 20,
@@ -109,43 +76,43 @@ describe("Layout", () => {
     });
     root.add(inner);
 
-    const xInputSection = view(inputGroupStyle);
+    const xInputSection = v(inputGroupStyle);
     inner.add(xInputSection);
-    const x = text("X", textStyle);
+    const x = t("X", textStyle);
     xInputSection.add(x);
-    const xInput = view(inputStyle);
+    const xInput = v(inputStyle);
     xInputSection.add(xInput);
-    const xValue = text("0", textStyle);
+    const xValue = t("0", textStyle);
     xInput.add(xValue);
 
-    const yInputSection = view(inputGroupStyle);
+    const yInputSection = v(inputGroupStyle);
     inner.add(yInputSection);
-    const y = text("Y", textStyle);
+    const y = t("Y", textStyle);
     yInputSection.add(y);
-    const yInput = view(inputStyle);
+    const yInput = v(inputStyle);
     yInputSection.add(yInput);
-    const yValue = text("0", textStyle);
+    const yValue = t("0", textStyle);
     yInput.add(yValue);
 
-    const zInputSection = view(inputGroupStyle);
+    const zInputSection = v(inputGroupStyle);
     inner.add(zInputSection);
-    const z = text("Z", textStyle);
+    const z = t("Z", textStyle);
     zInputSection.add(z);
-    const zInput = view(inputStyle);
+    const zInput = v(inputStyle);
     zInputSection.add(zInput);
-    const zValue = text("0", textStyle);
+    const zValue = t("0", textStyle);
     zInput.add(zValue);
 
     layout(root, lookups, new Vec2(1024, 768));
-    const first = root.firstChild?.value.x;
+    const first = root.firstChild?.__state.layout.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const second = root.firstChild?.value.x;
+    const second = root.firstChild?.__state.layout.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const third = root.firstChild?.value.x;
+    const third = root.firstChild?.__state.layout.x;
 
     expect(first === second && second === third).toBe(true);
 
-    expect(inner.value.width).toBe(351);
-    expect(zValue.value.y).toBe(195);
+    expect(inner.__state.layout.width).toBe(351);
+    expect(zValue.__state.layout.y).toBe(195);
   });
 });

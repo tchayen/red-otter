@@ -1,33 +1,41 @@
+import { UserEvent, UserEventType } from "./ui/types";
+import { Vec2 } from "./math/Vec2";
 import {
-  fixedRectangleDefaults,
-  resolveRectangleStyling,
-  rectangleDefaults,
-  resolveSpacing,
-} from "./styling";
-import {
-  FixedRectangle,
-  RectangleStyleSheet,
-  UserEvent,
-  UserEventType,
-} from "./ui/types";
-import { Tree } from "./utils/Tree";
+  ExactDecorativeProps,
+  ExactLayoutProps,
+  ViewStyleProps,
+  normalizeLayoutProps,
+  normalizeDecorativeProps,
+} from "./types";
 import { Text } from "./Text";
 
-export class View extends Tree<FixedRectangle> {
+export class View {
+  /**
+   * Should always be normalized.
+   */
+  public readonly style: ExactDecorativeProps & ExactLayoutProps;
+  next: View | null = null;
+  prev: View | null = null;
+  firstChild: View | Text | null = null;
+  lastChild: View | Text | null = null;
+  parent: View | null = null;
+
+  __state: {
+    layout: { height: number; width: number; x: number; y: number };
+    scroll?: Vec2;
+    scrollSize?: Vec2;
+  } = { layout: { height: 0, width: 0, x: 0, y: 0 } };
+
   constructor(
     public props: {
       onClick?(): void;
-      style: RectangleStyleSheet;
+      style: ViewStyleProps;
     }
   ) {
-    super({
-      ...fixedRectangleDefaults,
-      input: { ...rectangleDefaults, ...resolveSpacing(props.style) },
-      styles: resolveRectangleStyling(props.style),
-    });
+    this.style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
   }
 
-  add(node: View | Text): View {
+  add(node: View | Text): View | Text {
     node.parent = this;
 
     if (this.firstChild === null) {
@@ -43,7 +51,7 @@ export class View extends Tree<FixedRectangle> {
       this.lastChild = node;
     }
 
-    return node as View;
+    return node;
   }
 
   handleEvent(event: UserEvent): void {

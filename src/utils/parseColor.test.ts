@@ -11,7 +11,7 @@ describe("parseColor", () => {
 
     it("should parse with alpha", () => {
       expect(parseColor("#ff0000aa")).toEqual(
-        new Vec4(1, 0, 0, 0.6666666666666666)
+        new Vec4(1, 0, 0, 0.666_666_666_666_666_6)
       );
     });
 

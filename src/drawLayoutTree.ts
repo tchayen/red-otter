@@ -1,79 +1,93 @@
 import { Vec2 } from "./math/Vec2";
 import { Vec4 } from "./math/Vec4";
+import { Text } from "./Text";
 import { UIRenderer } from "./UIRenderer";
 import { parseColor } from "./utils/parseColor";
-import { Tree } from "./utils/Tree";
-import type { FixedRectangle } from "./ui/types";
+import { View } from "./View";
 
 export function drawLayoutTree(
   ui: UIRenderer,
-  rectangles: Tree<FixedRectangle>[]
+  rectangles: (View | Text)[]
 ): void {
-  for (const { value: r } of rectangles) {
-    if ("text" in r) {
-      const position = new Vec2(r.x, r.y);
+  for (const rect of rectangles) {
+    if ("text" in rect) {
+      const position = new Vec2(rect.__state.layout.x, rect.__state.layout.y);
       ui.text(
-        r.text,
+        rect.text,
         position,
-        r.textStyle.fontName,
-        r.textStyle.fontSize,
-        r.textStyle.color,
+        rect.style.fontName,
+        rect.style.fontSize,
+        parseColor(rect.style.color),
         {
-          lineHeight: r.textStyle.lineHeight,
-          maxWidth: r.textStyle.maxWidth,
-          trimEnd: r.textStyle.trimEnd
-            ? position.add(r.textStyle.trimEnd)
-            : undefined,
-          trimStart: r.textStyle.trimStart
-            ? position.add(r.textStyle.trimStart)
-            : undefined,
+          lineHeight: rect.style.lineHeight,
+          maxWidth: rect.style.maxWidth,
+          // trimEnd: r.textStyle.trimEnd
+          //   ? position.add(r.textStyle.trimEnd)
+          //   : undefined,
+          // trimStart: r.textStyle.trimStart
+          //   ? position.add(r.textStyle.trimStart)
+          //   : undefined,
         }
       );
     } else {
-      if (r.styles.boxShadow.sigma !== 0.25) {
+      const outerBorderRadius = new Vec4(
+        rect.style.borderTopLeftRadius,
+        rect.style.borderTopRightRadius,
+        rect.style.borderBottomLeftRadius,
+        rect.style.borderBottomRightRadius
+      );
+
+      if (rect.style.boxShadowRadius >= 0.25) {
         ui.rectangle(
-          r.styles.boxShadow.color,
-          new Vec2(r.x + r.styles.boxShadow.x, r.y + r.styles.boxShadow.y),
-          new Vec2(r.width, r.height),
-          r.styles.borderRadius,
-          r.styles.boxShadow.sigma
+          parseColor(rect.style.boxShadowColor),
+          new Vec2(
+            rect.__state.layout.x + rect.style.boxShadowOffsetX,
+            rect.__state.layout.y + rect.style.boxShadowOffsetY
+          ),
+          new Vec2(rect.__state.layout.width, rect.__state.layout.height),
+          outerBorderRadius,
+          rect.style.boxShadowRadius
         );
       }
 
-      if (r.input.borderColor) {
+      if (rect.style.borderColor) {
         ui.rectangle(
-          parseColor(r.input.borderColor),
-          new Vec2(r.x, r.y),
-          new Vec2(r.width, r.height),
-          r.styles.borderRadius,
+          parseColor(rect.style.borderColor),
+          new Vec2(rect.__state.layout.x, rect.__state.layout.y),
+          new Vec2(rect.__state.layout.width, rect.__state.layout.height),
+          outerBorderRadius,
           0.25
         );
       }
 
       const position = new Vec2(
-        r.x + r.styles.borderWidth.w,
-        r.y + r.styles.borderWidth.x
+        rect.__state.layout.x + rect.style.borderLeftWidth,
+        rect.__state.layout.y + rect.style.borderTopWidth
       );
 
       const size = new Vec2(
-        r.width - r.styles.borderWidth.w - r.styles.borderWidth.y,
-        r.height - r.styles.borderWidth.x - r.styles.borderWidth.z
+        rect.__state.layout.width -
+          rect.style.borderLeftWidth -
+          rect.style.borderRightWidth,
+        rect.__state.layout.height -
+          rect.style.borderTopWidth -
+          rect.style.borderBottomWidth
       );
 
       // Correct border radius for the border width.
       const borderRadius = new Vec4(
-        r.styles.borderRadius.x -
-          Math.max(r.styles.borderWidth.w, r.styles.borderWidth.x),
-        r.styles.borderRadius.y -
-          Math.max(r.styles.borderWidth.y, r.styles.borderWidth.x),
-        r.styles.borderRadius.z -
-          Math.max(r.styles.borderWidth.y, r.styles.borderWidth.z),
-        r.styles.borderRadius.w -
-          Math.max(r.styles.borderWidth.w, r.styles.borderWidth.z)
+        rect.style.borderTopLeftRadius -
+          Math.max(rect.style.borderTopWidth, rect.style.borderLeftWidth),
+        rect.style.borderTopRightRadius -
+          Math.max(rect.style.borderTopWidth, rect.style.borderRightWidth),
+        rect.style.borderBottomLeftRadius -
+          Math.max(rect.style.borderBottomWidth, rect.style.borderLeftWidth),
+        rect.style.borderBottomRightRadius -
+          Math.max(rect.style.borderBottomWidth, rect.style.borderRightWidth)
       );
 
       ui.rectangle(
-        r.styles.backgroundColor,
+        parseColor(rect.style.backgroundColor),
         position,
         size,
         borderRadius,

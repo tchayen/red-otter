@@ -1,57 +1,51 @@
 import { shapeText } from "./font/shapeText";
-import {
-  fixedRectangleDefaults,
-  rectangleDefaults,
-  resolveSpacing,
-  textDefaults,
-} from "./styling";
-import { FixedRectangle, TextStyle } from "./ui/types";
-import { Tree } from "./utils/Tree";
-import { parseColor } from "./utils/parseColor";
-import { Lookups } from "./font/types";
 
-export class Text implements Tree<FixedRectangle> {
-  next: Tree<FixedRectangle> | null = null;
-  prev: Tree<FixedRectangle> | null = null;
-  firstChild: Tree<FixedRectangle> | null = null;
-  lastChild: Tree<FixedRectangle> | null = null;
-  parent: Tree<FixedRectangle> | null = null;
-  value: FixedRectangle;
+import { FixedRectangle } from "./ui/types";
+import { Tree } from "./utils/Tree";
+import { Lookups } from "./font/types";
+import {
+  ExactLayoutProps,
+  TextStyleProps,
+  normalizeLayoutProps,
+} from "./types";
+import { Vec2 } from "./math/Vec2";
+
+export class Text {
+  next: Text | null = null;
+  prev: Text | null = null;
+  firstChild: Text | null = null;
+  lastChild: Text | null = null;
+  parent: Text | null = null;
+
+  /**
+   * Should always be normalized.
+   */
+  public readonly style: TextStyleProps & ExactLayoutProps;
+
+  __state: {
+    layout: { height: number; width: number; x: number; y: number };
+    scroll?: Vec2;
+    scrollSize?: Vec2;
+  } = { layout: { height: 0, width: 0, x: 0, y: 0 } };
 
   constructor(
-    value: string,
+    public text: string,
     public props: {
       lookups: Lookups;
-      style: TextStyle;
+      style: TextStyleProps;
     }
   ) {
     const shape = shapeText({
       fontName: props.style.fontName,
       fontSize: props.style.fontSize,
       lookups: props.lookups,
-      text: value,
+      text: text, // TODO: enforce not repeating value when same as key.
     });
     const { width, height } = shape.boundingRectangle;
 
-    const input = {
-      ...rectangleDefaults,
-      ...resolveSpacing({}),
-      height,
-      width,
-    };
-
-    this.value = {
-      ...fixedRectangleDefaults,
-      height,
-      input,
-      text: value,
-      textStyle: {
-        ...textDefaults,
-        ...props.style,
-        color: parseColor(props.style.color),
-      },
-      width,
-    };
+    this.style = normalizeLayoutProps(props.style);
+    this.style.width = width;
+    this.style.height = height;
   }
 
   add(): Tree<FixedRectangle> {

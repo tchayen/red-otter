@@ -103,22 +103,14 @@ export type RectangleStyling = {
  */
 export type FixedRectangle =
   | {
-      height: number;
       input: RectangleStyleSheet;
       styles: RectangleStyling;
-      width: number;
-      x: number;
-      y: number;
       zIndex: number;
     }
   | {
-      height: number;
       input: RectangleStyleSheet;
       text: string;
       textStyle: Omit<TextStyle, "color"> & { color: Vec4 };
-      width: number;
-      x: number;
-      y: number;
       zIndex: number;
     };
 
