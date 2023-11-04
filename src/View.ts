@@ -22,10 +22,10 @@ export class View {
   parent: View | null = null;
 
   __state: {
-    layout: { height: number; width: number; x: number; y: number };
+    metrics: { height: number; width: number; x: number; y: number };
     scroll?: Vec2;
     scrollSize?: Vec2;
-  } = { layout: { height: 0, width: 0, x: 0, y: 0 } };
+  } = { metrics: { height: 0, width: 0, x: 0, y: 0 } };
 
   constructor(
     public props: {

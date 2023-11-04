@@ -21,10 +21,10 @@ export class Text {
   public readonly style: TextStyleProps & ExactLayoutProps;
 
   __state: {
-    layout: { height: number; width: number; x: number; y: number };
+    metrics: { height: number; width: number; x: number; y: number };
     scroll?: Vec2;
     scrollSize?: Vec2;
-  } = { layout: { height: 0, width: 0, x: 0, y: 0 } };
+  } = { metrics: { height: 0, width: 0, x: 0, y: 0 } };
 
   constructor(
     public text: string,

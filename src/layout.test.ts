@@ -104,15 +104,15 @@ describe("Layout", () => {
     zInput.add(zValue);
 
     layout(root, lookups, new Vec2(1024, 768));
-    const first = root.firstChild?.__state.layout.x;
+    const first = root.firstChild?.__state.metrics.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const second = root.firstChild?.__state.layout.x;
+    const second = root.firstChild?.__state.metrics.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const third = root.firstChild?.__state.layout.x;
+    const third = root.firstChild?.__state.metrics.x;
 
     expect(first === second && second === third).toBe(true);
 
-    expect(inner.__state.layout.width).toBe(351);
-    expect(zValue.__state.layout.y).toBe(195);
+    expect(inner.__state.metrics.width).toBe(351);
+    expect(zValue.__state.metrics.y).toBe(195);
   });
 });

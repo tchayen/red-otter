@@ -124,9 +124,9 @@ function dispatchEvent(view: View, event: UserEvent): boolean {
 
 function hitTest(view: View, event: UserEvent): boolean {
   return (
-    event.x >= view.__state.layout.x &&
-    event.x <= view.__state.layout.x + view.__state.layout.width &&
-    event.y >= view.__state.layout.y &&
-    event.y <= view.__state.layout.y + view.__state.layout.height
+    event.x >= view.__state.metrics.x &&
+    event.x <= view.__state.metrics.x + view.__state.metrics.width &&
+    event.y >= view.__state.metrics.y &&
+    event.y <= view.__state.metrics.y + view.__state.metrics.height
   );
 }

@@ -11,7 +11,7 @@ export function drawLayoutTree(
 ): void {
   for (const rect of rectangles) {
     if ("text" in rect) {
-      const position = new Vec2(rect.__state.layout.x, rect.__state.layout.y);
+      const position = new Vec2(rect.__state.metrics.x, rect.__state.metrics.y);
       ui.text(
         rect.text,
         position,
@@ -42,10 +42,10 @@ export function drawLayoutTree(
         ui.rectangle(
           parseColor(rect.style.boxShadowColor),
           new Vec2(
-            rect.__state.layout.x + rect.style.boxShadowOffsetX,
-            rect.__state.layout.y + rect.style.boxShadowOffsetY
+            rect.__state.metrics.x + rect.style.boxShadowOffsetX,
+            rect.__state.metrics.y + rect.style.boxShadowOffsetY
           ),
-          new Vec2(rect.__state.layout.width, rect.__state.layout.height),
+          new Vec2(rect.__state.metrics.width, rect.__state.metrics.height),
           outerBorderRadius,
           rect.style.boxShadowRadius
         );
@@ -54,23 +54,23 @@ export function drawLayoutTree(
       if (rect.style.borderColor) {
         ui.rectangle(
           parseColor(rect.style.borderColor),
-          new Vec2(rect.__state.layout.x, rect.__state.layout.y),
-          new Vec2(rect.__state.layout.width, rect.__state.layout.height),
+          new Vec2(rect.__state.metrics.x, rect.__state.metrics.y),
+          new Vec2(rect.__state.metrics.width, rect.__state.metrics.height),
           outerBorderRadius,
           0.25
         );
       }
 
       const position = new Vec2(
-        rect.__state.layout.x + rect.style.borderLeftWidth,
-        rect.__state.layout.y + rect.style.borderTopWidth
+        rect.__state.metrics.x + rect.style.borderLeftWidth,
+        rect.__state.metrics.y + rect.style.borderTopWidth
       );
 
       const size = new Vec2(
-        rect.__state.layout.width -
+        rect.__state.metrics.width -
           rect.style.borderLeftWidth -
           rect.style.borderRightWidth,
-        rect.__state.layout.height -
+        rect.__state.metrics.height -
           rect.style.borderTopWidth -
           rect.style.borderBottomWidth
       );
