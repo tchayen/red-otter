@@ -22,7 +22,7 @@ export function applyZIndex(root: View): (View | Text)[] {
 
     let p = node.lastChild;
     while (p) {
-      if (p.style.display === "none") {
+      if (p._style.display === "none") {
         p = p.prev;
         continue;
       }
@@ -32,7 +32,7 @@ export function applyZIndex(root: View): (View | Text)[] {
     }
   }
 
-  rectangles.sort((a, b) => (a.style.zIndex ?? 0) - (b.style.zIndex ?? 0));
+  rectangles.sort((a, b) => (a._style.zIndex ?? 0) - (b._style.zIndex ?? 0));
 
   return rectangles;
 }

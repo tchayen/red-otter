@@ -6,34 +6,35 @@ import {
   ViewStyleProps,
   normalizeLayoutProps,
   normalizeDecorativeProps,
+  LayoutNodeState,
 } from "./types";
-import { Vec2 } from "./math/Vec2";
 import { Text } from "./Text";
+import { Vec2 } from "./math/Vec2";
 
 export class View {
-  /**
-   * Should always be normalized.
-   */
-  public readonly style: ExactDecorativeProps & ExactLayoutProps;
-  next: View | null = null;
-  prev: View | null = null;
+  next: View | Text | null = null;
+  prev: View | Text | null = null;
   firstChild: View | Text | null = null;
   lastChild: View | Text | null = null;
   parent: View | null = null;
-
-  __state: {
-    metrics: { height: number; width: number; x: number; y: number };
-    scroll?: Vec2;
-    scrollSize?: Vec2;
-  } = { metrics: { height: 0, width: 0, x: 0, y: 0 } };
+  _state: LayoutNodeState = {
+    metrics: { height: 0, width: 0, x: 0, y: 0 },
+    scrollOffset: new Vec2(0, 0),
+    scrollableContentSize: new Vec2(0, 0),
+  };
+  /**
+   * Should always be normalized.
+   */
+  _style: ExactDecorativeProps & ExactLayoutProps;
 
   constructor(
     public props: {
       onClick?(): void;
       style: ViewStyleProps;
+      testID?: string;
     }
   ) {
-    this.style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
+    this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
   }
 
   add(node: View | Text): View | Text {

@@ -1,3 +1,5 @@
+import { Vec2 } from "./math/Vec2";
+
 export enum UserEventType {
   MouseClick,
   MouseMove,
@@ -16,6 +18,12 @@ export type MoveEvent = {
 };
 
 export type UserEvent = ClickEvent | MoveEvent;
+
+export type LayoutNodeState = {
+  metrics: { height: number; width: number; x: number; y: number };
+  scrollOffset: Vec2;
+  scrollableContentSize: Vec2;
+};
 
 export type LayoutProps = {
   alignContent?:
@@ -62,7 +70,7 @@ export type LayoutProps = {
   maxWidth?: number | `${number}%`;
   minHeight?: number | `${number}%`;
   minWidth?: number | `${number}%`;
-  overflow?: "visible" | "hidden" | "scroll";
+  overflow?: "auto" | "scroll" | "visible" | "hidden";
   padding?: number;
   paddingBottom?: number;
   paddingHorizontal?: number;

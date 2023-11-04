@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 
-import interTTF from "../public/interTTF.json";
-import { prepareLookups } from "./font/prepareLookups";
-import { TTF } from "./font/parseTTF";
+import interTTF from "../../public/interTTF.json";
+import { prepareLookups } from "../font/prepareLookups";
+import { TTF } from "../font/parseTTF";
 import { layout } from "./layout";
-import { Vec2 } from "./math/Vec2";
-import { View } from "./View";
-import { Text } from "./Text";
-import { TextStyleProps, ViewStyleProps } from "./types";
+import { Vec2 } from "../math/Vec2";
+import { View } from "../View";
+import { Text } from "../Text";
+import { TextStyleProps, ViewStyleProps } from "../types";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -104,15 +104,15 @@ describe("Layout", () => {
     zInput.add(zValue);
 
     layout(root, lookups, new Vec2(1024, 768));
-    const first = root.firstChild?.__state.metrics.x;
+    const first = root.firstChild?._state.metrics.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const second = root.firstChild?.__state.metrics.x;
+    const second = root.firstChild?._state.metrics.x;
     layout(root, lookups, new Vec2(1024, 768));
-    const third = root.firstChild?.__state.metrics.x;
+    const third = root.firstChild?._state.metrics.x;
 
     expect(first === second && second === third).toBe(true);
 
-    expect(inner.__state.metrics.width).toBe(351);
-    expect(zValue.__state.metrics.y).toBe(195);
+    expect(inner._state.metrics.width).toBe(351);
+    expect(zValue._state.metrics.y).toBe(195);
   });
 });

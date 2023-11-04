@@ -2,15 +2,15 @@ import { Text } from "./Text";
 import { UIRenderer } from "./UIRenderer";
 import { View } from "./View";
 import { Lookups } from "./font/types";
-import { layout } from "./layout";
+import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
 
 export let lookups: Lookups;
 
-export function retainedModeGui(ui: UIRenderer): View {
-  lookups = ui.fontLookups;
+export function ui(renderer: UIRenderer): View {
+  lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 
   const container = new View({
@@ -101,36 +101,38 @@ export function retainedModeGui(ui: UIRenderer): View {
   }
 
   // Test 2
-  {
-    const root = new View({
-      style: {
-        backgroundColor: "#000",
-        height: 400,
-        width: 600,
-      },
-    });
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 400,
+      width: 600,
+    },
+    testID: "root",
+  });
 
-    const inner = new View({
-      style: {
-        backgroundColor: "#50ff50",
-        height: 300,
-        width: 300,
-      },
-    });
-    root.add(inner);
+  const inner = new View({
+    style: {
+      backgroundColor: "#50ff50",
+      height: 300,
+      overflow: "scroll",
+      width: 300,
+    },
+    testID: "inner",
+  });
+  root.add(inner);
 
-    const obstructed = new View({
-      style: {
-        backgroundColor: "#ff5050",
-        height: 200,
-        marginLeft: 200,
-        width: 200,
-      },
-    });
-    inner.add(obstructed);
+  const obstructed = new View({
+    style: {
+      backgroundColor: "#ff5050",
+      height: 200,
+      marginLeft: 200,
+      width: 200,
+    },
+    testID: "obstructed",
+  });
+  inner.add(obstructed);
 
-    container.add(root);
-  }
+  container.add(root);
 
   container.add(
     new Text(
@@ -140,6 +142,54 @@ export function retainedModeGui(ui: UIRenderer): View {
   );
 
   layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
-
+  console.log(debugPrintTree(root));
   return container;
+}
+
+function debugPrintTree(tree: View | Text, level: number = 0) {
+  let c = tree.firstChild;
+  if (!c) {
+    return "";
+  }
+
+  const type = c instanceof Text ? "Text" : "View";
+
+  const { metrics, scrollOffset, scrollableContentSize } = c._state;
+  let info =
+    `- [${c?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${
+      metrics.width
+    }, ${metrics.height})\n  scrollOffset: (${scrollOffset.x}, ${
+      scrollOffset.y
+    })\n  scrollableContentSize: (${scrollableContentSize.x}, ${
+      scrollableContentSize.y
+    })\n` ?? "";
+  /*
+   * let info =
+   *   JSON.stringify(
+   *     c?._state,
+   *     (key: string, value: any) => {
+   *       if (key === "metrics") {
+   *         return `(${value.x}, ${value.y}, ${value.width}, ${value.height})`;
+   *       }
+   *       if (key === "scrollOffset") {
+   *         return `(${value.x}, ${value.y})`;
+   *       }
+   *       if (key === "scrollableContentSize") {
+   *         return `(${value.x}, ${value.y})`;
+   *       }
+   *       return value;
+   *     },
+   *     2
+   *   ) + "\n" ?? "";
+   */
+
+  while (c) {
+    info += debugPrintTree(c, level + 1)
+      .split("\n")
+      .map((line) => "  ".repeat(level + 1) + line)
+      .join("\n");
+    c = c.next;
+  }
+
+  return info;
 }

@@ -3,11 +3,11 @@ import { UIRenderer } from "./UIRenderer";
 import { View } from "./View";
 import { applyZIndex } from "./applyZIndex";
 import { settings } from "./consts";
-import { drawLayoutTree } from "./drawLayoutTree";
+import { draw } from "./ui/draw";
 import { parseTTF } from "./font/parseTTF";
 import { prepareLookups } from "./font/prepareLookups";
 import { renderFontAtlas } from "./font/renderFontAtlas";
-import { retainedModeGui } from "./retainedModeGui";
+import { ui } from "./ui";
 import { UserEvent } from "./types";
 import { invariant } from "./utils/invariant";
 
@@ -65,7 +65,7 @@ const colorTexture = device.createTexture({
 });
 const colorTextureView = colorTexture.createView({ label: "color" });
 
-const ui = new UIRenderer(
+const renderer = new UIRenderer(
   device,
   context,
   colorTextureView,
@@ -75,7 +75,7 @@ const ui = new UIRenderer(
 );
 
 const events = new EventManager();
-const tree = retainedModeGui(ui);
+const tree = ui(renderer);
 const node = applyZIndex(tree);
 
 function render(): void {
@@ -89,8 +89,8 @@ function render(): void {
     event = events.pop();
   }
 
-  drawLayoutTree(ui, node);
-  ui.render(commandEncoder);
+  draw(renderer, node);
+  renderer.render(commandEncoder);
 
   device.queue.submit([commandEncoder.finish()]);
 
@@ -115,7 +115,7 @@ function dispatchEvent(view: View, event: UserEvent): boolean {
 
   // If none of the children were hit, check the current node.
   if (hitTest(view, event)) {
-    view.handleEvent(event);
+    // view.handleEvent(event);
     return true;
   }
 
@@ -124,9 +124,9 @@ function dispatchEvent(view: View, event: UserEvent): boolean {
 
 function hitTest(view: View, event: UserEvent): boolean {
   return (
-    event.x >= view.__state.metrics.x &&
-    event.x <= view.__state.metrics.x + view.__state.metrics.width &&
-    event.y >= view.__state.metrics.y &&
-    event.y <= view.__state.metrics.y + view.__state.metrics.height
+    event.x >= view._state.metrics.x &&
+    event.x <= view._state.metrics.x + view._state.metrics.width &&
+    event.y >= view._state.metrics.y &&
+    event.y <= view._state.metrics.y + view._state.metrics.height
   );
 }

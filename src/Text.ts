@@ -3,6 +3,7 @@ import { shapeText } from "./font/shapeText";
 import { Lookups } from "./font/types";
 import {
   ExactLayoutProps,
+  LayoutNodeState,
   TextStyleProps,
   normalizeLayoutProps,
 } from "./types";
@@ -14,23 +15,22 @@ export class Text {
   firstChild: Text | null = null;
   lastChild: Text | null = null;
   parent: Text | null = null;
-
   /**
    * Should always be normalized.
    */
-  public readonly style: TextStyleProps & ExactLayoutProps;
-
-  __state: {
-    metrics: { height: number; width: number; x: number; y: number };
-    scroll?: Vec2;
-    scrollSize?: Vec2;
-  } = { metrics: { height: 0, width: 0, x: 0, y: 0 } };
+  _style: TextStyleProps & ExactLayoutProps;
+  _state: LayoutNodeState = {
+    metrics: { height: 0, width: 0, x: 0, y: 0 },
+    scrollOffset: new Vec2(0, 0),
+    scrollableContentSize: new Vec2(0, 0),
+  };
 
   constructor(
     public text: string,
     public props: {
       lookups: Lookups;
       style: TextStyleProps;
+      testID?: string;
     }
   ) {
     const shape = shapeText({
@@ -41,12 +41,8 @@ export class Text {
     });
     const { width, height } = shape.boundingRectangle;
 
-    this.style = normalizeLayoutProps(props.style);
-    this.style.width = width;
-    this.style.height = height;
-  }
-
-  handleEvent(): void {
-    // Do nothing.
+    this._style = normalizeLayoutProps(props.style);
+    this._style.width = width;
+    this._style.height = height;
   }
 }
