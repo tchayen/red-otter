@@ -283,24 +283,26 @@ describe("Layout", () => {
 
     const expectedPositions = [
       new Vec2(30, 30),
-      new Vec2(50, 50),
-      new Vec2(0, 70),
-      new Vec2(0, 150),
-      new Vec2(50, 150),
-      new Vec2(70, 180),
-      new Vec2(10, 190),
+      new Vec2(60, 20),
+      new Vec2(50, 100),
+      new Vec2(0, 120),
+      new Vec2(0, 200),
+      new Vec2(50, 200),
+      new Vec2(70, 230),
+      new Vec2(10, 220),
     ];
 
     const first = root.firstChild;
     const second = first?.next;
     const third = second?.next;
-    const box = third?.next;
-    const fourth = box?.firstChild;
-    const fifth = fourth?.next;
+    const fourth = third?.next;
+    const box = fourth?.next;
+    const fifth = box?.firstChild;
     const sixth = fifth?.next;
     const seventh = sixth?.next;
+    const eighth = seventh?.next;
 
-    const nodes = [first, second, third, fourth, fifth, sixth, seventh];
+    const nodes = [first, second, third, fourth, fifth, sixth, seventh, eighth];
 
     for (let i = 0; i < nodes.length; i++) {
       expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);

@@ -351,7 +351,7 @@ export function offsets() {
     },
   });
 
-  const view = new View({
+  const topLeft = new View({
     style: {
       backgroundColor: colors[0],
       height: 50,
@@ -360,7 +360,18 @@ export function offsets() {
       width: 50,
     },
   });
-  root.add(view);
+  root.add(topLeft);
+
+  const bottomRight = new View({
+    style: {
+      backgroundColor: colors[1],
+      bottom: 30,
+      height: 50,
+      right: -60,
+      width: 50,
+    },
+  });
+  root.add(bottomRight);
 
   const stretched = new View({
     style: {
@@ -386,7 +397,7 @@ export function offsets() {
     style: {
       backgroundColor: "#222",
       flexDirection: "row",
-      height: 120,
+      height: 100,
       width: 120,
     },
   });
