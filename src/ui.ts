@@ -14,6 +14,11 @@ export function ui(renderer: UIRenderer): View {
   lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 
+  // NOTE:
+  // This screen is built within the library so if anything fundamental get
+  // broken when e.g. debugging some problem, a good trick to enable moving
+  // forward is to turn off all the tests but the one being worked on.
+
   const columnStyle = {
     flexDirection: "column",
     height: "100%",
@@ -55,14 +60,20 @@ export function ui(renderer: UIRenderer): View {
   const column2 = new View({ style: columnStyle });
   container.add(column2);
 
-  column2.add(text("margins"));
-  column2.add(fixtures.margins());
-  column2.add(text("left, top, right, bottom"));
-  column2.add(fixtures.offsets());
+  column2.add(text("flexDirection reverse"));
+  column2.add(fixtures.flexDirectionReverse());
+  column2.add(text("flexWrap"));
+  column2.add(fixtures.flexWrap());
+  column2.add(text("alignContent"));
+  column2.add(fixtures.alignContent());
 
   const column3 = new View({ style: columnStyle });
   container.add(column3);
 
+  column3.add(text("margins and paddings"));
+  column3.add(fixtures.marginsAndPaddings());
+  column3.add(text("left, top, right, bottom"));
+  column3.add(fixtures.offsets());
   column3.add(text("form UI"));
   column3.add(fixtures.formUI());
 

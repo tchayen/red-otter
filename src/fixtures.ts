@@ -290,8 +290,7 @@ export function alignItemsAndSelf() {
   return root;
 }
 
-// TODO: @tchayen: add paddings here.
-export function margins() {
+export function flexDirectionReverse() {
   const root = new View({
     style: {
       backgroundColor: "#000",
@@ -300,44 +299,137 @@ export function margins() {
     },
   });
 
-  function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
-    const firstStyle = {
+  const row = new View({
+    style: {
+      flexDirection: "row-reverse",
+      marginLeft: 50,
+      width: 250,
+    },
+    testID: "row-reverse",
+  });
+  root.add(row);
+  const rowFirst = new View({
+    style: {
       backgroundColor: colors[0],
       height: 50,
-      width: 30,
-    } as ViewStyleProps;
-
-    const secondStyle = {
-      backgroundColor: colors[1],
-      height: 50,
-      width: 40,
-    } as ViewStyleProps;
-
-    const thirdStyle = {
-      backgroundColor: colors[2],
-      height: 50,
+      marginLeft: 20,
       width: 50,
-    } as ViewStyleProps;
+    },
+  });
+  row.add(rowFirst);
+  const rowSecond = new View({
+    style: { backgroundColor: colors[1], height: 50, width: 50 },
+  });
+  row.add(rowSecond);
+  const rowThird = new View({
+    style: { backgroundColor: colors[2], height: 50, width: 50 },
+  });
+  row.add(rowThird);
 
-    const view = new View({
-      style: {
-        flexDirection: "row",
-        justifyContent: attribute,
-        width: "100%",
-      },
-    });
-    root.add(view);
-    view.add(new View({ style: { ...firstStyle, height: 40, margin: 5 } }));
-    view.add(new View({ style: { ...secondStyle, height: 40 } }));
-    view.add(new View({ style: { ...thirdStyle, height: 40 } }));
-  }
+  const column = new View({
+    style: {
+      flexDirection: "column-reverse",
+      height: 250,
+      width: 50,
+    },
+    testID: "column-reverse",
+  });
+  root.add(column);
+  const columnFirst = new View({
+    style: {
+      backgroundColor: colors[0],
+      height: 50,
+      marginTop: 20,
+      width: 50,
+    },
+  });
+  column.add(columnFirst);
+  const columnSecond = new View({
+    style: { backgroundColor: colors[1], height: 50, width: 50 },
+  });
+  column.add(columnSecond);
+  const columnThird = new View({
+    style: { backgroundColor: colors[2], height: 50, width: 50 },
+  });
+  column.add(columnThird);
 
-  generateFlexColumn("flex-start");
-  generateFlexColumn("flex-end");
-  generateFlexColumn("center");
-  generateFlexColumn("space-evenly");
-  generateFlexColumn("space-around");
-  generateFlexColumn("space-between");
+  return root;
+}
+
+export function flexWrap() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  return root;
+}
+
+export function alignContent() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  return root;
+}
+
+export function marginsAndPaddings() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const box = new View({
+    style: {
+      backgroundColor: colors[0],
+      flexDirection: "row",
+      padding: 10,
+    },
+  });
+  root.add(box);
+
+  const first = new View({
+    style: {
+      backgroundColor: colors[1],
+      height: 100,
+      marginLeft: 10,
+      marginRight: 20,
+      padding: 5,
+      width: 100,
+    },
+  });
+  box.add(first);
+
+  const inFirst = new View({
+    style: {
+      backgroundColor: colors[3],
+      height: 50,
+      marginTop: 10,
+      width: 50,
+    },
+  });
+  first.add(inFirst);
+
+  const second = new View({
+    style: {
+      backgroundColor: colors[4],
+      height: 50,
+      marginLeft: 30,
+      marginRight: 40,
+      width: 50,
+    },
+  });
+  box.add(second);
 
   return root;
 }

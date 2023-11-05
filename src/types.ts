@@ -45,7 +45,7 @@ export type LayoutProps = {
   display?: "flex" | "none";
   flex?: number;
   flexBasis?: number;
-  flexDirection?: "row" | "column";
+  flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
   flexGrow?: number;
   flexShrink?: number;
   flexWrap?: "wrap" | "nowrap" | "wrap-reverse";

@@ -79,7 +79,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       while (c) {
         if (c._state.metrics.width) {
           if (
-            e._style.flexDirection === "row" &&
+            (e._style.flexDirection === "row" ||
+              e._style.flexDirection === "row-reverse") &&
             c._style.position === "relative"
           ) {
             // Padding is inside the width.
@@ -90,7 +91,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
 
           if (
-            e._style.flexDirection === "column" &&
+            (e._style.flexDirection === "column" ||
+              e._style.flexDirection === "column-reverse") &&
             c._style.position === "relative"
           ) {
             // For column layout only wraps the widest child.
@@ -111,12 +113,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Include padding and gaps.
-      e._state.metrics.width +=
-        e._style.paddingLeft +
-        e._style.paddingRight +
-        (e._style.flexDirection === "row"
-          ? (childrenCount - 1) * e._style.rowGap
-          : 0);
+      e._state.metrics.width += e._style.paddingLeft + e._style.paddingRight;
+
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
+        e._state.metrics.width += (childrenCount - 1) * e._style.rowGap;
+      }
     }
 
     // Height is at least the sum of children with defined heights.
@@ -127,7 +131,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       while (c) {
         if (c._state.metrics.height) {
           if (
-            e._style.flexDirection === "column" &&
+            (e._style.flexDirection === "column" ||
+              e._style.flexDirection === "column-reverse") &&
             c._style.position === "relative"
           ) {
             e._state.metrics.height +=
@@ -137,7 +142,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
 
           if (
-            e._style.flexDirection === "row" &&
+            (e._style.flexDirection === "row" ||
+              e._style.flexDirection === "row-reverse") &&
             c._style.position === "relative"
           ) {
             e._state.metrics.height = Math.max(
@@ -157,12 +163,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Include padding and gaps.
-      e._state.metrics.height +=
-        e._style.paddingTop +
-        e._style.paddingBottom +
-        (e._style.flexDirection === "column"
-          ? (childrenCount - 1) * e._style.columnGap
-          : 0);
+      e._state.metrics.height += e._style.paddingTop + e._style.paddingBottom;
+
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
+        e._state.metrics.height += (childrenCount - 1) * e._style.columnGap;
+      }
     }
   }
 
@@ -245,6 +253,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     let availableHeight =
       e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
 
+    if (e._style.flexDirection === "row-reverse") {
+      console.log("a", availableWidth);
+    }
+
     // Count children and total flex value.
     let c = e.firstChild;
     while (c) {
@@ -253,7 +265,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       if (
-        e._style.flexDirection === "row" &&
+        (e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse") &&
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
@@ -261,7 +274,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
       }
       if (
-        e._style.flexDirection === "column" &&
+        (e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse") &&
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
@@ -270,19 +284,32 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Calculate how many rectangles will be splitting the available space.
-      if (e._style.flexDirection === "row" && c._style.flex !== undefined) {
+      if (
+        (e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse") &&
+        c._style.flex !== undefined
+      ) {
         totalFlex += c._style.flex;
       }
-      if (e._style.flexDirection === "column" && c._style.flex !== undefined) {
+      if (
+        (e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse") &&
+        c._style.flex !== undefined
+      ) {
         totalFlex += c._style.flex;
       }
 
       c = c.next;
     }
 
+    if (e._style.flexDirection === "row-reverse") {
+      console.log("b", availableWidth);
+    }
+
     // Mind the gap.
     if (
-      e._style.flexDirection === "row" &&
+      (e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse") &&
       e._style.justifyContent !== "space-between" &&
       e._style.justifyContent !== "space-around" &&
       e._style.justifyContent !== "space-evenly"
@@ -290,7 +317,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       availableWidth -= (e._style.rowGap ?? 0) * (childrenCount - 1);
     }
     if (
-      e._style.flexDirection === "column" &&
+      (e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse") &&
       e._style.justifyContent !== "space-between" &&
       e._style.justifyContent !== "space-around" &&
       e._style.justifyContent !== "space-evenly"
@@ -301,7 +329,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     // Apply sizes.
     c = e.firstChild;
     while (c) {
-      if (e._style.flexDirection === "row") {
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
         if (
           c._style.flex !== undefined &&
           e._style.justifyContent !== "space-between" &&
@@ -311,7 +342,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           c._state.metrics.width = (c._style.flex / totalFlex) * availableWidth;
         }
       }
-      if (e._style.flexDirection === "column") {
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
         if (
           c._style.flex !== undefined &&
           e._style.justifyContent !== "space-between" &&
@@ -332,12 +366,20 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     let y = e._state.metrics.y + e._style.paddingTop;
 
     // Apply justify content. Starting point for laying out children.
-    if (e._style.flexDirection === "row") {
+    if (
+      e._style.flexDirection === "row" ||
+      e._style.flexDirection === "row-reverse"
+    ) {
       if (e._style.justifyContent === "center") {
         x += availableWidth / 2;
       }
 
-      if (e._style.justifyContent === "flex-end") {
+      if (
+        (e._style.flexDirection === "row" &&
+          e._style.justifyContent === "flex-end") ||
+        (e._style.flexDirection === "row-reverse" &&
+          e._style.justifyContent === "flex-start")
+      ) {
         x += availableWidth;
       }
 
@@ -349,12 +391,20 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         x += availableWidth / (childrenCount + 1);
       }
     }
-    if (e._style.flexDirection === "column") {
+    if (
+      e._style.flexDirection === "column" ||
+      e._style.flexDirection === "column-reverse"
+    ) {
       if (e._style.justifyContent === "center") {
         y += availableHeight / 2;
       }
 
-      if (e._style.justifyContent === "flex-end") {
+      if (
+        (e._style.flexDirection === "column" &&
+          e._style.justifyContent === "flex-end") ||
+        (e._style.flexDirection === "column-reverse" &&
+          e._style.justifyContent === "flex-start")
+      ) {
         y += availableHeight;
       }
 
@@ -367,10 +417,28 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
     }
 
+    // Apply positions to children.
     c = e.firstChild;
+    if (
+      e._style.flexDirection === "row-reverse" ||
+      e._style.flexDirection === "column-reverse"
+    ) {
+      c = e.lastChild;
+    }
+
+    const direction =
+      e._style.flexDirection === "row-reverse" ||
+      e._style.flexDirection === "column-reverse"
+        ? -1
+        : 1;
+
     while (c) {
       if (c._style.position === "absolute" || c._style.display === "none") {
-        c = c.next;
+        c =
+          e._style.flexDirection === "row-reverse" ||
+          e._style.flexDirection === "column-reverse"
+            ? c.prev
+            : c.next;
         continue;
       }
 
@@ -383,8 +451,11 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         e._style.justifyContent === "space-around" ||
         e._style.justifyContent === "space-evenly"
       ) {
-        if (e._style.flexDirection === "row") {
-          c._state.metrics.x += x;
+        if (
+          e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse"
+        ) {
+          c._state.metrics.x += x * direction;
           x += c._state.metrics.width;
 
           if (e._style.justifyContent === "space-between") {
@@ -397,8 +468,11 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             x += availableWidth / (childrenCount + 1);
           }
         }
-        if (e._style.flexDirection === "column") {
-          c._state.metrics.y += y;
+        if (
+          e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse"
+        ) {
+          c._state.metrics.y += y * direction;
           y += c._state.metrics.height;
 
           if (e._style.justifyContent === "space-between") {
@@ -412,22 +486,39 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
       } else {
-        c._state.metrics.x += x;
-        c._state.metrics.y += y;
+        c._state.metrics.x +=
+          e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse"
+            ? x
+            : x * direction;
 
-        if (e._style.flexDirection === "row") {
+        c._state.metrics.y +=
+          e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse"
+            ? y
+            : y * direction;
+
+        if (
+          e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse"
+        ) {
           x += c._state.metrics.width;
           x += e._style.rowGap;
         }
-        if (e._style.flexDirection === "column") {
+        if (
+          e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse"
+        ) {
           y += c._state.metrics.height;
           y += e._style.columnGap;
         }
       }
 
       // Apply align items.
-      console.log(e.props.testID, availableHeight, availableWidth);
-      if (e._style.flexDirection === "row") {
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
         if (e._style.alignItems === "flex-start") {
           c._state.metrics.y = y + c._style.marginTop;
         }
@@ -458,7 +549,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingBottom;
         }
       }
-      if (e._style.flexDirection === "column") {
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
         if (e._style.alignItems === "flex-start") {
           c._state.metrics.x = x + c._style.marginLeft;
         }
@@ -491,7 +585,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Align self.
-      if (e._style.flexDirection === "row") {
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
         if (c._style.alignSelf === "flex-start") {
           c._state.metrics.y =
             e._state.metrics.y + e._style.paddingTop + c._style.marginTop;
@@ -520,7 +617,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingBottom;
         }
       }
-      if (e._style.flexDirection === "column") {
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
         if (c._style.alignSelf === "flex-start") {
           c._state.metrics.x =
             e._state.metrics.x + e._style.paddingLeft + c._style.marginLeft;
@@ -550,11 +650,17 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         }
       }
 
-      if (e._style.flexDirection === "row") {
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
         x += c._style.marginLeft + c._style.marginRight;
       }
 
-      if (e._style.flexDirection === "column") {
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
         y += c._style.marginTop + c._style.marginBottom;
       }
 
@@ -570,7 +676,11 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c._state.metrics.y -= c._style.bottom;
       }
 
-      c = c.next;
+      c =
+        e._style.flexDirection === "row-reverse" ||
+        e._style.flexDirection === "column-reverse"
+          ? c.prev
+          : c.next;
     }
 
     // Round to whole pixels.

@@ -12,7 +12,7 @@ import {
   alignItemsAndSelf,
   flexRowAndColumn,
   flexValue,
-  margins,
+  marginsAndPaddings,
   offsets,
 } from "../fixtures";
 
@@ -250,30 +250,56 @@ describe("Layout", () => {
     }
   });
 
-  it("margins", () => {
-    const root = margins();
+  it("flexDirection reverse", () => {
+    const root = alignItemsAndSelf();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const expectedPositions = [
-      [new Vec2(5, 5), new Vec2(40, 0), new Vec2(80, 0)],
-      [new Vec2(175, 55), new Vec2(210, 50), new Vec2(250, 50)],
-      [new Vec2(90, 105), new Vec2(125, 100), new Vec2(165, 100)],
-      [new Vec2(48, 155), new Vec2(125, 150), new Vec2(208, 150)],
-      [new Vec2(33, 205), new Vec2(125, 200), new Vec2(222, 200)],
-      [new Vec2(5, 255), new Vec2(125, 250), new Vec2(250, 250)],
+    const first = root.firstChild?.firstChild;
+    const second = first?.next;
+    const third = second?.next;
+    const fifth = root.firstChild?.next?.firstChild;
+    const sixth = fifth?.next;
+    const seventh = sixth?.next;
+
+    const nodes = [first, second, third, fifth, sixth, seventh];
+
+    const expectedValues = [
+      new Vec2(92, 0),
+      new Vec2(144, 0),
+      new Vec2(196, 0),
+      new Vec2(0, 92),
+      new Vec2(0, 144),
+      new Vec2(0, 196),
     ];
 
-    let c: View | Text | null | undefined = null;
-    let row: View | Text | null | undefined = root.firstChild;
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i].x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i].y);
+    }
+  });
 
-    for (let i = 0; i < expectedPositions.length; i++) {
-      c = row?.firstChild;
-      for (const expected of expectedPositions[i]) {
-        expect(c?._state.metrics.x).toBe(expected.x);
-        expect(c?._state.metrics.y).toBe(expected.y);
-        c = c?.next;
-      }
-      row = row?.next;
+  it("margins and paddings", () => {
+    const root = marginsAndPaddings();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const expectedValues = [
+      [new Vec2(0, 0), new Vec2(270, 120)],
+      [new Vec2(20, 10), new Vec2(100, 100)],
+      [new Vec2(25, 25), new Vec2(50, 50)],
+      [new Vec2(170, 10), new Vec2(50, 50)],
+    ];
+
+    const box = root.firstChild;
+    const first = box?.firstChild;
+    const inFirst = first?.firstChild;
+    const second = first?.next;
+    const nodes = [box, first, inFirst, second];
+
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i][0].x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i][0].y);
+      expect(nodes[i]?._state.metrics.width).toBe(expectedValues[i][1].x);
+      expect(nodes[i]?._state.metrics.height).toBe(expectedValues[i][1].y);
     }
   });
 
