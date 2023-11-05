@@ -247,42 +247,89 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       let x = 0;
       let y = 0;
       let longestChildHeight = 0;
-      // The height that was first calculated is height of the tallest child of
-      // all plus paddings. So here there's a need to reset the height and build
+      // The size that was first calculated is size of the tallest child of
+      // all plus paddings. So here there's a need to reset the size and build
       // it again, for all rows.
-      e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+      if (
+        e._style.flexDirection === "row" ||
+        e._style.flexDirection === "row-reverse"
+      ) {
+        e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+      }
+      if (
+        e._style.flexDirection === "column" ||
+        e._style.flexDirection === "column-reverse"
+      ) {
+        e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
+      }
 
       let c = e.firstChild;
       while (c) {
         if (c._style.position !== "relative") {
+          // TODO @tchayen: add a test which has a position: absolute element
+          // in a flex wrap container.
           c = c.next;
           continue;
         }
 
-        const deltaX =
-          c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-        const parentWidth =
-          e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-        if (x + deltaX >= parentWidth || c.next === null) {
-          x = 0;
-          const height = longestChildHeight + e._style.columnGap;
-          y += height;
-          e._state.metrics.height += height;
-          console.log("wrap", longestChildHeight);
-          longestChildHeight = 0;
-        } else {
-          x += deltaX + e._style.rowGap;
+        if (
+          e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse"
+        ) {
+          const deltaX =
+            c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
+          const parentWidth =
+            e._state.metrics.width -
+            e._style.paddingLeft -
+            e._style.paddingRight;
+          if (x + deltaX >= parentWidth || c.next === null) {
+            x = 0;
+            const height = longestChildHeight + e._style.columnGap;
+            y += height;
+            e._state.metrics.height += height;
+            longestChildHeight = 0;
+          } else {
+            x += deltaX + e._style.rowGap;
+          }
+        }
+        if (
+          e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse"
+        ) {
+          const deltaY =
+            c._state.metrics.height +
+            c._style.marginTop +
+            c._style.marginBottom;
+          const parentHeight =
+            e._state.metrics.height -
+            e._style.paddingTop -
+            e._style.paddingBottom;
+          if (y + deltaY >= parentHeight || c.next === null) {
+            y = 0;
+            const width = longestChildHeight + e._style.rowGap;
+            x += width;
+            e._state.metrics.width += width;
+            longestChildHeight = 0;
+          } else {
+            y += deltaY + e._style.columnGap;
+          }
         }
 
         // Keep track of the longest child in the flex container for the purpose
         // of wrapping.
-        if (c._style.flexDirection === "row") {
+        if (
+          c._style.flexDirection === "row" ||
+          c._style.flexDirection === "row-reverse"
+        ) {
           longestChildHeight = Math.max(
             longestChildHeight,
             c._state.metrics.width
           );
         }
-        if (c._style.flexDirection === "column") {
+        if (
+          c._style.flexDirection === "column" ||
+          c._style.flexDirection === "column-reverse"
+        ) {
           longestChildHeight = Math.max(
             longestChildHeight,
             c._state.metrics.height
@@ -603,27 +650,43 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         }
       } else {
         if (e._style.flexWrap === "wrap") {
-          const deltaX =
-            c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-          const parentWidth =
-            e._state.metrics.width -
-            e._style.paddingLeft -
-            e._style.paddingRight;
-          console.log(
-            "ww",
-            x - e._state.metrics.x + deltaX,
-            parentWidth,
-            x - e._state.metrics.x + deltaX >= parentWidth
-          );
-          if (x - e._state.metrics.x + deltaX >= parentWidth) {
-            x = e._state.metrics.x + e._style.paddingLeft;
-            y += longestChildHeight + e._style.columnGap;
-            console.log(longestChildHeight);
-            longestChildHeight = 0;
+          if (
+            e._style.flexDirection === "row" ||
+            e._style.flexDirection === "row-reverse"
+          ) {
+            const deltaX =
+              c._state.metrics.width +
+              c._style.marginLeft +
+              c._style.marginRight;
+            const parentWidth =
+              e._state.metrics.width -
+              e._style.paddingLeft -
+              e._style.paddingRight;
+            if (x - e._state.metrics.x + deltaX >= parentWidth) {
+              x = e._state.metrics.x + e._style.paddingLeft;
+              y += longestChildHeight + e._style.columnGap;
+              longestChildHeight = 0;
+            }
+          }
+          if (
+            e._style.flexDirection === "column" ||
+            e._style.flexDirection === "column-reverse"
+          ) {
+            const deltaY =
+              c._state.metrics.height +
+              c._style.marginTop +
+              c._style.marginBottom;
+            const parentHeight =
+              e._state.metrics.height -
+              e._style.paddingTop -
+              e._style.paddingBottom;
+            if (y - e._state.metrics.y + deltaY >= parentHeight) {
+              y = e._state.metrics.y + e._style.paddingTop;
+              x += longestChildHeight + e._style.rowGap;
+              longestChildHeight = 0;
+            }
           }
         }
-
-        // TODO @tchayen: same for cross axis.
 
         c._state.metrics.x +=
           e._style.flexDirection === "row" ||

@@ -376,23 +376,39 @@ export function flexWrap() {
   });
   root.add(row);
 
-  function box(color: string, style?: ViewStyleProps) {
+  function box(
+    backgroundColor: string,
+    width: number,
+    height: number,
+    style?: ViewStyleProps
+  ) {
     return new View({
-      style: {
-        backgroundColor: color,
-        height: 25,
-        width: 40,
-        ...style,
-      },
+      style: { backgroundColor, height, width, ...style },
     });
   }
-  row.add(box(colors[1]));
-  row.add(box(colors[2], { height: 33 }));
-  row.add(box(colors[3], { marginLeft: 11, width: 60 }));
-  row.add(box(colors[4], { height: 41, marginLeft: 8, width: 70 }));
-  row.add(box(colors[5], { height: 19, width: 180 }));
 
-  root.add(box(colors[6], { height: 120, width: 120 }));
+  row.add(box(colors[1], 40, 25));
+  row.add(box(colors[2], 40, 33));
+  row.add(box(colors[3], 60, 25, { marginLeft: 11 }));
+  row.add(box(colors[4], 70, 41, { marginLeft: 8 }));
+  row.add(box(colors[5], 180, 19));
+
+  const column = new View({
+    style: {
+      backgroundColor: colors[0],
+      columnGap: 10,
+      flexDirection: "column",
+      flexWrap: "wrap",
+      height: 177,
+      paddingHorizontal: 10,
+      rowGap: 5,
+    },
+  });
+  root.add(column);
+
+  column.add(box(colors[1], 25, 40));
+  column.add(box(colors[2], 25, 40));
+  column.add(box(colors[3], 25, 60, { marginTop: 11 }));
 
   return root;
 }
