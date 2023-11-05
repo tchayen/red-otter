@@ -359,6 +359,16 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     const parentWidth = p?._state.metrics.width ?? 0;
     const parentHeight = p?._state.metrics.height ?? 0;
 
+    const isHorizontal =
+      e._style.flexDirection === "row" ||
+      e._style.flexDirection === "row-reverse";
+    const isVertical =
+      e._style.flexDirection === "column" ||
+      e._style.flexDirection === "column-reverse";
+    const isReversed =
+      e._style.flexDirection === "row-reverse" ||
+      e._style.flexDirection === "column-reverse";
+
     invariant(
       e._style.flex === undefined || e._style.flex >= 0,
       "Flex cannot be negative."
@@ -430,8 +440,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       if (
-        (e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse") &&
+        isHorizontal &&
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
@@ -439,8 +448,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
       }
       if (
-        (e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse") &&
+        isVertical &&
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
@@ -449,18 +457,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Calculate how many rectangles will be splitting the available space.
-      if (
-        (e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse") &&
-        c._style.flex !== undefined
-      ) {
+      if (isHorizontal && c._style.flex !== undefined) {
         totalFlex += c._style.flex;
       }
-      if (
-        (e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse") &&
-        c._style.flex !== undefined
-      ) {
+      if (isVertical && c._style.flex !== undefined) {
         totalFlex += c._style.flex;
       }
 
@@ -469,8 +469,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
     // Mind the gap.
     if (
-      (e._style.flexDirection === "row" ||
-        e._style.flexDirection === "row-reverse") &&
+      isHorizontal &&
       e._style.justifyContent !== "space-between" &&
       e._style.justifyContent !== "space-around" &&
       e._style.justifyContent !== "space-evenly"
@@ -478,8 +477,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       availableWidth -= (e._style.rowGap ?? 0) * (childrenCount - 1);
     }
     if (
-      (e._style.flexDirection === "column" ||
-        e._style.flexDirection === "column-reverse") &&
+      isVertical &&
       e._style.justifyContent !== "space-between" &&
       e._style.justifyContent !== "space-around" &&
       e._style.justifyContent !== "space-evenly"
@@ -490,10 +488,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     // Apply sizes.
     c = e.firstChild;
     while (c) {
-      if (
-        e._style.flexDirection === "row" ||
-        e._style.flexDirection === "row-reverse"
-      ) {
+      if (isHorizontal) {
         if (
           c._style.flex !== undefined &&
           e._style.justifyContent !== "space-between" &&
@@ -503,10 +498,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           c._state.metrics.width = (c._style.flex / totalFlex) * availableWidth;
         }
       }
-      if (
-        e._style.flexDirection === "column" ||
-        e._style.flexDirection === "column-reverse"
-      ) {
+      if (isVertical) {
         if (
           c._style.flex !== undefined &&
           e._style.justifyContent !== "space-between" &&
@@ -527,10 +519,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     let y = e._state.metrics.y + e._style.paddingTop;
 
     // Apply justify content. Starting point for laying out children.
-    if (
-      e._style.flexDirection === "row" ||
-      e._style.flexDirection === "row-reverse"
-    ) {
+    if (isHorizontal) {
       if (e._style.justifyContent === "center") {
         x += availableWidth / 2;
       }
@@ -552,10 +541,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         x += availableWidth / (childrenCount + 1);
       }
     }
-    if (
-      e._style.flexDirection === "column" ||
-      e._style.flexDirection === "column-reverse"
-    ) {
+    if (isVertical) {
       if (e._style.justifyContent === "center") {
         y += availableHeight / 2;
       }
@@ -579,29 +565,18 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     }
 
     // Apply positions to children.
-    const direction =
-      e._style.flexDirection === "row-reverse" ||
-      e._style.flexDirection === "column-reverse"
-        ? -1
-        : 1;
+    const direction = isReversed ? -1 : 1;
 
     // Along the main axis.
     let longestChildHeight = 0;
 
     c = e.firstChild;
-    if (
-      e._style.flexDirection === "row-reverse" ||
-      e._style.flexDirection === "column-reverse"
-    ) {
+    if (isReversed) {
       c = e.lastChild;
     }
     while (c) {
       if (c._style.position === "absolute" || c._style.display === "none") {
-        c =
-          e._style.flexDirection === "row-reverse" ||
-          e._style.flexDirection === "column-reverse"
-            ? c.prev
-            : c.next;
+        c = isReversed ? c.prev : c.next;
         continue;
       }
 
@@ -614,10 +589,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         e._style.justifyContent === "space-around" ||
         e._style.justifyContent === "space-evenly"
       ) {
-        if (
-          e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse"
-        ) {
+        if (isHorizontal) {
           c._state.metrics.x += x * direction;
           x += c._state.metrics.width;
 
@@ -631,10 +603,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             x += availableWidth / (childrenCount + 1);
           }
         }
-        if (
-          e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse"
-        ) {
+        if (isVertical) {
           c._state.metrics.y += y * direction;
           y += c._state.metrics.height;
 
@@ -650,10 +619,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         }
       } else {
         if (e._style.flexWrap === "wrap") {
-          if (
-            e._style.flexDirection === "row" ||
-            e._style.flexDirection === "row-reverse"
-          ) {
+          if (isHorizontal) {
             const deltaX =
               c._state.metrics.width +
               c._style.marginLeft +
@@ -668,10 +634,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
               longestChildHeight = 0;
             }
           }
-          if (
-            e._style.flexDirection === "column" ||
-            e._style.flexDirection === "column-reverse"
-          ) {
+          if (isVertical) {
             const deltaY =
               c._state.metrics.height +
               c._style.marginTop +
@@ -688,39 +651,22 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
 
-        c._state.metrics.x +=
-          e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse"
-            ? x
-            : x * direction;
+        c._state.metrics.x += isHorizontal ? x : x * direction;
 
-        c._state.metrics.y +=
-          e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse"
-            ? y
-            : y * direction;
+        c._state.metrics.y += isVertical ? y : y * direction;
 
-        if (
-          e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse"
-        ) {
+        if (isHorizontal) {
           x += c._state.metrics.width;
           x += e._style.rowGap;
         }
-        if (
-          e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse"
-        ) {
+        if (isVertical) {
           y += c._state.metrics.height;
           y += e._style.columnGap;
         }
       }
 
       // Apply align items.
-      if (
-        e._style.flexDirection === "row" ||
-        e._style.flexDirection === "row-reverse"
-      ) {
+      if (isHorizontal) {
         if (e._style.alignItems === "flex-start") {
           c._state.metrics.y = y + c._style.marginTop;
         }
@@ -751,10 +697,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingBottom;
         }
       }
-      if (
-        e._style.flexDirection === "column" ||
-        e._style.flexDirection === "column-reverse"
-      ) {
+      if (isVertical) {
         if (e._style.alignItems === "flex-start") {
           c._state.metrics.x = x + c._style.marginLeft;
         }
@@ -787,10 +730,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Align self.
-      if (
-        e._style.flexDirection === "row" ||
-        e._style.flexDirection === "row-reverse"
-      ) {
+      if (isHorizontal) {
         if (c._style.alignSelf === "flex-start") {
           c._state.metrics.y =
             e._state.metrics.y + e._style.paddingTop + c._style.marginTop;
@@ -819,10 +759,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingBottom;
         }
       }
-      if (
-        e._style.flexDirection === "column" ||
-        e._style.flexDirection === "column-reverse"
-      ) {
+      if (isVertical) {
         if (c._style.alignSelf === "flex-start") {
           c._state.metrics.x =
             e._state.metrics.x + e._style.paddingLeft + c._style.marginLeft;
@@ -852,17 +789,11 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         }
       }
 
-      if (
-        e._style.flexDirection === "row" ||
-        e._style.flexDirection === "row-reverse"
-      ) {
+      if (isHorizontal) {
         x += c._style.marginLeft + c._style.marginRight;
       }
 
-      if (
-        e._style.flexDirection === "column" ||
-        e._style.flexDirection === "column-reverse"
-      ) {
+      if (isVertical) {
         y += c._style.marginTop + c._style.marginBottom;
       }
 
@@ -893,11 +824,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         );
       }
 
-      c =
-        e._style.flexDirection === "row-reverse" ||
-        e._style.flexDirection === "column-reverse"
-          ? c.prev
-          : c.next;
+      c = isReversed ? c.prev : c.next;
     }
 
     // Round to whole pixels.
