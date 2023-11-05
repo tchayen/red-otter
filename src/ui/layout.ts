@@ -253,10 +253,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     let availableHeight =
       e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
 
-    if (e._style.flexDirection === "row-reverse") {
-      console.log("a", availableWidth);
-    }
-
     // Count children and total flex value.
     let c = e.firstChild;
     while (c) {
@@ -300,10 +296,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       c = c.next;
-    }
-
-    if (e._style.flexDirection === "row-reverse") {
-      console.log("b", availableWidth);
     }
 
     // Mind the gap.
