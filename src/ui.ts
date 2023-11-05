@@ -74,8 +74,13 @@ export function ui(renderer: UIRenderer): View {
   column3.add(fixtures.marginsAndPaddings());
   column3.add(text("left, top, right, bottom"));
   column3.add(fixtures.offsets());
-  column3.add(text("form UI"));
-  column3.add(fixtures.formUI());
+  column3.add(text("inheriting sizes"));
+  column3.add(fixtures.inheritingSizes());
+
+  const column4 = new View({ style: columnStyle });
+  container.add(column4);
+  column4.add(text("form UI"));
+  column4.add(fixtures.formUI());
 
   // const scroll = testScroll();
   // container.add(scroll);

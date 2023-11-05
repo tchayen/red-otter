@@ -32,7 +32,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
   while (!firstPass.isEmpty()) {
     const e = firstPass.dequeue();
     invariant(e, "Empty queue.");
-    const p = e.parent;
 
     let c = e.firstChild;
     while (c !== null) {
@@ -51,14 +50,39 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e._state.metrics.height = e._style.height;
     }
 
-    const parentWidth = p?._state.metrics.width ?? 0;
-    const parentHeight = p?._state.metrics.height ?? 0;
-
     if (typeof e._style.width === "string") {
-      e._state.metrics.width = toPercentage(e._style.width) * parentWidth;
+      let definedWidth = undefined;
+      let accumulatedMultiplier = 1;
+      let _p = e.parent;
+      while (definedWidth === undefined && _p) {
+        if (typeof _p._style.width === "string") {
+          accumulatedMultiplier *= toPercentage(_p._style.width);
+        } else if (typeof _p._style.width === "number") {
+          definedWidth = _p._style.width;
+        }
+        _p = _p.parent;
+      }
+
+      e._state.metrics.width =
+        toPercentage(e._style.width) * (definedWidth ?? 0);
     }
     if (typeof e._style.height === "string") {
-      e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
+      let definedHeight = undefined;
+      let accumulatedMultiplier = 1;
+      let _p = e.parent;
+      while (definedHeight === undefined && _p) {
+        if (typeof _p._style.height === "string") {
+          accumulatedMultiplier *= toPercentage(_p._style.height);
+        } else if (typeof _p._style.height === "number") {
+          definedHeight = _p._style.height;
+        }
+        _p = _p.parent;
+      }
+
+      console.log(accumulatedMultiplier, definedHeight);
+
+      e._state.metrics.height =
+        toPercentage(e._style.height) * (definedHeight ?? 0);
     }
   }
 
@@ -478,6 +502,40 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
       } else {
+        const newX =
+          c._state.metrics.x + e._style.flexDirection === "row" ||
+          e._style.flexDirection === "row-reverse"
+            ? x
+            : x * direction;
+
+        if (
+          e._style.flexWrap === "wrap" &&
+          newX - e._state.metrics.x + c._state.metrics.width >
+            e._state.metrics.width
+        ) {
+          // TODO: @tchayen: there's a problem - wrap can influence size of the
+          // parent, but the parent is already calculated.
+          // Then maybe we should first calculate positions and then sizes?
+          // But then positions are influenced by sizes.
+          x = e._state.metrics.x + e._style.paddingLeft;
+          y += c._state.metrics.height;
+        }
+
+        const newY =
+          c._state.metrics.y + e._style.flexDirection === "column" ||
+          e._style.flexDirection === "column-reverse"
+            ? y
+            : y * direction;
+
+        if (
+          e._style.flexWrap === "wrap" &&
+          newY - e._state.metrics.y + c._state.metrics.height >
+            e._state.metrics.height
+        ) {
+          y = e._state.metrics.y + e._style.paddingTop;
+          x += c._state.metrics.width;
+        }
+
         c._state.metrics.x +=
           e._style.flexDirection === "row" ||
           e._style.flexDirection === "row-reverse"

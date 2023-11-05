@@ -13,6 +13,7 @@ import {
   flexDirectionReverse,
   flexRowAndColumn,
   flexValue,
+  inheritingSizes,
   marginsAndPaddings,
   offsets,
 } from "../fixtures";
@@ -334,6 +335,29 @@ describe("Layout", () => {
     for (let i = 0; i < nodes.length; i++) {
       expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
       expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+    }
+  });
+
+  it("inheriting sizes", () => {
+    const root = inheritingSizes();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const inside = root.firstChild;
+    const inner = inside?.firstChild;
+    const first = inner?.firstChild;
+
+    const expectedSizes = [
+      new Vec2(240, 300),
+      new Vec2(240, 300),
+      new Vec2(80, 80),
+    ];
+
+    const nodes = [inside, inner, first];
+
+    for (let i = 0; i < nodes.length; i++) {
+      console.log(i);
+      expect(nodes[i]?._state.metrics.width).toBe(expectedSizes[i].x);
+      expect(nodes[i]?._state.metrics.height).toBe(expectedSizes[i].y);
     }
   });
 });

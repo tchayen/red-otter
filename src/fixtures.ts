@@ -365,6 +365,32 @@ export function flexWrap() {
     },
   });
 
+  const row = new View({
+    style: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      // height: 100,
+      marginLeft: 50,
+      width: 250,
+    },
+  });
+  root.add(row);
+
+  function box(color: string) {
+    return new View({
+      style: {
+        backgroundColor: color,
+        height: 40,
+        width: 80,
+      },
+    });
+  }
+  row.add(box(colors[0]));
+  row.add(box(colors[1]));
+  row.add(box(colors[2]));
+  row.add(box(colors[3]));
+  row.add(box(colors[4]));
+
   return root;
 }
 
@@ -467,7 +493,7 @@ export function offsets() {
 
   const stretched = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: colors[2],
       height: 50,
       left: 50,
       right: 50,
@@ -477,7 +503,7 @@ export function offsets() {
 
   const bottom = new View({
     style: {
-      backgroundColor: colors[2],
+      backgroundColor: colors[3],
       bottom: 30,
       height: 50,
       width: 50,
@@ -487,7 +513,7 @@ export function offsets() {
 
   const box = new View({
     style: {
-      backgroundColor: "#222",
+      backgroundColor: colors[4],
       flexDirection: "row",
       height: 100,
       width: 120,
@@ -497,7 +523,7 @@ export function offsets() {
 
   const small = new View({
     style: {
-      backgroundColor: colors[3],
+      backgroundColor: colors[5],
       height: 50,
       width: 50,
     },
@@ -505,7 +531,7 @@ export function offsets() {
   box.add(small);
   const small2 = new View({
     style: {
-      backgroundColor: colors[4],
+      backgroundColor: colors[6],
       height: 50,
       width: 50,
     },
@@ -514,7 +540,7 @@ export function offsets() {
 
   const absolute1 = new View({
     style: {
-      backgroundColor: colors[5],
+      backgroundColor: colors[7],
       bottom: 40,
       position: "absolute",
       right: 0,
@@ -526,7 +552,7 @@ export function offsets() {
 
   const absolute2 = new View({
     style: {
-      backgroundColor: colors[6],
+      backgroundColor: colors[8],
       bottom: 30,
       height: 50,
       left: 10,
@@ -535,6 +561,58 @@ export function offsets() {
     },
   });
   box.add(absolute2);
+
+  return root;
+}
+
+export function inheritingSizes() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const inside = new View({
+    style: {
+      backgroundColor: colors[0],
+    },
+  });
+  root.add(inside);
+  const inner = new View({
+    style: {
+      backgroundColor: colors[1],
+      flexDirection: "row",
+      height: "100%",
+    },
+  });
+  inside.add(inner);
+
+  const first = new View({
+    style: {
+      backgroundColor: colors[2],
+      height: 80,
+      width: 80,
+    },
+  });
+  inner.add(first);
+  const second = new View({
+    style: {
+      backgroundColor: colors[3],
+      height: 80,
+      width: 80,
+    },
+  });
+  inner.add(second);
+  const third = new View({
+    style: {
+      backgroundColor: colors[4],
+      height: 80,
+      width: 80,
+    },
+  });
+  inner.add(third);
 
   return root;
 }
