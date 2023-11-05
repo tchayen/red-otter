@@ -3,18 +3,14 @@ import { View } from "./View";
 import { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
 import { lookups } from "./ui";
 
-const colors = [
-  "hsl(220, 100%, 10%)",
-  "hsl(220, 100%, 20%)",
-  "hsl(220, 100%, 30%)",
-  "hsl(220, 100%, 40%)",
-  "hsl(220, 100%, 50%)",
-  "hsl(220, 100%, 60%)",
-  "hsl(220, 100%, 70%)",
-  "hsl(220, 100%, 80%)",
-  "hsl(220, 100%, 90%)",
-  "hsl(220, 100%, 100%)",
-];
+const colorCount = 10;
+const startingOffset = 20;
+const step = (100 - startingOffset) / (colorCount - 1);
+
+const colors = Array.from({ length: colorCount }, (_, i) => {
+  const value = Math.round(startingOffset + i * step);
+  return `hsl(220, 100%, ${value}%)`;
+});
 
 export function flexValue() {
   const root = new View({
@@ -369,29 +365,34 @@ export function flexWrap() {
   const row = new View({
     style: {
       backgroundColor: colors[0],
+      columnGap: 5,
       flexDirection: "row",
       flexWrap: "wrap",
-      marginLeft: 50,
-      paddingVertical: 20,
-      width: 250,
+      marginLeft: 100,
+      paddingVertical: 10,
+      rowGap: 10,
+      width: 200,
     },
   });
   root.add(row);
 
-  function box(color: string) {
+  function box(color: string, style?: ViewStyleProps) {
     return new View({
       style: {
         backgroundColor: color,
-        height: 40,
-        width: 80,
+        height: 25,
+        width: 40,
+        ...style,
       },
     });
   }
   row.add(box(colors[1]));
-  row.add(box(colors[2]));
-  row.add(box(colors[3]));
-  row.add(box(colors[4]));
-  row.add(box(colors[5]));
+  row.add(box(colors[2], { height: 33 }));
+  row.add(box(colors[3], { marginLeft: 11, width: 60 }));
+  row.add(box(colors[4], { height: 41, marginLeft: 8, width: 70 }));
+  row.add(box(colors[5], { height: 19, width: 180 }));
+
+  root.add(box(colors[6], { height: 120, width: 120 }));
 
   return root;
 }

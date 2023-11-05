@@ -6,6 +6,7 @@ import { parseColor } from "../utils/parseColor";
 import { View } from "../View";
 
 export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
+  console.log(`Drawing ${rectangles.length} rectangles.`);
   for (const rect of rectangles) {
     if ("text" in rect) {
       const position = new Vec2(rect._state.metrics.x, rect._state.metrics.y);

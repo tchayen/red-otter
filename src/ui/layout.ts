@@ -203,6 +203,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
     }
 
+    // Handle min/max width/height.
     if (e._style.minHeight !== undefined) {
       const value =
         typeof e._style.minHeight === "string"
@@ -211,7 +212,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           : e._style.minHeight;
       e._state.metrics.height = Math.max(e._state.metrics.height, value);
     }
-
     if (e._style.minWidth !== undefined) {
       const value =
         typeof e._style.minWidth === "string"
@@ -220,7 +220,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           : e._style.minWidth;
       e._state.metrics.width = Math.max(e._state.metrics.width, value);
     }
-
     if (e._style.maxHeight !== undefined) {
       const value =
         typeof e._style.maxHeight === "string"
@@ -229,7 +228,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           : e._style.maxHeight;
       e._state.metrics.height = Math.min(e._state.metrics.height, value);
     }
-
     if (e._style.maxWidth !== undefined) {
       const value =
         typeof e._style.maxWidth === "string"
@@ -237,6 +235,64 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             (e.parent?._state.metrics.width ?? 0)
           : e._style.maxWidth;
       e._state.metrics.width = Math.min(e._state.metrics.width, value);
+    }
+
+    // Calculate flexWrap height.
+    // TODO @tchayen: doesn't work (yet).
+    // TODO: actually I think that what should be added for the height is not
+    // height of the current row, but height of the next row (that is being
+    // wrapped now)
+    // TODO:
+    if (e._style.flexWrap === "wrap") {
+      let x = 0;
+      let y = 0;
+      let longestChildHeight = 0;
+      // The height that was first calculated is height of the tallest child of
+      // all plus paddings. So here there's a need to reset the height and build
+      // it again, for all rows.
+      e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+
+      let c = e.firstChild;
+      while (c) {
+        if (c._style.position !== "relative") {
+          c = c.next;
+          continue;
+        }
+
+        const deltaX =
+          c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
+        const parentWidth =
+          e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
+        if (x + deltaX >= parentWidth || c.next === null) {
+          x = 0;
+          const height = longestChildHeight + e._style.columnGap;
+          y += height;
+          e._state.metrics.height += height;
+          console.log("wrap", longestChildHeight);
+          longestChildHeight = 0;
+        } else {
+          x += deltaX + e._style.rowGap;
+        }
+
+        // Keep track of the longest child in the flex container for the purpose
+        // of wrapping.
+        if (c._style.flexDirection === "row") {
+          longestChildHeight = Math.max(
+            longestChildHeight,
+            c._state.metrics.width
+          );
+        }
+        if (c._style.flexDirection === "column") {
+          longestChildHeight = Math.max(
+            longestChildHeight,
+            c._state.metrics.height
+          );
+        }
+        c = c.next;
+      }
+
+      // The last row.
+      e._state.metrics.height += longestChildHeight;
     }
   }
 
@@ -476,6 +532,15 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     }
 
     // Apply positions to children.
+    const direction =
+      e._style.flexDirection === "row-reverse" ||
+      e._style.flexDirection === "column-reverse"
+        ? -1
+        : 1;
+
+    // Along the main axis.
+    let longestChildHeight = 0;
+
     c = e.firstChild;
     if (
       e._style.flexDirection === "row-reverse" ||
@@ -483,13 +548,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     ) {
       c = e.lastChild;
     }
-
-    const direction =
-      e._style.flexDirection === "row-reverse" ||
-      e._style.flexDirection === "column-reverse"
-        ? -1
-        : 1;
-
     while (c) {
       if (c._style.position === "absolute" || c._style.display === "none") {
         c =
@@ -544,39 +602,28 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
       } else {
-        // const newX =
-        //   c._state.metrics.x + e._style.flexDirection === "row" ||
-        //   e._style.flexDirection === "row-reverse"
-        //     ? x
-        //     : x * direction;
+        if (e._style.flexWrap === "wrap") {
+          const deltaX =
+            c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
+          const parentWidth =
+            e._state.metrics.width -
+            e._style.paddingLeft -
+            e._style.paddingRight;
+          console.log(
+            "ww",
+            x - e._state.metrics.x + deltaX,
+            parentWidth,
+            x - e._state.metrics.x + deltaX >= parentWidth
+          );
+          if (x - e._state.metrics.x + deltaX >= parentWidth) {
+            x = e._state.metrics.x + e._style.paddingLeft;
+            y += longestChildHeight + e._style.columnGap;
+            console.log(longestChildHeight);
+            longestChildHeight = 0;
+          }
+        }
 
-        // if (
-        //   e._style.flexWrap === "wrap" &&
-        //   newX - e._state.metrics.x + c._state.metrics.width >
-        //     e._state.metrics.width
-        // ) {
-        //   // TODO: @tchayen: there's a problem - wrap can influence size of the
-        //   // parent, but the parent is already calculated.
-        //   // Then maybe we should first calculate positions and then sizes?
-        //   // But then positions are influenced by sizes.
-        //   x = e._state.metrics.x + e._style.paddingLeft;
-        //   y += c._state.metrics.height;
-        // }
-
-        // const newY =
-        //   c._state.metrics.y + e._style.flexDirection === "column" ||
-        //   e._style.flexDirection === "column-reverse"
-        //     ? y
-        //     : y * direction;
-
-        // if (
-        //   e._style.flexWrap === "wrap" &&
-        //   newY - e._state.metrics.y + c._state.metrics.height >
-        //     e._state.metrics.height
-        // ) {
-        //   y = e._state.metrics.y + e._style.paddingTop;
-        //   x += c._state.metrics.width;
-        // }
+        // TODO @tchayen: same for cross axis.
 
         c._state.metrics.x +=
           e._style.flexDirection === "row" ||
@@ -766,6 +813,21 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c._state.metrics.y += c._style.top;
       } else if (c._style.bottom) {
         c._state.metrics.y -= c._style.bottom;
+      }
+
+      // Keep track of the longest child in the flex container for the
+      // purpose of wrapping.
+      if (c._style.flexDirection === "row") {
+        longestChildHeight = Math.max(
+          longestChildHeight,
+          c._state.metrics.width
+        );
+      }
+      if (c._style.flexDirection === "column") {
+        longestChildHeight = Math.max(
+          longestChildHeight,
+          c._state.metrics.height
+        );
       }
 
       c =

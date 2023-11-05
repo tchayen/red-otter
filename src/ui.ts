@@ -93,7 +93,12 @@ export function ui(renderer: UIRenderer): View {
   //   )
   // );
 
+  const start = performance.now();
   layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
+  const end = performance.now();
+
+  console.log(`Layout took ${(end - start).toFixed(2)}ms.`);
+
   // console.log(debugPrintTree(scroll));
   return container;
 }

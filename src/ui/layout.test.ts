@@ -13,6 +13,7 @@ import {
   flexDirectionReverse,
   flexRowAndColumn,
   flexValue,
+  flexWrap,
   inheritingSizes,
   marginsAndPaddings,
   offsets,
@@ -277,6 +278,32 @@ describe("Layout", () => {
     for (let i = 0; i < nodes.length; i++) {
       expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i].x);
       expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i].y);
+    }
+  });
+
+  it("flexWrap", () => {
+    const root = flexWrap();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const first = root.firstChild?.firstChild;
+    const second = first?.next;
+    const third = second?.next;
+    const fourth = third?.next;
+    const fifth = fourth?.next;
+
+    const expectedPositions = [
+      new Vec2(100, 10),
+      new Vec2(150, 10),
+      new Vec2(211, 10),
+      new Vec2(108, 48),
+      new Vec2(100, 94),
+    ];
+
+    const nodes = [first, second, third, fourth, fifth];
+
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
     }
   });
 
