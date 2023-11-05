@@ -574,45 +574,55 @@ export function inheritingSizes() {
     },
   });
 
-  const inside = new View({
-    style: {
-      backgroundColor: colors[0],
-    },
+  const passThrough = new View({
+    style: { backgroundColor: colors[0] },
+    testID: "passThrough",
   });
-  root.add(inside);
-  const inner = new View({
+  root.add(passThrough);
+  const inside = new View({
     style: {
       backgroundColor: colors[1],
       flexDirection: "row",
+      height: "50%",
+    },
+    testID: "inside",
+  });
+  passThrough.add(inside);
+  const innermost = new View({
+    style: {
+      backgroundColor: colors[2],
+      flexDirection: "row",
       height: "100%",
     },
+    testID: "innermost",
   });
-  inside.add(inner);
+  inside.add(innermost);
 
   const first = new View({
     style: {
-      backgroundColor: colors[2],
-      height: 80,
+      backgroundColor: colors[3],
+      height: "50%",
       width: 80,
     },
+    testID: "first",
   });
-  inner.add(first);
+  innermost.add(first);
   const second = new View({
     style: {
-      backgroundColor: colors[3],
-      height: 80,
+      backgroundColor: colors[4],
+      height: "50%",
       width: 80,
     },
   });
-  inner.add(second);
+  innermost.add(second);
   const third = new View({
     style: {
-      backgroundColor: colors[4],
-      height: 80,
+      backgroundColor: colors[5],
+      height: "50%",
       width: 80,
     },
   });
-  inner.add(third);
+  innermost.add(third);
 
   return root;
 }

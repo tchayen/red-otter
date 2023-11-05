@@ -342,17 +342,24 @@ describe("Layout", () => {
     const root = inheritingSizes();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const inside = root.firstChild;
-    const inner = inside?.firstChild;
-    const first = inner?.firstChild;
+    const passThrough = root.firstChild;
+    const inside = passThrough?.firstChild;
+    const innermost = inside?.firstChild;
+    const first = innermost?.firstChild;
+
+    expect(passThrough?.props.testID).toBe("passThrough");
+    expect(inside?.props.testID).toBe("inside");
+    expect(innermost?.props.testID).toBe("innermost");
+    expect(first?.props.testID).toBe("first");
 
     const expectedSizes = [
-      new Vec2(240, 300),
-      new Vec2(240, 300),
-      new Vec2(80, 80),
+      new Vec2(240, 150),
+      new Vec2(240, 75),
+      new Vec2(240, 75),
+      new Vec2(80, 38),
     ];
 
-    const nodes = [inside, inner, first];
+    const nodes = [passThrough, inside, innermost, first];
 
     for (let i = 0; i < nodes.length; i++) {
       console.log(i);

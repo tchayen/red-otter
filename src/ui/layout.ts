@@ -64,7 +64,9 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       e._state.metrics.width =
-        toPercentage(e._style.width) * (definedWidth ?? 0);
+        toPercentage(e._style.width) *
+        accumulatedMultiplier *
+        (definedWidth ?? 0);
     }
     if (typeof e._style.height === "string") {
       let definedHeight = undefined;
@@ -79,10 +81,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         _p = _p.parent;
       }
 
-      console.log(accumulatedMultiplier, definedHeight);
-
       e._state.metrics.height =
-        toPercentage(e._style.height) * (definedHeight ?? 0);
+        toPercentage(e._style.height) *
+        accumulatedMultiplier *
+        (definedHeight ?? 0);
     }
   }
 
