@@ -33,8 +33,8 @@ export type LayoutProps = {
     | "space-between"
     | "space-around"
     | "space-evenly";
-  alignItems?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
-  alignSelf?: "flex-start" | "center" | "flex-end" | "stretch" | "baseline";
+  alignItems?: "flex-start" | "flex-end" | "center" | "stretch";
+  alignSelf?: "auto" | "flex-start" | "center" | "flex-end" | "stretch";
   borderBottomWidth?: number;
   borderLeftWidth?: number;
   borderRightWidth?: number;
@@ -180,7 +180,7 @@ export type ViewStyleProps = LayoutProps & DecorativeProps;
 const defaultLayoutProps: ExactLayoutProps = {
   alignContent: "flex-start",
   alignItems: "flex-start",
-  alignSelf: "flex-start",
+  alignSelf: "auto",
   borderBottomWidth: 0,
   borderLeftWidth: 0,
   borderRightWidth: 0,

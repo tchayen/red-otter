@@ -8,7 +8,13 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
-import { flexColumn, flexRow, flexValue, margins, offsets } from "../fixtures";
+import {
+  alignItemsAndSelf,
+  flexRowAndColumn,
+  flexValue,
+  margins,
+  offsets,
+} from "../fixtures";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -125,15 +131,23 @@ describe("Layout", () => {
     const second = first?.next;
     const third = second?.next;
     const fourth = third?.next;
+    const fifth = root.firstChild?.next?.firstChild;
+    const sixth = fifth?.next;
+    const seventh = sixth?.next;
+    const eighth = seventh?.next;
 
     const expectedValues = [
-      [new Vec2(0, 0), new Vec2(0, 50)],
-      [new Vec2(0, 0), new Vec2(83, 50)],
-      [new Vec2(83, 0), new Vec2(167, 50)],
+      [new Vec2(50, 0), new Vec2(0, 50)],
+      [new Vec2(50, 0), new Vec2(67, 50)],
+      [new Vec2(117, 0), new Vec2(133, 50)],
       [new Vec2(250, 0), new Vec2(50, 50)],
+      [new Vec2(0, 50), new Vec2(50, 0)],
+      [new Vec2(0, 50), new Vec2(50, 67)],
+      [new Vec2(0, 117), new Vec2(50, 133)],
+      [new Vec2(0, 250), new Vec2(50, 50)],
     ];
 
-    const nodes = [first, second, third, fourth];
+    const nodes = [first, second, third, fourth, fifth, sixth, seventh, eighth];
 
     for (let i = 0; i < nodes.length; i++) {
       expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i][0].x);
@@ -143,57 +157,96 @@ describe("Layout", () => {
     }
   });
 
-  it("flex row", () => {
-    const root = flexRow();
+  it("flex row and column", () => {
+    const root = flexRowAndColumn();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const expectedPositions = [
+    // Three items per row.
+    const expectedRowPositions = [
       [new Vec2(0, 0), new Vec2(30, 0), new Vec2(70, 0)],
-      [new Vec2(180, 50), new Vec2(210, 50), new Vec2(250, 50)],
-      [new Vec2(90, 100), new Vec2(120, 100), new Vec2(160, 100)],
-      [new Vec2(45, 150), new Vec2(120, 150), new Vec2(205, 150)],
-      [new Vec2(30, 200), new Vec2(120, 200), new Vec2(220, 200)],
-      [new Vec2(0, 250), new Vec2(120, 250), new Vec2(250, 250)],
+      [new Vec2(180, 25), new Vec2(210, 25), new Vec2(250, 25)],
+      [new Vec2(90, 50), new Vec2(120, 50), new Vec2(160, 50)],
+      [new Vec2(45, 75), new Vec2(120, 75), new Vec2(205, 75)],
+      [new Vec2(30, 100), new Vec2(120, 100), new Vec2(220, 100)],
+      [new Vec2(0, 125), new Vec2(120, 125), new Vec2(250, 125)],
     ];
 
     let c: View | Text | null | undefined = null;
-    let row: View | Text | null | undefined = root.firstChild;
+    let box: View | Text | null | undefined = root.firstChild?.firstChild;
 
-    for (let i = 0; i < expectedPositions.length; i++) {
-      c = row?.firstChild;
-      for (const expected of expectedPositions[i]) {
+    for (let i = 0; i < expectedRowPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedRowPositions[i]) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
       }
-      row = row?.next;
+      box = box?.next;
+    }
+
+    const expectedColumnPositions = [
+      [new Vec2(0, 150), new Vec2(0, 175), new Vec2(0, 200)],
+      [new Vec2(50, 225), new Vec2(50, 250), new Vec2(50, 275)],
+      [new Vec2(100, 188), new Vec2(100, 213), new Vec2(100, 238)],
+      [new Vec2(150, 169), new Vec2(150, 213), new Vec2(150, 256)],
+      [new Vec2(200, 163), new Vec2(200, 213), new Vec2(200, 263)],
+      [new Vec2(250, 150), new Vec2(250, 213), new Vec2(250, 275)],
+    ];
+
+    box = root.firstChild?.next?.firstChild;
+
+    for (let i = 0; i < expectedColumnPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedColumnPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      box = box?.next;
     }
   });
 
-  it("flex column", () => {
-    const root = flexColumn();
+  it("alignItemsAndSelf", () => {
+    const root = alignItemsAndSelf();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const expectedPositions = [
-      [new Vec2(0, 0), new Vec2(0, 50), new Vec2(0, 100)],
-      [new Vec2(50, 150), new Vec2(50, 200), new Vec2(50, 250)],
-      [new Vec2(100, 75), new Vec2(100, 125), new Vec2(100, 175)],
-      [new Vec2(150, 38), new Vec2(150, 125), new Vec2(150, 213)],
-      [new Vec2(200, 25), new Vec2(200, 125), new Vec2(200, 225)],
-      [new Vec2(250, 0), new Vec2(250, 125), new Vec2(250, 250)],
+    let c: View | Text | null | undefined = null;
+    let box: View | Text | null | undefined = root.firstChild?.firstChild;
+
+    const expectedRowPositions = [
+      [new Vec2(92, 0), new Vec2(118, 22)],
+      [new Vec2(144, 44), new Vec2(170, 0)],
+      [new Vec2(196, 22), new Vec2(222, 0)],
+      [new Vec2(248, 0), new Vec2(274, 44)],
     ];
 
-    let c: View | Text | null | undefined = null;
-    let row: View | Text | null | undefined = root.firstChild;
-
-    for (let i = 0; i < expectedPositions.length; i++) {
-      c = row?.firstChild;
-      for (const expected of expectedPositions[i]) {
+    for (let i = 0; i < expectedRowPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedRowPositions[i]) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
       }
-      row = row?.next;
+      box = box?.next;
+    }
+
+    const expectedColumnPositions = [
+      [new Vec2(0, 92), new Vec2(22, 118)],
+      [new Vec2(44, 144), new Vec2(0, 170)],
+      [new Vec2(22, 196), new Vec2(0, 222)],
+      [new Vec2(0, 248), new Vec2(44, 274)],
+    ];
+
+    box = root.firstChild?.next?.firstChild;
+
+    for (let i = 0; i < expectedColumnPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedColumnPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      box = box?.next;
     }
   });
 

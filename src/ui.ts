@@ -16,7 +16,6 @@ export function ui(renderer: UIRenderer): View {
 
   const columnStyle = {
     flexDirection: "column",
-    // gap: 10,
     height: "100%",
     width: 300,
   } as ViewStyleProps;
@@ -25,7 +24,7 @@ export function ui(renderer: UIRenderer): View {
     color: "#fff",
     fontName: "Inter",
     fontSize: 14,
-    margin: 10,
+    marginVertical: 10,
   } as TextStyleProps;
 
   const container = new View({
@@ -34,6 +33,7 @@ export function ui(renderer: UIRenderer): View {
       flexDirection: "row",
       gap: 10,
       height: window.innerHeight,
+      paddingHorizontal: 10,
       width: window.innerWidth,
     },
   });
@@ -45,12 +45,12 @@ export function ui(renderer: UIRenderer): View {
   const column1 = new View({ style: columnStyle });
   container.add(column1);
 
-  column1.add(text("flex: number"));
+  column1.add(text("flex value"));
   column1.add(fixtures.flexValue());
-  column1.add(text("flexDirection: row"));
-  column1.add(fixtures.flexRow());
-  column1.add(text("flexDirection: column"));
-  column1.add(fixtures.flexColumn());
+  column1.add(text("flexDirection row and column"));
+  column1.add(fixtures.flexRowAndColumn());
+  column1.add(text("alignItems and alignSelf"));
+  column1.add(fixtures.alignItemsAndSelf());
 
   const column2 = new View({ style: columnStyle });
   container.add(column2);
@@ -59,8 +59,12 @@ export function ui(renderer: UIRenderer): View {
   column2.add(fixtures.margins());
   column2.add(text("left, top, right, bottom"));
   column2.add(fixtures.offsets());
-  column2.add(text("form UI"));
-  column2.add(fixtures.formUI());
+
+  const column3 = new View({ style: columnStyle });
+  container.add(column3);
+
+  column3.add(text("form UI"));
+  column3.add(fixtures.formUI());
 
   // const scroll = testScroll();
   // container.add(scroll);

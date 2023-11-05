@@ -413,11 +413,12 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         }
       } else {
         c._state.metrics.x += x;
+        c._state.metrics.y += y;
+
         if (e._style.flexDirection === "row") {
           x += c._state.metrics.width;
           x += e._style.rowGap;
         }
-        c._state.metrics.y += y;
         if (e._style.flexDirection === "column") {
           y += c._state.metrics.height;
           y += e._style.columnGap;
@@ -425,10 +426,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
 
       // Apply align items.
+      console.log(e.props.testID, availableHeight, availableWidth);
       if (e._style.flexDirection === "row") {
         if (e._style.alignItems === "flex-start") {
-          c._state.metrics.y =
-            e._state.metrics.y + e._style.paddingTop + c._style.marginTop;
+          c._state.metrics.y = y + c._style.marginTop;
         }
 
         if (e._style.alignItems === "center") {
@@ -448,7 +449,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
         if (
           e._style.alignItems === "stretch" &&
-          c._style.height === undefined
+          c._style.height === undefined &&
+          c._style.alignSelf === "auto"
         ) {
           c._state.metrics.height =
             e._state.metrics.height -
@@ -458,8 +460,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
       if (e._style.flexDirection === "column") {
         if (e._style.alignItems === "flex-start") {
-          c._state.metrics.x =
-            e._state.metrics.x + e._style.paddingLeft + c._style.marginLeft;
+          c._state.metrics.x = x + c._style.marginLeft;
         }
 
         if (e._style.alignItems === "center") {
@@ -477,7 +478,71 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingRight;
         }
 
-        if (e._style.alignItems === "stretch" && c._style.width === undefined) {
+        if (
+          e._style.alignItems === "stretch" &&
+          c._style.width === undefined &&
+          c._style.alignSelf === "auto"
+        ) {
+          c._state.metrics.width =
+            e._state.metrics.width -
+            e._style.paddingLeft -
+            e._style.paddingRight;
+        }
+      }
+
+      // Align self.
+      if (e._style.flexDirection === "row") {
+        if (c._style.alignSelf === "flex-start") {
+          c._state.metrics.y =
+            e._state.metrics.y + e._style.paddingTop + c._style.marginTop;
+        }
+
+        if (c._style.alignSelf === "center") {
+          c._state.metrics.y =
+            e._state.metrics.y +
+            e._state.metrics.height / 2 -
+            c._state.metrics.height / 2;
+        }
+
+        if (c._style.alignSelf === "flex-end") {
+          c._state.metrics.y =
+            e._state.metrics.y +
+            e._state.metrics.height -
+            c._state.metrics.height -
+            e._style.paddingBottom;
+        }
+
+        if (c._style.alignSelf === "stretch" && c._style.height === undefined) {
+          c._state.metrics.y = e._state.metrics.y + e._style.paddingTop;
+          c._state.metrics.height =
+            e._state.metrics.height -
+            e._style.paddingTop -
+            e._style.paddingBottom;
+        }
+      }
+      if (e._style.flexDirection === "column") {
+        if (c._style.alignSelf === "flex-start") {
+          c._state.metrics.x =
+            e._state.metrics.x + e._style.paddingLeft + c._style.marginLeft;
+        }
+
+        if (c._style.alignSelf === "center") {
+          c._state.metrics.x =
+            e._state.metrics.x +
+            e._state.metrics.width / 2 -
+            c._state.metrics.width / 2;
+        }
+
+        if (c._style.alignSelf === "flex-end") {
+          c._state.metrics.x =
+            e._state.metrics.x +
+            e._state.metrics.width -
+            c._state.metrics.width -
+            e._style.paddingRight;
+        }
+
+        if (c._style.alignSelf === "stretch" && c._style.width === undefined) {
+          c._state.metrics.x = e._state.metrics.x + e._style.paddingLeft;
           c._state.metrics.width =
             e._state.metrics.width -
             e._style.paddingLeft -

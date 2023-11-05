@@ -4,32 +4,16 @@ import { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
 import { lookups } from "./ui";
 
 const colors = [
-  "#ff0000",
-  "#00ff00",
-  "#0000ff",
-  "#ffff00",
-  "#ff00ff",
-  "#00ffff",
-  "#ffffff",
+  "hsl(220, 100%, 20%)",
+  "hsl(220, 100%, 30%)",
+  "hsl(220, 100%, 40%)",
+  "hsl(220, 100%, 50%)",
+  "hsl(220, 100%, 60%)",
+  "hsl(220, 100%, 70%)",
+  "hsl(220, 100%, 80%)",
+  "hsl(220, 100%, 90%)",
+  "hsl(220, 100%, 100%)",
 ];
-
-const redStyle = {
-  backgroundColor: colors[0],
-  height: 50,
-  width: 30,
-} as ViewStyleProps;
-
-const greenStyle = {
-  backgroundColor: colors[1],
-  height: 50,
-  width: 40,
-} as ViewStyleProps;
-
-const blueStyle = {
-  backgroundColor: colors[2],
-  height: 50,
-  width: 50,
-} as ViewStyleProps;
 
 export function flexValue() {
   const root = new View({
@@ -41,37 +25,51 @@ export function flexValue() {
   });
 
   const row = new View({
-    style: {
-      flexDirection: "row",
-      width: "100%",
-    },
+    style: { flexDirection: "row", marginLeft: 50, width: 250 },
   });
   root.add(row);
-
-  const flex0 = new View({
+  const row0 = new View({
     style: { backgroundColor: colors[0], flex: 0, height: 50 },
   });
-  row.add(flex0);
-
-  const flex1 = new View({
+  row.add(row0);
+  const row1 = new View({
     style: { backgroundColor: colors[1], flex: 1, height: 50 },
   });
-  row.add(flex1);
-
-  const flex2 = new View({
+  row.add(row1);
+  const row2 = new View({
     style: { backgroundColor: colors[2], flex: 2, height: 50 },
   });
-  row.add(flex2);
-
-  const fixed = new View({
+  row.add(row2);
+  const rowFixed = new View({
     style: { backgroundColor: colors[3], height: 50, width: 50 },
   });
-  row.add(fixed);
+  row.add(rowFixed);
+
+  const column = new View({
+    style: { flex: 1, flexDirection: "column" },
+  });
+  root.add(column);
+  const column0 = new View({
+    style: { backgroundColor: colors[4], flex: 0, width: 50 },
+  });
+  column.add(column0);
+  const column1 = new View({
+    style: { backgroundColor: colors[5], flex: 1, width: 50 },
+  });
+  column.add(column1);
+  const column2 = new View({
+    style: { backgroundColor: colors[6], flex: 2, width: 50 },
+  });
+  column.add(column2);
+  const columnFixed = new View({
+    style: { backgroundColor: colors[7], height: 50, width: 50 },
+  });
+  column.add(columnFixed);
 
   return root;
 }
 
-export function flexRow() {
+export function flexRowAndColumn() {
   const root = new View({
     style: {
       backgroundColor: "#000",
@@ -80,7 +78,33 @@ export function flexRow() {
     },
   });
 
+  const rows = new View({
+    style: {
+      flexDirection: "column",
+      height: "50%",
+      width: "100%",
+    },
+  });
+  root.add(rows);
+
   function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[0],
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[1],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 50,
+    } as ViewStyleProps;
     const view = new View({
       style: {
         flexDirection: "row",
@@ -88,10 +112,10 @@ export function flexRow() {
         width: "100%",
       },
     });
-    root.add(view);
-    view.add(new View({ style: redStyle }));
-    view.add(new View({ style: greenStyle }));
-    view.add(new View({ style: blueStyle }));
+    rows.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
   }
 
   generateFlexRow("flex-start");
@@ -101,20 +125,33 @@ export function flexRow() {
   generateFlexRow("space-around");
   generateFlexRow("space-between");
 
-  return root;
-}
-
-export function flexColumn() {
-  const root = new View({
+  const columns = new View({
     style: {
-      backgroundColor: "#000",
       flexDirection: "row",
-      height: 300,
-      width: 300,
+      height: "50%",
+      width: "100%",
     },
   });
+  root.add(columns);
 
   function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[0],
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[1],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 50,
+    } as ViewStyleProps;
     const view = new View({
       style: {
         flexDirection: "column",
@@ -122,10 +159,10 @@ export function flexColumn() {
         justifyContent: attribute,
       },
     });
-    root.add(view);
-    view.add(new View({ style: redStyle }));
-    view.add(new View({ style: greenStyle }));
-    view.add(new View({ style: blueStyle }));
+    columns.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
   }
 
   generateFlexColumn("flex-start");
@@ -138,6 +175,122 @@ export function flexColumn() {
   return root;
 }
 
+export function alignItemsAndSelf() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      flexDirection: "column",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const mainAxisValue = 26;
+  const crossAxisValue = 48;
+
+  const rows = new View({
+    style: {
+      flexDirection: "row",
+      height: 300 - mainAxisValue * 8,
+      marginLeft: 300 - mainAxisValue * 8,
+    },
+    testID: "rows",
+  });
+  root.add(rows);
+
+  function addRow(
+    alignItems: LayoutProps["alignItems"],
+    last?: LayoutProps,
+    all?: LayoutProps
+  ) {
+    const firstStyle = {
+      backgroundColor: colors[0],
+      height: crossAxisValue,
+      width: mainAxisValue,
+    } as ViewStyleProps;
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: crossAxisValue,
+      width: mainAxisValue,
+    } as ViewStyleProps;
+
+    const row = new View({
+      style: {
+        alignItems,
+        flexDirection: "row",
+        height: "100%",
+      },
+    });
+    rows.add(row);
+
+    const first = new View({ style: { ...firstStyle, ...all } });
+    row.add(first);
+    const second = new View({ style: { ...secondStyle, ...all, ...last } });
+    row.add(second);
+  }
+
+  addRow("flex-start", { alignSelf: "center" });
+  addRow("flex-end", { alignSelf: "flex-start" });
+  addRow("center", { alignSelf: "stretch", height: undefined });
+  addRow(
+    "stretch",
+    { alignSelf: "flex-end", height: crossAxisValue },
+    { height: undefined }
+  );
+
+  const columns = new View({
+    style: {
+      flexDirection: "column",
+      width: 300 - mainAxisValue * 8,
+    },
+    testID: "columns",
+  });
+  root.add(columns);
+
+  function addColumn(
+    alignItems: LayoutProps["alignItems"],
+    last?: LayoutProps,
+    all?: LayoutProps
+  ) {
+    const firstStyle = {
+      backgroundColor: colors[0],
+      height: mainAxisValue,
+      width: crossAxisValue,
+    } as ViewStyleProps;
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: mainAxisValue,
+      width: crossAxisValue,
+    } as ViewStyleProps;
+
+    const column = new View({
+      style: {
+        alignItems,
+        flexDirection: "column",
+        width: "100%",
+      },
+    });
+    columns.add(column);
+
+    const first = new View({ style: { ...firstStyle, ...all } });
+    column.add(first);
+    const second = new View({ style: { ...secondStyle, ...all, ...last } });
+    column.add(second);
+  }
+
+  addColumn("flex-start", { alignSelf: "center" });
+  addColumn("flex-end", { alignSelf: "flex-start" });
+  addColumn("center", { alignSelf: "stretch", width: undefined });
+  addColumn(
+    "stretch",
+    { alignSelf: "flex-end", width: crossAxisValue },
+    { width: undefined }
+  );
+
+  return root;
+}
+
+// TODO: @tchayen: add paddings here.
 export function margins() {
   const root = new View({
     style: {
@@ -148,6 +301,24 @@ export function margins() {
   });
 
   function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[0],
+      height: 50,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[1],
+      height: 50,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[2],
+      height: 50,
+      width: 50,
+    } as ViewStyleProps;
+
     const view = new View({
       style: {
         flexDirection: "row",
@@ -156,9 +327,9 @@ export function margins() {
       },
     });
     root.add(view);
-    view.add(new View({ style: { ...redStyle, height: 40, margin: 5 } }));
-    view.add(new View({ style: { ...greenStyle, height: 40 } }));
-    view.add(new View({ style: { ...blueStyle, height: 40 } }));
+    view.add(new View({ style: { ...firstStyle, height: 40, margin: 5 } }));
+    view.add(new View({ style: { ...secondStyle, height: 40 } }));
+    view.add(new View({ style: { ...thirdStyle, height: 40 } }));
   }
 
   generateFlexColumn("flex-start");
