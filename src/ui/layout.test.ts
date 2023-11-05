@@ -346,20 +346,39 @@ describe("Layout", () => {
     const inside = passThrough?.firstChild;
     const innermost = inside?.firstChild;
     const first = innermost?.firstChild;
+    const minSize = passThrough?.next;
+    const maxSize = minSize?.next;
+    const maxSizeFirst = maxSize?.firstChild;
+    const maxSizeSecond = maxSizeFirst?.next;
 
     expect(passThrough?.props.testID).toBe("passThrough");
     expect(inside?.props.testID).toBe("inside");
     expect(innermost?.props.testID).toBe("innermost");
     expect(first?.props.testID).toBe("first");
+    expect(minSize?.props.testID).toBe("minSize");
+    expect(maxSize?.props.testID).toBe("maxSize");
+    expect(maxSizeFirst?.props.testID).toBe("maxSizeFirst");
+    expect(maxSizeSecond?.props.testID).toBe("maxSizeSecond");
 
     const expectedSizes = [
       new Vec2(240, 150),
       new Vec2(240, 75),
       new Vec2(240, 75),
       new Vec2(80, 38),
+      new Vec2(30, 30),
+      new Vec2(40, 40),
+      new Vec2(50, 50),
     ];
 
-    const nodes = [passThrough, inside, innermost, first];
+    const nodes = [
+      passThrough,
+      inside,
+      innermost,
+      first,
+      minSize,
+      maxSize,
+      maxSizeSecond,
+    ];
 
     for (let i = 0; i < nodes.length; i++) {
       console.log(i);

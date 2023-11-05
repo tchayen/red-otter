@@ -4,6 +4,7 @@ import { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
 import { lookups } from "./ui";
 
 const colors = [
+  "hsl(220, 100%, 10%)",
   "hsl(220, 100%, 20%)",
   "hsl(220, 100%, 30%)",
   "hsl(220, 100%, 40%)",
@@ -367,10 +368,11 @@ export function flexWrap() {
 
   const row = new View({
     style: {
+      backgroundColor: colors[0],
       flexDirection: "row",
       flexWrap: "wrap",
-      // height: 100,
       marginLeft: 50,
+      paddingVertical: 20,
       width: 250,
     },
   });
@@ -385,11 +387,11 @@ export function flexWrap() {
       },
     });
   }
-  row.add(box(colors[0]));
   row.add(box(colors[1]));
   row.add(box(colors[2]));
   row.add(box(colors[3]));
   row.add(box(colors[4]));
+  row.add(box(colors[5]));
 
   return root;
 }
@@ -623,6 +625,45 @@ export function inheritingSizes() {
     },
   });
   innermost.add(third);
+
+  const minSize = new View({
+    style: {
+      backgroundColor: colors[6],
+      minHeight: 30,
+      minWidth: 30,
+    },
+    testID: "minSize",
+  });
+  root.add(minSize);
+  const maxSize = new View({
+    style: {
+      backgroundColor: colors[7],
+      flexDirection: "row",
+      maxHeight: 40,
+      maxWidth: 40,
+    },
+    testID: "maxSize",
+  });
+  root.add(maxSize);
+
+  const maxSizeFirst = new View({
+    style: {
+      backgroundColor: colors[8],
+      height: 50,
+      width: 50,
+    },
+    testID: "maxSizeFirst",
+  });
+  maxSize.add(maxSizeFirst);
+  const maxSizeSecond = new View({
+    style: {
+      backgroundColor: colors[9],
+      height: 50,
+      width: 50,
+    },
+    testID: "maxSizeSecond",
+  });
+  maxSize.add(maxSizeSecond);
 
   return root;
 }

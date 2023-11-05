@@ -153,6 +153,10 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     if (e._style.height === undefined) {
       let childrenCount = 0;
 
+      if (e._style.flexWrap === "wrap") {
+        //
+      }
+
       let c = e.firstChild;
       while (c) {
         if (c._state.metrics.height) {
@@ -197,6 +201,42 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       ) {
         e._state.metrics.height += (childrenCount - 1) * e._style.columnGap;
       }
+    }
+
+    if (e._style.minHeight !== undefined) {
+      const value =
+        typeof e._style.minHeight === "string"
+          ? toPercentage(e._style.minHeight) *
+            (e.parent?._state.metrics.height ?? 0)
+          : e._style.minHeight;
+      e._state.metrics.height = Math.max(e._state.metrics.height, value);
+    }
+
+    if (e._style.minWidth !== undefined) {
+      const value =
+        typeof e._style.minWidth === "string"
+          ? toPercentage(e._style.minWidth) *
+            (e.parent?._state.metrics.width ?? 0)
+          : e._style.minWidth;
+      e._state.metrics.width = Math.max(e._state.metrics.width, value);
+    }
+
+    if (e._style.maxHeight !== undefined) {
+      const value =
+        typeof e._style.maxHeight === "string"
+          ? toPercentage(e._style.maxHeight) *
+            (e.parent?._state.metrics.height ?? 0)
+          : e._style.maxHeight;
+      e._state.metrics.height = Math.min(e._state.metrics.height, value);
+    }
+
+    if (e._style.maxWidth !== undefined) {
+      const value =
+        typeof e._style.maxWidth === "string"
+          ? toPercentage(e._style.maxWidth) *
+            (e.parent?._state.metrics.width ?? 0)
+          : e._style.maxWidth;
+      e._state.metrics.width = Math.min(e._state.metrics.width, value);
     }
   }
 
@@ -504,39 +544,39 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
       } else {
-        const newX =
-          c._state.metrics.x + e._style.flexDirection === "row" ||
-          e._style.flexDirection === "row-reverse"
-            ? x
-            : x * direction;
+        // const newX =
+        //   c._state.metrics.x + e._style.flexDirection === "row" ||
+        //   e._style.flexDirection === "row-reverse"
+        //     ? x
+        //     : x * direction;
 
-        if (
-          e._style.flexWrap === "wrap" &&
-          newX - e._state.metrics.x + c._state.metrics.width >
-            e._state.metrics.width
-        ) {
-          // TODO: @tchayen: there's a problem - wrap can influence size of the
-          // parent, but the parent is already calculated.
-          // Then maybe we should first calculate positions and then sizes?
-          // But then positions are influenced by sizes.
-          x = e._state.metrics.x + e._style.paddingLeft;
-          y += c._state.metrics.height;
-        }
+        // if (
+        //   e._style.flexWrap === "wrap" &&
+        //   newX - e._state.metrics.x + c._state.metrics.width >
+        //     e._state.metrics.width
+        // ) {
+        //   // TODO: @tchayen: there's a problem - wrap can influence size of the
+        //   // parent, but the parent is already calculated.
+        //   // Then maybe we should first calculate positions and then sizes?
+        //   // But then positions are influenced by sizes.
+        //   x = e._state.metrics.x + e._style.paddingLeft;
+        //   y += c._state.metrics.height;
+        // }
 
-        const newY =
-          c._state.metrics.y + e._style.flexDirection === "column" ||
-          e._style.flexDirection === "column-reverse"
-            ? y
-            : y * direction;
+        // const newY =
+        //   c._state.metrics.y + e._style.flexDirection === "column" ||
+        //   e._style.flexDirection === "column-reverse"
+        //     ? y
+        //     : y * direction;
 
-        if (
-          e._style.flexWrap === "wrap" &&
-          newY - e._state.metrics.y + c._state.metrics.height >
-            e._state.metrics.height
-        ) {
-          y = e._state.metrics.y + e._style.paddingTop;
-          x += c._state.metrics.width;
-        }
+        // if (
+        //   e._style.flexWrap === "wrap" &&
+        //   newY - e._state.metrics.y + c._state.metrics.height >
+        //     e._state.metrics.height
+        // ) {
+        //   y = e._state.metrics.y + e._style.paddingTop;
+        //   x += c._state.metrics.width;
+        // }
 
         c._state.metrics.x +=
           e._style.flexDirection === "row" ||
