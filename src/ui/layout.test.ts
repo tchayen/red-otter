@@ -10,6 +10,7 @@ import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
 import {
   alignItemsAndSelf,
+  flexDirectionReverse,
   flexRowAndColumn,
   flexValue,
   marginsAndPaddings,
@@ -251,7 +252,7 @@ describe("Layout", () => {
   });
 
   it("flexDirection reverse", () => {
-    const root = alignItemsAndSelf();
+    const root = flexDirectionReverse();
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -264,12 +265,12 @@ describe("Layout", () => {
     const nodes = [first, second, third, fifth, sixth, seventh];
 
     const expectedValues = [
-      new Vec2(92, 0),
-      new Vec2(144, 0),
-      new Vec2(196, 0),
-      new Vec2(0, 92),
-      new Vec2(0, 144),
-      new Vec2(0, 196),
+      new Vec2(250, 0),
+      new Vec2(180, 0),
+      new Vec2(130, 0),
+      new Vec2(0, 250),
+      new Vec2(0, 180),
+      new Vec2(0, 130),
     ];
 
     for (let i = 0; i < nodes.length; i++) {
