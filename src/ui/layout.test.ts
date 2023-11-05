@@ -8,7 +8,7 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
-import { flexColumn, flexRow, margins } from "../fixtures";
+import { flexColumn, flexRow, margins, offsets } from "../fixtures";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -196,5 +196,45 @@ describe("Layout", () => {
       }
       row = row?.next;
     }
+  });
+
+  it("offsets", () => {
+    const root = offsets();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const expectedPositions = [
+      new Vec2(30, 30),
+      new Vec2(50, 50),
+      new Vec2(0, 70),
+      new Vec2(0, 150),
+      new Vec2(50, 150),
+      new Vec2(70, 180),
+    ];
+
+    const first = root.firstChild;
+    const second = first?.next;
+    const third = second?.next;
+    const box = third?.next;
+    const fourth = box?.firstChild;
+    const fifth = fourth?.next;
+    const sixth = fifth?.next;
+
+    expect(first?._state.metrics.x).toBe(expectedPositions[0].x);
+    expect(first?._state.metrics.y).toBe(expectedPositions[0].y);
+
+    expect(second?._state.metrics.x).toBe(expectedPositions[1].x);
+    expect(second?._state.metrics.y).toBe(expectedPositions[1].y);
+
+    expect(third?._state.metrics.x).toBe(expectedPositions[2].x);
+    expect(third?._state.metrics.y).toBe(expectedPositions[2].y);
+
+    expect(fourth?._state.metrics.x).toBe(expectedPositions[3].x);
+    expect(fourth?._state.metrics.y).toBe(expectedPositions[3].y);
+
+    expect(fifth?._state.metrics.x).toBe(expectedPositions[4].x);
+    expect(fifth?._state.metrics.y).toBe(expectedPositions[4].y);
+
+    expect(sixth?._state.metrics.x).toBe(expectedPositions[5].x);
+    expect(sixth?._state.metrics.y).toBe(expectedPositions[5].y);
   });
 });

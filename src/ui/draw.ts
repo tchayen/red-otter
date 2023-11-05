@@ -128,8 +128,6 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
       //   }
       // }
 
-      console.log(position, size);
-
       ui.rectangle(
         parseColor(rect._style.backgroundColor),
         position,

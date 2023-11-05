@@ -6,7 +6,7 @@ import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
-import { flexColumn, flexRow, margins } from "./fixtures";
+import { flexColumn, flexRow, formUI, margins, offsets } from "./fixtures";
 
 export let lookups: Lookups;
 
@@ -14,20 +14,49 @@ export function ui(renderer: UIRenderer): View {
   lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 
+  const columnStyle = {
+    flexDirection: "column",
+    // gap: 10,
+    height: "100%",
+    width: 300,
+  } as ViewStyleProps;
+
+  const textStyle = {
+    color: "#fff",
+    fontName: "Inter",
+    fontSize: 14,
+    margin: 10,
+  } as TextStyleProps;
+
   const container = new View({
     style: {
-      backgroundColor: "#222",
+      backgroundColor: "#333",
+      flexDirection: "row",
       gap: 10,
       height: window.innerHeight,
-      width: 800,
+      width: window.innerWidth,
     },
   });
 
-  container.add(flexRow());
-  container.add(flexColumn());
-  container.add(margins());
-  // container.add(testMarginPaddingsOffsets());
-  // container.add(testFormUI());
+  const column1 = new View({ style: columnStyle });
+  container.add(column1);
+
+  column1.add(new Text("flexDirection: row", { lookups, style: textStyle }));
+  column1.add(flexRow());
+  column1.add(new Text("flexDirection: column", { lookups, style: textStyle }));
+  column1.add(flexColumn());
+  column1.add(new Text("margins", { lookups, style: textStyle }));
+  column1.add(margins());
+
+  const column2 = new View({ style: columnStyle });
+  container.add(column2);
+
+  column2.add(
+    new Text("left, top, right, bottom", { lookups, style: textStyle })
+  );
+  column2.add(offsets());
+  column2.add(new Text("form UI", { lookups, style: textStyle }));
+  column2.add(formUI());
 
   // const scroll = testScroll();
   // container.add(scroll);
@@ -43,115 +72,6 @@ export function ui(renderer: UIRenderer): View {
   layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
   // console.log(debugPrintTree(scroll));
   return container;
-}
-
-function testMarginPaddingsOffsets() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      width: 400,
-    },
-    testID: "root",
-  });
-
-  const red = new View({
-    style: {
-      backgroundColor: "#ff5050",
-      height: 50,
-      margin: 20,
-      width: 50,
-    },
-    testID: "red",
-  });
-  root.add(red);
-  const green = new View({
-    style: {
-      backgroundColor: "#50ff50",
-      height: 50,
-      width: 50,
-    },
-    testID: "red",
-  });
-  root.add(green);
-
-  return root;
-}
-
-function testFormUI() {
-  const inputGroupStyle = {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 10,
-  } as ViewStyleProps;
-
-  const inputStyle = {
-    backgroundColor: "#444",
-    borderColor: "#666",
-    borderRadius: 6,
-    borderWidth: 1,
-    height: 30,
-    justifyContent: "center",
-    paddingHorizontal: 10,
-    width: 60,
-  } as ViewStyleProps;
-
-  const textStyle = {
-    color: "#fff",
-    fontName: "Inter",
-    fontSize: 14,
-  } as TextStyleProps;
-
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      justifyContent: "center",
-      width: 400,
-    },
-  });
-
-  const inner = new View({
-    style: {
-      alignSelf: "center",
-      backgroundColor: "#222",
-      flexDirection: "row",
-      gap: 20,
-      justifyContent: "center",
-      paddingHorizontal: 40,
-      paddingVertical: 20,
-    },
-  });
-  root.add(inner);
-
-  const xInputSection = new View({ style: inputGroupStyle });
-  inner.add(xInputSection);
-  const x = new Text("X", { lookups, style: textStyle });
-  xInputSection.add(x);
-  const xInput = new View({ style: inputStyle });
-  xInputSection.add(xInput);
-  const xValue = new Text("0", { lookups, style: textStyle });
-  xInput.add(xValue);
-
-  const yInputSection = new View({ style: inputGroupStyle });
-  inner.add(yInputSection);
-  const y = new Text("Y", { lookups, style: textStyle });
-  yInputSection.add(y);
-  const yInput = new View({ style: inputStyle });
-  yInputSection.add(yInput);
-  const yValue = new Text("0", { lookups, style: textStyle });
-  yInput.add(yValue);
-
-  const zInputSection = new View({ style: inputGroupStyle });
-  inner.add(zInputSection);
-  const z = new Text("Z", { lookups, style: textStyle });
-  zInputSection.add(z);
-  const zInput = new View({ style: inputStyle });
-  zInputSection.add(zInput);
-  const zValue = new Text("0", { lookups, style: textStyle });
-  zInput.add(zValue);
-
-  return root;
 }
 
 function testScroll() {

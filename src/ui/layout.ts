@@ -195,6 +195,49 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
     }
 
+    // If element has both left, right offsets and no width, calculate width
+    // (analogues for height).
+    if (
+      e._style.top !== undefined &&
+      e._style.bottom !== undefined &&
+      e._style.height === undefined
+    ) {
+      e._state.metrics.y = (p?._state.metrics.y ?? 0) + e._style.top;
+      e._state.metrics.height = parentHeight - e._style.top - e._style.bottom;
+    }
+    if (
+      e._style.left !== undefined &&
+      e._style.right !== undefined &&
+      e._style.width === undefined
+    ) {
+      e._state.metrics.x = (p?._state.metrics.x ?? 0) + e._style.left;
+      e._state.metrics.width = parentWidth - e._style.left - e._style.right;
+    }
+
+    if (e._style.position === "absolute") {
+      e._state.metrics.x = p?._state.metrics.x ?? 0;
+      e._state.metrics.y = p?._state.metrics.y ?? 0;
+
+      if (e._style.left !== undefined) {
+        e._state.metrics.x = e._state.metrics.x + e._style.left;
+      } else if (e._style.right !== undefined) {
+        e._state.metrics.x =
+          (p?._state.metrics.x ?? 0) +
+          (p?._state.metrics.width ?? 0) -
+          e._state.metrics.width -
+          e._style.right;
+      }
+      if (e._style.top !== undefined) {
+        e._state.metrics.y = e._state.metrics.y + e._style.top;
+      } else if (e._style.bottom !== undefined) {
+        e._state.metrics.y =
+          (p?._state.metrics.y ?? 0) +
+          (p?._state.metrics.height ?? 0) -
+          e._state.metrics.height -
+          e._style.bottom;
+      }
+    }
+
     let c = e.firstChild;
 
     // Available space is size of the parent minus padding and gaps and margins
@@ -328,7 +371,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     c = e.firstChild;
     while (c) {
       // Apply align items.
-      if (c._style.position === "absolute") {
+      if (c._style.position === "absolute" || c._style.display === "none") {
         c = c.next;
         continue;
       }
@@ -371,11 +414,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           c._state.metrics.x += x;
         }
       } else {
-        if (c._style.position === "absolute" || c._style.display === "none") {
-          c = c.next;
-          continue;
-        }
-
         c._state.metrics.x += x;
         if (e._style.flexDirection === "row") {
           x += c._state.metrics.width;
@@ -444,6 +482,18 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
       if (e._style.flexDirection === "column") {
         y += c._style.marginTop + c._style.marginBottom;
+      }
+
+      // Add left, top, right, bottom offsets.
+      if (c._style.left) {
+        c._state.metrics.x += c._style.left;
+      } else if (c._style.right) {
+        c._state.metrics.x -= c._style.right;
+      }
+      if (c._style.top) {
+        c._state.metrics.y += c._style.top;
+      } else if (c._style.bottom) {
+        c._state.metrics.y -= c._style.bottom;
       }
 
       c = c.next;
