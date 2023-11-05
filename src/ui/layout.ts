@@ -3,7 +3,6 @@ import { Vec2 } from "../math/Vec2";
 import type { Lookups } from "../font/types";
 import { View } from "../View";
 import { invariant } from "../utils/invariant";
-import { shapeText } from "../font/shapeText";
 import { Text } from "../Text";
 
 /**
@@ -52,47 +51,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e._state.metrics.height = e._style.height;
     }
 
-    // Undefined is ruled out by the previous pass.
     const parentWidth = p?._state.metrics.width ?? 0;
     const parentHeight = p?._state.metrics.height ?? 0;
 
     if (typeof e._style.width === "string") {
       e._state.metrics.width = toPercentage(e._style.width) * parentWidth;
     }
-
     if (typeof e._style.height === "string") {
       e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
-    }
-
-    // Add margins.
-    e._state.metrics.x += e._style.marginLeft;
-    e._state.metrics.y += e._style.marginTop;
-
-    /*
-     * Ideally text shaping should be done outside of the layout function.
-     * Unfortunately this makes things so much easier since the height
-     * calculated here will be used for further calcualations of other elements
-     * so it's not obvious whether this could be done before or after layout.
-     */
-    if ("text" in e) {
-      if (p?._state.metrics.width !== undefined) {
-        const maxWidth =
-          p._state.metrics.width -
-          (p._style.paddingLeft ?? 0) -
-          (p._style.paddingRight ?? 0);
-        e._style.maxWidth = maxWidth;
-
-        const shape = shapeText({
-          fontName: e._style.fontName,
-          fontSize: e._style.fontSize,
-          lineHeight: e._style.lineHeight,
-          lookups: fontLookups,
-          maxWidth: maxWidth,
-          text: e.text,
-        });
-
-        e._state.metrics.height = shape.boundingRectangle.height;
-      }
     }
   }
 
@@ -111,11 +77,12 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
       let c = e.firstChild;
       while (c) {
-        if (c._state.metrics.width || typeof c._style.width === "number") {
+        if (c._state.metrics.width) {
           if (
             e._style.flexDirection === "row" &&
             c._style.position === "relative"
           ) {
+            // Padding is inside the width.
             e._state.metrics.width +=
               c._state.metrics.width +
               c._style.marginLeft +
@@ -126,6 +93,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.flexDirection === "column" &&
             c._style.position === "relative"
           ) {
+            // For column layout only wraps the widest child.
             e._state.metrics.width = Math.max(
               e._state.metrics.width,
               c._state.metrics.width +
@@ -142,6 +110,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c = c.next;
       }
 
+      // Include padding and gaps.
       e._state.metrics.width +=
         e._style.paddingLeft +
         e._style.paddingRight +
@@ -156,7 +125,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
       let c = e.firstChild;
       while (c) {
-        if (c._state.metrics.height || typeof c._style.height === "number") {
+        if (c._state.metrics.height) {
           if (
             e._style.flexDirection === "column" &&
             c._style.position === "relative"
@@ -187,44 +156,13 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c = c.next;
       }
 
+      // Include padding and gaps.
       e._state.metrics.height +=
         e._style.paddingTop +
         e._style.paddingBottom +
         (e._style.flexDirection === "column"
           ? (childrenCount - 1) * e._style.columnGap
           : 0);
-    }
-
-    if (e._style.overflow === "scroll") {
-      let farthestX = 0;
-      let farthestY = 0;
-
-      let c = e.firstChild;
-      while (c) {
-        const childFarX = c._state.metrics.x + c._state.metrics.width;
-        const childFarY = c._state.metrics.y + c._state.metrics.height;
-        console.log(e.props.testID, c._state.metrics.x, childFarX, childFarY);
-
-        if (childFarX > farthestX) {
-          farthestX = childFarX;
-        }
-
-        if (childFarY > farthestY) {
-          farthestY = childFarY;
-        }
-
-        c = c.next;
-      }
-
-      e._state.scrollableContentSize = new Vec2(
-        Math.max(farthestX, e._state.metrics.width),
-        Math.max(farthestY, e._state.metrics.height)
-      );
-    } else {
-      e._state.scrollableContentSize = new Vec2(
-        e._state.metrics.width,
-        e._state.metrics.height
-      );
     }
   }
 
@@ -257,136 +195,30 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
     }
 
-    // Apply top, left, right, bottom properties.
-    if (
-      e._style.left !== undefined &&
-      e._style.right !== undefined &&
-      e._style.width === undefined
-    ) {
-      e._state.metrics.x = (p?._state.metrics.x ?? 0) + e._style.left;
-      e._state.metrics.width = parentWidth - e._style.left - e._style.right;
-    } else if (e._style.left !== undefined) {
-      if (e._style.position === "absolute") {
-        e._state.metrics.x = (p?._state.metrics.x ?? 0) + (e._style.left ?? 0);
-      } else {
-        e._state.metrics.x += e._style.left ?? 0;
-      }
-    } else if (e._style.right !== undefined) {
-      e._state.metrics.x =
-        e._style.position === "absolute"
-          ? (p?._state.metrics.x ?? 0) +
-            parentWidth -
-            e._style.right -
-            e._state.metrics.width
-          : (p?._state.metrics.x ?? 0) - e._style.right;
-    } else if (e._style.position === "absolute") {
-      /*
-       * If position is "absolute" but offsets are not specified, set
-       * position to parent's top left corner.
-       */
-      e._state.metrics.x = p?._state.metrics.x ?? 0;
-    }
-    if (
-      e._style.top !== undefined &&
-      e._style.bottom !== undefined &&
-      e._style.height === undefined
-    ) {
-      e._state.metrics.y = (p?._state.metrics.y ?? 0) + e._style.top;
-      e._state.metrics.height = parentHeight - e._style.top - e._style.bottom;
-    } else if (e._style.top !== undefined) {
-      if (e._style.position === "absolute") {
-        e._state.metrics.y = (p?._state.metrics.y ?? 0) + e._style.top;
-      } else {
-        e._state.metrics.y += e._style.top;
-      }
-    } else if (e._style.bottom !== undefined) {
-      e._state.metrics.y =
-        e._style.position === "absolute"
-          ? (p?._state.metrics.y ?? 0) +
-            parentHeight -
-            e._style.bottom -
-            e._state.metrics.height
-          : (p?._state.metrics.y ?? 0) - e._style.bottom;
-    } else if (e._style.position === "absolute") {
-      /*
-       * If position is "absolute" but offsets are not specified, set
-       * position to parent's top left corner.
-       */
-      e._state.metrics.y = p?._state.metrics.y ?? 0;
-    }
-
-    // Apply align self.
-    if (e._style.position !== "absolute" && p) {
-      if (p?._style.flexDirection === "row") {
-        if (e._style.alignSelf === "center") {
-          e._state.metrics.y =
-            e._state.metrics.y +
-            p._state.metrics.height / 2 -
-            e._state.metrics.height / 2;
-        }
-
-        if (e._style.alignSelf === "flex-end") {
-          e._state.metrics.y =
-            e._state.metrics.y +
-            p._state.metrics.height -
-            e._state.metrics.height -
-            p._style.paddingBottom -
-            p._style.paddingTop;
-        }
-
-        if (e._style.alignSelf === "stretch") {
-          e._state.metrics.height =
-            p._state.metrics.height -
-            p._style.paddingBottom -
-            p._style.paddingTop;
-        }
-      }
-
-      if (p?._style.flexDirection === "column") {
-        if (e._style.alignSelf === "center") {
-          e._state.metrics.x =
-            e._state.metrics.x +
-            p._state.metrics.width / 2 -
-            e._state.metrics.width / 2;
-        }
-
-        if (e._style.alignSelf === "flex-end") {
-          e._state.metrics.x =
-            e._state.metrics.x +
-            p._state.metrics.width -
-            e._state.metrics.width -
-            p._style.paddingLeft -
-            p._style.paddingRight;
-        }
-
-        if (e._style.alignSelf === "stretch") {
-          e._state.metrics.width =
-            p._state.metrics.width -
-            p._style.paddingLeft -
-            p._style.paddingRight;
-        }
-      }
-    }
-
-    // Set sizes for children that use percentages.
     let c = e.firstChild;
-    while (c) {
-      if (typeof c._style.width === "string") {
-        c._state.metrics.width =
-          toPercentage(c._style.width) * e._state.metrics.width;
-      }
-      if (typeof c._style.height === "string") {
-        c._state.metrics.height =
-          toPercentage(c._style.height) * e._state.metrics.height;
-      }
-      c = c.next;
+
+    // Available space is size of the parent minus padding and gaps.
+    let availableWidth =
+      e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
+    if (
+      e._style.flexDirection === "row" &&
+      e._style.justifyContent !== "space-between" &&
+      e._style.justifyContent !== "space-around" &&
+      e._style.justifyContent !== "space-evenly"
+    ) {
+      availableWidth -= (e._style.rowGap ?? 0) * (childrenCount - 1);
     }
 
-    // Take zIndex from parent if not set.
-    e._style.zIndex = e._style.zIndex ?? p?._style.zIndex ?? 0;
-
-    let availableWidth = e._state.metrics.width;
-    let availableHeight = e._state.metrics.height;
+    let availableHeight =
+      e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+    if (
+      e._style.flexDirection === "column" &&
+      e._style.justifyContent !== "space-between" &&
+      e._style.justifyContent !== "space-around" &&
+      e._style.justifyContent !== "space-evenly"
+    ) {
+      availableHeight -= (e._style.columnGap ?? 0) * (childrenCount - 1);
+    }
 
     // Count children and total flex value.
     c = e.firstChild;
@@ -395,10 +227,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         childrenCount += 1;
       }
 
-      /*
-       * TODO: maybe flex can be reset to 0 instead of undefined and this can
-       * be checked somehow else?
-       */
       if (
         e._style.flexDirection === "row" &&
         c._style.flex === undefined &&
@@ -424,25 +252,6 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
       c = c.next;
     }
-
-    availableWidth -=
-      e._style.paddingLeft +
-      e._style.paddingRight +
-      (e._style.flexDirection === "row" &&
-      e._style.justifyContent !== "space-between" &&
-      e._style.justifyContent !== "space-around" &&
-      e._style.justifyContent !== "space-evenly"
-        ? (childrenCount - 1) * e._style.rowGap
-        : 0);
-    availableHeight -=
-      e._style.paddingTop +
-      e._style.paddingBottom +
-      (e._style.flexDirection === "column" &&
-      e._style.justifyContent !== "space-between" &&
-      e._style.justifyContent !== "space-around" &&
-      e._style.justifyContent !== "space-evenly"
-        ? (childrenCount - 1) * e._style.columnGap
-        : 0);
 
     // Apply sizes.
     c = e.firstChild;
@@ -472,11 +281,12 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       c = c.next;
     }
 
-    // Determine positions.
+    // Offset for children, gradually building up as next children are
+    // processed.
     let x = e._state.metrics.x + e._style.paddingLeft;
     let y = e._state.metrics.y + e._style.paddingTop;
 
-    // Apply justify content.
+    // Apply justify content. Starting point for laying out children.
     if (e._style.flexDirection === "row") {
       if (e._style.justifyContent === "center") {
         x += availableWidth / 2;
@@ -484,6 +294,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
       if (e._style.justifyContent === "flex-end") {
         x += availableWidth;
+      }
+
+      if (e._style.justifyContent === "space-around") {
+        x += availableWidth / childrenCount / 2;
+      }
+
+      if (e._style.justifyContent === "space-evenly") {
+        x += availableWidth / (childrenCount + 1);
       }
     }
     if (e._style.flexDirection === "column") {
@@ -494,51 +312,56 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       if (e._style.justifyContent === "flex-end") {
         y += availableHeight;
       }
+
+      if (e._style.justifyContent === "space-around") {
+        y += availableHeight / childrenCount / 2;
+      }
+
+      if (e._style.justifyContent === "space-evenly") {
+        y += availableHeight / (childrenCount + 1);
+      }
     }
 
-    /*
-     * NOTE: order of applying justify content, this and align items is
-     * important.
-     */
+    // NOTE: order of applying justify content, this and align items is
+    // important.
     if (
       e._style.justifyContent === "space-between" ||
       e._style.justifyContent === "space-around" ||
       e._style.justifyContent === "space-evenly"
     ) {
-      const count =
-        childrenCount +
-        (e._style.justifyContent === "space-between"
-          ? -1
-          : e._style.justifyContent === "space-evenly"
-          ? 1
-          : 0);
-
-      const horizontalGap = availableWidth / count;
-      const verticalGap = availableHeight / count;
-
       c = e.firstChild;
       while (c) {
-        c._state.metrics.x =
-          x +
-          (e._style.justifyContent === "space-between"
-            ? 0
-            : e._style.justifyContent === "space-around"
-            ? horizontalGap / 2
-            : horizontalGap);
-        c._state.metrics.y =
-          y +
-          (e._style.justifyContent === "space-between"
-            ? 0
-            : e._style.justifyContent === "space-around"
-            ? verticalGap / 2
-            : verticalGap);
-
         if (e._style.flexDirection === "row") {
-          x += c._state.metrics.width + horizontalGap;
+          c._state.metrics.x = x;
+          x += c._state.metrics.width;
+          if (e._style.justifyContent === "space-between") {
+            x += availableWidth / (childrenCount - 1);
+          }
+          if (e._style.justifyContent === "space-around") {
+            x += availableWidth / childrenCount;
+          }
+          if (e._style.justifyContent === "space-evenly") {
+            x += availableWidth / (childrenCount + 1);
+          }
+          c._state.metrics.y = y;
         }
         if (e._style.flexDirection === "column") {
-          y += c._state.metrics.height + verticalGap;
+          // c._state.metrics.x = x;
+          // c._state.metrics.y =
+          //   y +
+          //   (e._style.justifyContent === "space-between"
+          //     ? 0
+          //     : e._style.justifyContent === "space-around"
+          //     ? verticalGap / 2
+          //     : verticalGap);
         }
+
+        // if (e._style.flexDirection === "row") {
+        //   x += c._state.metrics.width + horizontalGap;
+        // }
+        // if (e._style.flexDirection === "column") {
+        //   y += c._state.metrics.height + verticalGap;
+        // }
 
         c = c.next;
       }

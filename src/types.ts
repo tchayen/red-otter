@@ -70,7 +70,7 @@ export type LayoutProps = {
   maxWidth?: number | `${number}%`;
   minHeight?: number | `${number}%`;
   minWidth?: number | `${number}%`;
-  overflow?: "auto" | "scroll" | "visible" | "hidden";
+  overflow?: "scroll" | "visible" | "hidden";
   padding?: number;
   paddingBottom?: number;
   paddingHorizontal?: number;

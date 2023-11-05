@@ -6,6 +6,7 @@ import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
+import { flexAttributes } from "./fixtures";
 
 export let lookups: Lookups;
 
@@ -18,93 +19,144 @@ export function ui(renderer: UIRenderer): View {
       backgroundColor: "#222",
       gap: 10,
       height: window.innerHeight,
-      padding: 20,
       width: 800,
     },
   });
 
-  // Test 1
-  {
-    const inputGroupStyle = {
-      alignItems: "center",
-      flexDirection: "row",
-      gap: 10,
-    } as ViewStyleProps;
+  container.add(flexAttributes());
+  // container.add(testMarginPaddingsOffsets());
+  // container.add(testFormUI());
 
-    const inputStyle = {
-      backgroundColor: "#444",
-      borderColor: "#666",
-      borderRadius: 6,
-      borderWidth: 1,
-      height: 30,
-      justifyContent: "center",
-      paddingHorizontal: 10,
-      width: 60,
-    } as ViewStyleProps;
+  // const scroll = testScroll();
+  // container.add(scroll);
 
-    const textStyle = {
-      color: "#fff",
-      fontName: "Inter",
-      fontSize: 14,
-    } as TextStyleProps;
+  // container.add(
+  //   new Text(
+  // eslint-disable-next-line comment-length/limit-single-line-comments
+  //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
+  //     { lookups, style: { color: "#999", fontName: "Inter", fontSize: 13 } }
+  //   )
+  // );
 
-    const root = new View({
-      style: {
-        backgroundColor: "#000",
-        height: 400,
-        justifyContent: "center",
-        width: 600,
-      },
-    });
+  layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
+  // console.log(debugPrintTree(scroll));
+  return container;
+}
 
-    const inner = new View({
-      style: {
-        alignSelf: "center",
-        backgroundColor: "#222",
-        flexDirection: "row",
-        gap: 20,
-        justifyContent: "center",
-        paddingHorizontal: 40,
-        paddingVertical: 20,
-      },
-    });
-    root.add(inner);
-
-    const xInputSection = new View({ style: inputGroupStyle });
-    inner.add(xInputSection);
-    const x = new Text("X", { lookups, style: textStyle });
-    xInputSection.add(x);
-    const xInput = new View({ style: inputStyle });
-    xInputSection.add(xInput);
-    const xValue = new Text("0", { lookups, style: textStyle });
-    xInput.add(xValue);
-
-    const yInputSection = new View({ style: inputGroupStyle });
-    inner.add(yInputSection);
-    const y = new Text("Y", { lookups, style: textStyle });
-    yInputSection.add(y);
-    const yInput = new View({ style: inputStyle });
-    yInputSection.add(yInput);
-    const yValue = new Text("0", { lookups, style: textStyle });
-    yInput.add(yValue);
-
-    const zInputSection = new View({ style: inputGroupStyle });
-    inner.add(zInputSection);
-    const z = new Text("Z", { lookups, style: textStyle });
-    zInputSection.add(z);
-    const zInput = new View({ style: inputStyle });
-    zInputSection.add(zInput);
-    const zValue = new Text("0", { lookups, style: textStyle });
-    zInput.add(zValue);
-
-    container.add(root);
-  }
-
-  // Test 2
+function testMarginPaddingsOffsets() {
   const root = new View({
     style: {
       backgroundColor: "#000",
-      height: 400,
+      height: 300,
+      width: 400,
+    },
+    testID: "root",
+  });
+
+  const red = new View({
+    style: {
+      backgroundColor: "#ff5050",
+      height: 50,
+      margin: 20,
+      width: 50,
+    },
+    testID: "red",
+  });
+  root.add(red);
+  const green = new View({
+    style: {
+      backgroundColor: "#50ff50",
+      height: 50,
+      width: 50,
+    },
+    testID: "red",
+  });
+  root.add(green);
+
+  return root;
+}
+
+function testFormUI() {
+  const inputGroupStyle = {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+  } as ViewStyleProps;
+
+  const inputStyle = {
+    backgroundColor: "#444",
+    borderColor: "#666",
+    borderRadius: 6,
+    borderWidth: 1,
+    height: 30,
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    width: 60,
+  } as ViewStyleProps;
+
+  const textStyle = {
+    color: "#fff",
+    fontName: "Inter",
+    fontSize: 14,
+  } as TextStyleProps;
+
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      justifyContent: "center",
+      width: 400,
+    },
+  });
+
+  const inner = new View({
+    style: {
+      alignSelf: "center",
+      backgroundColor: "#222",
+      flexDirection: "row",
+      gap: 20,
+      justifyContent: "center",
+      paddingHorizontal: 40,
+      paddingVertical: 20,
+    },
+  });
+  root.add(inner);
+
+  const xInputSection = new View({ style: inputGroupStyle });
+  inner.add(xInputSection);
+  const x = new Text("X", { lookups, style: textStyle });
+  xInputSection.add(x);
+  const xInput = new View({ style: inputStyle });
+  xInputSection.add(xInput);
+  const xValue = new Text("0", { lookups, style: textStyle });
+  xInput.add(xValue);
+
+  const yInputSection = new View({ style: inputGroupStyle });
+  inner.add(yInputSection);
+  const y = new Text("Y", { lookups, style: textStyle });
+  yInputSection.add(y);
+  const yInput = new View({ style: inputStyle });
+  yInputSection.add(yInput);
+  const yValue = new Text("0", { lookups, style: textStyle });
+  yInput.add(yValue);
+
+  const zInputSection = new View({ style: inputGroupStyle });
+  inner.add(zInputSection);
+  const z = new Text("Z", { lookups, style: textStyle });
+  zInputSection.add(z);
+  const zInput = new View({ style: inputStyle });
+  zInputSection.add(zInput);
+  const zValue = new Text("0", { lookups, style: textStyle });
+  zInput.add(zValue);
+
+  return root;
+}
+
+function testScroll() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
       width: 600,
     },
     testID: "root",
@@ -113,9 +165,9 @@ export function ui(renderer: UIRenderer): View {
   const inner = new View({
     style: {
       backgroundColor: "#50ff50",
-      height: 300,
+      height: 100,
       overflow: "scroll",
-      width: 300,
+      width: 100,
     },
     testID: "inner",
   });
@@ -124,26 +176,15 @@ export function ui(renderer: UIRenderer): View {
   const obstructed = new View({
     style: {
       backgroundColor: "#ff5050",
-      height: 200,
-      marginLeft: 200,
-      width: 200,
+      height: 50,
+      marginLeft: 70,
+      width: 50,
     },
     testID: "obstructed",
   });
   inner.add(obstructed);
 
-  container.add(root);
-
-  container.add(
-    new Text(
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
-      { lookups, style: { color: "#999", fontName: "Inter", fontSize: 13 } }
-    )
-  );
-
-  layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
-  console.log(debugPrintTree(root));
-  return container;
+  return root;
 }
 
 function debugPrintTree(tree: View | Text, level: number = 0) {

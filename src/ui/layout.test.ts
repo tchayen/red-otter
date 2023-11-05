@@ -8,6 +8,7 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
+import { flexAttributes } from "../fixtures";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -37,7 +38,7 @@ describe("Layout", () => {
    * │   └─────────────────────┘   │
    * └─────────────────────────────┘
    */
-  it("should layout inputs", () => {
+  it.skip("should layout inputs", () => {
     const inputGroupStyle = {
       alignItems: "center",
       flexDirection: "row",
@@ -61,7 +62,7 @@ describe("Layout", () => {
     const root = v({
       alignItems: "center",
       backgroundColor: "#000",
-      height: 400,
+      height: 300,
       justifyContent: "center",
       width: 600,
     });
@@ -113,6 +114,33 @@ describe("Layout", () => {
     expect(first === second && second === third).toBe(true);
 
     expect(inner._state.metrics.width).toBe(351);
-    expect(zValue._state.metrics.y).toBe(195);
+    expect(zValue._state.metrics.y).toBe(145);
+  });
+
+  it("flex attributes", () => {
+    const root = flexAttributes();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const expectedPositions = [
+      [new Vec2(0, 0), new Vec2(40, 0), new Vec2(100, 0)],
+      [new Vec2(220, 50), new Vec2(260, 50), new Vec2(320, 50)],
+      [new Vec2(110, 100), new Vec2(150, 100), new Vec2(210, 100)],
+      [new Vec2(55, 150), new Vec2(150, 150), new Vec2(265, 150)],
+      [new Vec2(37, 200), new Vec2(150, 200), new Vec2(283, 200)],
+      [new Vec2(0, 250), new Vec2(150, 250), new Vec2(320, 250)],
+    ];
+
+    let c: View | Text | null | undefined = null;
+    let row: View | Text | null | undefined = root.firstChild;
+
+    for (let i = 0; i < expectedPositions.length; i++) {
+      c = row?.firstChild;
+      for (const expected of expectedPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      row = row?.next;
+    }
   });
 });

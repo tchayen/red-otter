@@ -36,7 +36,7 @@ module.exports = {
     curly: Rule.Error,
     "import/no-duplicates": Rule.Error,
     "import/no-extraneous-dependencies": Rule.Error,
-    "multiline-comment-style": [Rule.Warn, "starred-block"],
+    // "multiline-comment-style": [Rule.Warn, "starred-block"],
     "sort-keys-fix/sort-keys-fix": Rule.Error,
     "typescript-sort-keys/interface": Rule.Error,
     "typescript-sort-keys/string-enum": Rule.Error,

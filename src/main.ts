@@ -94,7 +94,7 @@ function render(): void {
 
   device.queue.submit([commandEncoder.finish()]);
 
-  requestAnimationFrame(render);
+  // requestAnimationFrame(render);
 }
 
 render();
