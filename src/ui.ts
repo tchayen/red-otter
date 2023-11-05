@@ -6,7 +6,7 @@ import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
-import { flexAttributes } from "./fixtures";
+import { flexColumn, flexRow, margins } from "./fixtures";
 
 export let lookups: Lookups;
 
@@ -23,7 +23,9 @@ export function ui(renderer: UIRenderer): View {
     },
   });
 
-  container.add(flexAttributes());
+  container.add(flexRow());
+  container.add(flexColumn());
+  container.add(margins());
   // container.add(testMarginPaddingsOffsets());
   // container.add(testFormUI());
 

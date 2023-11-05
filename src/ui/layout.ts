@@ -197,7 +197,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
     let c = e.firstChild;
 
-    // Available space is size of the parent minus padding and gaps.
+    // Available space is size of the parent minus padding and gaps and margins
+    // of children.
     let availableWidth =
       e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
     if (
@@ -232,14 +233,16 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
-        availableWidth -= c._state.metrics.width;
+        availableWidth -=
+          c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
       }
       if (
         e._style.flexDirection === "column" &&
         c._style.flex === undefined &&
         c._style.position === "relative"
       ) {
-        availableHeight -= c._state.metrics.height;
+        availableHeight -=
+          c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
       }
 
       // Calculate how many rectangles will be splitting the available space.
@@ -322,17 +325,25 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
     }
 
-    // NOTE: order of applying justify content, this and align items is
-    // important.
-    if (
-      e._style.justifyContent === "space-between" ||
-      e._style.justifyContent === "space-around" ||
-      e._style.justifyContent === "space-evenly"
-    ) {
-      c = e.firstChild;
-      while (c) {
+    c = e.firstChild;
+    while (c) {
+      // Apply align items.
+      if (c._style.position === "absolute") {
+        c = c.next;
+        continue;
+      }
+
+      c._state.metrics.x += c._style.marginLeft;
+      c._state.metrics.y += c._style.marginTop;
+
+      // Apply justify-content. This resets positions of children.
+      if (
+        e._style.justifyContent === "space-between" ||
+        e._style.justifyContent === "space-around" ||
+        e._style.justifyContent === "space-evenly"
+      ) {
         if (e._style.flexDirection === "row") {
-          c._state.metrics.x = x;
+          c._state.metrics.x += x;
           x += c._state.metrics.width;
           if (e._style.justifyContent === "space-between") {
             x += availableWidth / (childrenCount - 1);
@@ -343,73 +354,50 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           if (e._style.justifyContent === "space-evenly") {
             x += availableWidth / (childrenCount + 1);
           }
-          c._state.metrics.y = y;
+          c._state.metrics.y += y;
         }
         if (e._style.flexDirection === "column") {
-          // c._state.metrics.x = x;
-          // c._state.metrics.y =
-          //   y +
-          //   (e._style.justifyContent === "space-between"
-          //     ? 0
-          //     : e._style.justifyContent === "space-around"
-          //     ? verticalGap / 2
-          //     : verticalGap);
+          c._state.metrics.y += y;
+          y += c._state.metrics.height;
+          if (e._style.justifyContent === "space-between") {
+            y += availableHeight / (childrenCount - 1);
+          }
+          if (e._style.justifyContent === "space-around") {
+            y += availableHeight / childrenCount;
+          }
+          if (e._style.justifyContent === "space-evenly") {
+            y += availableHeight / (childrenCount + 1);
+          }
+          c._state.metrics.x += x;
         }
-
-        // if (e._style.flexDirection === "row") {
-        //   x += c._state.metrics.width + horizontalGap;
-        // }
-        // if (e._style.flexDirection === "column") {
-        //   y += c._state.metrics.height + verticalGap;
-        // }
-
-        c = c.next;
-      }
-    } else {
-      c = e.firstChild;
-      while (c) {
+      } else {
         if (c._style.position === "absolute" || c._style.display === "none") {
           c = c.next;
           continue;
         }
 
+        c._state.metrics.x += x;
         if (e._style.flexDirection === "row") {
-          c._state.metrics.x = x;
           x += c._state.metrics.width;
           x += e._style.rowGap;
-        } else {
-          c._state.metrics.x = x + c._state.metrics.x;
         }
+        c._state.metrics.y += y;
         if (e._style.flexDirection === "column") {
-          c._state.metrics.y = y;
           y += c._state.metrics.height;
           y += e._style.columnGap;
-        } else {
-          c._state.metrics.y = y + c._state.metrics.y;
         }
-
-        c = c.next;
-      }
-    }
-
-    // Apply align items.
-    c = e.firstChild;
-    while (c) {
-      if (c._style.position === "absolute") {
-        c = c.next;
-        continue;
       }
 
       if (e._style.flexDirection === "row") {
         if (e._style.alignItems === "center") {
-          c._state.metrics.y =
+          c._state.metrics.y +=
             e._state.metrics.y +
             e._state.metrics.height / 2 -
             c._state.metrics.height / 2;
         }
 
         if (e._style.alignItems === "flex-end") {
-          c._state.metrics.y =
+          c._state.metrics.y +=
             e._state.metrics.y +
             e._state.metrics.height -
             c._state.metrics.height -
@@ -428,14 +416,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
       if (e._style.flexDirection === "column") {
         if (e._style.alignItems === "center") {
-          c._state.metrics.x =
+          c._state.metrics.x +=
             e._state.metrics.x +
             e._state.metrics.width / 2 -
             c._state.metrics.width / 2;
         }
 
         if (e._style.alignItems === "flex-end") {
-          c._state.metrics.x =
+          c._state.metrics.x +=
             e._state.metrics.x +
             e._state.metrics.width -
             c._state.metrics.width -
@@ -448,6 +436,14 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
             e._style.paddingLeft -
             e._style.paddingRight;
         }
+      }
+
+      if (e._style.flexDirection === "row") {
+        x += c._style.marginLeft + c._style.marginRight;
+      }
+
+      if (e._style.flexDirection === "column") {
+        y += c._style.marginTop + c._style.marginBottom;
       }
 
       c = c.next;

@@ -8,7 +8,7 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
-import { flexAttributes } from "../fixtures";
+import { flexColumn, flexRow, margins } from "../fixtures";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -117,17 +117,71 @@ describe("Layout", () => {
     expect(zValue._state.metrics.y).toBe(145);
   });
 
-  it("flex attributes", () => {
-    const root = flexAttributes();
+  it("flex row", () => {
+    const root = flexRow();
     layout(root, lookups, new Vec2(1024, 768));
 
     const expectedPositions = [
-      [new Vec2(0, 0), new Vec2(40, 0), new Vec2(100, 0)],
-      [new Vec2(220, 50), new Vec2(260, 50), new Vec2(320, 50)],
-      [new Vec2(110, 100), new Vec2(150, 100), new Vec2(210, 100)],
-      [new Vec2(55, 150), new Vec2(150, 150), new Vec2(265, 150)],
-      [new Vec2(37, 200), new Vec2(150, 200), new Vec2(283, 200)],
-      [new Vec2(0, 250), new Vec2(150, 250), new Vec2(320, 250)],
+      [new Vec2(0, 0), new Vec2(30, 0), new Vec2(70, 0)],
+      [new Vec2(180, 50), new Vec2(210, 50), new Vec2(250, 50)],
+      [new Vec2(90, 100), new Vec2(120, 100), new Vec2(160, 100)],
+      [new Vec2(45, 150), new Vec2(120, 150), new Vec2(205, 150)],
+      [new Vec2(30, 200), new Vec2(120, 200), new Vec2(220, 200)],
+      [new Vec2(0, 250), new Vec2(120, 250), new Vec2(250, 250)],
+    ];
+
+    let c: View | Text | null | undefined = null;
+    let row: View | Text | null | undefined = root.firstChild;
+
+    for (let i = 0; i < expectedPositions.length; i++) {
+      c = row?.firstChild;
+      for (const expected of expectedPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      row = row?.next;
+    }
+  });
+
+  it("flex column", () => {
+    const root = flexColumn();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const expectedPositions = [
+      [new Vec2(0, 0), new Vec2(0, 50), new Vec2(0, 100)],
+      [new Vec2(50, 150), new Vec2(50, 200), new Vec2(50, 250)],
+      [new Vec2(100, 75), new Vec2(100, 125), new Vec2(100, 175)],
+      [new Vec2(150, 38), new Vec2(150, 125), new Vec2(150, 213)],
+      [new Vec2(200, 25), new Vec2(200, 125), new Vec2(200, 225)],
+      [new Vec2(250, 0), new Vec2(250, 125), new Vec2(250, 250)],
+    ];
+
+    let c: View | Text | null | undefined = null;
+    let row: View | Text | null | undefined = root.firstChild;
+
+    for (let i = 0; i < expectedPositions.length; i++) {
+      c = row?.firstChild;
+      for (const expected of expectedPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      row = row?.next;
+    }
+  });
+
+  it("margins", () => {
+    const root = margins();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const expectedPositions = [
+      [new Vec2(5, 5), new Vec2(40, 0), new Vec2(80, 0)],
+      [new Vec2(175, 55), new Vec2(210, 50), new Vec2(250, 50)],
+      [new Vec2(90, 105), new Vec2(125, 100), new Vec2(165, 100)],
+      [new Vec2(48, 155), new Vec2(125, 150), new Vec2(208, 150)],
+      [new Vec2(33, 205), new Vec2(125, 200), new Vec2(222, 200)],
+      [new Vec2(5, 255), new Vec2(125, 250), new Vec2(250, 250)],
     ];
 
     let c: View | Text | null | undefined = null;
