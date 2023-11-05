@@ -10,6 +10,7 @@ const colors = [
   "#ffff00",
   "#ff00ff",
   "#00ffff",
+  "#ffffff",
 ];
 
 const redStyle = {
@@ -29,6 +30,46 @@ const blueStyle = {
   height: 50,
   width: 50,
 } as ViewStyleProps;
+
+export function flexValue() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const row = new View({
+    style: {
+      flexDirection: "row",
+      width: "100%",
+    },
+  });
+  root.add(row);
+
+  const flex0 = new View({
+    style: { backgroundColor: colors[0], flex: 0, height: 50 },
+  });
+  row.add(flex0);
+
+  const flex1 = new View({
+    style: { backgroundColor: colors[1], flex: 1, height: 50 },
+  });
+  row.add(flex1);
+
+  const flex2 = new View({
+    style: { backgroundColor: colors[2], flex: 2, height: 50 },
+  });
+  row.add(flex2);
+
+  const fixed = new View({
+    style: { backgroundColor: colors[3], height: 50, width: 50 },
+  });
+  row.add(fixed);
+
+  return root;
+}
 
 export function flexRow() {
   const root = new View({
@@ -197,24 +238,36 @@ export function offsets() {
   });
   box.add(small2);
 
-  const absolute = new View({
+  const absolute1 = new View({
     style: {
       backgroundColor: colors[5],
       bottom: 40,
-      height: 50,
       position: "absolute",
       right: 0,
+      top: 30,
       width: 50,
     },
   });
-  box.add(absolute);
+  box.add(absolute1);
+
+  const absolute2 = new View({
+    style: {
+      backgroundColor: colors[6],
+      bottom: 30,
+      height: 50,
+      left: 10,
+      position: "absolute",
+      width: 50,
+    },
+  });
+  box.add(absolute2);
 
   return root;
 }
 
 export function formUI() {
   const inputGroupStyle = {
-    // alignItems: "center",
+    alignItems: "center",
     flexDirection: "row",
     gap: 10,
   } as ViewStyleProps;
@@ -238,6 +291,7 @@ export function formUI() {
 
   const root = new View({
     style: {
+      alignItems: "center",
       backgroundColor: "#000",
       height: 300,
       justifyContent: "center",
@@ -252,9 +306,10 @@ export function formUI() {
       flexDirection: "row",
       gap: 20,
       justifyContent: "center",
-      paddingHorizontal: 40,
-      paddingVertical: 20,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
     },
+    testID: "inner",
   });
   root.add(inner);
 

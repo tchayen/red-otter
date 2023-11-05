@@ -6,7 +6,7 @@ import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
-import { flexColumn, flexRow, formUI, margins, offsets } from "./fixtures";
+import * as fixtures from "./fixtures";
 
 export let lookups: Lookups;
 
@@ -38,25 +38,29 @@ export function ui(renderer: UIRenderer): View {
     },
   });
 
+  function text(value: string) {
+    return new Text(value, { lookups, style: textStyle });
+  }
+
   const column1 = new View({ style: columnStyle });
   container.add(column1);
 
-  column1.add(new Text("flexDirection: row", { lookups, style: textStyle }));
-  column1.add(flexRow());
-  column1.add(new Text("flexDirection: column", { lookups, style: textStyle }));
-  column1.add(flexColumn());
-  column1.add(new Text("margins", { lookups, style: textStyle }));
-  column1.add(margins());
+  column1.add(text("flex: number"));
+  column1.add(fixtures.flexValue());
+  column1.add(text("flexDirection: row"));
+  column1.add(fixtures.flexRow());
+  column1.add(text("flexDirection: column"));
+  column1.add(fixtures.flexColumn());
 
   const column2 = new View({ style: columnStyle });
   container.add(column2);
 
-  column2.add(
-    new Text("left, top, right, bottom", { lookups, style: textStyle })
-  );
-  column2.add(offsets());
-  column2.add(new Text("form UI", { lookups, style: textStyle }));
-  column2.add(formUI());
+  column2.add(text("margins"));
+  column2.add(fixtures.margins());
+  column2.add(text("left, top, right, bottom"));
+  column2.add(fixtures.offsets());
+  column2.add(text("form UI"));
+  column2.add(fixtures.formUI());
 
   // const scroll = testScroll();
   // container.add(scroll);
