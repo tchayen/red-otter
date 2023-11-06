@@ -95,10 +95,15 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
     thirdPass.enqueue(e);
 
+    const isWrap = e._style.flexWrap === "wrap" || e._style.flexWrap === "wrap-reverse";
+    const isJustifySpace =
+      e._style.justifyContent === "space-between" ||
+      e._style.justifyContent === "space-around" ||
+      e._style.justifyContent === "space-evenly";
+
     // Width is at least the sum of children with defined widths.
     if (e._style.width === undefined) {
       let childrenCount = 0;
-
       let c = e.firstChild;
       while (c) {
         if (c._state.metrics.width) {
@@ -110,7 +115,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             e._state.metrics.width +=
               c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
           }
-
           if (
             (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") &&
             c._style.position === "relative"
@@ -126,7 +130,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         if (c._style.position === "relative") {
           childrenCount += 1;
         }
-
         c = c.next;
       }
 
@@ -137,15 +140,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         e._state.metrics.width += (childrenCount - 1) * e._style.rowGap;
       }
     }
-
     // Height is at least the sum of children with defined heights.
     if (e._style.height === undefined) {
       let childrenCount = 0;
-
-      if (e._style.flexWrap === "wrap") {
-        //
-      }
-
       let c = e.firstChild;
       while (c) {
         if (c._state.metrics.height) {
@@ -156,7 +153,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             e._state.metrics.height +=
               c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
           }
-
           if (
             (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") &&
             c._style.position === "relative"
@@ -171,7 +167,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         if (c._style.position === "relative") {
           childrenCount += 1;
         }
-
         c = c.next;
       }
 
@@ -214,68 +209,91 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     // Calculate flexWrap height.
-    if (e._style.flexWrap === "wrap") {
-      let x = 0;
-      let y = 0;
-      let longestChildHeight = 0;
+    let x = 0;
+    let y = 0;
+    let longestChildHeight = 0;
+
+    if (isWrap) {
       // The size that was first calculated is size of the tallest child of all plus paddings. So
       // here there's a need to reset the size and build it again, for all rows.
       if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
-        e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+        if (e._style.height === undefined) {
+          e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+        }
       }
       if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
-        e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
+        if (e._style.width === undefined) {
+          e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
+        }
       }
+    }
 
-      let c = e.firstChild;
-      while (c) {
-        if (c._style.position !== "relative") {
-          // TODO @tchayen: add a test which has a position: absolute element in a flex wrap
-          // container.
-          c = c.next;
-          continue;
-        }
-
-        if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
-          const deltaX = c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-          const parentWidth = e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-          if (x + deltaX >= parentWidth || c.next === null) {
-            x = 0;
-            const height = longestChildHeight + e._style.columnGap;
-            y += height;
-            e._state.metrics.height += height;
-            longestChildHeight = 0;
-          } else {
-            x += deltaX + e._style.rowGap;
-          }
-        }
-        if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
-          const deltaY = c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
-          const parentHeight =
-            e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-          if (y + deltaY >= parentHeight || c.next === null) {
-            y = 0;
-            const width = longestChildHeight + e._style.rowGap;
-            x += width;
-            e._state.metrics.width += width;
-            longestChildHeight = 0;
-          } else {
-            y += deltaY + e._style.columnGap;
-          }
-        }
-
-        // Keep track of the longest child in the flex container for the purpose of wrapping.
-        if (c._style.flexDirection === "row" || c._style.flexDirection === "row-reverse") {
-          longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
-        }
-        if (c._style.flexDirection === "column" || c._style.flexDirection === "column-reverse") {
-          longestChildHeight = Math.max(longestChildHeight, c._state.metrics.height);
-        }
+    let c = e.firstChild;
+    const rows: Array<Array<View | Text>> = [[]];
+    while (c) {
+      if (c._style.position !== "relative") {
+        // TODO @tchayen: add a test which has a position: absolute element in a flex wrap
+        // container.
         c = c.next;
+        continue;
       }
 
-      // The last row.
-      e._state.metrics.height += longestChildHeight;
+      if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
+        const deltaX = c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
+        const parentWidth = e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
+        if (isWrap && (x + deltaX >= parentWidth || c.next === null)) {
+          x = 0;
+          const height = longestChildHeight + e._style.columnGap; // TODO @tchayen: with alignContent space-between etc. there won't be a gap.
+          y += height;
+          longestChildHeight = 0;
+          rows.push([]);
+          if (isWrap && e._style.height === undefined) {
+            e._state.metrics.height += height;
+          }
+        } else {
+          x += deltaX + (isJustifySpace ? e._style.rowGap : 0);
+        }
+      }
+      if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
+        const deltaY = c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
+        const parentHeight = e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+        if (isWrap && (y + deltaY >= parentHeight || c.next === null)) {
+          y = 0;
+          const width = longestChildHeight + e._style.rowGap; // TODO @tchayen: with alignContent space-between etc. there won't be a gap.
+          x += width;
+          longestChildHeight = 0;
+          rows.push([]);
+
+          if (e._style.width === undefined) {
+            e._state.metrics.width += width;
+          }
+        } else {
+          y += deltaY + (isJustifySpace ? e._style.columnGap : 0);
+        }
+      }
+
+      // Keep track of the longest child in the flex container for the purpose of wrapping.
+      if (c._style.flexDirection === "row" || c._style.flexDirection === "row-reverse") {
+        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
+      }
+      if (c._style.flexDirection === "column" || c._style.flexDirection === "column-reverse") {
+        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.height);
+      }
+
+      rows.at(-1)?.push(c);
+
+      c = c.next;
+    }
+    e._state.flexChildren = rows;
+
+    // The last row.
+    if (isWrap && e._style.height === undefined) {
+      if (e._style.flexDirection === "row") {
+        e._state.metrics.height += longestChildHeight;
+      }
+      if (e._style.flexDirection === "column") {
+        e._state.metrics.width += longestChildHeight;
+      }
     }
 
     // TODO @tchayen: calculate scrollable content area.
@@ -290,8 +308,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
     const p = e.parent;
 
-    let totalFlex = 0;
-    let childrenCount = 0;
+    const totalFlex = 0;
+    const childrenCount = 0;
 
     // Undefined is ruled out by the previous pass.
     const parentWidth = p?._state.metrics.width ?? 0;
@@ -337,6 +355,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._state.metrics.width = parentWidth - e._style.left - e._style.right;
     }
 
+    // Handle absolute positioning.
     if (e._style.position === "absolute") {
       e._state.metrics.x = p?._state.metrics.x ?? 0;
       e._state.metrics.y = p?._state.metrics.y ?? 0;
@@ -361,342 +380,214 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // Available space is size of the parent minus padding and gaps and margins of children.
-    let availableWidth = e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-    let availableHeight = e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-
-    // Count children and total flex value.
-    let c = e.firstChild;
-    while (c) {
-      if (c._style.position === "relative") {
-        childrenCount += 1;
-      }
-
-      if (isHorizontal && c._style.flex === undefined && c._style.position === "relative") {
-        availableWidth -= c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-      }
-      if (isVertical && c._style.flex === undefined && c._style.position === "relative") {
-        availableHeight -= c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
-      }
-
-      // Calculate how many rectangles will be splitting the available space.
-      if (isHorizontal && c._style.flex !== undefined) {
-        totalFlex += c._style.flex;
-      }
-      if (isVertical && c._style.flex !== undefined) {
-        totalFlex += c._style.flex;
-      }
-
-      c = c.next;
-    }
-
-    // Mind the gap.
-    if (isHorizontal && !isJustifySpace) {
-      availableWidth -= (e._style.rowGap ?? 0) * (childrenCount - 1);
-    }
-    if (isVertical && !isJustifySpace) {
-      availableHeight -= (e._style.columnGap ?? 0) * (childrenCount - 1);
-    }
-
-    // Apply sizes.
-    // TODO @tchayen: add flexShrink and flexGrow.
-    c = e.firstChild;
-    while (c) {
-      if (isHorizontal) {
-        if (c._style.flex !== undefined && !isJustifySpace) {
-          c._state.metrics.width = (c._style.flex / totalFlex) * availableWidth;
-        }
-      }
-      if (isVertical) {
-        if (c._style.flex !== undefined && !isJustifySpace) {
-          c._state.metrics.height = (c._style.flex / totalFlex) * availableHeight;
-        }
-      }
-
-      c = c.next;
-    }
-
-    // Offset for children, gradually building up as next children are processed.
-    let x = e._state.metrics.x + e._style.paddingLeft;
-    let y = e._state.metrics.y + e._style.paddingTop;
-
     // TODO @tchayen:
-    // To add support for flexWrap, there need to be some changes:
-    // - First divide children into rows. Calculate row height (max height of children in a row
-    //   plus their vertical margins; also keep in mind parent's padding).
-    // - If flexDirection === "row-reverse", reverse the order of children in each row.
-    // - If flexWrap === "wrap-reverse", reverse the order of rows.
-    // - Then calculate positions of children in each row. Align items and alignSelf work in
-    //   respect to their row.
-    // - Align content spaces out the rows.
-    // - Justify content spaces out the children in each row.
+    // - align self
+    // - align content
 
-    // Apply justify content. Starting point for laying out children.
-    if (isHorizontal) {
-      if (e._style.justifyContent === "center") {
-        x += availableWidth / 2;
-      }
-
-      if (
-        (e._style.flexDirection === "row" && e._style.justifyContent === "flex-end") ||
-        (e._style.flexDirection === "row-reverse" && e._style.justifyContent === "flex-start")
-      ) {
-        x += availableWidth;
-      }
-
-      if (e._style.justifyContent === "space-around") {
-        x += availableWidth / childrenCount / 2;
-      }
-
-      if (e._style.justifyContent === "space-evenly") {
-        x += availableWidth / (childrenCount + 1);
-      }
-    }
-    if (isVertical) {
-      if (e._style.justifyContent === "center") {
-        y += availableHeight / 2;
-      }
-
-      if (
-        (e._style.flexDirection === "column" && e._style.justifyContent === "flex-end") ||
-        (e._style.flexDirection === "column-reverse" && e._style.justifyContent === "flex-start")
-      ) {
-        y += availableHeight;
-      }
-
-      if (e._style.justifyContent === "space-around") {
-        y += availableHeight / childrenCount / 2;
-      }
-
-      if (e._style.justifyContent === "space-evenly") {
-        y += availableHeight / (childrenCount + 1);
-      }
+    invariant(e._state.flexChildren, "Flex children should be calculated in the second pass.");
+    if (e._style.flexWrap === "wrap-reverse") {
+      e._state.flexChildren.reverse();
     }
 
-    // Apply positions to children.
-    const direction = isReversed ? -1 : 1;
-
-    // Along the main axis.
-    let longestChildHeight = 0;
-
-    c = e.firstChild;
     if (isReversed) {
-      c = e.lastChild;
+      e._state.flexChildren.forEach((row) => row.reverse());
     }
-    while (c) {
-      if (c._style.position === "absolute" || c._style.display === "none") {
-        c = isReversed ? c.prev : c.next;
-        continue;
+
+    const resetMain = isHorizontal
+      ? e._state.metrics.x + e._style.paddingLeft
+      : e._state.metrics.y + e._style.paddingTop;
+    const resetCross = isHorizontal
+      ? e._state.metrics.y + e._style.paddingTop
+      : e._state.metrics.x + e._style.paddingLeft;
+    let main = resetMain;
+    let cross = resetCross;
+    const mainGap = (isHorizontal ? e._style.rowGap : e._style.columnGap) ?? 0;
+    const crossGap = (isHorizontal ? e._style.columnGap : e._style.rowGap) ?? 0;
+
+    for (const line of e._state.flexChildren) {
+      let longestChild = 0;
+      let childrenCount = 0;
+
+      // Calculate available space for justify content along the main axis.
+      let availableMain = isHorizontal
+        ? e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight
+        : e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+      if (!isJustifySpace) {
+        availableMain -= mainGap * (line.length - 1);
+      }
+      let totalFlex = 0;
+
+      for (const c of line) {
+        if (c._style.position === "absolute" || c._style.display === "none") {
+          continue;
+        }
+        childrenCount += 1;
+        longestChild = Math.max(longestChild, c._state.metrics.height);
+        availableMain -= isHorizontal
+          ? c._state.metrics.width +
+            (!isJustifySpace ? c._style.marginLeft + c._style.marginRight : 0)
+          : c._state.metrics.height +
+            (!isJustifySpace ? c._style.marginTop + c._style.marginBottom : 0);
+        if (c._style.flex !== undefined) {
+          totalFlex += c._style.flex;
+        }
       }
 
-      c._state.metrics.x += c._style.marginLeft;
-      c._state.metrics.y += c._style.marginTop;
+      // Adjust positions for justify content.
+      if (e._style.justifyContent === "center") {
+        main += availableMain / 2;
+      }
+      if (
+        (isReversed && e._style.justifyContent === "flex-start") ||
+        (!isReversed && e._style.justifyContent === "flex-end")
+      ) {
+        main += availableMain;
+      }
+      if (e._style.justifyContent === "space-around") {
+        main += availableMain / childrenCount / 2;
+      }
+      if (e._style.justifyContent === "space-evenly") {
+        main += availableMain / (childrenCount + 1);
+      }
 
-      // Apply justify-content. This resets positions of children.
-      if (isJustifySpace) {
+      // Iterate over children and apply positions.
+      for (const c of line) {
+        if (c._style.position === "absolute" || c._style.display === "none") {
+          continue;
+        }
+
         if (isHorizontal) {
-          c._state.metrics.x += x * direction;
-          x += c._state.metrics.width;
-
-          if (e._style.justifyContent === "space-between") {
-            x += availableWidth / (childrenCount - 1);
-          }
-          if (e._style.justifyContent === "space-around") {
-            x += availableWidth / childrenCount;
-          }
-          if (e._style.justifyContent === "space-evenly") {
-            x += availableWidth / (childrenCount + 1);
+          if (c._style.flex !== undefined && !isJustifySpace) {
+            c._state.metrics.width += (c._style.flex / totalFlex) * availableMain;
           }
         }
         if (isVertical) {
-          c._state.metrics.y += y * direction;
-          y += c._state.metrics.height;
+          if (c._style.flex !== undefined && !isJustifySpace) {
+            c._state.metrics.height += (c._style.flex / totalFlex) * availableMain;
+          }
+        }
+
+        if (isJustifySpace) {
+          c._state.metrics.x += isHorizontal ? main : cross;
+          c._state.metrics.y += isHorizontal ? cross : main;
+          main += isHorizontal ? c._state.metrics.width : c._state.metrics.height;
 
           if (e._style.justifyContent === "space-between") {
-            y += availableHeight / (childrenCount - 1);
+            main += availableMain / (childrenCount - 1);
           }
           if (e._style.justifyContent === "space-around") {
-            y += availableHeight / childrenCount;
+            main += availableMain / childrenCount;
           }
           if (e._style.justifyContent === "space-evenly") {
-            y += availableHeight / (childrenCount + 1);
+            main += availableMain / (childrenCount + 1);
           }
-        }
-      } else {
-        if (e._style.flexWrap === "wrap") {
-          if (isHorizontal) {
-            const deltaX = c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-            const parentWidth =
-              e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-            if (x - e._state.metrics.x + deltaX >= parentWidth) {
-              x = e._state.metrics.x + e._style.paddingLeft;
-              y += longestChildHeight + e._style.columnGap;
-              longestChildHeight = 0;
+        } else {
+          c._state.metrics.x += isHorizontal
+            ? main + c._style.marginLeft
+            : cross + c._style.marginLeft;
+          c._state.metrics.y += isHorizontal
+            ? cross + c._style.marginTop
+            : main + c._style.marginTop;
+
+          main += isHorizontal
+            ? c._state.metrics.width + c._style.marginLeft + c._style.marginRight
+            : c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
+          main += mainGap;
+
+          // Apply align items.
+          const lineCrossSize = Math.max(
+            longestChild,
+            isHorizontal ? e._state.metrics.height : e._state.metrics.width
+          );
+          if (e._style.alignItems === "center") {
+            if (isHorizontal) {
+              c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
+            }
+            if (isVertical) {
+              c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
             }
           }
-          if (isVertical) {
-            const deltaY = c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
-            const parentHeight =
-              e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-            if (y - e._state.metrics.y + deltaY >= parentHeight) {
-              y = e._state.metrics.y + e._style.paddingTop;
-              x += longestChildHeight + e._style.rowGap;
-              longestChildHeight = 0;
+          if (e._style.alignItems === "flex-end") {
+            if (isHorizontal) {
+              c._state.metrics.y += lineCrossSize - c._state.metrics.height;
+            }
+            if (isVertical) {
+              c._state.metrics.x += lineCrossSize - c._state.metrics.width;
+            }
+          }
+          if (
+            e._style.alignItems === "stretch" &&
+            ((isHorizontal && c._style.height === undefined) ||
+              (isVertical && c._style.width === undefined)) &&
+            c._style.alignSelf === "auto"
+          ) {
+            if (isHorizontal) {
+              c._state.metrics.height = lineCrossSize;
+            }
+            if (isVertical) {
+              // TODO: this is probably wrong, child is missing.
+              c._state.metrics.width = lineCrossSize;
+            }
+          }
+
+          // Apply align self.
+          if (c._style.alignSelf === "flex-start") {
+            if (isHorizontal) {
+              c._state.metrics.y = resetCross;
+            }
+            if (isVertical) {
+              c._state.metrics.x = resetCross;
+            }
+          }
+          if (c._style.alignSelf === "center") {
+            if (isHorizontal) {
+              c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
+            }
+            if (isVertical) {
+              c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
+            }
+          }
+          if (c._style.alignSelf === "flex-end") {
+            if (isHorizontal) {
+              c._state.metrics.y += lineCrossSize - c._state.metrics.height;
+            }
+            if (isVertical) {
+              c._state.metrics.x += lineCrossSize - c._state.metrics.width;
+            }
+          }
+          if (
+            c._style.alignSelf === "stretch" &&
+            ((isHorizontal && c._style.height === undefined) ||
+              (isVertical && c._style.width === undefined))
+          ) {
+            if (isHorizontal) {
+              c._state.metrics.y = resetCross;
+              c._state.metrics.height = lineCrossSize;
+            }
+            if (isVertical) {
+              c._state.metrics.x = resetCross;
+              c._state.metrics.width = lineCrossSize;
             }
           }
         }
 
-        c._state.metrics.x += isHorizontal ? x : x * direction;
-        c._state.metrics.y += isVertical ? y : y * direction;
-
-        if (isHorizontal) {
-          x += c._state.metrics.width;
-          x += e._style.rowGap;
+        // Add left, top, right, bottom offsets.
+        if (c._style.left) {
+          c._state.metrics.x += c._style.left;
+        } else if (c._style.right) {
+          c._state.metrics.x -= c._style.right;
         }
-        if (isVertical) {
-          y += c._state.metrics.height;
-          y += e._style.columnGap;
-        }
-      }
-
-      // Apply align items.
-      if (isHorizontal) {
-        if (e._style.alignItems === "flex-start") {
-          c._state.metrics.y = y + c._style.marginTop;
-        }
-
-        if (e._style.alignItems === "center") {
-          c._state.metrics.y =
-            e._state.metrics.y + e._state.metrics.height / 2 - c._state.metrics.height / 2;
-        }
-
-        if (e._style.alignItems === "flex-end") {
-          c._state.metrics.y =
-            e._state.metrics.y +
-            e._state.metrics.height -
-            c._state.metrics.height -
-            e._style.paddingBottom;
-        }
-
-        if (
-          e._style.alignItems === "stretch" &&
-          c._style.height === undefined &&
-          c._style.alignSelf === "auto"
-        ) {
-          c._state.metrics.height =
-            e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-        }
-      }
-      if (isVertical) {
-        if (e._style.alignItems === "flex-start") {
-          c._state.metrics.x = x + c._style.marginLeft;
-        }
-
-        if (e._style.alignItems === "center") {
-          c._state.metrics.x =
-            e._state.metrics.x + e._state.metrics.width / 2 - c._state.metrics.width / 2;
-        }
-
-        if (e._style.alignItems === "flex-end") {
-          c._state.metrics.x =
-            e._state.metrics.x +
-            e._state.metrics.width -
-            c._state.metrics.width -
-            e._style.paddingRight;
-        }
-
-        if (
-          e._style.alignItems === "stretch" &&
-          c._style.width === undefined &&
-          c._style.alignSelf === "auto"
-        ) {
-          c._state.metrics.width =
-            e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
+        if (c._style.top) {
+          c._state.metrics.y += c._style.top;
+        } else if (c._style.bottom) {
+          c._state.metrics.y -= c._style.bottom;
         }
       }
 
-      // Align self.
-      if (isHorizontal) {
-        if (c._style.alignSelf === "flex-start") {
-          c._state.metrics.y = e._state.metrics.y + e._style.paddingTop + c._style.marginTop;
-        }
-
-        if (c._style.alignSelf === "center") {
-          c._state.metrics.y =
-            e._state.metrics.y + e._state.metrics.height / 2 - c._state.metrics.height / 2;
-        }
-
-        if (c._style.alignSelf === "flex-end") {
-          c._state.metrics.y =
-            e._state.metrics.y +
-            e._state.metrics.height -
-            c._state.metrics.height -
-            e._style.paddingBottom;
-        }
-
-        if (c._style.alignSelf === "stretch" && c._style.height === undefined) {
-          c._state.metrics.y = e._state.metrics.y + e._style.paddingTop;
-          c._state.metrics.height =
-            e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-        }
-      }
-      if (isVertical) {
-        if (c._style.alignSelf === "flex-start") {
-          c._state.metrics.x = e._state.metrics.x + e._style.paddingLeft + c._style.marginLeft;
-        }
-
-        if (c._style.alignSelf === "center") {
-          c._state.metrics.x =
-            e._state.metrics.x + e._state.metrics.width / 2 - c._state.metrics.width / 2;
-        }
-
-        if (c._style.alignSelf === "flex-end") {
-          c._state.metrics.x =
-            e._state.metrics.x +
-            e._state.metrics.width -
-            c._state.metrics.width -
-            e._style.paddingRight;
-        }
-
-        if (c._style.alignSelf === "stretch" && c._style.width === undefined) {
-          c._state.metrics.x = e._state.metrics.x + e._style.paddingLeft;
-          c._state.metrics.width =
-            e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-        }
-      }
-
-      if (isHorizontal) {
-        x += c._style.marginLeft + c._style.marginRight;
-      }
-
-      if (isVertical) {
-        y += c._style.marginTop + c._style.marginBottom;
-      }
-
-      // Add left, top, right, bottom offsets.
-      if (c._style.left) {
-        c._state.metrics.x += c._style.left;
-      } else if (c._style.right) {
-        c._state.metrics.x -= c._style.right;
-      }
-      if (c._style.top) {
-        c._state.metrics.y += c._style.top;
-      } else if (c._style.bottom) {
-        c._state.metrics.y -= c._style.bottom;
-      }
-
-      // Keep track of the longest child in the flex container for the purpose of wrapping.
-      if (c._style.flexDirection === "row") {
-        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
-      }
-      if (c._style.flexDirection === "column") {
-        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.height);
-      }
-
-      c = isReversed ? c.prev : c.next;
+      main = resetMain;
+      cross += longestChild + crossGap;
     }
 
-    // Round to whole pixels.
     e._state.metrics.x = Math.round(e._state.metrics.x);
     e._state.metrics.y = Math.round(e._state.metrics.y);
     e._state.metrics.width = Math.round(e._state.metrics.width);

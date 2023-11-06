@@ -19,48 +19,29 @@ export function flexValue() {
       height: 300,
       width: 300,
     },
+    testID: "flexValue",
   });
 
-  const row = new View({
-    style: { flexDirection: "row", marginLeft: 50, width: 250 },
-  });
+  const row = new View({ style: { flexDirection: "row", marginLeft: 50, width: 250 } });
   root.add(row);
-  const row0 = new View({
-    style: { backgroundColor: colors[1], flex: 0, height: 50 },
-  });
+  const row0 = new View({ style: { backgroundColor: colors[1], flex: 0, height: 50 } });
   row.add(row0);
-  const row1 = new View({
-    style: { backgroundColor: colors[2], flex: 1, height: 50 },
-  });
+  const row1 = new View({ style: { backgroundColor: colors[2], flex: 1, height: 50 } });
   row.add(row1);
-  const row2 = new View({
-    style: { backgroundColor: colors[3], flex: 2, height: 50 },
-  });
+  const row2 = new View({ style: { backgroundColor: colors[3], flex: 2, height: 50 } });
   row.add(row2);
-  const rowFixed = new View({
-    style: { backgroundColor: colors[4], height: 50, width: 50 },
-  });
+  const rowFixed = new View({ style: { backgroundColor: colors[4], height: 50, width: 50 } });
   row.add(rowFixed);
 
-  const column = new View({
-    style: { flex: 1, flexDirection: "column" },
-  });
+  const column = new View({ style: { flex: 1, flexDirection: "column" }, testID: "column" });
   root.add(column);
-  const column0 = new View({
-    style: { backgroundColor: colors[5], flex: 0, width: 50 },
-  });
+  const column0 = new View({ style: { backgroundColor: colors[5], flex: 0, width: 50 } });
   column.add(column0);
-  const column1 = new View({
-    style: { backgroundColor: colors[6], flex: 1, width: 50 },
-  });
+  const column1 = new View({ style: { backgroundColor: colors[6], flex: 1, width: 50 } });
   column.add(column1);
-  const column2 = new View({
-    style: { backgroundColor: colors[7], flex: 2, width: 50 },
-  });
+  const column2 = new View({ style: { backgroundColor: colors[7], flex: 2, width: 50 } });
   column.add(column2);
-  const columnFixed = new View({
-    style: { backgroundColor: colors[8], height: 50, width: 50 },
-  });
+  const columnFixed = new View({ style: { backgroundColor: colors[8], height: 50, width: 50 } });
   column.add(columnFixed);
 
   return root;
@@ -213,6 +194,7 @@ export function alignItemsAndSelf() {
         flexDirection: "row",
         height: "100%",
       },
+      testID: "row",
     });
     rows.add(row);
 
@@ -254,6 +236,7 @@ export function alignItemsAndSelf() {
         flexDirection: "column",
         width: "100%",
       },
+      testID: "column",
     });
     columns.add(column);
 
@@ -348,13 +331,15 @@ export function flexWrap() {
 
   const row = new View({
     style: {
-      // alignItems: "center",
+      // paddingVertical: 10,
+      alignItems: "stretch",
       backgroundColor: colors[0],
       columnGap: 5,
-      flexDirection: "row",
-      flexWrap: "wrap",
+      flexDirection: "row-reverse",
+      flexWrap: "wrap-reverse",
+      height: 200,
+      justifyContent: "flex-start",
       marginLeft: 100,
-      paddingVertical: 10,
       rowGap: 10,
       width: 200,
     },
@@ -373,22 +358,22 @@ export function flexWrap() {
   row.add(box(colors[4], 70, 41, { marginLeft: 8 }));
   row.add(box(colors[5], 180, 19));
 
-  const column = new View({
-    style: {
-      backgroundColor: colors[0],
-      columnGap: 10,
-      flexDirection: "column",
-      flexWrap: "wrap",
-      height: 177,
-      paddingHorizontal: 10,
-      rowGap: 5,
-    },
-  });
-  root.add(column);
+  // const column = new View({
+  //   style: {
+  //     backgroundColor: colors[0],
+  //     columnGap: 10,
+  //     flexDirection: "column",
+  //     flexWrap: "wrap",
+  //     height: 177,
+  //     paddingHorizontal: 10,
+  //     rowGap: 5,
+  //   },
+  // });
+  // root.add(column);
 
-  column.add(box(colors[1], 25, 40));
-  column.add(box(colors[2], 25, 40));
-  column.add(box(colors[3], 25, 60, { marginTop: 11 }));
+  // column.add(box(colors[1], 25, 40));
+  // column.add(box(colors[2], 25, 40));
+  // column.add(box(colors[3], 25, 60, { marginTop: 11 }));
 
   return root;
 }

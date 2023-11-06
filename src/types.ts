@@ -1,3 +1,5 @@
+import { Text } from "./Text";
+import { View } from "./View";
 import { Vec2 } from "./math/Vec2";
 
 export enum UserEventType {
@@ -20,6 +22,7 @@ export type MoveEvent = {
 export type UserEvent = ClickEvent | MoveEvent;
 
 export type LayoutNodeState = {
+  flexChildren: Array<Array<View | Text>>;
   metrics: { height: number; width: number; x: number; y: number };
   scrollOffset: Vec2;
   scrollableContentSize: Vec2;
