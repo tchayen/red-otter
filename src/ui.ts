@@ -70,17 +70,28 @@ export function ui(renderer: UIRenderer): View {
   const column3 = new View({ style: columnStyle });
   container.add(column3);
 
-  column3.add(text("margins and paddings"));
-  column3.add(fixtures.marginsAndPaddings());
+  column3.add(text("flexShrink and flexGrow"));
+  column3.add(fixtures.flexShrinkAndGrow());
+  column3.add(text("margins, paddings, borders"));
+  column3.add(fixtures.marginsAndPaddingsAndBorders());
   column3.add(text("left, top, right, bottom"));
   column3.add(fixtures.offsets());
-  column3.add(text("inheriting sizes"));
-  column3.add(fixtures.inheritingSizes());
 
   const column4 = new View({ style: columnStyle });
   container.add(column4);
-  column4.add(text("form UI"));
-  column4.add(fixtures.formUI());
+
+  column4.add(text("percentage sizes and min/max"));
+  column4.add(fixtures.percentageAndMinMaxSizes());
+  column4.add(text("display and overflow"));
+  column4.add(fixtures.displayAndOverflow());
+  column4.add(text("zIndex"));
+  column4.add(fixtures.zIndex());
+
+  const column5 = new View({ style: columnStyle });
+  container.add(column5);
+
+  column5.add(text("form UI"));
+  column5.add(fixtures.formUI());
 
   // const scroll = testScroll();
   // container.add(scroll);

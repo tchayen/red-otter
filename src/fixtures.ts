@@ -348,6 +348,7 @@ export function flexWrap() {
 
   const row = new View({
     style: {
+      // alignItems: "center",
       backgroundColor: colors[0],
       columnGap: 5,
       flexDirection: "row",
@@ -404,7 +405,20 @@ export function alignContent() {
   return root;
 }
 
-export function marginsAndPaddings() {
+export function flexShrinkAndGrow() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  return root;
+}
+
+// TODO @tchayen: add borders.
+export function marginsAndPaddingsAndBorders() {
   const root = new View({
     style: {
       backgroundColor: "#000",
@@ -563,7 +577,7 @@ export function offsets() {
   return root;
 }
 
-export function inheritingSizes() {
+export function percentageAndMinMaxSizes() {
   const root = new View({
     style: {
       backgroundColor: "#000",
@@ -600,7 +614,7 @@ export function inheritingSizes() {
     style: {
       backgroundColor: colors[3],
       height: "50%",
-      width: 80,
+      width: 40,
     },
     testID: "first",
   });
@@ -609,7 +623,7 @@ export function inheritingSizes() {
     style: {
       backgroundColor: colors[4],
       height: "50%",
-      width: 80,
+      width: 40,
     },
   });
   innermost.add(second);
@@ -617,7 +631,7 @@ export function inheritingSizes() {
     style: {
       backgroundColor: colors[5],
       height: "50%",
-      width: 80,
+      width: 40,
     },
   });
   innermost.add(third);
@@ -660,6 +674,124 @@ export function inheritingSizes() {
     testID: "maxSizeSecond",
   });
   maxSize.add(maxSizeSecond);
+
+  return root;
+}
+
+export function displayAndOverflow() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  return root;
+}
+
+export function zIndex() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const rows = new View({
+    style: {
+      flexDirection: "column",
+      height: "50%",
+      width: "100%",
+    },
+  });
+  root.add(rows);
+
+  function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[1],
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[3],
+      height: 25,
+      width: 50,
+    } as ViewStyleProps;
+    const view = new View({
+      style: {
+        flexDirection: "row-reverse",
+        justifyContent: attribute,
+        width: "100%",
+      },
+    });
+    rows.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
+  }
+
+  generateFlexRow("flex-start");
+  generateFlexRow("flex-end");
+  generateFlexRow("center");
+  generateFlexRow("space-evenly");
+  generateFlexRow("space-around");
+  generateFlexRow("space-between");
+
+  const columns = new View({
+    style: {
+      flexDirection: "row",
+      height: "50%",
+      width: "100%",
+    },
+  });
+  root.add(columns);
+
+  function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[1],
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[3],
+      height: 25,
+      width: 50,
+    } as ViewStyleProps;
+    const view = new View({
+      style: {
+        flexDirection: "column-reverse",
+        height: "100%",
+        justifyContent: attribute,
+      },
+    });
+    columns.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
+  }
+
+  generateFlexColumn("flex-start");
+  generateFlexColumn("flex-end");
+  generateFlexColumn("center");
+  generateFlexColumn("space-evenly");
+  generateFlexColumn("space-around");
+  generateFlexColumn("space-between");
 
   return root;
 }

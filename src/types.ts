@@ -145,27 +145,6 @@ export type DecorativeProps = {
 
 export type ExactDecorativeProps = Required<DecorativeProps>;
 
-export type Rectangle = {
-  height: number;
-  width: number;
-  x: number;
-  y: number;
-};
-
-// TODO: scroll position!
-export type LayoutRectangle = {
-  rectangle: Rectangle;
-  /*
-   * Only those are relevant to pass on to drawing.
-   */
-  style: Pick<LayoutProps, "display" | "zIndex" | "overflow"> & DecorativeProps;
-};
-
-export type RenderingQuad = {
-  rectangle: Rectangle;
-  style: DecorativeProps;
-};
-
 export type TextStyleProps = {
   color: string;
   fontName: string;

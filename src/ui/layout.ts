@@ -7,12 +7,12 @@ import { Text } from "../Text";
 
 /**
  * @param tree tree of views to layout.
- * @param fontLookups used for calculating text sizes.
+ * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
  *
- * This function traverses the tree and calculates layout information - width,
- * height, x, y of each element - and stores it in `__state.layout` property.
+ * This function traverses the tree and calculates layout information - `width`, `height`, `x`, `y`
+ * of each element - and stores it in `__state.metrics` of each node.
  */
-export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
+export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2): void {
   const firstPass = new Queue<View | Text>();
   const secondPass = new Queue<View | Text>();
   const thirdPass = new Queue<View | Text>();
@@ -419,6 +419,17 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
     // Offset for children, gradually building up as next children are processed.
     let x = e._state.metrics.x + e._style.paddingLeft;
     let y = e._state.metrics.y + e._style.paddingTop;
+
+    // TODO @tchayen:
+    // To add support for flexWrap, there need to be some changes:
+    // - First divide children into rows. Calculate row height (max height of children in a row
+    //   plus their vertical margins; also keep in mind parent's padding).
+    // - If flexDirection === "row-reverse", reverse the order of children in each row.
+    // - If flexWrap === "wrap-reverse", reverse the order of rows.
+    // - Then calculate positions of children in each row. Align items and alignSelf work in
+    //   respect to their row.
+    // - Align content spaces out the rows.
+    // - Justify content spaces out the children in each row.
 
     // Apply justify content. Starting point for laying out children.
     if (isHorizontal) {

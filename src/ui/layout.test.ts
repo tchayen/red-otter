@@ -8,16 +8,7 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import { TextStyleProps, ViewStyleProps } from "../types";
-import {
-  alignItemsAndSelf,
-  flexDirectionReverse,
-  flexRowAndColumn,
-  flexValue,
-  flexWrap,
-  inheritingSizes,
-  marginsAndPaddings,
-  offsets,
-} from "../fixtures";
+import * as fixtures from "../fixtures";
 
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
@@ -127,7 +118,7 @@ describe("Layout", () => {
   });
 
   it("flex value", () => {
-    const root = flexValue();
+    const root = fixtures.flexValue();
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -160,8 +151,8 @@ describe("Layout", () => {
     }
   });
 
-  it("flex row and column", () => {
-    const root = flexRowAndColumn();
+  it("flexDirection row and column", () => {
+    const root = fixtures.flexRowAndColumn();
     layout(root, lookups, new Vec2(1024, 768));
 
     // Three items per row.
@@ -209,8 +200,8 @@ describe("Layout", () => {
     }
   });
 
-  it("alignItemsAndSelf", () => {
-    const root = alignItemsAndSelf();
+  it("alignItems and alignSelf", () => {
+    const root = fixtures.alignItemsAndSelf();
     layout(root, lookups, new Vec2(1024, 768));
 
     let c: View | Text | null | undefined = null;
@@ -254,7 +245,7 @@ describe("Layout", () => {
   });
 
   it("flexDirection reverse", () => {
-    const root = flexDirectionReverse();
+    const root = fixtures.flexDirectionReverse();
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -282,7 +273,7 @@ describe("Layout", () => {
   });
 
   it("flexWrap", () => {
-    const root = flexWrap();
+    const root = fixtures.flexWrap();
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -307,8 +298,16 @@ describe("Layout", () => {
     }
   });
 
-  it("margins and paddings", () => {
-    const root = marginsAndPaddings();
+  it("alignContent", () => {
+    // TODO @tchayen: add after implemented.
+  });
+
+  it("flexShrink and flexGrow", () => {
+    // TODO @tchayen: add after implemented.
+  });
+
+  it("margins, paddings, borders", () => {
+    const root = fixtures.marginsAndPaddingsAndBorders();
     layout(root, lookups, new Vec2(1024, 768));
 
     const expectedValues = [
@@ -332,8 +331,8 @@ describe("Layout", () => {
     }
   });
 
-  it("offsets", () => {
-    const root = offsets();
+  it("left, top, right, bottom", () => {
+    const root = fixtures.offsets();
     layout(root, lookups, new Vec2(1024, 768));
 
     const expectedPositions = [
@@ -365,8 +364,8 @@ describe("Layout", () => {
     }
   });
 
-  it("inheriting sizes", () => {
-    const root = inheritingSizes();
+  it("percentage sizes and min/max", () => {
+    const root = fixtures.percentageAndMinMaxSizes();
     layout(root, lookups, new Vec2(1024, 768));
 
     const passThrough = root.firstChild;
@@ -388,10 +387,10 @@ describe("Layout", () => {
     expect(maxSizeSecond?.props.testID).toBe("maxSizeSecond");
 
     const expectedSizes = [
-      new Vec2(240, 150),
-      new Vec2(240, 75),
-      new Vec2(240, 75),
-      new Vec2(80, 38),
+      new Vec2(120, 150),
+      new Vec2(120, 75),
+      new Vec2(120, 75),
+      new Vec2(40, 38),
       new Vec2(30, 30),
       new Vec2(40, 40),
       new Vec2(50, 50),
@@ -404,5 +403,13 @@ describe("Layout", () => {
       expect(nodes[i]?._state.metrics.width).toBe(expectedSizes[i].x);
       expect(nodes[i]?._state.metrics.height).toBe(expectedSizes[i].y);
     }
+  });
+
+  it("display and overflow", () => {
+    // TODO @tchayen: add after implemented.
+  });
+
+  it("zIndex", () => {
+    // TODO @tchayen: add after implemented.
   });
 });
