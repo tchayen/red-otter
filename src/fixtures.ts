@@ -26,19 +26,19 @@ export function flexValue() {
   });
   root.add(row);
   const row0 = new View({
-    style: { backgroundColor: colors[0], flex: 0, height: 50 },
+    style: { backgroundColor: colors[1], flex: 0, height: 50 },
   });
   row.add(row0);
   const row1 = new View({
-    style: { backgroundColor: colors[1], flex: 1, height: 50 },
+    style: { backgroundColor: colors[2], flex: 1, height: 50 },
   });
   row.add(row1);
   const row2 = new View({
-    style: { backgroundColor: colors[2], flex: 2, height: 50 },
+    style: { backgroundColor: colors[3], flex: 2, height: 50 },
   });
   row.add(row2);
   const rowFixed = new View({
-    style: { backgroundColor: colors[3], height: 50, width: 50 },
+    style: { backgroundColor: colors[4], height: 50, width: 50 },
   });
   row.add(rowFixed);
 
@@ -47,19 +47,19 @@ export function flexValue() {
   });
   root.add(column);
   const column0 = new View({
-    style: { backgroundColor: colors[4], flex: 0, width: 50 },
+    style: { backgroundColor: colors[5], flex: 0, width: 50 },
   });
   column.add(column0);
   const column1 = new View({
-    style: { backgroundColor: colors[5], flex: 1, width: 50 },
+    style: { backgroundColor: colors[6], flex: 1, width: 50 },
   });
   column.add(column1);
   const column2 = new View({
-    style: { backgroundColor: colors[6], flex: 2, width: 50 },
+    style: { backgroundColor: colors[7], flex: 2, width: 50 },
   });
   column.add(column2);
   const columnFixed = new View({
-    style: { backgroundColor: colors[7], height: 50, width: 50 },
+    style: { backgroundColor: colors[8], height: 50, width: 50 },
   });
   column.add(columnFixed);
 
@@ -86,19 +86,19 @@ export function flexRowAndColumn() {
 
   function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: colors[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: colors[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -133,19 +133,19 @@ export function flexRowAndColumn() {
 
   function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: colors[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: colors[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -201,7 +201,7 @@ export function alignItemsAndSelf() {
     all?: LayoutProps
   ) {
     const firstStyle = {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: crossAxisValue,
       width: mainAxisValue,
     } as ViewStyleProps;
@@ -250,7 +250,7 @@ export function alignItemsAndSelf() {
     all?: LayoutProps
   ) {
     const firstStyle = {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: mainAxisValue,
       width: crossAxisValue,
     } as ViewStyleProps;
@@ -307,7 +307,7 @@ export function flexDirectionReverse() {
   root.add(row);
   const rowFirst = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: 50,
       marginLeft: 20,
       width: 50,
@@ -315,11 +315,11 @@ export function flexDirectionReverse() {
   });
   row.add(rowFirst);
   const rowSecond = new View({
-    style: { backgroundColor: colors[1], height: 50, width: 50 },
+    style: { backgroundColor: colors[2], height: 50, width: 50 },
   });
   row.add(rowSecond);
   const rowThird = new View({
-    style: { backgroundColor: colors[2], height: 50, width: 50 },
+    style: { backgroundColor: colors[3], height: 50, width: 50 },
   });
   row.add(rowThird);
 
@@ -334,7 +334,7 @@ export function flexDirectionReverse() {
   root.add(column);
   const columnFirst = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: colors[1],
       height: 50,
       marginTop: 20,
       width: 50,
@@ -342,11 +342,11 @@ export function flexDirectionReverse() {
   });
   column.add(columnFirst);
   const columnSecond = new View({
-    style: { backgroundColor: colors[1], height: 50, width: 50 },
+    style: { backgroundColor: colors[2], height: 50, width: 50 },
   });
   column.add(columnSecond);
   const columnThird = new View({
-    style: { backgroundColor: colors[2], height: 50, width: 50 },
+    style: { backgroundColor: colors[3], height: 50, width: 50 },
   });
   column.add(columnThird);
 
