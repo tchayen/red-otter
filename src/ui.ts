@@ -148,13 +148,11 @@ function debugPrintTree(tree: View | Text, level: number = 0) {
 
   const { metrics, scrollOffset, scrollableContentSize } = c._state;
   let info =
-    `- [${c?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${
-      metrics.width
-    }, ${metrics.height})\n  scrollOffset: (${scrollOffset.x}, ${
-      scrollOffset.y
-    })\n  scrollableContentSize: (${scrollableContentSize.x}, ${
-      scrollableContentSize.y
-    })\n` ?? "";
+    `- [${c?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${metrics.width}, ${
+      metrics.height
+    })\n  scrollOffset: (${scrollOffset.x}, ${scrollOffset.y})\n  scrollableContentSize: (${
+      scrollableContentSize.x
+    }, ${scrollableContentSize.y})\n` ?? "";
   /*
    * let info =
    *   JSON.stringify(

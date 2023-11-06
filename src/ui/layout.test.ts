@@ -397,15 +397,7 @@ describe("Layout", () => {
       new Vec2(50, 50),
     ];
 
-    const nodes = [
-      passThrough,
-      inside,
-      innermost,
-      first,
-      minSize,
-      maxSize,
-      maxSizeSecond,
-    ];
+    const nodes = [passThrough, inside, innermost, first, minSize, maxSize, maxSizeSecond];
 
     for (let i = 0; i < nodes.length; i++) {
       console.log(i);

@@ -20,10 +20,8 @@ function earCut(ear: RingNode): Vec2[] {
     if (isEar(ear)) {
       triangles.push(ear.position, prev.position, next.position);
       removeNode(ear);
-      /*
-       * Skipping next vertex is a handy trick to achieve less so called
-       * 'sliver triangles'.
-       */
+      // Skipping next vertex is a handy trick to achieve less so called
+      // 'sliver triangles'.
       ear = next.next;
       stop = next.next;
       continue;
@@ -121,11 +119,7 @@ function isEar(ear: RingNode): boolean {
 
   let p = ear.next.next;
   while (p !== ear.prev) {
-    const inTriangle = isPointInPolygon(p.position, [
-      a.position,
-      b.position,
-      c.position,
-    ]);
+    const inTriangle = isPointInPolygon(p.position, [a.position, b.position, c.position]);
 
     if (inTriangle && area(p.prev.position, p.position, p.next.position) >= 0) {
       return false;
@@ -141,22 +135,17 @@ function isPointInPolygon(point: Vec2, points: Vec2[]): boolean {
   let oddNodes = false;
 
   while (i < points.length) {
-    /*
-     * Check if the point is between the y coordinates of the two points of the
-     * edge.
-     */
+    // Check if the point is between the y coordinates of the two points of the
+    // edge.
     if (
       (points[i].y < point.y && points[j].y >= point.y) ||
       (points[j].y < point.y && points[i].y >= point.y)
     ) {
-      /*
-       * Calculate the x coordinate of the point based on the slope of the edge
-       * and the y coordinate of the point
-       */
+      // Calculate the x coordinate of the point based on the slope of the edge
+      // and the y coordinate of the point
       if (
         points[i].x +
-          ((point.y - points[i].y) / (points[j].y - points[i].y)) *
-            (points[j].x - points[i].x) <
+          ((point.y - points[i].y) / (points[j].y - points[i].y)) * (points[j].x - points[i].x) <
         point.x
       ) {
         oddNodes = !oddNodes;

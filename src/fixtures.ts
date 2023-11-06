@@ -195,11 +195,7 @@ export function alignItemsAndSelf() {
   });
   root.add(rows);
 
-  function addRow(
-    alignItems: LayoutProps["alignItems"],
-    last?: LayoutProps,
-    all?: LayoutProps
-  ) {
+  function addRow(alignItems: LayoutProps["alignItems"], last?: LayoutProps, all?: LayoutProps) {
     const firstStyle = {
       backgroundColor: colors[1],
       height: crossAxisValue,
@@ -229,11 +225,7 @@ export function alignItemsAndSelf() {
   addRow("flex-start", { alignSelf: "center" });
   addRow("flex-end", { alignSelf: "flex-start" });
   addRow("center", { alignSelf: "stretch", height: undefined });
-  addRow(
-    "stretch",
-    { alignSelf: "flex-end", height: crossAxisValue },
-    { height: undefined }
-  );
+  addRow("stretch", { alignSelf: "flex-end", height: crossAxisValue }, { height: undefined });
 
   const columns = new View({
     style: {
@@ -244,11 +236,7 @@ export function alignItemsAndSelf() {
   });
   root.add(columns);
 
-  function addColumn(
-    alignItems: LayoutProps["alignItems"],
-    last?: LayoutProps,
-    all?: LayoutProps
-  ) {
+  function addColumn(alignItems: LayoutProps["alignItems"], last?: LayoutProps, all?: LayoutProps) {
     const firstStyle = {
       backgroundColor: colors[1],
       height: mainAxisValue,
@@ -278,11 +266,7 @@ export function alignItemsAndSelf() {
   addColumn("flex-start", { alignSelf: "center" });
   addColumn("flex-end", { alignSelf: "flex-start" });
   addColumn("center", { alignSelf: "stretch", width: undefined });
-  addColumn(
-    "stretch",
-    { alignSelf: "flex-end", width: crossAxisValue },
-    { width: undefined }
-  );
+  addColumn("stretch", { alignSelf: "flex-end", width: crossAxisValue }, { width: undefined });
 
   return root;
 }
@@ -376,12 +360,7 @@ export function flexWrap() {
   });
   root.add(row);
 
-  function box(
-    backgroundColor: string,
-    width: number,
-    height: number,
-    style?: ViewStyleProps
-  ) {
+  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
     return new View({
       style: { backgroundColor, height, width, ...style },
     });

@@ -359,13 +359,7 @@ export class UIRenderer {
     device.queue.writeBuffer(this.vertexBuffer, 0, new Float32Array(vertices));
   }
 
-  rectangle(
-    color: Vec4,
-    position: Vec2,
-    size: Vec2,
-    corners: Vec4,
-    sigma: number
-  ): void {
+  rectangle(color: Vec4, position: Vec2, size: Vec2, corners: Vec4, sigma: number): void {
     if (color.w < 0.01) {
       return;
     }
@@ -389,10 +383,8 @@ export class UIRenderer {
     this.rectangleData[this.rectangleCount * struct + 11] = corners.w;
     this.rectangleData[this.rectangleCount * struct + 12] = size.x;
     this.rectangleData[this.rectangleCount * struct + 13] = size.y;
-    this.rectangleData[this.rectangleCount * struct + 14] =
-      this.settings.windowWidth;
-    this.rectangleData[this.rectangleCount * struct + 15] =
-      this.settings.windowHeight;
+    this.rectangleData[this.rectangleCount * struct + 14] = this.settings.windowWidth;
+    this.rectangleData[this.rectangleCount * struct + 15] = this.settings.windowHeight;
 
     this.rectangleCount += 1;
     this.drawingMode = DrawingMode.Rectangles;
@@ -427,9 +419,7 @@ export class UIRenderer {
       });
     } catch (error) {
       console.error(
-        `Failed while shaping the word "${text.slice(0, 50)}${
-          text.length > 50 ? "…" : ""
-        }".`
+        `Failed while shaping the word "${text.slice(0, 50)}${text.length > 50 ? "…" : ""}".`
       );
       console.error(error);
       return;
@@ -517,8 +507,7 @@ export class UIRenderer {
       this.glyphData[this.glyphCount * struct + 12] = uv.z;
       this.glyphData[this.glyphCount * struct + 13] = uv.w;
       this.glyphData[this.glyphCount * struct + 14] = this.settings.windowWidth;
-      this.glyphData[this.glyphCount * struct + 15] =
-        this.settings.windowHeight;
+      this.glyphData[this.glyphCount * struct + 15] = this.settings.windowHeight;
 
       this.glyphCount += 1;
     }
@@ -566,8 +555,7 @@ export class UIRenderer {
     for (let k = 0; k < this.drawingIndices.length - 1; k += 2) {
       const r = this.drawingIndices[k];
       const g = this.drawingIndices[k + 1];
-      const rectangles =
-        (this.drawingIndices[k + 2] ?? this.rectangleCount) - r;
+      const rectangles = (this.drawingIndices[k + 2] ?? this.rectangleCount) - r;
       const glyphs = (this.drawingIndices[k + 3] ?? this.glyphCount) - g;
 
       renderPass.setPipeline(this.rectanglePipeline);

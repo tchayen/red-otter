@@ -10,9 +10,7 @@ describe("parseColor", () => {
     });
 
     it("should parse with alpha", () => {
-      expect(parseColor("#ff0000aa")).toEqual(
-        new Vec4(1, 0, 0, 0.666_666_666_666_666_6)
-      );
+      expect(parseColor("#ff0000aa")).toEqual(new Vec4(1, 0, 0, 0.666_666_666_666_666_6));
     });
 
     it("should parse short hex", () => {
@@ -34,9 +32,7 @@ describe("parseColor", () => {
     });
 
     it("should parse RGBA", () => {
-      expect(parseColor("rgba(255, 0, 0, 0.5)")).toEqual(
-        new Vec4(1, 0, 0, 0.5)
-      );
+      expect(parseColor("rgba(255, 0, 0, 0.5)")).toEqual(new Vec4(1, 0, 0, 0.5));
     });
 
     it("should reject RGB with alpha", () => {
@@ -54,27 +50,19 @@ describe("parseColor", () => {
     });
 
     it("should parse with alpha", () => {
-      expect(parseColor("hsl(60, 100%, 50%, 0.8)")).toEqual(
-        new Vec4(1, 1, 0, 0.8)
-      );
+      expect(parseColor("hsl(60, 100%, 50%, 0.8)")).toEqual(new Vec4(1, 1, 0, 0.8));
     });
 
     it("should parse HSLA", () => {
-      expect(parseColor("hsla(60, 100%, 50%, 0.8)")).toEqual(
-        new Vec4(1, 1, 0, 0.8)
-      );
+      expect(parseColor("hsla(60, 100%, 50%, 0.8)")).toEqual(new Vec4(1, 1, 0, 0.8));
     });
 
     it("should parse HSLA without commas", () => {
-      expect(parseColor("hsla(60 100% 50% 0.8)")).toEqual(
-        new Vec4(1, 1, 0, 0.8)
-      );
+      expect(parseColor("hsla(60 100% 50% 0.8)")).toEqual(new Vec4(1, 1, 0, 0.8));
     });
 
     it("should parse HSLA with a slash", () => {
-      expect(parseColor("hsla(60 100% 50% / 0.8)")).toEqual(
-        new Vec4(1, 1, 0, 0.8)
-      );
+      expect(parseColor("hsla(60 100% 50% / 0.8)")).toEqual(new Vec4(1, 1, 0, 0.8));
     });
   });
 });

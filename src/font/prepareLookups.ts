@@ -47,11 +47,7 @@ export function prepareLookups(
 
     sizes.push(
       ...glyphs.map(
-        (g) =>
-          new Vec2(
-            g.width * scale + atlasGap * 2,
-            g.height * scale + atlasGap * 2
-          )
+        (g) => new Vec2(g.width * scale + atlasGap * 2, g.height * scale + atlasGap * 2)
       )
     );
 

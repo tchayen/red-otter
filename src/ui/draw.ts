@@ -95,10 +95,7 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
 
       // Simplified:
       const position = new Vec2(rect._state.metrics.x, rect._state.metrics.y);
-      const size = new Vec2(
-        rect._state.metrics.width,
-        rect._state.metrics.height
-      );
+      const size = new Vec2(rect._state.metrics.width, rect._state.metrics.height);
 
       // // Parent's dimensions and overflow property
       // const parentMetrics = rect.parent?._state.metrics;

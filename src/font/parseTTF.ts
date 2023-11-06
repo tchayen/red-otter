@@ -1,12 +1,5 @@
 import { invariant } from "../utils/invariant";
-import {
-  BinaryReader,
-  Fixed,
-  FWord,
-  Int16,
-  Uint16,
-  Uint32,
-} from "./BinaryReader";
+import { BinaryReader, Fixed, FWord, Int16, Uint16, Uint32 } from "./BinaryReader";
 
 /**
  * @param data TTF file in binary format.
@@ -37,20 +30,13 @@ export function parseTTF(data: ArrayBuffer): TTF {
 
     if (tag !== "head") {
       const calculated = calculateChecksum(
-        reader.getDataSlice(
-          tables[tag].offset,
-          4 * Math.ceil(tables[tag].length / 4)
-        )
+        reader.getDataSlice(tables[tag].offset, 4 * Math.ceil(tables[tag].length / 4))
       );
-      invariant(
-        calculated === tables[tag].checksum,
-        `Checksum for table ${tag} is invalid.`
-      );
+      invariant(calculated === tables[tag].checksum, `Checksum for table ${tag} is invalid.`);
     }
   }
 
-  const shared =
-    "table is missing. Please use other font variant that contains it.";
+  const shared = "table is missing. Please use other font variant that contains it.";
 
   invariant(tables["head"].offset, `head ${shared}`);
   ttf.head = readHeadTable(reader, tables["head"].offset);
@@ -81,12 +67,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
   );
 
   invariant(tables["glyf"].offset, `glyf ${shared}`);
-  ttf.glyf = readGlyfTable(
-    reader,
-    tables["glyf"].offset,
-    ttf.loca,
-    ttf.head?.indexToLocFormat
-  );
+  ttf.glyf = readGlyfTable(reader, tables["glyf"].offset, ttf.loca, ttf.head?.indexToLocFormat);
 
   if (tables["GPOS"]) {
     ttf.GPOS = readGPOSTable(reader, tables["GPOS"].offset);
@@ -100,18 +81,12 @@ export function parseTTF(data: ArrayBuffer): TTF {
  */
 function calculateChecksum(data: Uint8Array): number {
   const nlongs = data.length / 4;
-  invariant(
-    nlongs === Math.floor(nlongs),
-    "Data length must be divisible by 4."
-  );
+  invariant(nlongs === Math.floor(nlongs), "Data length must be divisible by 4.");
 
   let sum = 0;
   for (let i = 0; i < nlongs; i++) {
     const int32 =
-      (data[i * 4] << 24) +
-      (data[i * 4 + 1] << 16) +
-      (data[i * 4 + 2] << 8) +
-      data[i * 4 + 3];
+      (data[i * 4] << 24) + (data[i * 4 + 1] << 16) + (data[i * 4 + 2] << 8) + data[i * 4 + 3];
     const unsigned = int32 >>> 0;
     sum = ((sum + unsigned) & 0xff_ff_ff_ff) >>> 0;
   }
@@ -181,11 +156,7 @@ function readMaxpTable(reader: BinaryReader, offset: number): MaxpTable {
 
   const version = reader.getUint32();
   const versionString =
-    version === 0x00_00_50_00
-      ? "0.5"
-      : version === 0x00_01_00_00
-      ? "1.0"
-      : null;
+    version === 0x00_00_50_00 ? "0.5" : version === 0x00_01_00_00 ? "1.0" : null;
 
   invariant(
     versionString,
@@ -229,8 +200,7 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
     encodingRecords.push({ encodingID, offset, platformID });
 
     const isWindowsPlatform =
-      platformID === 3 &&
-      (encodingID === 0 || encodingID === 1 || encodingID === 10);
+      platformID === 3 && (encodingID === 0 || encodingID === 1 || encodingID === 10);
 
     const isUnicodePlatform =
       platformID === 0 &&
@@ -248,10 +218,7 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
   invariant(selectedOffset !== null, "No supported cmap table found.");
   const format = reader.getUint16();
 
-  invariant(
-    format === 4,
-    `Unsupported cmap table format. Expected 4, found ${format}.`
-  );
+  invariant(format === 4, `Unsupported cmap table format. Expected 4, found ${format}.`);
 
   const length = reader.getUint16();
   const language = reader.getUint16();
@@ -300,10 +267,7 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
         const currentRangeOffset = i * 2; // 2 because the numbers are 2 byte big.
 
         const glyphIndexOffset =
-          idRangeOffsetsStart +
-          idRangeOffset +
-          currentRangeOffset +
-          startCodeOffset;
+          idRangeOffsetsStart + idRangeOffset + currentRangeOffset + startCodeOffset;
 
         reader.setPosition(glyphIndexOffset);
         glyphIndex = reader.getUint16();
@@ -598,30 +562,19 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
     // Only extension supported for now.
     if (lookupType === LookupType.ExtensionPositioning) {
       for (let j = 0; j < subTableCount; j++) {
-        reader.setPosition(
-          offset + lookupListOffset + lookupTables[i] + subTableOffsets[j]
-        );
+        reader.setPosition(offset + lookupListOffset + lookupTables[i] + subTableOffsets[j]);
 
         const posFormat = reader.getUint16();
         const extensionLookupType = reader.getUint16();
         const extensionOffset = reader.getUint32();
 
-        let extension = {} as
-          | ExtensionLookupType2Format1
-          | ExtensionLookupType2Format2;
+        let extension = {} as ExtensionLookupType2Format1 | ExtensionLookupType2Format2;
         reader.runAt(
-          offset +
-            lookupListOffset +
-            lookupTables[i] +
-            subTableOffsets[j] +
-            extensionOffset,
+          offset + lookupListOffset + lookupTables[i] + subTableOffsets[j] + extensionOffset,
           () => {
             if (extensionLookupType === LookupType.PairAdjustment) {
               const posFormat = reader.getUint16();
-              invariant(
-                posFormat === 1 || posFormat === 2,
-                "Invalid posFormat."
-              );
+              invariant(posFormat === 1 || posFormat === 2, "Invalid posFormat.");
               extension.posFormat = posFormat;
 
               if (posFormat === 1) {
@@ -769,9 +722,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                   valueFormat2: valueFormat2,
                 } as ExtensionLookupType2Format2;
               } else {
-                console.warn(
-                  "Only Pair Adjustment lookup format 1 and 2 are supported."
-                );
+                console.warn("Only Pair Adjustment lookup format 1 and 2 are supported.");
               }
             }
           }
@@ -996,10 +947,7 @@ export type CoverageTableFormat2 = {
 /**
  * https://learn.microsoft.com/en-us/typography/opentype/spec/gpos#value-record
  */
-function getValueRecord(
-  reader: BinaryReader,
-  valueRecord: number
-): ValueRecord | undefined {
+function getValueRecord(reader: BinaryReader, valueRecord: number): ValueRecord | undefined {
   const result: ValueRecord = {};
 
   if (valueRecord & 0x00_01) {
@@ -1067,9 +1015,7 @@ function parseCoverage(
   }
 }
 
-function parseClassDef(
-  reader: BinaryReader
-): ClassDefFormat1 | ClassDefFormat2 {
+function parseClassDef(reader: BinaryReader): ClassDefFormat1 | ClassDefFormat2 {
   const format = reader.getUint16();
 
   if (format === 1) {

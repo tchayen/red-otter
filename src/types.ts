@@ -234,28 +234,18 @@ const defaultDecorativeProps: DecorativeProps = {
   opacity: 1,
 };
 
-export function normalizeLayoutProps<T extends LayoutProps>(
-  input: LayoutProps
-): T {
+export function normalizeLayoutProps<T extends LayoutProps>(input: LayoutProps): T {
   const result = { ...defaultLayoutProps, ...input } as T;
 
-  result.paddingTop =
-    input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
-  result.paddingBottom =
-    input.paddingBottom ?? input.paddingVertical ?? input.padding ?? 0;
-  result.paddingLeft =
-    input.paddingLeft ?? input.paddingHorizontal ?? input.padding ?? 0;
-  result.paddingRight =
-    input.paddingRight ?? input.paddingHorizontal ?? input.padding ?? 0;
+  result.paddingTop = input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
+  result.paddingBottom = input.paddingBottom ?? input.paddingVertical ?? input.padding ?? 0;
+  result.paddingLeft = input.paddingLeft ?? input.paddingHorizontal ?? input.padding ?? 0;
+  result.paddingRight = input.paddingRight ?? input.paddingHorizontal ?? input.padding ?? 0;
 
-  result.marginTop =
-    input.marginTop ?? input.marginVertical ?? input.margin ?? 0;
-  result.marginBottom =
-    input.marginBottom ?? input.marginVertical ?? input.margin ?? 0;
-  result.marginLeft =
-    input.marginLeft ?? input.marginHorizontal ?? input.margin ?? 0;
-  result.marginRight =
-    input.marginRight ?? input.marginHorizontal ?? input.margin ?? 0;
+  result.marginTop = input.marginTop ?? input.marginVertical ?? input.margin ?? 0;
+  result.marginBottom = input.marginBottom ?? input.marginVertical ?? input.margin ?? 0;
+  result.marginLeft = input.marginLeft ?? input.marginHorizontal ?? input.margin ?? 0;
+  result.marginRight = input.marginRight ?? input.marginHorizontal ?? input.margin ?? 0;
 
   result.borderBottomWidth = input.borderBottomWidth ?? input.borderWidth ?? 0;
   result.borderTopWidth = input.borderTopWidth ?? input.borderWidth ?? 0;
@@ -268,18 +258,13 @@ export function normalizeLayoutProps<T extends LayoutProps>(
   return result;
 }
 
-export function normalizeDecorativeProps<T extends DecorativeProps>(
-  input: DecorativeProps
-): T {
+export function normalizeDecorativeProps<T extends DecorativeProps>(input: DecorativeProps): T {
   const result = { ...defaultDecorativeProps, ...input } as T;
 
   result.borderTopLeftRadius = input.borderTopLeftRadius ?? input.borderRadius;
-  result.borderTopRightRadius =
-    input.borderTopRightRadius ?? input.borderRadius;
-  result.borderBottomLeftRadius =
-    input.borderBottomLeftRadius ?? input.borderRadius;
-  result.borderBottomRightRadius =
-    input.borderBottomRightRadius ?? input.borderRadius;
+  result.borderTopRightRadius = input.borderTopRightRadius ?? input.borderRadius;
+  result.borderBottomLeftRadius = input.borderBottomLeftRadius ?? input.borderRadius;
+  result.borderBottomRightRadius = input.borderBottomRightRadius ?? input.borderRadius;
 
   return result;
 }

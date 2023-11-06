@@ -1,12 +1,7 @@
 import { shapeText } from "./font/shapeText";
 
 import { Lookups } from "./font/types";
-import {
-  ExactLayoutProps,
-  LayoutNodeState,
-  TextStyleProps,
-  normalizeLayoutProps,
-} from "./types";
+import { ExactLayoutProps, LayoutNodeState, TextStyleProps, normalizeLayoutProps } from "./types";
 import { Vec2 } from "./math/Vec2";
 
 export class Text {

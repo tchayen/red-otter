@@ -10,18 +10,12 @@ export class BinaryReader {
   private readonly view: DataView;
   private position = 0;
 
-  constructor(
-    data: ArrayBuffer,
-    private readonly options?: { littleEndian?: boolean }
-  ) {
+  constructor(data: ArrayBuffer, private readonly options?: { littleEndian?: boolean }) {
     this.view = new DataView(data);
   }
 
   getUint16(): Uint16 {
-    const value = this.view.getUint16(
-      this.position,
-      this.options?.littleEndian
-    );
+    const value = this.view.getUint16(this.position, this.options?.littleEndian);
     this.position += 2;
     return value;
   }
@@ -33,10 +27,7 @@ export class BinaryReader {
   }
 
   getUint32(): Uint32 {
-    const value = this.view.getUint32(
-      this.position,
-      this.options?.littleEndian
-    );
+    const value = this.view.getUint32(this.position, this.options?.littleEndian);
     this.position += 4;
     return value;
   }

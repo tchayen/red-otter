@@ -67,18 +67,8 @@ export async function renderFontAtlas(
   }
 
   if (!DEBUG_SKIP_SDF && options?.useSDF) {
-    const imageData = context.getImageData(
-      0,
-      0,
-      lookups.atlas.width,
-      lookups.atlas.height
-    );
-    const sdfData = toSDF(
-      imageData,
-      lookups.atlas.width,
-      lookups.atlas.height,
-      atlasRadius
-    );
+    const imageData = context.getImageData(0, 0, lookups.atlas.width, lookups.atlas.height);
+    const sdfData = toSDF(imageData, lookups.atlas.width, lookups.atlas.height, atlasRadius);
     context.putImageData(sdfData, 0, 0);
   }
 

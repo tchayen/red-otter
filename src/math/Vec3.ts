@@ -4,11 +4,7 @@ const EPSILON = 0.001;
  * A 3-dimensional vector.
  */
 export class Vec3 {
-  constructor(
-    public readonly x: number,
-    public readonly y: number,
-    public readonly z: number
-  ) {}
+  constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
 
   add(other: Vec3): Vec3 {
     return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);

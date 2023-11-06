@@ -14,11 +14,7 @@ export function createTextureFromImageBitmap(
       GPUTextureUsage.RENDER_ATTACHMENT,
   });
 
-  device.queue.copyExternalImageToTexture(
-    { source: imageBitmap },
-    { texture },
-    size
-  );
+  device.queue.copyExternalImageToTexture({ source: imageBitmap }, { texture }, size);
 
   return texture;
 }

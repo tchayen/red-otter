@@ -30,15 +30,11 @@ export function packShelves(sizes: Vec2[]): Packing {
 
   rectangles.sort((a, b) => b.height - a.height);
 
-  /*
-   * Aim for a squarish resulting container. Slightly adjusted for sub-100%
-   * space utilization.
-   */
+  // Aim for a squarish resulting container. Slightly adjusted for sub-100%
+  // space utilization.
   const startWidth = Math.max(Math.ceil(Math.sqrt(area / 0.95)), maxWidth);
 
-  const regions = [
-    { height: Number.POSITIVE_INFINITY, width: startWidth, x: 0, y: 0 },
-  ];
+  const regions = [{ height: Number.POSITIVE_INFINITY, width: startWidth, x: 0, y: 0 }];
 
   let width = 0;
   let height = 0;
@@ -88,9 +84,7 @@ export function packShelves(sizes: Vec2[]): Packing {
 
   return {
     height: size,
-    positions: rectangles.map(
-      (rectangle) => new Vec2(rectangle.x, rectangle.y)
-    ),
+    positions: rectangles.map((rectangle) => new Vec2(rectangle.x, rectangle.y)),
     width: size,
   };
 }

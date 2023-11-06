@@ -19,11 +19,7 @@ export function generateGlyphToClassMap(
   } else if (classDef.format === 2) {
     // ClassDefFormat2
     for (const range of classDef.ranges) {
-      for (
-        let glyphID = range.startGlyphID;
-        glyphID <= range.endGlyphID;
-        glyphID++
-      ) {
+      for (let glyphID = range.startGlyphID; glyphID <= range.endGlyphID; glyphID++) {
         glyphToClass.set(glyphID, range.class);
       }
     }

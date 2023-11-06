@@ -44,10 +44,7 @@ export class Vec2 {
   }
 
   equalsEpsilon(other: Vec2, epsilon: number): boolean {
-    return (
-      Math.abs(this.x - other.x) < epsilon &&
-      Math.abs(this.y - other.y) < epsilon
-    );
+    return Math.abs(this.x - other.x) < epsilon && Math.abs(this.y - other.y) < epsilon;
   }
 
   equals(other: Vec2): boolean {

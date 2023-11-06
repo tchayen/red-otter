@@ -5,10 +5,8 @@ import { Queue } from "./utils/Queue";
 export function applyZIndex(root: View): (View | Text)[] {
   const rectangles: (View | Text)[] = [];
 
-  /*
-   * Traverse the tree in DFS order to respect local order of components
-   * (unlike in level order traversal).
-   */
+  // Traverse the tree in DFS order to respect local order of components
+  // (unlike in level order traversal).
   const queue = new Queue<View | Text>();
   queue.enqueue(root);
 

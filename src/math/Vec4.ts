@@ -14,46 +14,24 @@ export class Vec4 {
   ) {}
 
   add(other: Vec4): Vec4 {
-    return new Vec4(
-      this.x + other.x,
-      this.y + other.y,
-      this.z + other.z,
-      this.w + other.w
-    );
+    return new Vec4(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w);
   }
 
   subtract(other: Vec4): Vec4 {
-    return new Vec4(
-      this.x - other.x,
-      this.y - other.y,
-      this.z - other.z,
-      this.w - other.w
-    );
+    return new Vec4(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w);
   }
 
   length(): number {
-    return Math.sqrt(
-      this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w
-    );
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
   }
 
   normalize(): Vec4 {
     const length = this.length();
-    return new Vec4(
-      this.x / length,
-      this.y / length,
-      this.z / length,
-      this.w / length
-    );
+    return new Vec4(this.x / length, this.y / length, this.z / length, this.w / length);
   }
 
   scale(scalar: number): Vec4 {
-    return new Vec4(
-      this.x * scalar,
-      this.y * scalar,
-      this.z * scalar,
-      this.w * scalar
-    );
+    return new Vec4(this.x * scalar, this.y * scalar, this.z * scalar, this.w * scalar);
   }
 
   cross(other: Vec4): Vec4 {
@@ -66,9 +44,7 @@ export class Vec4 {
   }
 
   dot(other: Vec4): number {
-    return (
-      this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
-    );
+    return this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w;
   }
 
   distance(other: Vec4): number {

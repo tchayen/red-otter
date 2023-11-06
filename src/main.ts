@@ -65,14 +65,7 @@ const colorTexture = device.createTexture({
 });
 const colorTextureView = colorTexture.createView({ label: "color" });
 
-const renderer = new UIRenderer(
-  device,
-  context,
-  colorTextureView,
-  settings,
-  lookups,
-  fontAtlas
-);
+const renderer = new UIRenderer(device, context, colorTextureView, settings, lookups, fontAtlas);
 
 const events = new EventManager();
 const tree = ui(renderer);
@@ -102,11 +95,7 @@ render();
 function dispatchEvent(view: View, event: UserEvent): boolean {
   // First, check children (going reverse for depth).
   if (view.firstChild) {
-    for (
-      let child = view.lastChild;
-      child !== null;
-      child = child.prev ?? null
-    ) {
+    for (let child = view.lastChild; child !== null; child = child.prev ?? null) {
       if (dispatchEvent(child as View, event)) {
         return true;
       }

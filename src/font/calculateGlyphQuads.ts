@@ -24,14 +24,9 @@ export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Glyph[] {
 
     invariant(
       index !== undefined,
-      `Couldn't find index for character '${String.fromCharCode(
-        code
-      )}' in glyphIndexMap.`
+      `Couldn't find index for character '${String.fromCharCode(code)}' in glyphIndexMap.`
     );
-    invariant(
-      index < ttf.glyf.length,
-      "Index is out of bounds for glyf table."
-    );
+    invariant(index < ttf.glyf.length, "Index is out of bounds for glyf table.");
 
     const lastMetric = ttf.hmtx.hMetrics.at(-1);
     invariant(
@@ -44,8 +39,7 @@ export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Glyph[] {
         ? ttf.hmtx.hMetrics[index]
         : {
             advanceWidth: lastMetric.advanceWidth,
-            leftSideBearing:
-              ttf.hmtx.leftSideBearings[index - ttf.hhea.numberOfHMetrics],
+            leftSideBearing: ttf.hmtx.leftSideBearings[index - ttf.hhea.numberOfHMetrics],
           };
     const glyf = ttf.glyf[index];
 

@@ -34,9 +34,7 @@ type ShapeTextOptions = {
  */
 export function shapeText(options: ShapeTextOptions): Shape {
   const { lookups, text, fontSize, fontName, lineHeight, maxWidth } = options;
-  const cached = cache.get(
-    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text })
-  );
+  const cached = cache.get(JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text }));
 
   if (cached) {
     return cached;
@@ -60,8 +58,7 @@ export function shapeText(options: ShapeTextOptions): Shape {
 
   for (let i = 0; i < text.length; i++) {
     const character = text[i].charCodeAt(0);
-    const glyph =
-      font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
+    const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
 
     const { y, width, height, lsb, rsb } = glyph;
 
@@ -77,31 +74,20 @@ export function shapeText(options: ShapeTextOptions): Shape {
 
     positions[i] = nextPosition;
 
-    sizes[i] = new Vec2(
-      width * scale + padding * 2,
-      height * scale + padding * 2
-    );
+    sizes[i] = new Vec2(width * scale + padding * 2, height * scale + padding * 2);
 
     positionX += (lsb + kerning + width + rsb) * scale;
 
-    if (
-      maxWidth &&
-      nextPosition.x + width * scale > maxWidth &&
-      text[i] === " "
-    ) {
-      /*
-       * Check backtracking is possible (i.e. the length of the word is less
-       * than maxWidth).
-       */
+    if (maxWidth && nextPosition.x + width * scale > maxWidth && text[i] === " ") {
+      // Check backtracking is possible (i.e. the length of the word is less
+      // than maxWidth).
       const wordLength = positionX - positions[wordStartIndex].x;
       if (wordLength > maxWidth) {
         continue;
       }
 
-      /*
-       * We exceeded the maxWidth, backtrack. Move i back to the start of the
-       * current word.
-       */
+      // We exceeded the maxWidth, backtrack. Move i back to the start of the
+      // current word.
       i = wordStartIndex - 1;
 
       positionY += lineHeight ?? 20;

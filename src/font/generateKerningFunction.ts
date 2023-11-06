@@ -34,21 +34,13 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
               if (coverage.coverageFormat === 2) {
                 let indexCounter = 0;
                 for (const range of coverage.rangeRecords) {
-                  for (
-                    let glyphID = range.startGlyphID;
-                    glyphID <= range.endGlyphID;
-                    glyphID++
-                  ) {
+                  for (let glyphID = range.startGlyphID; glyphID <= range.endGlyphID; glyphID++) {
                     const pairs = pairSets[indexCounter];
 
-                    const glyphKernMap =
-                      kerningPairs.get(glyphID) || new Map<number, number>();
+                    const glyphKernMap = kerningPairs.get(glyphID) || new Map<number, number>();
                     for (const pair of pairs) {
                       if (pair.value1?.xAdvance) {
-                        glyphKernMap.set(
-                          pair.secondGlyph,
-                          pair.value1.xAdvance
-                        );
+                        glyphKernMap.set(pair.secondGlyph, pair.value1.xAdvance);
                       }
                     }
                     if (glyphKernMap.size > 0) {
@@ -59,9 +51,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
                   }
                 }
               } else {
-                console.warn(
-                  `Coverage format ${coverage.coverageFormat} is not supported.`
-                );
+                console.warn(`Coverage format ${coverage.coverageFormat} is not supported.`);
               }
             } else if (subtable.extension.posFormat === 2) {
               // Adjustment for glyph classes.
@@ -71,9 +61,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
                 secondGlyphClassMapping = generateGlyphToClassMap(classDef2);
                 classRecords = subtable.extension.classRecords;
               } else {
-                console.warn(
-                  `Coverage format ${coverage.coverageFormat} is not supported.`
-                );
+                console.warn(`Coverage format ${coverage.coverageFormat} is not supported.`);
               }
             }
           }
@@ -104,10 +92,8 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
       return 0;
     }
 
-    /*
-     * It's specified in the spec that if class is not defined for a glyph, it
-     * should be set to 0.
-     */
+    // It's specified in the spec that if class is not defined for a glyph, it
+    // should be set to 0.
     const firstClass = firstGlyphClassMapping.get(firstGlyphID) ?? 0;
     const secondClass = secondGlyphClassMapping.get(secondGlyphID) ?? 0;
 
