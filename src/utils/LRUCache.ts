@@ -12,7 +12,7 @@ export class LRUCache<K, V> {
       return undefined;
     }
 
-    // Move the accessed item to the end of the map (most recently used)
+    // Move the accessed item to the end of the map (most recently used).
     const value = this.cache.get(key);
     this.cache.delete(key);
     this.cache.set(key, value!);
@@ -26,7 +26,7 @@ export class LRUCache<K, V> {
 
     this.cache.set(key, value);
 
-    // Remove the least recently used item if we're over capacity
+    // Remove the least recently used item if we're over capacity.
     if (this.cache.size > this.capacity) {
       const leastRecentlyUsedKey = this.cache.keys().next().value;
       this.cache.delete(leastRecentlyUsedKey);

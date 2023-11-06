@@ -16,8 +16,8 @@ export type Shape = {
 
 /*
  * TODO:
- * Maybe make lookups, text, fontSize and fontName back into regular arguments
- * and only make options for optional ones?
+ * Maybe make lookups, text, fontSize and fontName back into regular arguments and only make
+ * options for optional ones?
  */
 type ShapeTextOptions = {
   fontName: string;
@@ -79,15 +79,13 @@ export function shapeText(options: ShapeTextOptions): Shape {
     positionX += (lsb + kerning + width + rsb) * scale;
 
     if (maxWidth && nextPosition.x + width * scale > maxWidth && text[i] === " ") {
-      // Check backtracking is possible (i.e. the length of the word is less
-      // than maxWidth).
+      // Check backtracking is possible (i.e. the length of the word is less than maxWidth).
       const wordLength = positionX - positions[wordStartIndex].x;
       if (wordLength > maxWidth) {
         continue;
       }
 
-      // We exceeded the maxWidth, backtrack. Move i back to the start of the
-      // current word.
+      // We exceeded the maxWidth, backtrack. Move i back to the start of the current word.
       i = wordStartIndex - 1;
 
       positionY += lineHeight ?? 20;
@@ -102,7 +100,7 @@ export function shapeText(options: ShapeTextOptions): Shape {
     }
 
     if (text[i] === " " || text[i] === "\n") {
-      // Update the start of the next word
+      // Update the start of the next word.
       wordStartIndex = i + 1;
     }
   }

@@ -157,8 +157,7 @@ export class UIRenderer {
         var width = mix(0.45, 0.12, clamp(g.fontSize, 0, 40) / 40.0);
         width /= ${window.devicePixelRatio};
 
-        // I switched the texture to use 0.75 cutoff like in tiny SDF, but I
-        // don't really see any improvement.
+        // I switched the texture to use 0.75 cutoff like in tiny SDF, but I don't really see any improvement.
         const buffer = 0.75;
         let alpha = g.color.a * smoothstep(buffer - width, buffer + width, distance);
 

@@ -218,9 +218,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       let x = 0;
       let y = 0;
       let longestChildHeight = 0;
-      // The size that was first calculated is size of the tallest child of
-      // all plus paddings. So here there's a need to reset the size and build
-      // it again, for all rows.
+      // The size that was first calculated is size of the tallest child of all plus paddings. So
+      // here there's a need to reset the size and build it again, for all rows.
       if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
         e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
       }
@@ -231,8 +230,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       let c = e.firstChild;
       while (c) {
         if (c._style.position !== "relative") {
-          // TODO @tchayen: add a test which has a position: absolute element
-          // in a flex wrap container.
+          // TODO @tchayen: add a test which has a position: absolute element in a flex wrap
+          // container.
           c = c.next;
           continue;
         }
@@ -265,8 +264,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
           }
         }
 
-        // Keep track of the longest child in the flex container for the purpose
-        // of wrapping.
+        // Keep track of the longest child in the flex container for the purpose of wrapping.
         if (c._style.flexDirection === "row" || c._style.flexDirection === "row-reverse") {
           longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
         }
@@ -312,8 +310,8 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
 
     invariant(e._style.flex === undefined || e._style.flex >= 0, "Flex cannot be negative.");
 
-    // TODO @tchayen: it probably shouldn't really be here? There's calculation
-    // in the first pass. Figure out why this seems to be needed.
+    // TODO @tchayen: it probably shouldn't really be here? There's calculation  in the first pass.
+    // Figure out why this seems to be needed.
     if (typeof e._style.width === "string") {
       e._state.metrics.width = toPercentage(e._style.width) * parentWidth;
     }
@@ -321,8 +319,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
     }
 
-    // If element has both left, right offsets and no width, calculate width
-    // (analogues for height).
+    // If element has both left, right offsets and no width, calculate width (analogues for height).
     if (
       e._style.top !== undefined &&
       e._style.bottom !== undefined &&
@@ -364,8 +361,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       }
     }
 
-    // Available space is size of the parent minus padding and gaps and margins
-    // of children.
+    // Available space is size of the parent minus padding and gaps and margins of children.
     let availableWidth = e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
     let availableHeight = e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
 
@@ -420,8 +416,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
       c = c.next;
     }
 
-    // Offset for children, gradually building up as next children are
-    // processed.
+    // Offset for children, gradually building up as next children are processed.
     let x = e._state.metrics.x + e._style.paddingLeft;
     let y = e._state.metrics.y + e._style.paddingTop;
 
@@ -679,8 +674,7 @@ export function layout(tree: View, fontLookups: Lookups, rootSize: Vec2): void {
         c._state.metrics.y -= c._style.bottom;
       }
 
-      // Keep track of the longest child in the flex container for the
-      // purpose of wrapping.
+      // Keep track of the longest child in the flex container for the purpose of wrapping.
       if (c._style.flexDirection === "row") {
         longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
       }

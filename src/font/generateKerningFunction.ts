@@ -22,7 +22,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
 
     for (const lookup of lookups) {
       if (lookup && (lookup.lookupType === 2 || lookup.lookupType === 9)) {
-        // Ensure it's Pair Adjustment
+        // Ensure it's Pair Adjustment.
         for (const subtable of lookup.subtables) {
           if (lookup.lookupType === 9 && subtable.extensionLookupType === 2) {
             const coverage = subtable.extension.coverage;
@@ -92,8 +92,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
       return 0;
     }
 
-    // It's specified in the spec that if class is not defined for a glyph, it
-    // should be set to 0.
+    // It's specified in the spec that if class is not defined for a glyph, it should be set to 0.
     const firstClass = firstGlyphClassMapping.get(firstGlyphID) ?? 0;
     const secondClass = secondGlyphClassMapping.get(secondGlyphID) ?? 0;
 

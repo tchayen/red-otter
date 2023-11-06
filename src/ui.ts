@@ -15,9 +15,9 @@ export function ui(renderer: UIRenderer): View {
   invariant(lookups, "Lookups must be set.");
 
   // NOTE:
-  // This screen is built within the library so if anything fundamental get
-  // broken when e.g. debugging some problem, a good trick to enable moving
-  // forward is to turn off all the tests but the one being worked on.
+  // This screen is built within the library so if anything fundamental get  broken when e.g.
+  // debugging some problem, a good trick to enable moving  forward is to turn off all the tests but
+  // the one being worked on.
 
   const columnStyle = {
     flexDirection: "column",
