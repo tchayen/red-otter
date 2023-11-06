@@ -1,0 +1,9 @@
+{
+  "editor.rulers": [{ "column": 100 }],
+  // Auto-format on save.
+  "editor.formatOnSave": true,
+  // Auto-fix eslint errors/warnings on save.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
