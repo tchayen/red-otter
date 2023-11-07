@@ -308,10 +308,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
     const p = e.parent;
 
-    const totalFlex = 0;
-    const childrenCount = 0;
-
-    // Undefined is ruled out by the previous pass.
     const parentWidth = p?._state.metrics.width ?? 0;
     const parentHeight = p?._state.metrics.height ?? 0;
 
@@ -381,10 +377,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     // TODO @tchayen:
-    // - align self
     // - align content
 
-    invariant(e._state.flexChildren, "Flex children should be calculated in the second pass.");
     if (e._style.flexWrap === "wrap-reverse") {
       e._state.flexChildren.reverse();
     }
@@ -525,7 +519,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
               c._state.metrics.height = lineCrossSize;
             }
             if (isVertical) {
-              // TODO: this is probably wrong, child is missing.
               c._state.metrics.width = lineCrossSize;
             }
           }
