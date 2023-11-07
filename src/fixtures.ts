@@ -320,7 +320,7 @@ export function flexDirectionReverse() {
   return root;
 }
 
-export function flexWrap() {
+export function flexWrapRow() {
   const root = new View({
     style: {
       backgroundColor: "#000",
@@ -329,22 +329,43 @@ export function flexWrap() {
     },
   });
 
+  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+    return new View({
+      style: { backgroundColor, height, width, ...style },
+    });
+  }
+
   const row = new View({
     style: {
-      // paddingVertical: 10,
-      alignItems: "stretch",
+      alignItems: "center",
       backgroundColor: colors[0],
       columnGap: 5,
-      flexDirection: "row-reverse",
-      flexWrap: "wrap-reverse",
-      height: 200,
+      flexDirection: "row",
+      flexWrap: "wrap",
       justifyContent: "flex-start",
-      marginLeft: 100,
+      paddingVertical: 10,
       rowGap: 10,
-      width: 200,
+      width: "100%",
     },
+    testID: "row-wrap",
   });
   root.add(row);
+  row.add(box(colors[1], 60, 25));
+  row.add(box(colors[2], 40, 33));
+  row.add(box(colors[3], 70, 25, { marginLeft: 11 }));
+  row.add(box(colors[4], 90, 41, { marginLeft: 8 }));
+  row.add(box(colors[5], 210, 19));
+
+  return root;
+}
+export function flexWrapColumn() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
 
   function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
     return new View({
@@ -352,28 +373,25 @@ export function flexWrap() {
     });
   }
 
-  row.add(box(colors[1], 40, 25));
-  row.add(box(colors[2], 40, 33));
-  row.add(box(colors[3], 60, 25, { marginLeft: 11 }));
-  row.add(box(colors[4], 70, 41, { marginLeft: 8 }));
-  row.add(box(colors[5], 180, 19));
-
-  // const column = new View({
-  //   style: {
-  //     backgroundColor: colors[0],
-  //     columnGap: 10,
-  //     flexDirection: "column",
-  //     flexWrap: "wrap",
-  //     height: 177,
-  //     paddingHorizontal: 10,
-  //     rowGap: 5,
-  //   },
-  // });
-  // root.add(column);
-
-  // column.add(box(colors[1], 25, 40));
-  // column.add(box(colors[2], 25, 40));
-  // column.add(box(colors[3], 25, 60, { marginTop: 11 }));
+  const column = new View({
+    style: {
+      alignItems: "flex-end",
+      backgroundColor: colors[0],
+      columnGap: 10,
+      flexDirection: "column",
+      flexWrap: "wrap-reverse",
+      height: "100%",
+      paddingHorizontal: 10,
+      rowGap: 5,
+    },
+    testID: "column-wrap",
+  });
+  root.add(column);
+  column.add(box(colors[1], 25, 60));
+  column.add(box(colors[2], 33, 40));
+  column.add(box(colors[3], 25, 70, { marginTop: 11 }));
+  column.add(box(colors[4], 41, 90, { marginTop: 8 }));
+  column.add(box(colors[5], 19, 210));
 
   return root;
 }
@@ -382,10 +400,45 @@ export function alignContent() {
   const root = new View({
     style: {
       backgroundColor: "#000",
+      flexWrap: "wrap",
       height: 300,
       width: 300,
     },
   });
+
+  function container(backgroundColor: string, alignContent: LayoutProps["alignContent"]) {
+    const c = new View({
+      style: {
+        alignContent,
+        backgroundColor,
+        // flexDirection: "row",
+        flexWrap: "wrap",
+        // gap: 10,
+        // height: 100,
+        // justifyContent: "space-between",
+        width: 150,
+      },
+      testID: "alignContent",
+    });
+    root.add(c);
+    c.add(box(colors[7], 40, 20));
+    c.add(box(colors[7], 40, 20));
+    c.add(box(colors[7], 40, 20));
+    c.add(box(colors[7], 40, 20));
+  }
+
+  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+    return new View({
+      style: { backgroundColor, height, width, ...style },
+    });
+  }
+
+  container(colors[0], "flex-start");
+  container(colors[1], "center");
+  container(colors[2], "flex-end");
+  container(colors[3], "space-between");
+  // container(colors[4], "space-around");
+  // container(colors[5], "stretch");
 
   return root;
 }

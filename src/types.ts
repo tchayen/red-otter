@@ -33,6 +33,7 @@ export type LayoutProps = {
     | "flex-start"
     | "flex-end"
     | "center"
+    | "stretch"
     | "space-between"
     | "space-around"
     | "space-evenly";
@@ -90,8 +91,8 @@ export type LayoutProps = {
 };
 
 /**
- * All shorthand properties are expanded. All properties with defaults are
- * required.
+ * All shorthand properties are expanded. All properties with defaults are required. Some properties
+ * might rename undefined if that is recognized as a valid value by the layout.
  */
 export type ExactLayoutProps = Required<
   Omit<

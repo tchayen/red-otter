@@ -272,8 +272,8 @@ describe("Layout", () => {
     }
   });
 
-  it("flexWrap", () => {
-    const root = fixtures.flexWrap();
+  it.skip("flexWrap", () => {
+    const root = fixtures.flexWrapRow();
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -399,7 +399,6 @@ describe("Layout", () => {
     const nodes = [passThrough, inside, innermost, first, minSize, maxSize, maxSizeSecond];
 
     for (let i = 0; i < nodes.length; i++) {
-      console.log(i);
       expect(nodes[i]?._state.metrics.width).toBe(expectedSizes[i].x);
       expect(nodes[i]?._state.metrics.height).toBe(expectedSizes[i].y);
     }

@@ -35,7 +35,7 @@ export function ui(renderer: UIRenderer): View {
   const container = new View({
     style: {
       backgroundColor: "#333",
-      flexDirection: "row",
+      flexDirection: "column",
       gap: 10,
       height: window.innerHeight,
       paddingHorizontal: 10,
@@ -47,8 +47,24 @@ export function ui(renderer: UIRenderer): View {
     return new Text(value, { lookups, style: textStyle });
   }
 
+  container.add(
+    text(
+      "NOTE:\nthe examples are not enumerating all features but rather try to catch as many edge cases as they can fit. So don't interpret them as direct representation of their description."
+    )
+  );
+
+  const examples = new View({
+    style: {
+      flex: 1,
+      flexDirection: "row",
+      gap: 10,
+      width: "100%",
+    },
+  });
+  container.add(examples);
+
   const column1 = new View({ style: columnStyle });
-  container.add(column1);
+  examples.add(column1);
 
   column1.add(text("flex value"));
   column1.add(fixtures.flexValue());
@@ -58,38 +74,40 @@ export function ui(renderer: UIRenderer): View {
   column1.add(fixtures.alignItemsAndSelf());
 
   const column2 = new View({ style: columnStyle });
-  container.add(column2);
+  examples.add(column2);
 
   column2.add(text("flexDirection reverse"));
   column2.add(fixtures.flexDirectionReverse());
-  column2.add(text("flexWrap"));
-  column2.add(fixtures.flexWrap());
-  column2.add(text("alignContent"));
-  column2.add(fixtures.alignContent());
+  column2.add(text("flexWrap row"));
+  column2.add(fixtures.flexWrapRow());
+  column2.add(text("flexWrap column"));
+  column2.add(fixtures.flexWrapColumn());
 
   const column3 = new View({ style: columnStyle });
-  container.add(column3);
+  examples.add(column3);
 
+  column3.add(text("alignContent"));
+  column3.add(fixtures.alignContent());
   column3.add(text("flexShrink and flexGrow"));
   column3.add(fixtures.flexShrinkAndGrow());
   column3.add(text("margins, paddings, borders"));
   column3.add(fixtures.marginsAndPaddingsAndBorders());
-  column3.add(text("left, top, right, bottom"));
-  column3.add(fixtures.offsets());
 
   const column4 = new View({ style: columnStyle });
-  container.add(column4);
+  examples.add(column4);
 
+  column4.add(text("left, top, right, bottom"));
+  column4.add(fixtures.offsets());
   column4.add(text("percentage sizes and min/max"));
   column4.add(fixtures.percentageAndMinMaxSizes());
   column4.add(text("display and overflow"));
   column4.add(fixtures.displayAndOverflow());
-  column4.add(text("zIndex"));
-  column4.add(fixtures.zIndex());
 
   const column5 = new View({ style: columnStyle });
-  container.add(column5);
+  examples.add(column5);
 
+  column5.add(text("zIndex"));
+  column5.add(fixtures.zIndex());
   column5.add(text("form UI"));
   column5.add(fixtures.formUI());
 

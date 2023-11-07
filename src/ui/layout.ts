@@ -96,10 +96,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     thirdPass.enqueue(e);
 
     const isWrap = e._style.flexWrap === "wrap" || e._style.flexWrap === "wrap-reverse";
+    const isHorizontal =
+      e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse";
+    const isVertical =
+      e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse";
     const isJustifySpace =
       e._style.justifyContent === "space-between" ||
       e._style.justifyContent === "space-around" ||
       e._style.justifyContent === "space-evenly";
+    // const isContentSpace =
+    //   e._style.alignContent === "space-between" ||
+    //   e._style.alignContent === "space-around" ||
+    //   e._style.alignContent === "space-evenly";
 
     // Width is at least the sum of children with defined widths.
     if (e._style.width === undefined) {
@@ -208,23 +216,19 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._state.metrics.width = Math.min(e._state.metrics.width, value);
     }
 
-    // Calculate flexWrap height.
-    let x = 0;
-    let y = 0;
-    let longestChildHeight = 0;
+    // Calculate flexWrap cross axis size.
+    let main = 0;
+    let cross = 0;
+    let longestChildSize = 0;
 
     if (isWrap) {
       // The size that was first calculated is size of the tallest child of all plus paddings. So
-      // here there's a need to reset the size and build it again, for all rows.
-      if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
-        if (e._style.height === undefined) {
-          e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
-        }
+      // here we reset the size and build it again, for all rows.
+      if (isHorizontal && e._style.height === undefined) {
+        e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
       }
-      if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
-        if (e._style.width === undefined) {
-          e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
-        }
+      if (isVertical && e._style.width === undefined) {
+        e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
       }
     }
 
@@ -232,67 +236,59 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const rows: Array<Array<View | Text>> = [[]];
     while (c) {
       if (c._style.position !== "relative") {
-        // TODO @tchayen: add a test which has a position: absolute element in a flex wrap
-        // container.
         c = c.next;
         continue;
       }
 
-      if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
-        const deltaX = c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
-        const parentWidth = e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
-        if (isWrap && (x + deltaX >= parentWidth || c.next === null)) {
-          x = 0;
-          const height = longestChildHeight + e._style.columnGap; // TODO @tchayen: with alignContent space-between etc. there won't be a gap.
-          y += height;
-          longestChildHeight = 0;
-          rows.push([]);
-          if (isWrap && e._style.height === undefined) {
-            e._state.metrics.height += height;
-          }
-        } else {
-          x += deltaX + (isJustifySpace ? e._style.rowGap : 0);
-        }
-      }
-      if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
-        const deltaY = c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
-        const parentHeight = e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
-        if (isWrap && (y + deltaY >= parentHeight || c.next === null)) {
-          y = 0;
-          const width = longestChildHeight + e._style.rowGap; // TODO @tchayen: with alignContent space-between etc. there won't be a gap.
-          x += width;
-          longestChildHeight = 0;
-          rows.push([]);
+      const deltaMain = isHorizontal
+        ? c._state.metrics.width +
+          c._style.marginLeft +
+          c._style.marginRight +
+          (!isJustifySpace ? e._style.rowGap : 0)
+        : c._state.metrics.height +
+          c._style.marginTop +
+          c._style.marginBottom +
+          (!isJustifySpace ? e._style.columnGap : 0);
+      const parentMain = isHorizontal
+        ? e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight
+        : e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
 
-          if (e._style.width === undefined) {
-            e._state.metrics.width += width;
+      if (isWrap && main + deltaMain > parentMain) {
+        let length = longestChildSize;
+        length += isHorizontal ? e._style.columnGap : e._style.rowGap;
+        longestChildSize = 0;
+        rows.push([]);
+        if (isWrap) {
+          if (isHorizontal && e._style.height === undefined) {
+            e._state.metrics.height += length;
           }
-        } else {
-          y += deltaY + (isJustifySpace ? e._style.columnGap : 0);
+          if (isVertical && e._style.width === undefined) {
+            e._state.metrics.width += length;
+          }
         }
+        main = 0;
+        cross += length;
       }
+      main += deltaMain;
 
       // Keep track of the longest child in the flex container for the purpose of wrapping.
-      if (c._style.flexDirection === "row" || c._style.flexDirection === "row-reverse") {
-        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.width);
-      }
-      if (c._style.flexDirection === "column" || c._style.flexDirection === "column-reverse") {
-        longestChildHeight = Math.max(longestChildHeight, c._state.metrics.height);
-      }
+      longestChildSize = Math.max(
+        longestChildSize,
+        isHorizontal ? c._state.metrics.height : c._state.metrics.width
+      );
 
       rows.at(-1)?.push(c);
-
       c = c.next;
     }
     e._state.flexChildren = rows;
 
     // The last row.
-    if (isWrap && e._style.height === undefined) {
-      if (e._style.flexDirection === "row") {
-        e._state.metrics.height += longestChildHeight;
+    if (isWrap) {
+      if (isHorizontal && e._style.height === undefined) {
+        e._state.metrics.height += longestChildSize;
       }
-      if (e._style.flexDirection === "column") {
-        e._state.metrics.width += longestChildHeight;
+      if (isVertical && e._style.width === undefined) {
+        e._state.metrics.width += longestChildSize;
       }
     }
 
@@ -311,6 +307,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const parentWidth = p?._state.metrics.width ?? 0;
     const parentHeight = p?._state.metrics.height ?? 0;
 
+    const isWrap = e._style.flexWrap === "wrap" || e._style.flexWrap === "wrap-reverse";
     const isHorizontal =
       e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse";
     const isVertical =
@@ -321,6 +318,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._style.justifyContent === "space-between" ||
       e._style.justifyContent === "space-around" ||
       e._style.justifyContent === "space-evenly";
+    const isContentSpace =
+      e._style.alignContent === "space-between" ||
+      e._style.alignContent === "space-around" ||
+      e._style.alignContent === "space-evenly";
 
     invariant(e._style.flex === undefined || e._style.flex >= 0, "Flex cannot be negative.");
 
@@ -376,9 +377,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // TODO @tchayen:
-    // - align content
-
     if (e._style.flexWrap === "wrap-reverse") {
       e._state.flexChildren.reverse();
     }
@@ -398,8 +396,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const mainGap = (isHorizontal ? e._style.rowGap : e._style.columnGap) ?? 0;
     const crossGap = (isHorizontal ? e._style.columnGap : e._style.rowGap) ?? 0;
 
+    const longestChildren = [];
     for (const line of e._state.flexChildren) {
-      let longestChild = 0;
+      let longestChildSize = 0;
       let childrenCount = 0;
 
       // Calculate available space for justify content along the main axis.
@@ -415,8 +414,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         if (c._style.position === "absolute" || c._style.display === "none") {
           continue;
         }
+
         childrenCount += 1;
-        longestChild = Math.max(longestChild, c._state.metrics.height);
+        longestChildSize = Math.max(
+          longestChildSize,
+          isHorizontal ? c._state.metrics.height : c._state.metrics.width
+        );
         availableMain -= isHorizontal
           ? c._state.metrics.width +
             (!isJustifySpace ? c._style.marginLeft + c._style.marginRight : 0)
@@ -454,8 +457,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (c._style.flex !== undefined && !isJustifySpace) {
             c._state.metrics.width += (c._style.flex / totalFlex) * availableMain;
           }
-        }
-        if (isVertical) {
+        } else {
           if (c._style.flex !== undefined && !isJustifySpace) {
             c._state.metrics.height += (c._style.flex / totalFlex) * availableMain;
           }
@@ -489,23 +491,27 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           main += mainGap;
 
           // Apply align items.
-          const lineCrossSize = Math.max(
-            longestChild,
-            isHorizontal ? e._state.metrics.height : e._state.metrics.width
-          );
+          let lineCrossSize = longestChildSize;
+          // If there's only one line, if the flex container has defined height, use it as the
+          // cross size. For multi lines it's not relevant.
+          if (e._state.flexChildren.length === 1) {
+            lineCrossSize = Math.max(
+              lineCrossSize,
+              isHorizontal ? e._state.metrics.height : e._state.metrics.width
+            );
+          }
+
           if (e._style.alignItems === "center") {
             if (isHorizontal) {
               c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
             }
           }
           if (e._style.alignItems === "flex-end") {
             if (isHorizontal) {
               c._state.metrics.y += lineCrossSize - c._state.metrics.height;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x += lineCrossSize - c._state.metrics.width;
             }
           }
@@ -517,8 +523,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           ) {
             if (isHorizontal) {
               c._state.metrics.height = lineCrossSize;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.width = lineCrossSize;
             }
           }
@@ -527,24 +532,21 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (c._style.alignSelf === "flex-start") {
             if (isHorizontal) {
               c._state.metrics.y = resetCross;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x = resetCross;
             }
           }
           if (c._style.alignSelf === "center") {
             if (isHorizontal) {
               c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
             }
           }
           if (c._style.alignSelf === "flex-end") {
             if (isHorizontal) {
               c._state.metrics.y += lineCrossSize - c._state.metrics.height;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x += lineCrossSize - c._state.metrics.width;
             }
           }
@@ -556,8 +558,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             if (isHorizontal) {
               c._state.metrics.y = resetCross;
               c._state.metrics.height = lineCrossSize;
-            }
-            if (isVertical) {
+            } else {
               c._state.metrics.x = resetCross;
               c._state.metrics.width = lineCrossSize;
             }
@@ -578,7 +579,59 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       main = resetMain;
-      cross += longestChild + crossGap;
+      cross += longestChildSize + crossGap;
+      longestChildren.push(longestChildSize);
+    }
+
+    if (isWrap) {
+      let availableCross = e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+      for (let i = 0; i < longestChildren.length; i++) {
+        availableCross -= longestChildren[i];
+        if (i !== longestChildren.length - 1 && !isContentSpace) {
+          availableCross -= crossGap;
+        }
+      }
+
+      // Align content.
+      for (const line of e._state.flexChildren) {
+        for (const c of line) {
+          if (e._style.alignContent === "center") {
+            if (isHorizontal) {
+              c._state.metrics.y += availableCross / 2;
+            } else {
+              c._state.metrics.x += availableCross / 2;
+            }
+          }
+          if (e._style.alignContent === "flex-end") {
+            if (isHorizontal) {
+              c._state.metrics.y += availableCross;
+            } else {
+              c._state.metrics.x += availableCross;
+            }
+          }
+          if (e._style.alignContent === "stretch") {
+            // if (isHorizontal) {
+            //   c._state.metrics.height += availableCross / longestChildren.length;
+            // } else {
+            //   c._state.metrics.width += availableCross / longestChildren.length;
+            // }
+          }
+          if (e._style.alignContent === "space-around") {
+            if (isHorizontal) {
+              c._state.metrics.y += availableCross / longestChildren.length;
+            } else {
+              c._state.metrics.x += availableCross / longestChildren.length;
+            }
+          }
+          if (e._style.alignContent === "space-evenly") {
+            if (isHorizontal) {
+              c._state.metrics.y += availableCross / longestChildren.length;
+            } else {
+              c._state.metrics.x += availableCross / longestChildren.length;
+            }
+          }
+        }
+      }
     }
 
     e._state.metrics.x = Math.round(e._state.metrics.x);
