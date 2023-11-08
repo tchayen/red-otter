@@ -18,6 +18,7 @@ export class View {
   lastChild: View | Text | null = null;
   parent: View | null = null;
   _state: LayoutNodeState = {
+    flexChildren: [],
     metrics: { height: 0, width: 0, x: 0, y: 0 },
     scrollOffset: new Vec2(0, 0),
     scrollableContentSize: new Vec2(0, 0),

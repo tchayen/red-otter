@@ -7,7 +7,6 @@ import { layout } from "./layout";
 import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
-import { TextStyleProps, ViewStyleProps } from "../types";
 import * as fixtures from "../fixtures";
 
 const lookups = prepareLookups(
@@ -20,103 +19,9 @@ const lookups = prepareLookups(
   }
 );
 
-function v(style: ViewStyleProps): View {
-  return new View({ style });
-}
-
-function t(value: string, style: TextStyleProps): Text {
-  return new Text(value, { lookups, style });
-}
+fixtures.setLookups(lookups);
 
 describe("Layout", () => {
-  /**
-   * ┌─────────────────────────────┐
-   * │   ┌─────────────────────┐   │
-   * │   │ ┌───┐  ┌───┐  ┌───┐ │   │
-   * │   │X│0  │ Y│0  │ Z│0  │ │   │
-   * │   │ └───┘  └───┘  └───┘ │   │
-   * │   └─────────────────────┘   │
-   * └─────────────────────────────┘
-   */
-  it.skip("should layout inputs", () => {
-    const inputGroupStyle = {
-      alignItems: "center",
-      flexDirection: "row",
-      gap: 10,
-    } as ViewStyleProps;
-
-    const inputStyle = {
-      backgroundColor: "#444",
-      height: 30,
-      justifyContent: "center",
-      paddingHorizontal: 10,
-      width: 60,
-    } as ViewStyleProps;
-
-    const textStyle = {
-      color: "#fff",
-      fontName: "Inter",
-      fontSize: 14,
-    } as TextStyleProps;
-
-    const root = v({
-      alignItems: "center",
-      backgroundColor: "#000",
-      height: 300,
-      justifyContent: "center",
-      width: 600,
-    });
-
-    const inner = v({
-      backgroundColor: "#222",
-      flexDirection: "row",
-      gap: 20,
-      justifyContent: "center",
-      paddingHorizontal: 40,
-      paddingVertical: 20,
-    });
-    root.add(inner);
-
-    const xInputSection = v(inputGroupStyle);
-    inner.add(xInputSection);
-    const x = t("X", textStyle);
-    xInputSection.add(x);
-    const xInput = v(inputStyle);
-    xInputSection.add(xInput);
-    const xValue = t("0", textStyle);
-    xInput.add(xValue);
-
-    const yInputSection = v(inputGroupStyle);
-    inner.add(yInputSection);
-    const y = t("Y", textStyle);
-    yInputSection.add(y);
-    const yInput = v(inputStyle);
-    yInputSection.add(yInput);
-    const yValue = t("0", textStyle);
-    yInput.add(yValue);
-
-    const zInputSection = v(inputGroupStyle);
-    inner.add(zInputSection);
-    const z = t("Z", textStyle);
-    zInputSection.add(z);
-    const zInput = v(inputStyle);
-    zInputSection.add(zInput);
-    const zValue = t("0", textStyle);
-    zInput.add(zValue);
-
-    layout(root, lookups, new Vec2(1024, 768));
-    const first = root.firstChild?._state.metrics.x;
-    layout(root, lookups, new Vec2(1024, 768));
-    const second = root.firstChild?._state.metrics.x;
-    layout(root, lookups, new Vec2(1024, 768));
-    const third = root.firstChild?._state.metrics.x;
-
-    expect(first === second && second === third).toBe(true);
-
-    expect(inner._state.metrics.width).toBe(351);
-    expect(zValue._state.metrics.y).toBe(145);
-  });
-
   it("flex value", () => {
     const root = fixtures.flexValue();
     layout(root, lookups, new Vec2(1024, 768));
@@ -248,49 +153,104 @@ describe("Layout", () => {
     const root = fixtures.flexDirectionReverse();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const first = root.firstChild?.firstChild;
-    const second = first?.next;
-    const third = second?.next;
-    const fifth = root.firstChild?.next?.firstChild;
-    const sixth = fifth?.next;
-    const seventh = sixth?.next;
-
-    const nodes = [first, second, third, fifth, sixth, seventh];
-
-    const expectedValues = [
-      new Vec2(250, 0),
-      new Vec2(180, 0),
-      new Vec2(130, 0),
-      new Vec2(0, 250),
-      new Vec2(0, 180),
-      new Vec2(0, 130),
+    // Three items per row.
+    const expectedRowPositions = [
+      [new Vec2(270, 0), new Vec2(230, 0), new Vec2(180, 0)],
+      [new Vec2(90, 25), new Vec2(50, 25), new Vec2(0, 25)],
+      [new Vec2(180, 50), new Vec2(140, 50), new Vec2(90, 50)],
+      [new Vec2(225, 75), new Vec2(140, 75), new Vec2(45, 75)],
+      [new Vec2(240, 100), new Vec2(140, 100), new Vec2(30, 100)],
+      [new Vec2(270, 125), new Vec2(140, 125), new Vec2(0, 125)],
     ];
 
-    for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i].y);
+    let c: View | Text | null | undefined = null;
+    let box: View | Text | null | undefined = root.firstChild?.firstChild;
+
+    for (let i = 0; i < expectedRowPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedRowPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      box = box?.next;
+    }
+
+    const expectedColumnPositions = [
+      [new Vec2(0, 275), new Vec2(0, 250), new Vec2(0, 225)],
+      [new Vec2(50, 200), new Vec2(50, 175), new Vec2(50, 150)],
+      [new Vec2(100, 238), new Vec2(100, 213), new Vec2(100, 188)],
+      [new Vec2(150, 256), new Vec2(150, 213), new Vec2(150, 169)],
+      [new Vec2(200, 263), new Vec2(200, 213), new Vec2(200, 163)],
+      [new Vec2(250, 275), new Vec2(250, 213), new Vec2(250, 150)],
+    ];
+
+    box = root.firstChild?.next?.firstChild;
+
+    for (let i = 0; i < expectedColumnPositions.length; i++) {
+      c = box?.firstChild;
+      for (const expected of expectedColumnPositions[i]) {
+        expect(c?._state.metrics.x).toBe(expected.x);
+        expect(c?._state.metrics.y).toBe(expected.y);
+        c = c?.next;
+      }
+      box = box?.next;
     }
   });
 
-  it.skip("flexWrap", () => {
+  it("flexWrap row", () => {
     const root = fixtures.flexWrapRow();
     layout(root, lookups, new Vec2(1024, 768));
 
-    const first = root.firstChild?.firstChild;
+    const box = root.firstChild;
+    const first = box?.firstChild;
     const second = first?.next;
     const third = second?.next;
     const fourth = third?.next;
     const fifth = fourth?.next;
 
+    const nodes = [first, second, third, fourth, fifth];
+
+    expect(box?._state.metrics.width).toBe(300);
+    expect(box?._state.metrics.height).toBe(123);
+
     const expectedPositions = [
-      new Vec2(100, 10),
-      new Vec2(150, 10),
-      new Vec2(211, 10),
-      new Vec2(108, 48),
-      new Vec2(100, 94),
+      new Vec2(0, 14),
+      new Vec2(70, 10),
+      new Vec2(131, 14),
+      new Vec2(8, 48),
+      new Vec2(0, 94),
     ];
 
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+    }
+  });
+
+  it("flexWrap column", () => {
+    const root = fixtures.flexWrapColumn();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const box = root.firstChild;
+    const first = box?.firstChild;
+    const second = first?.next;
+    const third = second?.next;
+    const fourth = third?.next;
+    const fifth = fourth?.next;
+
     const nodes = [first, second, third, fourth, fifth];
+
+    expect(box?._state.metrics.width).toBe(123);
+    expect(box?._state.metrics.height).toBe(300);
+
+    const expectedPositions = [
+      new Vec2(88, 0),
+      new Vec2(80, 70),
+      new Vec2(88, 131),
+      new Vec2(34, 8),
+      new Vec2(10, 0),
+    ];
 
     for (let i = 0; i < nodes.length; i++) {
       expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
@@ -299,7 +259,75 @@ describe("Layout", () => {
   });
 
   it("alignContent", () => {
-    // TODO @tchayen: add after implemented.
+    const root = fixtures.alignContent();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const flexStart = root.firstChild;
+    const startFirst = flexStart?.firstChild;
+    const startFourth = startFirst?.next?.next?.next;
+
+    const flexCenter = flexStart?.next;
+    const centerFirst = flexCenter?.firstChild;
+    const centerFourth = centerFirst?.next?.next?.next;
+
+    const flexEnd = flexCenter?.next;
+    const endFirst = flexEnd?.firstChild;
+    const endFourth = endFirst?.next?.next?.next;
+
+    const spaceBetween = flexEnd?.next;
+    const spaceBetweenFirst = spaceBetween?.firstChild;
+    const spaceBetweenFourth = spaceBetweenFirst?.next?.next?.next;
+
+    const spaceAround = spaceBetween?.next;
+    const spaceAroundFirst = spaceAround?.firstChild;
+    const spaceAroundFourth = spaceAroundFirst?.next?.next?.next;
+
+    const spaceEvenly = spaceAround?.next;
+    const spaceEvenlyFirst = spaceEvenly?.firstChild;
+    const spaceEvenlyFourth = spaceEvenlyFirst?.next?.next?.next;
+
+    const stretch = spaceEvenly?.next;
+    const stretchFirst = stretch?.firstChild;
+    const stretchFourth = stretchFirst?.next?.next?.next;
+
+    const nodes = [
+      startFirst,
+      startFourth,
+      centerFirst,
+      centerFourth,
+      endFirst,
+      endFourth,
+      spaceBetweenFirst,
+      spaceBetweenFourth,
+      spaceAroundFirst,
+      spaceAroundFourth,
+      spaceEvenlyFirst,
+      spaceEvenlyFourth,
+      stretchFirst,
+      stretchFourth,
+    ];
+
+    const expectedPositions = [
+      new Vec2(0, 0),
+      new Vec2(0, 20),
+      new Vec2(0, 93),
+      new Vec2(0, 113),
+      new Vec2(0, 185),
+      new Vec2(0, 205),
+      new Vec2(0, 225),
+      new Vec2(0, 280),
+      new Vec2(150, 9),
+      new Vec2(150, 46),
+      new Vec2(150, 87),
+      new Vec2(150, 118),
+      new Vec2(150, 150),
+      new Vec2(150, 188),
+    ];
+
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+    }
   });
 
   it("flexShrink and flexGrow", () => {
@@ -411,4 +439,47 @@ describe("Layout", () => {
   it("zIndex", () => {
     // TODO @tchayen: add after implemented.
   });
+
+  /**
+   * ┌─────────────────────────────┐
+   * │   ┌─────────────────────┐   │
+   * │   │ ┌───┐  ┌───┐  ┌───┐ │   │
+   * │   │X│0  │ Y│0  │ Z│0  │ │   │
+   * │   │ └───┘  └───┘  └───┘ │   │
+   * │   └─────────────────────┘   │
+   * └─────────────────────────────┘
+   */
+  it("form UI", () => {
+    const root = fixtures.formUI();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const box = root.firstChild;
+    expect(box?._state.metrics.x).toBe(25);
+    expect(box?._state.metrics.y).toBe(125);
+
+    const xLabel = getByTestId(root, "xLabel");
+    expect(xLabel?._state.metrics.x).toBe(45);
+    expect(xLabel?._state.metrics.y).toBe(145);
+
+    const xValue = getByTestId(root, "xValue");
+    expect(xValue?._state.metrics.x).toBe(72);
+    expect(xValue?._state.metrics.y).toBe(145);
+  });
 });
+
+function getByTestId(root: View, testId: string): View | Text | null {
+  let c = root.firstChild;
+  while (c) {
+    if (c.props.testID === testId) {
+      return c;
+    }
+    if (c instanceof View) {
+      const inSubTree = getByTestId(c, testId);
+      if (inSubTree) {
+        return inSubTree;
+      }
+    }
+    c = c.next;
+  }
+  return null;
+}

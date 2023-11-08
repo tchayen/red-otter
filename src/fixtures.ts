@@ -1,7 +1,14 @@
 import { Text } from "./Text";
 import { View } from "./View";
+import { Lookups } from "./font/types";
 import { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
-import { lookups } from "./ui";
+import { invariant } from "./utils/invariant";
+
+let lookups: Lookups | null = null;
+
+export function setLookups(l: Lookups) {
+  lookups = l;
+}
 
 const colorCount = 10;
 const startingOffset = 20;
@@ -263,59 +270,99 @@ export function flexDirectionReverse() {
     },
   });
 
-  const row = new View({
+  const rows = new View({
     style: {
-      flexDirection: "row-reverse",
-      marginLeft: 50,
-      width: 250,
-    },
-    testID: "row-reverse",
-  });
-  root.add(row);
-  const rowFirst = new View({
-    style: {
-      backgroundColor: colors[1],
-      height: 50,
-      marginLeft: 20,
-      width: 50,
+      flexDirection: "column",
+      height: "50%",
+      width: "100%",
     },
   });
-  row.add(rowFirst);
-  const rowSecond = new View({
-    style: { backgroundColor: colors[2], height: 50, width: 50 },
-  });
-  row.add(rowSecond);
-  const rowThird = new View({
-    style: { backgroundColor: colors[3], height: 50, width: 50 },
-  });
-  row.add(rowThird);
+  root.add(rows);
 
-  const column = new View({
-    style: {
-      flexDirection: "column-reverse",
-      height: 250,
-      width: 50,
-    },
-    testID: "column-reverse",
-  });
-  root.add(column);
-  const columnFirst = new View({
-    style: {
+  function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
       backgroundColor: colors[1],
-      height: 50,
-      marginTop: 20,
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[3],
+      height: 25,
       width: 50,
+    } as ViewStyleProps;
+    const view = new View({
+      style: {
+        flexDirection: "row-reverse",
+        justifyContent: attribute,
+        width: "100%",
+      },
+    });
+    rows.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
+  }
+
+  generateFlexRow("flex-start");
+  generateFlexRow("flex-end");
+  generateFlexRow("center");
+  generateFlexRow("space-evenly");
+  generateFlexRow("space-around");
+  generateFlexRow("space-between");
+
+  const columns = new View({
+    style: {
+      flexDirection: "row",
+      height: "50%",
+      width: "100%",
     },
   });
-  column.add(columnFirst);
-  const columnSecond = new View({
-    style: { backgroundColor: colors[2], height: 50, width: 50 },
-  });
-  column.add(columnSecond);
-  const columnThird = new View({
-    style: { backgroundColor: colors[3], height: 50, width: 50 },
-  });
-  column.add(columnThird);
+  root.add(columns);
+
+  function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
+    const firstStyle = {
+      backgroundColor: colors[1],
+      height: 25,
+      width: 30,
+    } as ViewStyleProps;
+
+    const secondStyle = {
+      backgroundColor: colors[2],
+      height: 25,
+      width: 40,
+    } as ViewStyleProps;
+
+    const thirdStyle = {
+      backgroundColor: colors[3],
+      height: 25,
+      width: 50,
+    } as ViewStyleProps;
+    const view = new View({
+      style: {
+        flexDirection: "column-reverse",
+        height: "100%",
+        justifyContent: attribute,
+      },
+    });
+    columns.add(view);
+    view.add(new View({ style: firstStyle }));
+    view.add(new View({ style: secondStyle }));
+    view.add(new View({ style: thirdStyle }));
+  }
+
+  generateFlexColumn("flex-start");
+  generateFlexColumn("flex-end");
+  generateFlexColumn("center");
+  generateFlexColumn("space-evenly");
+  generateFlexColumn("space-around");
+  generateFlexColumn("space-between");
 
   return root;
 }
@@ -411,20 +458,21 @@ export function alignContent() {
       style: {
         alignContent,
         backgroundColor,
-        // flexDirection: "row",
+        flexDirection: "row",
         flexWrap: "wrap",
         // gap: 10,
-        // height: 100,
+        height: 75,
         // justifyContent: "space-between",
         width: 150,
       },
       testID: "alignContent",
     });
     root.add(c);
-    c.add(box(colors[7], 40, 20));
-    c.add(box(colors[7], 40, 20));
-    c.add(box(colors[7], 40, 20));
-    c.add(box(colors[7], 40, 20));
+    c.add(box(colors[3], 40, 20));
+    c.add(box(colors[4], 40, 20));
+    c.add(box(colors[3], 40, 20));
+    c.add(box(colors[4], 40, 20));
+    c.add(box(colors[3], 40, 20));
   }
 
   function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
@@ -435,10 +483,12 @@ export function alignContent() {
 
   container(colors[0], "flex-start");
   container(colors[1], "center");
-  container(colors[2], "flex-end");
-  container(colors[3], "space-between");
-  // container(colors[4], "space-around");
-  // container(colors[5], "stretch");
+  container(colors[0], "flex-end");
+  container(colors[1], "space-between");
+
+  container(colors[1], "space-around");
+  container(colors[0], "space-evenly");
+  container(colors[1], "stretch");
 
   return root;
 }
@@ -737,104 +787,12 @@ export function zIndex() {
     },
   });
 
-  const rows = new View({
-    style: {
-      flexDirection: "column",
-      height: "50%",
-      width: "100%",
-    },
-  });
-  root.add(rows);
-
-  function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
-    const firstStyle = {
-      backgroundColor: colors[1],
-      height: 25,
-      width: 30,
-    } as ViewStyleProps;
-
-    const secondStyle = {
-      backgroundColor: colors[2],
-      height: 25,
-      width: 40,
-    } as ViewStyleProps;
-
-    const thirdStyle = {
-      backgroundColor: colors[3],
-      height: 25,
-      width: 50,
-    } as ViewStyleProps;
-    const view = new View({
-      style: {
-        flexDirection: "row-reverse",
-        justifyContent: attribute,
-        width: "100%",
-      },
-    });
-    rows.add(view);
-    view.add(new View({ style: firstStyle }));
-    view.add(new View({ style: secondStyle }));
-    view.add(new View({ style: thirdStyle }));
-  }
-
-  generateFlexRow("flex-start");
-  generateFlexRow("flex-end");
-  generateFlexRow("center");
-  generateFlexRow("space-evenly");
-  generateFlexRow("space-around");
-  generateFlexRow("space-between");
-
-  const columns = new View({
-    style: {
-      flexDirection: "row",
-      height: "50%",
-      width: "100%",
-    },
-  });
-  root.add(columns);
-
-  function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
-    const firstStyle = {
-      backgroundColor: colors[1],
-      height: 25,
-      width: 30,
-    } as ViewStyleProps;
-
-    const secondStyle = {
-      backgroundColor: colors[2],
-      height: 25,
-      width: 40,
-    } as ViewStyleProps;
-
-    const thirdStyle = {
-      backgroundColor: colors[3],
-      height: 25,
-      width: 50,
-    } as ViewStyleProps;
-    const view = new View({
-      style: {
-        flexDirection: "column-reverse",
-        height: "100%",
-        justifyContent: attribute,
-      },
-    });
-    columns.add(view);
-    view.add(new View({ style: firstStyle }));
-    view.add(new View({ style: secondStyle }));
-    view.add(new View({ style: thirdStyle }));
-  }
-
-  generateFlexColumn("flex-start");
-  generateFlexColumn("flex-end");
-  generateFlexColumn("center");
-  generateFlexColumn("space-evenly");
-  generateFlexColumn("space-around");
-  generateFlexColumn("space-between");
-
   return root;
 }
 
 export function formUI() {
+  invariant(lookups, "Lookups must be set.");
+
   const inputGroupStyle = {
     alignItems: "center",
     flexDirection: "row",
@@ -884,29 +842,29 @@ export function formUI() {
 
   const xInputSection = new View({ style: inputGroupStyle });
   inner.add(xInputSection);
-  const x = new Text("X", { lookups, style: textStyle });
+  const x = new Text("X", { lookups, style: textStyle, testID: "xLabel" });
   xInputSection.add(x);
   const xInput = new View({ style: inputStyle });
   xInputSection.add(xInput);
-  const xValue = new Text("0", { lookups, style: textStyle });
+  const xValue = new Text("0", { lookups, style: textStyle, testID: "xValue" });
   xInput.add(xValue);
 
   const yInputSection = new View({ style: inputGroupStyle });
   inner.add(yInputSection);
-  const y = new Text("Y", { lookups, style: textStyle });
+  const y = new Text("Y", { lookups, style: textStyle, testID: "yLabel" });
   yInputSection.add(y);
   const yInput = new View({ style: inputStyle });
   yInputSection.add(yInput);
-  const yValue = new Text("0", { lookups, style: textStyle });
+  const yValue = new Text("0", { lookups, style: textStyle, testID: "yValue" });
   yInput.add(yValue);
 
   const zInputSection = new View({ style: inputGroupStyle });
   inner.add(zInputSection);
-  const z = new Text("Z", { lookups, style: textStyle });
+  const z = new Text("Z", { lookups, style: textStyle, testID: "zLabel" });
   zInputSection.add(z);
   const zInput = new View({ style: inputStyle });
   zInputSection.add(zInput);
-  const zValue = new Text("0", { lookups, style: textStyle });
+  const zValue = new Text("0", { lookups, style: textStyle, testID: "zValue" });
   zInput.add(zValue);
 
   return root;

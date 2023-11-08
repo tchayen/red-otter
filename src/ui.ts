@@ -14,6 +14,8 @@ export function ui(renderer: UIRenderer): View {
   lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 
+  fixtures.setLookups(lookups);
+
   // NOTE:
   // This screen is built within the library so if anything fundamental get  broken when e.g.
   // debugging some problem, a good trick to enable moving  forward is to turn off all the tests but

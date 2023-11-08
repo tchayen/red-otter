@@ -73,9 +73,7 @@ export function shapeText(options: ShapeTextOptions): Shape {
     );
 
     positions[i] = nextPosition;
-
     sizes[i] = new Vec2(width * scale + padding * 2, height * scale + padding * 2);
-
     positionX += (lsb + kerning + width + rsb) * scale;
 
     if (maxWidth && nextPosition.x + width * scale > maxWidth && text[i] === " ") {
@@ -118,14 +116,12 @@ export function shapeText(options: ShapeTextOptions): Shape {
   const height = positionY + capHeightInPixels;
 
   const shape = {
-    // Round up avoid layout gaps.
+    // Round up to avoid layout gaps.
     boundingRectangle: {
       height: Math.ceil(height),
       width: Math.ceil(width),
     },
-
     positions,
-
     sizes,
   };
 

@@ -15,6 +15,7 @@ export class Text {
    */
   _style: TextStyleProps & ExactLayoutProps;
   _state: LayoutNodeState = {
+    flexChildren: [],
     metrics: { height: 0, width: 0, x: 0, y: 0 },
     scrollOffset: new Vec2(0, 0),
     scrollableContentSize: new Vec2(0, 0),
@@ -32,7 +33,7 @@ export class Text {
       fontName: props.style.fontName,
       fontSize: props.style.fontSize,
       lookups: props.lookups,
-      text: text, // TODO: enforce not repeating value when same as key.
+      text: text, // TODO @tchayen: enforce in eslint not repeating value when same as key.
     });
     const { width, height } = shape.boundingRectangle;
 
