@@ -183,7 +183,11 @@ export function alignItemsAndSelf() {
   });
   root.add(rows);
 
-  function addRow(alignItems: LayoutProps["alignItems"], last?: LayoutProps, all?: LayoutProps) {
+  function addRow(
+    alignItems: LayoutProps["alignItems"],
+    last?: Partial<LayoutProps>,
+    all?: Partial<LayoutProps>
+  ) {
     const firstStyle = {
       backgroundColor: colors[1],
       height: crossAxisValue,
@@ -225,7 +229,11 @@ export function alignItemsAndSelf() {
   });
   root.add(columns);
 
-  function addColumn(alignItems: LayoutProps["alignItems"], last?: LayoutProps, all?: LayoutProps) {
+  function addColumn(
+    alignItems: LayoutProps["alignItems"],
+    last?: Partial<LayoutProps>,
+    all?: Partial<LayoutProps>
+  ) {
     const firstStyle = {
       backgroundColor: colors[1],
       height: mainAxisValue,
@@ -376,7 +384,12 @@ export function flexWrapRow() {
     },
   });
 
-  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+  function box(
+    backgroundColor: string,
+    width: number,
+    height: number,
+    style?: Partial<ViewStyleProps>
+  ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
@@ -413,7 +426,12 @@ export function flexWrapColumn() {
     },
   });
 
-  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+  function box(
+    backgroundColor: string,
+    width: number,
+    height: number,
+    style?: Partial<ViewStyleProps>
+  ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
@@ -470,7 +488,12 @@ export function alignContent() {
     c.add(box(colors[3], 40, 20));
   }
 
-  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+  function box(
+    backgroundColor: string,
+    width: number,
+    height: number,
+    style?: Partial<ViewStyleProps>
+  ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
@@ -500,7 +523,12 @@ export function flexShrinkAndGrow() {
     return new View({ style: { flexDirection: "row", width: "100%" }, testID });
   }
 
-  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+  function box(
+    backgroundColor: string,
+    width: number,
+    height: number,
+    style?: Partial<ViewStyleProps>
+  ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
@@ -802,6 +830,35 @@ export function zIndex() {
       width: 300,
     },
   });
+
+  return root;
+}
+
+export function text() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      gap: 20,
+      height: 300,
+      width: 300,
+    },
+  });
+
+  function text(value: string, style?: Partial<TextStyleProps>) {
+    invariant(lookups, "Lookups must be set.");
+    root.add(
+      new Text(value, {
+        lookups,
+        style: { color: "#fff", fontName: "Inter", fontSize: 16, ...style },
+      })
+    );
+  }
+
+  text(
+    "Some multiline text that will be wrapped when it runs out of space and it also follows the defined line height."
+  );
+  text("This is right aligned text.", { textAlign: "right" });
+  text("This is centered.", { textAlign: "center" });
 
   return root;
 }

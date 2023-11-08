@@ -26,6 +26,7 @@ export type LayoutNodeState = {
   metrics: { height: number; width: number; x: number; y: number };
   scrollOffset: Vec2;
   scrollableContentSize: Vec2;
+  textWidthLimit?: number;
 };
 
 export type LayoutProps = {

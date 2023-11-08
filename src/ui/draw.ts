@@ -7,19 +7,19 @@ import { View } from "../View";
 
 export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
   console.log(`Drawing ${rectangles.length} rectangles.`);
-  for (const rect of rectangles) {
-    if ("text" in rect) {
-      const position = new Vec2(rect._state.metrics.x, rect._state.metrics.y);
+  for (const r of rectangles) {
+    if ("text" in r) {
+      const position = new Vec2(r._state.metrics.x, r._state.metrics.y);
       ui.text(
-        rect.text,
+        r.text,
         position,
-        rect._style.fontName,
-        rect._style.fontSize,
-        parseColor(rect._style.color),
+        r._style.fontName,
+        r._style.fontSize,
+        parseColor(r._style.color),
+        r._style.textAlign ?? "left",
         {
-          lineHeight: rect._style.lineHeight,
-          maxWidth: rect._style.maxWidth,
-          // eslint-disable-next-line multiline-comment-style
+          lineHeight: r._style.lineHeight,
+          maxWidth: r._state.textWidthLimit,
           // trimEnd: r.textStyle.trimEnd
           //   ? position.add(r.textStyle.trimEnd)
           //   : undefined,
@@ -30,63 +30,63 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
       );
     } else {
       // const outerBorderRadius = new Vec4(
-      //   rect._style.borderTopLeftRadius,
-      //   rect._style.borderTopRightRadius,
-      //   rect._style.borderBottomLeftRadius,
-      //   rect._style.borderBottomRightRadius
+      //   r._style.borderTopLeftRadius,
+      //   r._style.borderTopRightRadius,
+      //   r._style.borderBottomLeftRadius,
+      //   r._style.borderBottomRightRadius
       // );
 
-      // if (rect._style.boxShadowRadius >= 0.25) {
+      // if (r._style.boxShadowRadius >= 0.25) {
       //   ui.rectangle(
-      //     parseColor(rect._style.boxShadowColor),
+      //     parseColor(r._style.boxShadowColor),
       //     new Vec2(
-      //       rect._state.metrics.x + rect._style.boxShadowOffsetX,
-      //       rect._state.metrics.y + rect._style.boxShadowOffsetY
+      //       r._state.metrics.x + r._style.boxShadowOffsetX,
+      //       r._state.metrics.y + r._style.boxShadowOffsetY
       //     ),
-      //     new Vec2(rect._state.metrics.width, rect._state.metrics.height),
+      //     new Vec2(r._state.metrics.width, r._state.metrics.height),
       //     outerBorderRadius,
-      //     rect._style.boxShadowRadius
+      //     r._style.boxShadowRadius
       //   );
       // }
 
-      // if (rect._style.borderColor) {
+      // if (r._style.borderColor) {
       //   ui.rectangle(
-      //     parseColor(rect._style.borderColor),
-      //     new Vec2(rect._state.metrics.x, rect._state.metrics.y),
-      //     new Vec2(rect._state.metrics.width, rect._state.metrics.height),
+      //     parseColor(r._style.borderColor),
+      //     new Vec2(r._state.metrics.x, r._state.metrics.y),
+      //     new Vec2(r._state.metrics.width, r._state.metrics.height),
       //     outerBorderRadius,
       //     0.25
       //   );
       // }
 
       // const position = new Vec2(
-      //   rect._state.metrics.x + rect._style.borderLeftWidth,
-      //   rect._state.metrics.y + rect._style.borderTopWidth
+      //   r._state.metrics.x + r._style.borderLeftWidth,
+      //   r._state.metrics.y + r._style.borderTopWidth
       // );
 
       // const size = new Vec2(
-      //   rect._state.metrics.width -
-      //     rect._style.borderLeftWidth -
-      //     rect._style.borderRightWidth,
-      //   rect._state.metrics.height -
-      //     rect._style.borderTopWidth -
-      //     rect._style.borderBottomWidth
+      //   r._state.metrics.width -
+      //     r._style.borderLeftWidth -
+      //     r._style.borderRightWidth,
+      //   r._state.metrics.height -
+      //     r._style.borderTopWidth -
+      //     r._style.borderBottomWidth
       // );
 
       // // Correct border radius for the border width.
       // const borderRadius = new Vec4(
-      //   rect._style.borderTopLeftRadius -
-      //     Math.max(rect._style.borderTopWidth, rect._style.borderLeftWidth),
-      //   rect._style.borderTopRightRadius -
-      //     Math.max(rect._style.borderTopWidth, rect._style.borderRightWidth),
-      //   rect._style.borderBottomLeftRadius -
-      // Math.max(rect._style.borderBottomWidth, rect._style.borderLeftWidth),
-      // rect._style.borderBottomRightRadius -
-      // Math.max(rect._style.borderBottomWidth, rect._style.borderRightWidth)
+      //   r._style.borderTopLeftRadius -
+      //     Math.max(r._style.borderTopWidth, r._style.borderLeftWidth),
+      //   r._style.borderTopRightRadius -
+      //     Math.max(r._style.borderTopWidth, r._style.borderRightWidth),
+      //   r._style.borderBottomLeftRadius -
+      // Math.max(r._style.borderBottomWidth, r._style.borderLeftWidth),
+      // r._style.borderBottomRightRadius -
+      // Math.max(r._style.borderBottomWidth, r._style.borderRightWidth)
       // );
 
       // ui.rectangle(
-      //   parseColor(rect._style.backgroundColor),
+      //   parseColor(r._style.backgroundColor),
       //   position,
       //   size,
       //   borderRadius,
@@ -94,12 +94,12 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
       // );
 
       // Simplified:
-      const position = new Vec2(rect._state.metrics.x, rect._state.metrics.y);
-      const size = new Vec2(rect._state.metrics.width, rect._state.metrics.height);
+      const position = new Vec2(r._state.metrics.x, r._state.metrics.y);
+      const size = new Vec2(r._state.metrics.width, r._state.metrics.height);
 
       // // Parent's dimensions and overflow property
-      // const parentMetrics = rect.parent?._state.metrics;
-      // const parentOverflow = rect.parent?._style.overflow;
+      // const parentMetrics = r.parent?._state.metrics;
+      // const parentOverflow = r.parent?._style.overflow;
 
       // // Determine the drawable area based on the parent's overflow property
       // let drawableArea = new Vec2(size.x, size.y);
@@ -127,7 +127,7 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
       // }
 
       ui.rectangle(
-        parseColor(rect._style.backgroundColor),
+        parseColor(r._style.backgroundColor),
         position,
         size,
         new Vec4(0, 0, 0, 0),

@@ -4,6 +4,7 @@ import type { Lookups } from "../font/types";
 import { View } from "../View";
 import { invariant } from "../utils/invariant";
 import { Text } from "../Text";
+import { shapeText } from "../font/shapeText";
 
 /**
  * @param tree tree of views to layout.
@@ -101,7 +102,25 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // TODO @tchayen: add text wrapping.
+    const p = e.parent;
+    if (e instanceof Text && fontLookups) {
+      if (p?._state.metrics.width !== undefined) {
+        const maxWidth = p._state.metrics.width - p._style.paddingLeft - p._style.paddingRight;
+        e._state.textWidthLimit = maxWidth;
+
+        const shape = shapeText({
+          fontName: e._style.fontName,
+          fontSize: e._style.fontSize,
+          lineHeight: e._style.lineHeight,
+          lookups: fontLookups,
+          maxWidth,
+          text: e.text,
+          textAlignment: e._style.textAlign ?? "left",
+        });
+
+        e._state.metrics.height = shape.boundingRectangle.height;
+      }
+    }
   }
 
   /*

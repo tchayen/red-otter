@@ -395,6 +395,7 @@ export class UIRenderer {
     fontName: string,
     fontSize: number,
     color: Vec4,
+    textAlignment: "left" | "center" | "right",
     options?: {
       lineHeight?: number;
       maxWidth?: number;
@@ -415,6 +416,7 @@ export class UIRenderer {
         lookups: this.fontLookups,
         maxWidth: options?.maxWidth,
         text,
+        textAlignment,
       });
     } catch (error) {
       console.error(

@@ -15,7 +15,7 @@ export type Shape = {
 };
 
 /*
- * TODO:
+ * TODO @tchayen:
  * Maybe make lookups, text, fontSize and fontName back into regular arguments and only make
  * options for optional ones?
  */
@@ -26,15 +26,20 @@ type ShapeTextOptions = {
   lookups: Lookups;
   maxWidth?: number;
   text: string;
+  textAlignment: "left" | "center" | "right";
 };
+
+// TODO @tchayen: text alignment.
 
 /**
  * @param options parameters for calculating the shape of the text.
  * @returns a shape object that can be used to render the text.
  */
 export function shapeText(options: ShapeTextOptions): Shape {
-  const { lookups, text, fontSize, fontName, lineHeight, maxWidth } = options;
-  const cached = cache.get(JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text }));
+  const { lookups, text, fontSize, fontName, lineHeight, maxWidth, textAlignment } = options;
+  const cached = cache.get(
+    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlignment })
+  );
 
   if (cached) {
     return cached;
@@ -100,6 +105,20 @@ export function shapeText(options: ShapeTextOptions): Shape {
     if (text[i] === " " || text[i] === "\n") {
       // Update the start of the next word.
       wordStartIndex = i + 1;
+    }
+  }
+
+  // Text alignment.
+  if (positions.length > 0) {
+    const leftSpace = maxWidth
+      ? maxWidth - longestLineWidth - positions.at(-1)!.x - sizes.at(-1)!.x + padding
+      : 0;
+    if (leftSpace > 0) {
+      const offset =
+        textAlignment === "center" ? leftSpace / 2 : textAlignment === "right" ? leftSpace : 0;
+      for (let i = 0; i < positions.length; i++) {
+        positions[i] = new Vec2(positions[i].x + offset, positions[i].y);
+      }
     }
   }
 

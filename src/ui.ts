@@ -110,6 +110,8 @@ export function ui(renderer: UIRenderer): View {
 
   column5.add(text("zIndex"));
   column5.add(fixtures.zIndex());
+  column5.add(text("text"));
+  column5.add(fixtures.text());
   column5.add(text("form UI"));
   column5.add(fixtures.formUI());
 
