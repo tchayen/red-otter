@@ -534,15 +534,15 @@ export function flexShrinkAndGrow() {
 
   const first = row();
   root.add(first);
-  first.add(box(colors[1], 120, 100, { flexShrink: 0 }));
-  first.add(box(colors[2], 120, 100, { flexShrink: 1 }));
-  first.add(box(colors[1], 120, 100, { flexShrink: 0 }));
+  first.add(box(colors[0], 120, 100, { flexShrink: 0 }));
+  first.add(box(colors[1], 120, 100, { flexShrink: 1 }));
+  first.add(box(colors[2], 120, 100, { flexShrink: 0 }));
 
   const second = row();
   root.add(second);
-  second.add(box(colors[1], 60, 100));
-  second.add(box(colors[2], 120, 100, { flexGrow: 1 }));
-  second.add(box(colors[1], 20, 100, { flexBasis: 60 }));
+  second.add(box(colors[3], 60, 100));
+  second.add(box(colors[4], 120, 100, { flexGrow: 1 }));
+  second.add(box(colors[5], 20, 100, { flexBasis: 60 }));
 
   return root;
 }
