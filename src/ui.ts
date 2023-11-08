@@ -82,7 +82,7 @@ export function ui(renderer: UIRenderer): View {
   column2.add(fixtures.flexDirectionReverse());
   column2.add(text("flexWrap row"));
   column2.add(fixtures.flexWrapRow());
-  column2.add(text("flexWrap column"));
+  column2.add(text("flexWrap reverse and column"));
   column2.add(fixtures.flexWrapColumn());
 
   const column3 = new View({ style: columnStyle });

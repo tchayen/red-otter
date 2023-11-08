@@ -19,7 +19,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
   // TODO: inspect what would it take to get rid of root and use tree directly.
   const root = new View({ style: { height: rootSize.y, width: rootSize.x } });
-
   root.add(tree);
 
   /*
@@ -272,7 +271,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       rows.at(-1)?.push(c);
       c = c.next;
     }
-    e._state.flexChildren = rows;
+    e._state.children = rows;
 
     // The last row.
     if (isWrap) {
@@ -296,9 +295,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
     const p = e.parent;
 
-    if (e._style.flex !== undefined && e._style.flex < 0) {
-      console.warn(`Found flex value ${e._style.flex} lower than 0. Resetting to undefined.`);
-      e._style.flex = undefined;
+    if (e._style.flex < 0) {
+      console.warn(`Found flex value ${e._style.flex} lower than 0. Resetting to 0.`);
+      e._style.flex = 0;
     }
 
     const parentWidth = p?._state.metrics.width ?? 0;
@@ -370,11 +369,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     if (e._style.flexWrap === "wrap-reverse") {
-      e._state.flexChildren.reverse();
+      e._state.children.reverse();
     }
 
     if (isReversed) {
-      e._state.flexChildren.forEach((row) => row.reverse());
+      e._state.children.forEach((row) => row.reverse());
     }
 
     const resetMain = isHorizontal
@@ -390,7 +389,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
     const maxCrossChildren: Array<number> = [];
     const childrenInLine: Array<number> = [];
-    for (const line of e._state.flexChildren) {
+    for (const line of e._state.children) {
       let maxCrossChild = 0;
       let childrenCount = 0;
 
@@ -409,10 +408,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       childrenInLine.push(childrenCount);
     }
 
-    for (let i = 0; i < e._state.flexChildren.length; i++) {
-      const line = e._state.flexChildren[i];
+    for (let i = 0; i < e._state.children.length; i++) {
+      const line = e._state.children[i];
       const maxCrossChild = maxCrossChildren[i];
       const childrenCount = childrenInLine[i];
+      let totalFlexGrow = 0;
+      let totalFlexShrink = 0;
 
       // Calculate available space for justify content along the main axis.
       let availableMain = isHorizontal
@@ -430,7 +431,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           availableCross -= crossGap;
         }
       }
-      let totalFlex = 0;
 
       for (const c of line) {
         if (c._style.position !== "relative" || c._style.display === "none") {
@@ -442,8 +442,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             (!isJustifySpace ? c._style.marginLeft + c._style.marginRight : 0)
           : c._state.metrics.height +
             (!isJustifySpace ? c._style.marginTop + c._style.marginBottom : 0);
-        if (c._style.flex !== undefined) {
-          totalFlex += c._style.flex;
+
+        if (c._style.flex > 0 || c._style.flexGrow > 0) {
+          if (c._style.flex > 0) {
+            totalFlexGrow += c._style.flex;
+          } else if (c._style.flexGrow > 0) {
+            totalFlexGrow += c._style.flexGrow;
+          }
+        }
+        if (c._style.flexShrink > 0) {
+          totalFlexShrink += c._style.flexShrink;
         }
       }
 
@@ -494,19 +502,27 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         }
       }
 
-      // Iterate over children and apply positions.
+      // Iterate over children and apply positions and flex sizes.
       for (const c of line) {
         if (c._style.position !== "relative" || c._style.display === "none") {
           continue;
         }
 
-        if (isHorizontal) {
-          if (c._style.flex !== undefined && !isJustifySpace) {
-            c._state.metrics.width += (c._style.flex / totalFlex) * availableMain;
+        if (!isJustifySpace) {
+          if (availableMain > 0 && (c._style.flex > 0 || c._style.flexGrow > 0)) {
+            const flexValue = c._style.flex || c._style.flexGrow;
+            if (isHorizontal) {
+              c._state.metrics.width += (flexValue / totalFlexGrow) * availableMain;
+            } else {
+              c._state.metrics.height += (flexValue / totalFlexGrow) * availableMain;
+            }
           }
-        } else {
-          if (c._style.flex !== undefined && !isJustifySpace) {
-            c._state.metrics.height += (c._style.flex / totalFlex) * availableMain;
+          if (availableMain < 0 && c._style.flexShrink > 0) {
+            if (isHorizontal) {
+              c._state.metrics.width += (c._style.flexShrink / totalFlexShrink) * availableMain;
+            } else {
+              c._state.metrics.height += (c._style.flexShrink / totalFlexShrink) * availableMain;
+            }
           }
         }
 
@@ -540,7 +556,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           let lineCrossSize = maxCrossChild;
           // If there's only one line, if the flex container has defined height, use it as the
           // cross size. For multi lines it's not relevant.
-          if (e._state.flexChildren.length === 1) {
+          if (e._state.children.length === 1) {
             lineCrossSize = Math.max(
               lineCrossSize,
               isHorizontal ? e._state.metrics.height : e._state.metrics.width
@@ -630,6 +646,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       cross += maxCrossChild + crossGap;
     }
 
+    e._state.children = [];
     e._state.metrics.x = Math.round(e._state.metrics.x);
     e._state.metrics.y = Math.round(e._state.metrics.y);
     e._state.metrics.width = Math.round(e._state.metrics.width);

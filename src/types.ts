@@ -22,7 +22,7 @@ export type MoveEvent = {
 export type UserEvent = ClickEvent | MoveEvent;
 
 export type LayoutNodeState = {
-  flexChildren: Array<Array<View | Text>>;
+  children: Array<Array<View | Text>>;
   metrics: { height: number; width: number; x: number; y: number };
   scrollOffset: Vec2;
   scrollableContentSize: Vec2;
@@ -98,8 +98,6 @@ export type ExactLayoutProps = Required<
   Omit<
     LayoutProps,
     | "bottom"
-    | "flex"
-    | "gap"
     | "height"
     | "left"
     | "margin"
@@ -119,7 +117,6 @@ export type ExactLayoutProps = Required<
   >
 > & {
   bottom: LayoutProps["bottom"];
-  flex: LayoutProps["flex"];
   height: LayoutProps["height"];
   left: LayoutProps["left"];
   maxHeight: LayoutProps["maxHeight"];
@@ -172,12 +169,13 @@ const defaultLayoutProps: ExactLayoutProps = {
   bottom: undefined,
   columnGap: 0,
   display: "flex",
-  flex: undefined,
+  flex: 0,
   flexBasis: 0,
   flexDirection: "column",
   flexGrow: 0,
   flexShrink: 0,
   flexWrap: "nowrap",
+  gap: 0,
   height: undefined,
   justifyContent: "flex-start",
   left: undefined,

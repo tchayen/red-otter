@@ -377,9 +377,7 @@ export function flexWrapRow() {
   });
 
   function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
-    return new View({
-      style: { backgroundColor, height, width, ...style },
-    });
+    return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
   const row = new View({
@@ -405,6 +403,7 @@ export function flexWrapRow() {
 
   return root;
 }
+
 export function flexWrapColumn() {
   const root = new View({
     style: {
@@ -415,9 +414,7 @@ export function flexWrapColumn() {
   });
 
   function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
-    return new View({
-      style: { backgroundColor, height, width, ...style },
-    });
+    return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
   const column = new View({
@@ -460,9 +457,7 @@ export function alignContent() {
         backgroundColor,
         flexDirection: "row",
         flexWrap: "wrap",
-        // gap: 10,
         height: 75,
-        // justifyContent: "space-between",
         width: 150,
       },
       testID: "alignContent",
@@ -476,9 +471,7 @@ export function alignContent() {
   }
 
   function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
-    return new View({
-      style: { backgroundColor, height, width, ...style },
-    });
+    return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
   container(colors[0], "flex-start");
@@ -500,7 +493,28 @@ export function flexShrinkAndGrow() {
       height: 300,
       width: 300,
     },
+    testID: "shrink",
   });
+
+  function row(testID?: string) {
+    return new View({ style: { flexDirection: "row", width: "100%" }, testID });
+  }
+
+  function box(backgroundColor: string, width: number, height: number, style?: ViewStyleProps) {
+    return new View({ style: { backgroundColor, height, width, ...style } });
+  }
+
+  const first = row();
+  root.add(first);
+  first.add(box(colors[1], 120, 100, { flexShrink: 0 }));
+  first.add(box(colors[2], 120, 100, { flexShrink: 1 }));
+  first.add(box(colors[1], 120, 100, { flexShrink: 0 }));
+
+  const second = row();
+  root.add(second);
+  second.add(box(colors[1], 60, 100));
+  second.add(box(colors[2], 120, 100, { flexGrow: 1 }));
+  second.add(box(colors[1], 60, 100));
 
   return root;
 }
@@ -527,10 +541,12 @@ export function marginsAndPaddingsAndBorders() {
   const first = new View({
     style: {
       backgroundColor: colors[1],
+      borderColor: colors[2],
+      borderWidth: 4,
       height: 100,
       marginLeft: 10,
       marginRight: 20,
-      padding: 5,
+      padding: 10,
       width: 100,
     },
   });
@@ -846,7 +862,7 @@ export function formUI() {
   xInputSection.add(x);
   const xInput = new View({ style: inputStyle });
   xInputSection.add(xInput);
-  const xValue = new Text("0", { lookups, style: textStyle, testID: "xValue" });
+  const xValue = new Text("1", { lookups, style: textStyle, testID: "xValue" });
   xInput.add(xValue);
 
   const yInputSection = new View({ style: inputGroupStyle });
@@ -855,7 +871,7 @@ export function formUI() {
   yInputSection.add(y);
   const yInput = new View({ style: inputStyle });
   yInputSection.add(yInput);
-  const yValue = new Text("0", { lookups, style: textStyle, testID: "yValue" });
+  const yValue = new Text("2", { lookups, style: textStyle, testID: "yValue" });
   yInput.add(yValue);
 
   const zInputSection = new View({ style: inputGroupStyle });
@@ -864,7 +880,7 @@ export function formUI() {
   zInputSection.add(z);
   const zInput = new View({ style: inputStyle });
   zInputSection.add(zInput);
-  const zValue = new Text("0", { lookups, style: textStyle, testID: "zValue" });
+  const zValue = new Text("3.4", { lookups, style: textStyle, testID: "zValue" });
   zInput.add(zValue);
 
   return root;

@@ -15,7 +15,7 @@ export class Text {
    */
   _style: TextStyleProps & ExactLayoutProps;
   _state: LayoutNodeState = {
-    flexChildren: [],
+    children: [],
     metrics: { height: 0, width: 0, x: 0, y: 0 },
     scrollOffset: new Vec2(0, 0),
     scrollableContentSize: new Vec2(0, 0),

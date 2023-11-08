@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import interTTF from "../../public/interTTF.json";
+import interTTF from "../../public/interTTF.json"; // This is a 1.8MB JSON file (95kB gzipped).
 import { prepareLookups } from "../font/prepareLookups";
 import { TTF } from "../font/parseTTF";
 import { layout } from "./layout";
@@ -9,14 +9,11 @@ import { View } from "../View";
 import { Text } from "../Text";
 import * as fixtures from "../fixtures";
 
+const alphabet =
+  "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
-  {
-    // 108 was max for Inter+Bold on 4096x4096.
-    alphabet:
-      "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_",
-    fontSize: 150,
-  }
+  { alphabet, fontSize: 150 }
 );
 
 fixtures.setLookups(lookups);
@@ -331,7 +328,31 @@ describe("Layout", () => {
   });
 
   it("flexShrink and flexGrow", () => {
-    // TODO @tchayen: add after implemented.
+    const root = fixtures.flexShrinkAndGrow();
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const firstRow = root.firstChild;
+    const firstRowFirst = firstRow?.firstChild;
+    const firstRowSecond = firstRowFirst?.next;
+    const firstRowThird = firstRowSecond?.next;
+    const secondRow = firstRow?.next;
+    const secondRowFirst = secondRow?.firstChild;
+    const secondRowSecond = secondRowFirst?.next;
+    const secondRowThird = secondRowSecond?.next;
+
+    const expectedWidths = [120, 60, 120, 60, 180, 60];
+    const nodes = [
+      firstRowFirst,
+      firstRowSecond,
+      firstRowThird,
+      secondRowFirst,
+      secondRowSecond,
+      secondRowThird,
+    ];
+
+    for (let i = 0; i < nodes.length; i++) {
+      expect(nodes[i]?._state.metrics.width).toBe(expectedWidths[i]);
+    }
   });
 
   it("margins, paddings, borders", () => {
@@ -341,7 +362,7 @@ describe("Layout", () => {
     const expectedValues = [
       [new Vec2(0, 0), new Vec2(270, 120)],
       [new Vec2(20, 10), new Vec2(100, 100)],
-      [new Vec2(25, 25), new Vec2(50, 50)],
+      [new Vec2(30, 30), new Vec2(50, 50)],
       [new Vec2(170, 10), new Vec2(50, 50)],
     ];
 
