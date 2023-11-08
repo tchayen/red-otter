@@ -48,7 +48,7 @@ export type LayoutProps = {
   columnGap?: number;
   display?: "flex" | "none";
   flex?: number;
-  flexBasis?: number;
+  flexBasis?: number | `${number}%`;
   flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
   flexGrow?: number;
   flexShrink?: number;
@@ -98,6 +98,7 @@ export type ExactLayoutProps = Required<
   Omit<
     LayoutProps,
     | "bottom"
+    | "flexBasis"
     | "height"
     | "left"
     | "margin"
@@ -117,6 +118,7 @@ export type ExactLayoutProps = Required<
   >
 > & {
   bottom: LayoutProps["bottom"];
+  flexBasis: LayoutProps["flexBasis"];
   height: LayoutProps["height"];
   left: LayoutProps["left"];
   maxHeight: LayoutProps["maxHeight"];
@@ -170,7 +172,7 @@ const defaultLayoutProps: ExactLayoutProps = {
   columnGap: 0,
   display: "flex",
   flex: 0,
-  flexBasis: 0,
+  flexBasis: undefined,
   flexDirection: "column",
   flexGrow: 0,
   flexShrink: 0,

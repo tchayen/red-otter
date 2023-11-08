@@ -514,7 +514,7 @@ export function flexShrinkAndGrow() {
   root.add(second);
   second.add(box(colors[1], 60, 100));
   second.add(box(colors[2], 120, 100, { flexGrow: 1 }));
-  second.add(box(colors[1], 60, 100));
+  second.add(box(colors[1], 20, 100, { flexBasis: 60 }));
 
   return root;
 }

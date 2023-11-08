@@ -32,6 +32,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const e = firstPass.dequeue();
     invariant(e, "Empty queue.");
 
+    const isHorizontal =
+      e.parent?._style.flexDirection === "row" || e.parent?._style.flexDirection === "row-reverse";
+
     let c = e.firstChild;
     while (c !== null) {
       firstPass.enqueue(c);
@@ -47,6 +50,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
     if (typeof e._style.height === "number") {
       e._state.metrics.height = e._style.height;
+    }
+    if (typeof e._style.flexBasis === "number") {
+      if (isHorizontal) {
+        e._state.metrics.width = e._style.flexBasis;
+      } else {
+        e._state.metrics.height = e._style.flexBasis;
+      }
     }
 
     if (typeof e._style.width === "string") {
@@ -80,6 +90,15 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       e._state.metrics.height =
         toPercentage(e._style.height) * accumulatedMultiplier * (definedHeight ?? 0);
+    }
+    if (typeof e._style.flexBasis === "string") {
+      if (isHorizontal) {
+        e._state.metrics.width =
+          toPercentage(e._style.flexBasis) * (e.parent?._state.metrics.width ?? 0);
+      } else {
+        e._state.metrics.height =
+          toPercentage(e._style.flexBasis) * (e.parent?._state.metrics.height ?? 0);
+      }
     }
 
     // TODO @tchayen: add text wrapping.
