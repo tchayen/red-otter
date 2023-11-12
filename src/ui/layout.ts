@@ -703,32 +703,73 @@ function toPercentage(value: string): number {
 }
 
 function enforceMinMax(e: View | Text): void {
+  let minHeight = 0;
+  let minWidth = 0;
+  let maxHeight = Number.POSITIVE_INFINITY;
+  let maxWidth = Number.POSITIVE_INFINITY;
+
   if (e._style.minHeight !== undefined) {
     const value =
       typeof e._style.minHeight === "string"
         ? toPercentage(e._style.minHeight) * (e.parent?._state.metrics.height ?? 0)
         : e._style.minHeight;
-    e._state.metrics.height = Math.max(e._state.metrics.height, value);
+    minHeight = value;
   }
   if (e._style.minWidth !== undefined) {
     const value =
       typeof e._style.minWidth === "string"
         ? toPercentage(e._style.minWidth) * (e.parent?._state.metrics.width ?? 0)
         : e._style.minWidth;
-    e._state.metrics.width = Math.max(e._state.metrics.width, value);
+    minWidth = value;
   }
   if (e._style.maxHeight !== undefined) {
     const value =
       typeof e._style.maxHeight === "string"
         ? toPercentage(e._style.maxHeight) * (e.parent?._state.metrics.height ?? 0)
         : e._style.maxHeight;
-    e._state.metrics.height = Math.min(e._state.metrics.height, value);
+    maxHeight = value;
   }
   if (e._style.maxWidth !== undefined) {
     const value =
       typeof e._style.maxWidth === "string"
         ? toPercentage(e._style.maxWidth) * (e.parent?._state.metrics.width ?? 0)
         : e._style.maxWidth;
-    e._state.metrics.width = Math.min(e._state.metrics.width, value);
+    maxWidth = value;
   }
+
+  let effectiveWidth = Math.min(Math.max(e._state.metrics.width, minWidth), maxWidth);
+  let effectiveHeight = Math.min(Math.max(e._state.metrics.height, minHeight), maxHeight);
+
+  const isHorizontal =
+    e.parent?._style.flexDirection === "row" || e.parent?._style.flexDirection === "row-reverse";
+
+  if (e._style.aspectRatio !== undefined) {
+    const aspectRatio = e._style.aspectRatio;
+    if ((e._style.width !== undefined || minWidth > 0) && e._style.height === undefined) {
+      const calculatedHeight = effectiveWidth / aspectRatio;
+      effectiveHeight = Math.min(Math.max(calculatedHeight, minHeight), maxHeight);
+    } else if ((e._style.height !== undefined || minHeight > 0) && e._style.width === undefined) {
+      const calculatedWidth = effectiveHeight * aspectRatio;
+      effectiveWidth = Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+    } else if (e._style.width === undefined && e._style.height === undefined) {
+      // If both width and height are undefined.
+      if (isHorizontal) {
+        effectiveHeight = Math.min(Math.max(effectiveWidth / aspectRatio, minHeight), maxHeight);
+      } else {
+        effectiveWidth = Math.min(Math.max(effectiveHeight * aspectRatio, minWidth), maxWidth);
+      }
+    } else {
+      // Both width and height are defined.
+      if (isHorizontal) {
+        effectiveHeight = effectiveWidth / aspectRatio;
+      } else {
+        effectiveWidth = effectiveHeight * aspectRatio;
+      }
+      effectiveWidth = Math.min(Math.max(effectiveWidth, minWidth), maxWidth);
+      effectiveHeight = Math.min(Math.max(effectiveHeight, minHeight), maxHeight);
+    }
+  }
+
+  e._state.metrics.width = effectiveWidth;
+  e._state.metrics.height = effectiveHeight;
 }

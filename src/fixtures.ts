@@ -1040,3 +1040,59 @@ export function tryingToBreakThings() {
 
   return root;
 }
+
+export function aspectRatio() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const first = new View({
+    style: {
+      aspectRatio: 16 / 9,
+      backgroundColor: colors[0],
+      width: 60,
+    },
+  });
+  root.add(first);
+  const second = new View({
+    style: {
+      aspectRatio: 16 / 9,
+      backgroundColor: colors[1],
+      minWidth: 72,
+      width: 40,
+    },
+  });
+  root.add(second);
+  const third = new View({
+    style: {
+      aspectRatio: 16 / 9,
+      backgroundColor: colors[2],
+      height: 60,
+      width: 60,
+    },
+  });
+  root.add(third);
+  const fourth = new View({
+    style: {
+      aspectRatio: 16 / 9,
+      backgroundColor: colors[3],
+      minHeight: 72,
+    },
+  });
+  root.add(fourth);
+  const fifth = new View({
+    style: {
+      aspectRatio: 16 / 9,
+      backgroundColor: colors[4],
+      minHeight: 72,
+      minWidth: 144,
+    },
+  });
+  root.add(fifth);
+
+  return root;
+}

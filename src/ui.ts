@@ -69,6 +69,8 @@ export function ui(renderer: UIRenderer): View {
   const column1 = new View({ style: columnStyle });
   examples.add(column1);
 
+  column1.add(text("aspectRatio"));
+  column1.add(fixtures.aspectRatio());
   column1.add(text("trying to break things"));
   column1.add(fixtures.tryingToBreakThings());
   column1.add(text("interactive button"));
