@@ -18,9 +18,13 @@ const lookups = prepareLookups(
 
 fixtures.setLookups(lookups);
 
+// NOTE:
+// Layout is run twice to ensure that the second run doesn't change anything, i.e. it's idempotent.
+
 describe("Layout", () => {
   it("flex value", () => {
     const root = fixtures.flexValue();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     const first = root.firstChild?.firstChild;
@@ -55,6 +59,7 @@ describe("Layout", () => {
 
   it("flexDirection row and column", () => {
     const root = fixtures.flexRowAndColumn();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     // Three items per row.
@@ -105,6 +110,7 @@ describe("Layout", () => {
   it("alignItems and alignSelf", () => {
     const root = fixtures.alignItemsAndSelf();
     layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
 
     let c: View | Text | null | undefined = null;
     let box: View | Text | null | undefined = root.firstChild?.firstChild;
@@ -148,6 +154,7 @@ describe("Layout", () => {
 
   it("flexDirection reverse", () => {
     const root = fixtures.flexDirectionReverse();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     // Three items per row.
@@ -198,6 +205,7 @@ describe("Layout", () => {
   it("flexWrap row", () => {
     const root = fixtures.flexWrapRow();
     layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
 
     const box = root.firstChild;
     const first = box?.firstChild;
@@ -228,6 +236,7 @@ describe("Layout", () => {
   it("flexWrap column", () => {
     const root = fixtures.flexWrapColumn();
     layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
 
     const box = root.firstChild;
     const first = box?.firstChild;
@@ -257,6 +266,7 @@ describe("Layout", () => {
 
   it("alignContent", () => {
     const root = fixtures.alignContent();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     const flexStart = root.firstChild;
@@ -330,6 +340,7 @@ describe("Layout", () => {
   it("flexShrink and flexGrow", () => {
     const root = fixtures.flexShrinkAndGrow();
     layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
 
     const firstRow = root.firstChild;
     const firstRowFirst = firstRow?.firstChild;
@@ -358,6 +369,7 @@ describe("Layout", () => {
   it("margins, paddings, borders", () => {
     const root = fixtures.marginsAndPaddingsAndBorders();
     layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
 
     const expectedValues = [
       [new Vec2(0, 0), new Vec2(270, 120)],
@@ -382,6 +394,7 @@ describe("Layout", () => {
 
   it("left, top, right, bottom", () => {
     const root = fixtures.offsets();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     const expectedPositions = [
@@ -415,6 +428,7 @@ describe("Layout", () => {
 
   it("percentage sizes and min/max", () => {
     const root = fixtures.percentageAndMinMaxSizes();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     const passThrough = root.firstChild;
@@ -472,6 +486,7 @@ describe("Layout", () => {
    */
   it("form UI", () => {
     const root = fixtures.formUI();
+    layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
     const box = root.firstChild;

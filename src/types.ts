@@ -5,6 +5,7 @@ import { Vec2 } from "./math/Vec2";
 export enum UserEventType {
   MouseClick,
   MouseMove,
+  MouseScroll,
 }
 
 export type ClickEvent = {
@@ -19,7 +20,13 @@ export type MoveEvent = {
   y: number;
 };
 
-export type UserEvent = ClickEvent | MoveEvent;
+export type ScrollEvent = {
+  type: UserEventType.MouseScroll;
+  x: number;
+  y: number;
+};
+
+export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
 
 export type LayoutNodeState = {
   children: Array<Array<View | Text>>;
@@ -40,6 +47,7 @@ export type LayoutProps = {
     | "space-evenly";
   alignItems?: "flex-start" | "flex-end" | "center" | "stretch";
   alignSelf?: "auto" | "flex-start" | "center" | "flex-end" | "stretch";
+  aspectRatio?: number;
   borderBottomWidth?: number;
   borderLeftWidth?: number;
   borderRightWidth?: number;
@@ -98,6 +106,7 @@ export type LayoutProps = {
 export type ExactLayoutProps = Required<
   Omit<
     LayoutProps,
+    | "aspectRatio"
     | "bottom"
     | "flexBasis"
     | "height"
@@ -118,6 +127,7 @@ export type ExactLayoutProps = Required<
     | "zIndex"
   >
 > & {
+  aspectRatio: LayoutProps["aspectRatio"];
   bottom: LayoutProps["bottom"];
   flexBasis: LayoutProps["flexBasis"];
   height: LayoutProps["height"];
@@ -164,6 +174,7 @@ const defaultLayoutProps: ExactLayoutProps = {
   alignContent: "flex-start",
   alignItems: "flex-start",
   alignSelf: "auto",
+  aspectRatio: undefined,
   borderBottomWidth: 0,
   borderLeftWidth: 0,
   borderRightWidth: 0,

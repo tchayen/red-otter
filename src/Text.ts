@@ -1,7 +1,13 @@
 import { shapeText } from "./font/shapeText";
 
 import { Lookups } from "./font/types";
-import { ExactLayoutProps, LayoutNodeState, TextStyleProps, normalizeLayoutProps } from "./types";
+import {
+  ExactLayoutProps,
+  LayoutNodeState,
+  TextStyleProps,
+  UserEvent,
+  normalizeLayoutProps,
+} from "./types";
 import { Vec2 } from "./math/Vec2";
 
 export class Text {
@@ -34,6 +40,7 @@ export class Text {
       fontSize: props.style.fontSize,
       lookups: props.lookups,
       text: text, // TODO @tchayen: enforce in eslint not repeating value when same as key.
+      textAlignment: "left",
     });
     const { width, height } = shape.boundingRectangle;
 
@@ -41,4 +48,6 @@ export class Text {
     this._style.width = width;
     this._style.height = height;
   }
+
+  handleEvent(event: UserEvent): void {}
 }

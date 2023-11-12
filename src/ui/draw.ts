@@ -6,7 +6,8 @@ import { parseColor } from "../utils/parseColor";
 import { View } from "../View";
 
 export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
-  console.log(`Drawing ${rectangles.length} rectangles.`);
+  // console.log(`Drawing ${rectangles.length} rectangles.`);
+
   for (const r of rectangles) {
     if ("text" in r) {
       const position = new Vec2(r._state.metrics.x, r._state.metrics.y);
@@ -29,12 +30,12 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
         }
       );
     } else {
-      // const outerBorderRadius = new Vec4(
-      //   r._style.borderTopLeftRadius,
-      //   r._style.borderTopRightRadius,
-      //   r._style.borderBottomLeftRadius,
-      //   r._style.borderBottomRightRadius
-      // );
+      const outerBorderRadius = new Vec4(
+        r._style.borderTopLeftRadius,
+        r._style.borderTopRightRadius,
+        r._style.borderBottomLeftRadius,
+        r._style.borderBottomRightRadius
+      );
 
       // if (r._style.boxShadowRadius >= 0.25) {
       //   ui.rectangle(
@@ -126,13 +127,7 @@ export function draw(ui: UIRenderer, rectangles: (View | Text)[]): void {
       //   }
       // }
 
-      ui.rectangle(
-        parseColor(r._style.backgroundColor),
-        position,
-        size,
-        new Vec4(0, 0, 0, 0),
-        0.25
-      );
+      ui.rectangle(parseColor(r._style.backgroundColor), position, size, outerBorderRadius, 0.25);
     }
   }
 }

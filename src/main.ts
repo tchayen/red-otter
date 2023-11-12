@@ -68,8 +68,8 @@ const colorTextureView = colorTexture.createView({ label: "color" });
 const renderer = new UIRenderer(device, context, colorTextureView, settings, lookups, fontAtlas);
 
 const events = new EventManager();
-const tree = ui(renderer);
-const node = applyZIndex(tree);
+const root = ui(renderer);
+const node = applyZIndex(root);
 
 function render(): void {
   invariant(context, "WebGPU is not supported in this browser.");
@@ -78,25 +78,28 @@ function render(): void {
 
   let event = events.pop();
   while (event) {
-    dispatchEvent(tree, event);
+    deliverEvent(root, event);
     event = events.pop();
   }
 
   draw(renderer, node);
   renderer.render(commandEncoder);
-
   device.queue.submit([commandEncoder.finish()]);
 
-  // requestAnimationFrame(render);
+  requestAnimationFrame(render);
 }
 
 render();
 
-function dispatchEvent(view: View, event: UserEvent): boolean {
+function deliverEvent(view: View, event: UserEvent): boolean {
+  if (view.props.testID === "button") {
+    console.log("delivering...", hitTest(view, event));
+  }
+
   // First, check children (going reverse for depth).
   if (view.firstChild) {
     for (let child = view.lastChild; child !== null; child = child.prev ?? null) {
-      if (dispatchEvent(child as View, event)) {
+      if (deliverEvent(child as View, event)) {
         return true;
       }
     }
@@ -104,7 +107,10 @@ function dispatchEvent(view: View, event: UserEvent): boolean {
 
   // If none of the children were hit, check the current node.
   if (hitTest(view, event)) {
-    // view.handleEvent(event);
+    // TODO @tchayen: remove the if.
+    if (view.props.testID === "button") {
+      view.handleEvent(event);
+    }
     return true;
   }
 

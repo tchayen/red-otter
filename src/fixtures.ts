@@ -831,6 +831,38 @@ export function zIndex() {
     },
   });
 
+  const left = new View({
+    style: {
+      backgroundColor: colors[0],
+      height: 50,
+      width: 100,
+      zIndex: 1,
+    },
+  });
+  root.add(left);
+
+  const leftChild = new View({
+    style: {
+      backgroundColor: colors[1],
+      height: 100,
+      left: 20,
+      top: 20,
+      width: 100,
+      zIndex: 5,
+    },
+  });
+  left.add(leftChild);
+
+  const right = new View({
+    style: {
+      backgroundColor: colors[2],
+      height: 100,
+      width: 100,
+      zIndex: 2,
+    },
+  });
+  root.add(right);
+
   return root;
 }
 
@@ -939,6 +971,72 @@ export function formUI() {
   zInputSection.add(zInput);
   const zValue = new Text("3.4", { lookups, style: textStyle, testID: "zValue" });
   zInput.add(zValue);
+
+  return root;
+}
+
+export function interactiveButton() {
+  invariant(lookups, "Lookups must be set.");
+
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      gap: 20,
+      height: 300,
+      padding: 20,
+      width: 300,
+    },
+  });
+
+  const button = new View({
+    onClick: () => {
+      console.log("hello");
+    },
+    style: {
+      backgroundColor: "#333",
+      borderRadius: 6,
+      justifyContent: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    testID: "button",
+  });
+  root.add(button);
+  button.add(
+    new Text("Sign up", { lookups, style: { color: "#fff", fontName: "Inter", fontSize: 16 } })
+  );
+
+  return root;
+}
+
+export function tryingToBreakThings() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      width: 300,
+    },
+  });
+
+  const row = new View({
+    style: {
+      backgroundColor: colors[0],
+      flexDirection: "row",
+      height: 100,
+      width: "100%",
+    },
+  });
+  root.add(row);
+
+  const first = new View({
+    style: {
+      backgroundColor: colors[1],
+      flex: 1,
+      height: 50,
+      maxWidth: 50,
+    },
+  });
+  row.add(first);
 
   return root;
 }

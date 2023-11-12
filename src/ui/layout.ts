@@ -11,7 +11,10 @@ import { shapeText } from "../font/shapeText";
  * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
  *
  * This function traverses the tree and calculates layout information - `width`, `height`, `x`, `y`
- * of each element - and stores it in `__state.metrics` of each node.
+ * of each element - and stores it in `__state.metrics` of each node. Coordinates are in pixels and
+ * start point for each element is top left corner of the root element, which is created around the
+ * tree passed to this function. What this means in practice is that all coordinates are global and
+ * not relative to the parent.
  */
 export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2): void {
   const firstPass = new Queue<View | Text>();
@@ -217,36 +220,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // Handle min/max width/height.
-    if (e._style.minHeight !== undefined) {
-      const value =
-        typeof e._style.minHeight === "string"
-          ? toPercentage(e._style.minHeight) * (e.parent?._state.metrics.height ?? 0)
-          : e._style.minHeight;
-      e._state.metrics.height = Math.max(e._state.metrics.height, value);
-    }
-    if (e._style.minWidth !== undefined) {
-      const value =
-        typeof e._style.minWidth === "string"
-          ? toPercentage(e._style.minWidth) * (e.parent?._state.metrics.width ?? 0)
-          : e._style.minWidth;
-      e._state.metrics.width = Math.max(e._state.metrics.width, value);
-    }
-    if (e._style.maxHeight !== undefined) {
-      const value =
-        typeof e._style.maxHeight === "string"
-          ? toPercentage(e._style.maxHeight) * (e.parent?._state.metrics.height ?? 0)
-          : e._style.maxHeight;
-      e._state.metrics.height = Math.min(e._state.metrics.height, value);
-    }
-    if (e._style.maxWidth !== undefined) {
-      const value =
-        typeof e._style.maxWidth === "string"
-          ? toPercentage(e._style.maxWidth) * (e.parent?._state.metrics.width ?? 0)
-          : e._style.maxWidth;
-      e._state.metrics.width = Math.min(e._state.metrics.width, value);
-    }
-
     if (isWrap) {
       // The size that was first calculated is size of the tallest child of all plus paddings. So
       // here we reset the size and build it again, for all rows.
@@ -321,7 +294,35 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // TODO @tchayen: calculate scrollable content area for a node.
+    enforceMinMax(e);
+
+    if (e._style.overflow === "scroll") {
+      let farthestX = 0;
+      let farthestY = 0;
+
+      let c = e.firstChild;
+      while (c) {
+        const childFarX = c._state.metrics.x + c._state.metrics.width;
+        const childFarY = c._state.metrics.y + c._state.metrics.height;
+
+        if (childFarX > farthestX) {
+          farthestX = childFarX;
+        }
+
+        if (childFarY > farthestY) {
+          farthestY = childFarY;
+        }
+
+        c = c.next;
+      }
+
+      e._state.scrollableContentSize = new Vec2(
+        Math.max(farthestX, e._state.metrics.width),
+        Math.max(farthestY, e._state.metrics.height)
+      );
+    } else {
+      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
+    }
   }
 
   /*
@@ -562,6 +563,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
               c._state.metrics.height += (c._style.flexShrink / totalFlexShrink) * availableMain;
             }
           }
+          enforceMinMax(c);
         }
 
         if (isJustifySpace) {
@@ -698,4 +700,35 @@ function toPercentage(value: string): number {
   }
 
   return Number(value.replace("%", "")) / 100;
+}
+
+function enforceMinMax(e: View | Text): void {
+  if (e._style.minHeight !== undefined) {
+    const value =
+      typeof e._style.minHeight === "string"
+        ? toPercentage(e._style.minHeight) * (e.parent?._state.metrics.height ?? 0)
+        : e._style.minHeight;
+    e._state.metrics.height = Math.max(e._state.metrics.height, value);
+  }
+  if (e._style.minWidth !== undefined) {
+    const value =
+      typeof e._style.minWidth === "string"
+        ? toPercentage(e._style.minWidth) * (e.parent?._state.metrics.width ?? 0)
+        : e._style.minWidth;
+    e._state.metrics.width = Math.max(e._state.metrics.width, value);
+  }
+  if (e._style.maxHeight !== undefined) {
+    const value =
+      typeof e._style.maxHeight === "string"
+        ? toPercentage(e._style.maxHeight) * (e.parent?._state.metrics.height ?? 0)
+        : e._style.maxHeight;
+    e._state.metrics.height = Math.min(e._state.metrics.height, value);
+  }
+  if (e._style.maxWidth !== undefined) {
+    const value =
+      typeof e._style.maxWidth === "string"
+        ? toPercentage(e._style.maxWidth) * (e.parent?._state.metrics.width ?? 0)
+        : e._style.maxWidth;
+    e._state.metrics.width = Math.min(e._state.metrics.width, value);
+  }
 }

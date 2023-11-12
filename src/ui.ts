@@ -7,6 +7,7 @@ import { Vec2 } from "./math/Vec2";
 import { TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
 import * as fixtures from "./fixtures";
+import { measure } from "./measure";
 
 export let lookups: Lookups;
 
@@ -68,6 +69,10 @@ export function ui(renderer: UIRenderer): View {
   const column1 = new View({ style: columnStyle });
   examples.add(column1);
 
+  column1.add(text("trying to break things"));
+  column1.add(fixtures.tryingToBreakThings());
+  column1.add(text("interactive button"));
+  column1.add(fixtures.interactiveButton());
   column1.add(text("flex value"));
   column1.add(fixtures.flexValue());
   column1.add(text("flexDirection row and column"));
@@ -128,11 +133,9 @@ export function ui(renderer: UIRenderer): View {
   //   )
   // );
 
-  const start = performance.now();
-  layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
-  const end = performance.now();
-
-  console.log(`Layout took ${(end - start).toFixed(2)}ms.`);
+  measure("Layout", () => {
+    layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
+  });
 
   // console.log(debugPrintTree(scroll));
   return container;

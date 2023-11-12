@@ -58,6 +58,7 @@ export class View {
   }
 
   handleEvent(event: UserEvent): void {
+    console.log("View.handleEvent");
     if (event.type === UserEventType.MouseClick && this.props.onClick) {
       this.props.onClick();
     }
