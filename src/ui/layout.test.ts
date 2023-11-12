@@ -475,6 +475,37 @@ describe("Layout", () => {
     // TODO @tchayen: add after implemented.
   });
 
+  it("aspectRatio", () => {
+    const root = fixtures.aspectRatio();
+    layout(root, lookups, new Vec2(1024, 768));
+    layout(root, lookups, new Vec2(1024, 768));
+
+    const first = root.firstChild;
+    const second = first?.next;
+    const third = second?.next;
+    const fourth = third?.next;
+    const fifth = fourth?.next;
+
+    const expectedSizes = [
+      new Vec2(60, 34),
+      new Vec2(72, 41),
+      new Vec2(107, 60),
+      new Vec2(128, 72),
+      new Vec2(144, 81),
+    ];
+
+    const nodes = [first, second, third, fourth, fifth];
+
+    for (let i = 0; i < nodes.length; i++) {
+      const width = nodes[i]?._state.metrics.width ?? 0;
+      const height = nodes[i]?._state.metrics.height ?? 0;
+
+      expect(width / height).toBeCloseTo(1.77, 1);
+      expect(width).toBe(expectedSizes[i].x);
+      expect(height).toBe(expectedSizes[i].y);
+    }
+  });
+
   /**
    * ┌─────────────────────────────┐
    * │   ┌─────────────────────┐   │

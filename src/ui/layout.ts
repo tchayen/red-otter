@@ -294,8 +294,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    enforceMinMax(e);
-
     if (e._style.overflow === "scroll") {
       let farthestX = 0;
       let farthestY = 0;
@@ -563,8 +561,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
               c._state.metrics.height += (c._style.flexShrink / totalFlexShrink) * availableMain;
             }
           }
-          enforceMinMax(c);
         }
+
+        applyMinMaxAndAspectRatio(c);
 
         if (isJustifySpace) {
           c._state.metrics.x += isHorizontal ? main : cross;
@@ -702,7 +701,7 @@ function toPercentage(value: string): number {
   return Number(value.replace("%", "")) / 100;
 }
 
-function enforceMinMax(e: View | Text): void {
+function applyMinMaxAndAspectRatio(e: View | Text): void {
   let minHeight = 0;
   let minWidth = 0;
   let maxHeight = Number.POSITIVE_INFINITY;
