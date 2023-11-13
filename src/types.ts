@@ -9,21 +9,19 @@ export enum UserEventType {
 }
 
 export type ClickEvent = {
+  position: Vec2;
   type: UserEventType.MouseClick;
-  x: number;
-  y: number;
 };
 
 export type MoveEvent = {
+  position: Vec2;
   type: UserEventType.MouseMove;
-  x: number;
-  y: number;
 };
 
 export type ScrollEvent = {
+  delta: Vec2;
+  position: Vec2;
   type: UserEventType.MouseScroll;
-  x: number;
-  y: number;
 };
 
 export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;

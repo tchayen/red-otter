@@ -1,6 +1,5 @@
 import { EventManager } from "./EventManager";
 import { UIRenderer } from "./UIRenderer";
-import { View } from "./View";
 import { applyZIndex } from "./applyZIndex";
 import { settings } from "./consts";
 import { draw } from "./ui/draw";
@@ -8,7 +7,6 @@ import { parseTTF } from "./font/parseTTF";
 import { prepareLookups } from "./font/prepareLookups";
 import { renderFontAtlas } from "./font/renderFontAtlas";
 import { ui } from "./ui";
-import { UserEvent } from "./types";
 import { invariant } from "./utils/invariant";
 
 const alphabet =
@@ -26,7 +24,7 @@ canvas.width = settings.windowWidth * window.devicePixelRatio;
 canvas.height = settings.windowHeight * window.devicePixelRatio;
 canvas.setAttribute(
   "style",
-  `width: ${settings.windowWidth}px; height: ${settings.windowHeight}px; display: flex;`
+  `width: ${settings.windowWidth}px; height: ${settings.windowHeight}px; display: flex; position: fixed`
 );
 document.body.append(canvas);
 const entry = navigator.gpu;
@@ -67,7 +65,7 @@ const colorTextureView = colorTexture.createView({ label: "color" });
 
 const renderer = new UIRenderer(device, context, colorTextureView, settings, lookups, fontAtlas);
 
-const events = new EventManager();
+export const events = new EventManager();
 const root = ui(renderer);
 const node = applyZIndex(root);
 
@@ -76,11 +74,7 @@ function render(): void {
 
   const commandEncoder = device.createCommandEncoder();
 
-  let event = events.pop();
-  while (event) {
-    deliverEvent(root, event);
-    event = events.pop();
-  }
+  events.deliverEvents();
 
   draw(renderer, node);
   renderer.render(commandEncoder);
@@ -90,38 +84,3 @@ function render(): void {
 }
 
 render();
-
-function deliverEvent(view: View, event: UserEvent): boolean {
-  if (view.props.testID === "button") {
-    console.log("delivering...", hitTest(view, event));
-  }
-
-  // First, check children (going reverse for depth).
-  if (view.firstChild) {
-    for (let child = view.lastChild; child !== null; child = child.prev ?? null) {
-      if (deliverEvent(child as View, event)) {
-        return true;
-      }
-    }
-  }
-
-  // If none of the children were hit, check the current node.
-  if (hitTest(view, event)) {
-    // TODO @tchayen: remove the if.
-    if (view.props.testID === "button") {
-      view.handleEvent(event);
-    }
-    return true;
-  }
-
-  return false; // Event was not handled by this branch.
-}
-
-function hitTest(view: View, event: UserEvent): boolean {
-  return (
-    event.x >= view._state.metrics.x &&
-    event.x <= view._state.metrics.x + view._state.metrics.width &&
-    event.y >= view._state.metrics.y &&
-    event.y <= view._state.metrics.y + view._state.metrics.height
-  );
-}

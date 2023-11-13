@@ -694,11 +694,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 }
 
 function toPercentage(value: string): number {
-  if (!value.endsWith("%")) {
-    throw new Error("Value must be a percentage.");
-  }
-
-  return Number(value.replace("%", "")) / 100;
+  invariant(value.endsWith("%"), "Value must be a percentage.");
+  const result = Number(value.replace("%", "")) / 100;
+  invariant(Number.isFinite(result), "Value must be a real fraction.");
+  return result;
 }
 
 function applyMinMaxAndAspectRatio(e: View | Text): void {

@@ -791,6 +791,7 @@ export function percentageAndMinMaxSizes() {
   const maxSizeFirst = new View({
     style: {
       backgroundColor: colors[8],
+      flex: 1,
       height: 50,
       width: 50,
     },
@@ -1093,6 +1094,28 @@ export function aspectRatio() {
     },
   });
   root.add(fifth);
+
+  return root;
+}
+
+export function scrollable() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      overflow: "scroll",
+      width: 300,
+    },
+  });
+
+  const tooBig = new View({
+    style: {
+      backgroundColor: "#fff",
+      height: 400,
+      width: 300,
+    },
+  });
+  root.add(tooBig);
 
   return root;
 }

@@ -1,5 +1,4 @@
 import {
-  UserEvent,
   UserEventType,
   ExactDecorativeProps,
   ExactLayoutProps,
@@ -7,9 +6,11 @@ import {
   normalizeLayoutProps,
   normalizeDecorativeProps,
   LayoutNodeState,
+  ScrollEvent,
 } from "./types";
 import { Text } from "./Text";
 import { Vec2 } from "./math/Vec2";
+import { events } from "./main";
 
 export class View {
   next: View | Text | null = null;
@@ -36,6 +37,24 @@ export class View {
     }
   ) {
     this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
+    if (props.onClick) {
+      events.addEventListener(UserEventType.MouseClick, this, props.onClick);
+    }
+    if (this._style.overflow === "scroll") {
+      events.addEventListener(UserEventType.MouseScroll, this, (event: ScrollEvent) => {
+        this._state.scrollOffset = new Vec2(
+          Math.min(
+            Math.max(this._state.scrollOffset.x + event.delta.x, 0),
+            this._state.scrollableContentSize.x - this._state.metrics.width
+          ),
+          Math.min(
+            Math.max(this._state.scrollOffset.y + event.delta.y, 0),
+            this._state.scrollableContentSize.y - this._state.metrics.height
+          )
+        );
+        console.log(this._state.scrollOffset);
+      });
+    }
   }
 
   add(node: View | Text): View | Text {
@@ -55,12 +74,5 @@ export class View {
     }
 
     return node;
-  }
-
-  handleEvent(event: UserEvent): void {
-    console.log("View.handleEvent");
-    if (event.type === UserEventType.MouseClick && this.props.onClick) {
-      this.props.onClick();
-    }
   }
 }

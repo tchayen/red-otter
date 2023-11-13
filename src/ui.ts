@@ -69,12 +69,12 @@ export function ui(renderer: UIRenderer): View {
   const column1 = new View({ style: columnStyle });
   examples.add(column1);
 
-  column1.add(text("aspectRatio"));
-  column1.add(fixtures.aspectRatio());
-  column1.add(text("trying to break things"));
-  column1.add(fixtures.tryingToBreakThings());
+  column1.add(text("scrollable"));
+  column1.add(fixtures.scrollable());
   column1.add(text("interactive button"));
   column1.add(fixtures.interactiveButton());
+  column1.add(text("trying to break things"));
+  column1.add(fixtures.tryingToBreakThings());
   column1.add(text("flex value"));
   column1.add(fixtures.flexValue());
   column1.add(text("flexDirection row and column"));
@@ -119,8 +119,14 @@ export function ui(renderer: UIRenderer): View {
   column5.add(fixtures.zIndex());
   column5.add(text("text"));
   column5.add(fixtures.text());
-  column5.add(text("form UI"));
-  column5.add(fixtures.formUI());
+  column5.add(text("aspectRatio"));
+  column5.add(fixtures.aspectRatio());
+
+  const column6 = new View({ style: columnStyle });
+  examples.add(column6);
+
+  column6.add(text("form UI"));
+  column6.add(fixtures.formUI());
 
   ///////
 
