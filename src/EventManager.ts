@@ -1,4 +1,5 @@
 import { View } from "./View";
+import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import type { ClickEvent, MoveEvent, ScrollEvent, UserEvent } from "./types";
 import { UserEventType } from "./types";
@@ -13,6 +14,10 @@ export class EventManager {
   private readonly listeningViews: Array<UserEventTuple> = [];
 
   constructor() {
+    if (!isWindowDefined) {
+      return;
+    }
+
     window.addEventListener("pointermove", (event) => {
       this.push({
         position: new Vec2(event.clientX, event.clientY),
@@ -54,7 +59,6 @@ export class EventManager {
     callback: (event: ClickEvent | ScrollEvent | MoveEvent) => void
   ): void {
     this.listeningViews.push([type, view, callback]);
-    console.log(this.listeningViews);
   }
 
   public removeEventListener(callback: () => void): void {

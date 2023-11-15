@@ -9,6 +9,7 @@ import {
   normalizeLayoutProps,
 } from "./types";
 import { Vec2 } from "./math/Vec2";
+import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
 
 export class Text {
   next: Text | null = null;
@@ -35,9 +36,11 @@ export class Text {
       testID?: string;
     }
   ) {
+    const fontSize = props.style.fontSize ?? DEFAULT_FONT_SIZE;
     const shape = shapeText({
       fontName: props.style.fontName,
-      fontSize: props.style.fontSize,
+      fontSize: fontSize,
+      lineHeight: props.style.lineHeight ?? DEFAULT_LINE_HEIGHT_MULTIPLIER * fontSize,
       lookups: props.lookups,
       text: text, // TODO @tchayen: enforce in eslint not repeating value when same as key.
       textAlignment: "left",

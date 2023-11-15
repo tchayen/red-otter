@@ -1,5 +1,5 @@
 import { Text } from "./Text";
-import { UIRenderer } from "./UIRenderer";
+import { ScrollableRenderer } from "./ScrollableRenderer";
 import { View } from "./View";
 import { Lookups } from "./font/types";
 import { layout } from "./ui/layout";
@@ -11,7 +11,7 @@ import { measure } from "./measure";
 
 export let lookups: Lookups;
 
-export function ui(renderer: UIRenderer): View {
+export function ui(renderer: ScrollableRenderer): View {
   lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 
@@ -24,7 +24,6 @@ export function ui(renderer: UIRenderer): View {
 
   const columnStyle = {
     flexDirection: "column",
-    height: "100%",
     width: 300,
   } as ViewStyleProps;
 
@@ -40,10 +39,11 @@ export function ui(renderer: UIRenderer): View {
       backgroundColor: "#333",
       flexDirection: "column",
       gap: 10,
-      height: window.innerHeight,
+      overflow: "scroll",
       paddingHorizontal: 10,
       width: window.innerWidth,
     },
+    testID: "container",
   });
 
   function text(value: string) {

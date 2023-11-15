@@ -5,6 +5,7 @@ import { View } from "../View";
 import { invariant } from "../utils/invariant";
 import { Text } from "../Text";
 import { shapeText } from "../font/shapeText";
+import { DEFAULT_FONT_SIZE } from "../consts";
 
 /**
  * @param tree tree of views to layout.
@@ -113,7 +114,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
         const shape = shapeText({
           fontName: e._style.fontName,
-          fontSize: e._style.fontSize,
+          fontSize: e._style.fontSize ?? DEFAULT_FONT_SIZE,
           lineHeight: e._style.lineHeight,
           lookups: fontLookups,
           maxWidth,
@@ -292,34 +293,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       if (isVertical && e._style.width === undefined) {
         e._state.metrics.width += longestChildSize;
       }
-    }
-
-    if (e._style.overflow === "scroll") {
-      let farthestX = 0;
-      let farthestY = 0;
-
-      let c = e.firstChild;
-      while (c) {
-        const childFarX = c._state.metrics.x + c._state.metrics.width;
-        const childFarY = c._state.metrics.y + c._state.metrics.height;
-
-        if (childFarX > farthestX) {
-          farthestX = childFarX;
-        }
-
-        if (childFarY > farthestY) {
-          farthestY = childFarY;
-        }
-
-        c = c.next;
-      }
-
-      e._state.scrollableContentSize = new Vec2(
-        Math.max(farthestX, e._state.metrics.width),
-        Math.max(farthestY, e._state.metrics.height)
-      );
-    } else {
-      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }
   }
 
@@ -685,11 +658,51 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       cross += maxCrossChild + crossGap;
     }
 
+    if (e._style.overflow === "scroll") {
+      let farthestX = 0;
+      let farthestY = 0;
+
+      let c = e.firstChild;
+      while (c) {
+        const childFarX = c._state.metrics.x + c._state.metrics.width;
+        const childFarY = c._state.metrics.y + c._state.metrics.height;
+
+        if (childFarX > farthestX) {
+          farthestX = childFarX;
+        }
+
+        if (childFarY > farthestY) {
+          farthestY = childFarY;
+        }
+
+        c = c.next;
+      }
+
+      e._state.scrollableContentSize = new Vec2(
+        Math.max(farthestX, e._state.metrics.width),
+        Math.max(farthestY, e._state.metrics.height)
+      );
+    } else {
+      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
+    }
+
+    // Trim widths and heights to the root size (including position).
+    if (e._state.metrics.x + e._state.metrics.width > rootSize.x) {
+      e._state.metrics.width = Math.max(0, rootSize.x - e._state.metrics.x);
+    }
+    if (e._state.metrics.y + e._state.metrics.height > rootSize.y) {
+      e._state.metrics.height = Math.max(0, rootSize.y - e._state.metrics.y);
+    }
+
     e._state.children = [];
     e._state.metrics.x = Math.round(e._state.metrics.x);
     e._state.metrics.y = Math.round(e._state.metrics.y);
     e._state.metrics.width = Math.round(e._state.metrics.width);
     e._state.metrics.height = Math.round(e._state.metrics.height);
+
+    if (e.props.testID === "container") {
+      console.log(e._state);
+    }
   }
 }
 

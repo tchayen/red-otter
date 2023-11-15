@@ -81,7 +81,7 @@ export type LayoutProps = {
   maxWidth?: number | `${number}%`;
   minHeight?: number | `${number}%`;
   minWidth?: number | `${number}%`;
-  overflow?: "scroll" | "visible" | "hidden";
+  overflow?: "auto" | "scroll" | "visible" | "hidden";
   padding?: number;
   paddingBottom?: number;
   paddingHorizontal?: number;
@@ -160,7 +160,7 @@ export type ExactDecorativeProps = Required<DecorativeProps>;
 export type TextStyleProps = {
   color: string;
   fontName: string;
-  fontSize: number;
+  fontSize?: number;
   lineHeight?: number;
   textAlign?: "left" | "center" | "right";
   textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";

@@ -127,10 +127,12 @@ export function parseColor(color: string): Vec4 {
     return new Vec4(converted[0], converted[1], converted[2], alpha);
   } else if (color.startsWith("oklab")) {
     // Soon :')
-    throw new Error(`Unsupported color: ${color}.`);
+    console.warn(`Unsupported color: ${color}.`);
+    return new Vec4(0, 0, 0, 0);
   } else if (color === "transparent") {
     return new Vec4(0, 0, 0, 0);
   } else {
-    throw new Error(`Unsupported color: ${color}.`);
+    console.warn(`Unsupported color: ${color}.`);
+    return new Vec4(0, 0, 0, 0);
   }
 }

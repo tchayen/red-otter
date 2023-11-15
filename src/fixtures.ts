@@ -24,6 +24,7 @@ export function flexValue() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
     testID: "flexValue",
@@ -59,6 +60,7 @@ export function flexRowAndColumn() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -166,6 +168,7 @@ export function alignItemsAndSelf() {
       backgroundColor: "#000",
       flexDirection: "column",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -274,6 +277,7 @@ export function flexDirectionReverse() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -380,6 +384,7 @@ export function flexWrapRow() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -422,6 +427,7 @@ export function flexWrapColumn() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -464,6 +470,7 @@ export function alignContent() {
       backgroundColor: "#000",
       flexWrap: "wrap",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -514,6 +521,7 @@ export function flexShrinkAndGrow() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
     testID: "shrink",
@@ -553,6 +561,7 @@ export function marginsAndPaddingsAndBorders() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -609,6 +618,7 @@ export function offsets() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -714,6 +724,7 @@ export function percentageAndMinMaxSizes() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -816,6 +827,7 @@ export function displayAndOverflow() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -828,6 +840,7 @@ export function zIndex() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -873,6 +886,7 @@ export function text() {
       backgroundColor: "#000",
       gap: 20,
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -928,6 +942,7 @@ export function formUI() {
       backgroundColor: "#000",
       height: 300,
       justifyContent: "center",
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -981,17 +996,19 @@ export function interactiveButton() {
 
   const root = new View({
     style: {
+      alignItems: "center",
       backgroundColor: "#000",
       gap: 20,
       height: 300,
-      padding: 20,
+      justifyContent: "center",
+      overflow: "hidden",
       width: 300,
     },
   });
 
   const button = new View({
     onClick: () => {
-      console.log("hello");
+      window.alert("Clicked!");
     },
     style: {
       backgroundColor: "#333",
@@ -1015,6 +1032,7 @@ export function tryingToBreakThings() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -1047,6 +1065,7 @@ export function aspectRatio() {
     style: {
       backgroundColor: "#000",
       height: 300,
+      overflow: "hidden",
       width: 300,
     },
   });
@@ -1108,14 +1127,15 @@ export function scrollable() {
     },
   });
 
-  const tooBig = new View({
-    style: {
-      backgroundColor: "#fff",
-      height: 400,
-      width: 300,
-    },
-  });
-  root.add(tooBig);
+  function view(backgroundColor: string) {
+    return new View({ style: { backgroundColor, height: 70, width: 300 } });
+  }
+
+  root.add(view(colors[0]));
+  root.add(view(colors[1]));
+  root.add(view(colors[2]));
+  root.add(view(colors[3]));
+  root.add(view(colors[4]));
 
   return root;
 }

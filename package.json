@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "test": "vitest",
     "coverage": "vitest --coverage",
     "loc": "find . -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
@@ -34,5 +34,8 @@
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
     "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@petamoriken/float16": "^3.8.4"
   }
 }

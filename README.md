@@ -26,16 +26,25 @@ Games and 3D applications are different. Very different. It’s ok, even better 
 
 Even though this library does a lot of things, you don't need to use it all. Modern JS bundlers do well with tree shaking so as long as you import only what you need, your bundle size will grow only by the amount of code you actually use.
 
-## API
+## Design and structure
 
 > [!NOTE]
 > Properties starting with double underscore (`__`) are considered internal and should not be used. Relying on them will be a time bomb that will break your app in the future.
 
+Layers:
+
+- UI
+- `layout()` - takes tree of nodes and calculates screen positions and sizes.
+- `paint()` - takes tree of nodes after layout and prepares commands for the renderer that consider clipping, scrolling, etc.
+- `UIRenderer` - given precise commands renderes styled rectangles and text to the screen.
+
 ## Styling
+
+As a rule of thumb, styling most closely resembles React Native which in turn resembles CSS.
 
 ### Edge cases
 
-Some default or situations differ from CSS. Generally the styling model closely resembles the one from React Native, but it's not a strict rule.
+Some differences (or unobvious cases) from RN and/or CSS:
 
 - Default `flexDirection` is `column` (CSS default is `row`).
 - Default `alignContent` is `flex-start` (CSS default is `stretch`).
@@ -44,18 +53,11 @@ Some default or situations differ from CSS. Generally the styling model closely 
 - There's no `margin: auto`.
 - Similarly to CSS and RN, if both top and bottom (or left and right) are defined and `height` (or `width`) is _not_ defined, the element will span the distance between those two edges.
 - Properties with higher specificity override properties with lower specificity (in CSS order matters).
-  In CSS:
-
-  ```css
-  .selector {
-    flex-grow: 1;
-    flex: 2;
-  }
-  ```
-
-would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
+  In CSS `style="flex-grow: 1; flex: 2"` would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
 
 ### Layout props
+
+Instructions for the layout engine.
 
 | Prop              | Default        | Type                                                                                                         |
 | ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------ |
@@ -91,7 +93,7 @@ would use value `2` for `flex-grow` because it is defined later. Here correspond
 | maxWidth          | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
 | minHeight         | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
 | minWidth          | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| overflow          | `visible`      | `"scroll" \| "visible" \| "hidden"`                                                                          |
+| overflow          | `visible`      | `"auto" \| "scroll" \| "visible" \| "hidden"`                                                                |
 | padding           | `0`            | `number`                                                                                                     |
 | paddingBottom     | `0`            | `number`                                                                                                     |
 | paddingHorizontal | `0`            | `number`                                                                                                     |
@@ -110,28 +112,36 @@ would use value `2` for `flex-grow` because it is defined later. Here correspond
 
 Decorative props used in combination with layout props.
 
-| Prop                    | Default         | Type   |
-| ----------------------- | --------------- | ------ |
-| backgroundColor         | `"transparent"` | string |
-| borderBottomLeftRadius  | `0`             | number |
-| borderBottomRightRadius | `0`             | number |
-| borderColor             | `0`             | string |
-| borderRadius            | `0`             | number |
-| borderTopLeftRadius     | `0`             | number |
-| borderTopRightRadius    | `0`             | number |
-| boxShadowColor          | `transparent`   | string |
-| boxShadowOffsetX        | `0`             | number |
-| boxShadowOffsetY        | `0`             | number |
-| boxShadowRadius         | `0`             | number |
-| opacity                 | `1`             | number |
+| Prop                    | Default         | Type     |
+| ----------------------- | --------------- | -------- |
+| backgroundColor         | `"transparent"` | `string` |
+| borderBottomLeftRadius  | `0`             | `number` |
+| borderBottomRightRadius | `0`             | `number` |
+| borderColor             | `0`             | `string` |
+| borderRadius            | `0`             | `number` |
+| borderTopLeftRadius     | `0`             | `number` |
+| borderTopRightRadius    | `0`             | `number` |
+| boxShadowColor          | `transparent`   | `string` |
+| boxShadowOffsetX        | `0`             | `number` |
+| boxShadowOffsetY        | `0`             | `number` |
+| boxShadowRadius         | `0`             | `number` |
+| opacity                 | `1`             | `number` |
 
 ### Text style props
 
-| Prop          | Default | Type                                                   |
-| ------------- | ------- | ------------------------------------------------------ |
-| color         |         | `string`                                               |
-| fontName      |         | `string`                                               |
-| fontSize      |         | `number`                                               |
-| lineHeight    |         | `number`                                               |
-| textAlign     | `left`  | `"left" \| "center" \| "right"`                        |
-| textTransform | `none`  | `"none" \| "uppercase" \| "lowercase" \| "capitalize"` |
+Control how text is rendered. Note that due to a custom text renderer, there might be some differences in how text is rendered compared to a browser.
+
+> [!NOTE]
+> Property `lineHeight` is not well supported yet.
+
+> [!IMPORTANT]
+> The library uses cap size as opposed to line height for calculating bounding box of text elements (see [CapSize](https://seek-oss.github.io/capsize/) for more explanation). This results in most noticeable differences in buttons which require more vertical space than in browsers.
+
+| Prop          | Default              | Type                                                   |
+| ------------- | -------------------- | ------------------------------------------------------ |
+| color         | `transparent`        | `string`                                               |
+| fontName      | `throws new Error()` | `string`                                               |
+| fontSize      | `16`                 | `number`                                               |
+| lineHeight    | `1.4 * fontSize`     | `number`                                               |
+| textAlign     | `left`               | `"left" \| "center" \| "right"`                        |
+| textTransform | `none`               | `"none" \| "uppercase" \| "lowercase" \| "capitalize"` |
