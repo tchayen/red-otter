@@ -390,7 +390,7 @@ export function flexWrapRow() {
   });
 
   function box(
-    backgroundColor: string,
+    backgroundColor: string | undefined,
     width: number,
     height: number,
     style?: Partial<ViewStyleProps>
@@ -455,11 +455,11 @@ export function flexWrapColumn() {
     testID: "column-wrap",
   });
   root.add(column);
-  column.add(box(colors[1], 25, 60));
-  column.add(box(colors[2], 33, 40));
-  column.add(box(colors[3], 25, 70, { marginTop: 11 }));
-  column.add(box(colors[4], 41, 90, { marginTop: 8 }));
-  column.add(box(colors[5], 19, 210));
+  column.add(box(colors[1]!, 25, 60));
+  column.add(box(colors[2]!, 33, 40));
+  column.add(box(colors[3]!, 25, 70, { marginTop: 11 }));
+  column.add(box(colors[4]!, 41, 90, { marginTop: 8 }));
+  column.add(box(colors[5]!, 19, 210));
 
   return root;
 }
@@ -475,7 +475,10 @@ export function alignContent() {
     },
   });
 
-  function container(backgroundColor: string, alignContent: LayoutProps["alignContent"]) {
+  function container(
+    backgroundColor: string | undefined,
+    alignContent: LayoutProps["alignContent"]
+  ) {
     const c = new View({
       style: {
         alignContent,
@@ -496,7 +499,7 @@ export function alignContent() {
   }
 
   function box(
-    backgroundColor: string,
+    backgroundColor: string | undefined,
     width: number,
     height: number,
     style?: Partial<ViewStyleProps>
@@ -532,7 +535,7 @@ export function flexShrinkAndGrow() {
   }
 
   function box(
-    backgroundColor: string,
+    backgroundColor: string | undefined,
     width: number,
     height: number,
     style?: Partial<ViewStyleProps>
@@ -945,6 +948,7 @@ export function formUI() {
       overflow: "hidden",
       width: 300,
     },
+    testID: "formUI root",
   });
 
   const inner = new View({
@@ -1127,7 +1131,7 @@ export function scrollable() {
     },
   });
 
-  function view(backgroundColor: string) {
+  function view(backgroundColor: string | undefined) {
     return new View({ style: { backgroundColor, height: 70, width: 300 } });
   }
 

@@ -1,3 +1,4 @@
+import { Vec2 } from "./Vec2";
 import { Vec3 } from "./Vec3";
 
 const EPSILON = 0.001;
@@ -53,6 +54,14 @@ export class Vec4 {
 
   lerp(other: Vec4, t: number): Vec4 {
     return this.add(other.subtract(this).scale(t));
+  }
+
+  xy(): Vec2 {
+    return new Vec2(this.x, this.y);
+  }
+
+  zw(): Vec2 {
+    return new Vec2(this.z, this.w);
   }
 
   xyz(): Vec3 {

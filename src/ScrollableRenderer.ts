@@ -454,17 +454,23 @@ export class ScrollableRenderer {
       return;
     }
 
+    invariant(shape.positions.length === text.length, "Shape length does not match text length.");
+
     for (let i = 0; i < shape.positions.length; i++) {
+      let size = shape.sizes[i];
+      const character = text[i];
+      invariant(size, "Size does not exist.");
+      invariant(character, "Text does not exist.");
+
       // Skip spaces and newlines.
-      if ([32, 10].includes(text[i].charCodeAt(0))) {
+      if ([32, 10].includes(character.charCodeAt(0))) {
         continue;
       }
 
-      let shapePosition = shape.positions[i].add(position);
-      let size = shape.sizes[i];
+      let shapePosition = shape.positions[i]!.add(position);
 
       let uv =
-        this.fontLookups.uvs.get(`${fontName}-${text[i].charCodeAt(0)}`) ??
+        this.fontLookups.uvs.get(`${fontName}-${character.charCodeAt(0)}`) ??
         this.fontLookups.uvs.get(`${fontName}-${"□".charCodeAt(0)}`)!;
       invariant(uv, "UV does not exist.");
 
@@ -581,8 +587,8 @@ export class ScrollableRenderer {
     for (let k = 0; k < this.drawingIndices.length - 1; k += 2) {
       const r = this.drawingIndices[k];
       const g = this.drawingIndices[k + 1];
-      const rectangles = (this.drawingIndices[k + 2] ?? this.rectangleCount) - r;
-      const glyphs = (this.drawingIndices[k + 3] ?? this.glyphCount) - g;
+      const rectangles = (this.drawingIndices[k + 2] ?? this.rectangleCount) - (r ?? 0);
+      const glyphs = (this.drawingIndices[k + 3] ?? this.glyphCount) - (g ?? 0);
 
       renderPass.setPipeline(this.rectanglePipeline);
       renderPass.setBindGroup(0, this.rectangleBindGroup);

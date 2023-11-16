@@ -34,17 +34,27 @@ export function ui(renderer: ScrollableRenderer): View {
     marginVertical: 10,
   } as TextStyleProps;
 
+  const root = new View({
+    style: {
+      height: "100%",
+      overflow: "scroll",
+      width: "100%",
+    },
+    testID: "root",
+  });
+
   const container = new View({
     style: {
       backgroundColor: "#333",
       flexDirection: "column",
       gap: 10,
-      overflow: "scroll",
       paddingHorizontal: 10,
-      width: window.innerWidth,
+      width: "100%",
     },
     testID: "container",
   });
+  root.add(container);
+  console.log(root);
 
   function text(value: string) {
     return new Text(value, { lookups, style: textStyle });
@@ -66,67 +76,78 @@ export function ui(renderer: ScrollableRenderer): View {
   });
   container.add(examples);
 
-  const column1 = new View({ style: columnStyle });
-  examples.add(column1);
+  // const column1 = new View({ style: columnStyle });
+  // examples.add(column1);
 
-  column1.add(text("scrollable"));
-  column1.add(fixtures.scrollable());
-  column1.add(text("interactive button"));
-  column1.add(fixtures.interactiveButton());
-  column1.add(text("trying to break things"));
-  column1.add(fixtures.tryingToBreakThings());
-  column1.add(text("flex value"));
-  column1.add(fixtures.flexValue());
-  column1.add(text("flexDirection row and column"));
-  column1.add(fixtures.flexRowAndColumn());
-  column1.add(text("alignItems and alignSelf"));
-  column1.add(fixtures.alignItemsAndSelf());
+  // column1.add(text("scrollable"));
+  // column1.add(fixtures.scrollable());
+  // column1.add(text("interactive button"));
+  // column1.add(fixtures.interactiveButton());
+  // column1.add(text("trying to break things"));
+  // column1.add(fixtures.tryingToBreakThings());
+  // column1.add(text("flex value"));
+  // column1.add(fixtures.flexValue());
+  // column1.add(text("flexDirection row and column"));
+  // column1.add(fixtures.flexRowAndColumn());
+  // column1.add(text("alignItems and alignSelf"));
+  // column1.add(fixtures.alignItemsAndSelf());
 
-  const column2 = new View({ style: columnStyle });
-  examples.add(column2);
+  // const column2 = new View({ style: columnStyle });
+  // examples.add(column2);
 
-  column2.add(text("flexDirection reverse"));
-  column2.add(fixtures.flexDirectionReverse());
-  column2.add(text("flexWrap row"));
-  column2.add(fixtures.flexWrapRow());
-  column2.add(text("flexWrap reverse and column"));
-  column2.add(fixtures.flexWrapColumn());
+  // column2.add(text("flexDirection reverse"));
+  // column2.add(fixtures.flexDirectionReverse());
+  // column2.add(text("flexWrap row"));
+  // column2.add(fixtures.flexWrapRow());
+  // column2.add(text("flexWrap reverse and column"));
+  // column2.add(fixtures.flexWrapColumn());
 
-  const column3 = new View({ style: columnStyle });
-  examples.add(column3);
+  // const column3 = new View({ style: columnStyle });
+  // examples.add(column3);
 
-  column3.add(text("alignContent"));
-  column3.add(fixtures.alignContent());
-  column3.add(text("flexShrink and flexGrow"));
-  column3.add(fixtures.flexShrinkAndGrow());
-  column3.add(text("margins, paddings, borders"));
-  column3.add(fixtures.marginsAndPaddingsAndBorders());
+  // column3.add(text("alignContent"));
+  // column3.add(fixtures.alignContent());
+  // column3.add(text("flexShrink and flexGrow"));
+  // column3.add(fixtures.flexShrinkAndGrow());
+  // column3.add(text("margins, paddings, borders"));
+  // column3.add(fixtures.marginsAndPaddingsAndBorders());
 
-  const column4 = new View({ style: columnStyle });
-  examples.add(column4);
+  // const column4 = new View({ style: columnStyle });
+  // examples.add(column4);
 
-  column4.add(text("left, top, right, bottom"));
-  column4.add(fixtures.offsets());
-  column4.add(text("percentage sizes and min/max"));
-  column4.add(fixtures.percentageAndMinMaxSizes());
-  column4.add(text("display and overflow"));
-  column4.add(fixtures.displayAndOverflow());
+  // column4.add(text("left, top, right, bottom"));
+  // column4.add(fixtures.offsets());
+  // column4.add(text("percentage sizes and min/max"));
+  // column4.add(fixtures.percentageAndMinMaxSizes());
+  // column4.add(text("display and overflow"));
+  // column4.add(fixtures.displayAndOverflow());
 
-  const column5 = new View({ style: columnStyle });
-  examples.add(column5);
+  // const column5 = new View({ style: columnStyle });
+  // examples.add(column5);
 
-  column5.add(text("zIndex"));
-  column5.add(fixtures.zIndex());
-  column5.add(text("text"));
-  column5.add(fixtures.text());
-  column5.add(text("aspectRatio"));
-  column5.add(fixtures.aspectRatio());
+  // column5.add(text("zIndex"));
+  // column5.add(fixtures.zIndex());
+  // column5.add(text("text"));
+  // column5.add(fixtures.text());
+  // column5.add(text("aspectRatio"));
+  // column5.add(fixtures.aspectRatio());
 
-  const column6 = new View({ style: columnStyle });
+  const column6 = new View({ style: columnStyle, testID: "column6" });
   examples.add(column6);
 
-  column6.add(text("form UI"));
-  column6.add(fixtures.formUI());
+  // column6.add(text("form UI"));
+  // column6.add(fixtures.formUI());
+
+  const tooTall = new View({
+    style: {
+      backgroundColor: "#ff0000",
+      height: 2000,
+      width: 300,
+    },
+    testID: "red",
+  });
+
+  column6.add(tooTall);
 
   ///////
 
@@ -142,7 +163,7 @@ export function ui(renderer: ScrollableRenderer): View {
   // );
 
   measure("Layout", () => {
-    layout(container, lookups, new Vec2(window.innerWidth, window.innerHeight));
+    layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
   });
 
   // console.log(debugPrintTree(scroll));

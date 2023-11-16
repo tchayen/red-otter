@@ -23,7 +23,14 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   const thirdPass = new Queue<View | Text>();
 
   // TODO: inspect what would it take to get rid of root and use tree directly.
-  const root = new View({ style: { height: rootSize.y, width: rootSize.x } });
+  const root = new View({
+    style: {
+      height: rootSize.y,
+      overflow: "scroll",
+      width: rootSize.x,
+    },
+    testID: "__root__",
+  });
   root.add(tree);
 
   /*
@@ -33,6 +40,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
   // Traverse tree in level order and generate the reverse queue.
   firstPass.enqueue(root);
+  secondPass.enqueue(root);
   while (!firstPass.isEmpty()) {
     const e = firstPass.dequeue();
     invariant(e, "Empty queue.");
@@ -419,9 +427,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     for (let i = 0; i < e._state.children.length; i++) {
-      const line = e._state.children[i];
-      const maxCrossChild = maxCrossChildren[i];
-      const childrenCount = childrenInLine[i];
+      const line = e._state.children[i]!;
+      const maxCrossChild = maxCrossChildren[i]!;
+      const childrenCount = childrenInLine[i]!;
       let totalFlexGrow = 0;
       let totalFlexShrink = 0;
 
@@ -436,7 +444,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         ? e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom
         : e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
       for (let i = 0; i < maxCrossChildren.length; i++) {
-        availableCross -= maxCrossChildren[i];
+        availableCross -= maxCrossChildren[i]!;
         if (i !== maxCrossChildren.length - 1 && !isContentSpace) {
           availableCross -= crossGap;
         }
@@ -664,8 +672,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       let c = e.firstChild;
       while (c) {
-        const childFarX = c._state.metrics.x + c._state.metrics.width;
-        const childFarY = c._state.metrics.y + c._state.metrics.height;
+        const childFarX = c._state.metrics.x + c._state.metrics.width + c._style.marginRight;
+        const childFarY = c._state.metrics.y + c._state.metrics.height + c._style.marginBottom;
 
         if (childFarX > farthestX) {
           farthestX = childFarX;
@@ -678,6 +686,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         c = c.next;
       }
 
+      farthestX += e._style.paddingRight;
+      farthestY += e._style.paddingBottom;
+
       e._state.scrollableContentSize = new Vec2(
         Math.max(farthestX, e._state.metrics.width),
         Math.max(farthestY, e._state.metrics.height)
@@ -686,23 +697,19 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }
 
-    // Trim widths and heights to the root size (including position).
-    if (e._state.metrics.x + e._state.metrics.width > rootSize.x) {
-      e._state.metrics.width = Math.max(0, rootSize.x - e._state.metrics.x);
-    }
-    if (e._state.metrics.y + e._state.metrics.height > rootSize.y) {
-      e._state.metrics.height = Math.max(0, rootSize.y - e._state.metrics.y);
-    }
+    // // Trim widths and heights to the root size (including position).
+    // if (e._state.metrics.x + e._state.metrics.width > rootSize.x) {
+    //   e._state.metrics.width = Math.max(0, rootSize.x - e._state.metrics.x);
+    // }
+    // if (e._state.metrics.y + e._state.metrics.height > rootSize.y) {
+    //   e._state.metrics.height = Math.max(0, rootSize.y - e._state.metrics.y);
+    // }
 
     e._state.children = [];
     e._state.metrics.x = Math.round(e._state.metrics.x);
     e._state.metrics.y = Math.round(e._state.metrics.y);
     e._state.metrics.width = Math.round(e._state.metrics.width);
     e._state.metrics.height = Math.round(e._state.metrics.height);
-
-    if (e.props.testID === "container") {
-      console.log(e._state);
-    }
   }
 }
 

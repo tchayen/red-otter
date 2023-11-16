@@ -19,6 +19,8 @@ async function initialize() {
       fetch(url).then(async (response) => response.arrayBuffer())
     )
   );
+  invariant(interTTF, "Inter.ttf not found.");
+  invariant(interBoldTTF, "Inter-SemiBold.ttf not found.");
 
   document.body.setAttribute("style", "margin: 0");
 
