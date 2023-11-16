@@ -62,14 +62,14 @@ export function shapeText(options: ShapeTextOptions): Shape {
   let longestLineWidth = 0;
 
   for (let i = 0; i < text.length; i++) {
-    const character = text[i].charCodeAt(0);
+    const character = text[i]!.charCodeAt(0);
     const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
 
     const { y, width, height, lsb, rsb } = glyph;
 
     let kerning = 0;
     if (ENABLE_KERNING && text[i - 1] && text[i]) {
-      kerning = font.kern(text[i - 1].charCodeAt(0), text[i].charCodeAt(0));
+      kerning = font.kern(text[i - 1]!.charCodeAt(0), text[i]!.charCodeAt(0));
     }
 
     const nextPosition = new Vec2(
@@ -83,7 +83,9 @@ export function shapeText(options: ShapeTextOptions): Shape {
 
     if (maxWidth && nextPosition.x + width * scale > maxWidth && text[i] === " ") {
       // Check backtracking is possible (i.e. the length of the word is less than maxWidth).
-      const wordLength = positionX - positions[wordStartIndex].x;
+      const wordStart = positions[wordStartIndex];
+      invariant(wordStart, "Word start position is undefined.");
+      const wordLength = positionX - wordStart.x;
       if (wordLength > maxWidth) {
         continue;
       }
@@ -93,13 +95,13 @@ export function shapeText(options: ShapeTextOptions): Shape {
 
       positionY += lineHeight ?? 20;
       positionX = 0;
-      longestLineWidth = Math.max(longestLineWidth, positions[i + 1].x);
+      longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
     }
 
     if (text[i] === "\n") {
       positionY += lineHeight ?? 20;
       positionX = 0;
-      longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x);
+      longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
     }
 
     if (text[i] === " " || text[i] === "\n") {
@@ -117,7 +119,7 @@ export function shapeText(options: ShapeTextOptions): Shape {
       const offset =
         textAlignment === "center" ? leftSpace / 2 : textAlignment === "right" ? leftSpace : 0;
       for (let i = 0; i < positions.length; i++) {
-        positions[i] = new Vec2(positions[i].x + offset, positions[i].y);
+        positions[i] = new Vec2(positions[i]!.x + offset, positions[i]!.y);
       }
     }
   }

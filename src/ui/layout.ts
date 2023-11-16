@@ -54,7 +54,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       secondPass.enqueue(c);
       c = c.next;
     }
-
     e._state.metrics = { height: 0, width: 0, x: 0, y: 0 };
 
     // If element has defined width or height, set it.
@@ -130,6 +129,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           textAlignment: e._style.textAlign ?? "left",
         });
 
+        e._state.metrics.width = shape.boundingRectangle.width;
         e._state.metrics.height = shape.boundingRectangle.height;
       }
     }
@@ -710,6 +710,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.metrics.y = Math.round(e._state.metrics.y);
     e._state.metrics.width = Math.round(e._state.metrics.width);
     e._state.metrics.height = Math.round(e._state.metrics.height);
+
+    if (Number.isNaN(e._state.metrics.width)) {
+      console.warn("Width is NaN", e.props.testID, e._style.width, e._state.metrics.width);
+    }
   }
 }
 

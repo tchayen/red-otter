@@ -3,15 +3,17 @@
 > [!WARNING]
 > This project is in early development stage. It's not ready for production use.
 
-A WebGPU/WebGL TypeScript library for building game UIs that can do things that almost only browsers do.
+#### What is it?
 
-The library features:
+A flexbox (think CSS or Yoga) layout engine that comes with its own TTF font parser, WebGPU-based text and UI renderer and a declarative UI API (think React).
 
-- Flexbox layout engine (Facebook Yoga, Unity UI Toolkit).
-- TTF font parser.
-- Text renderer.
-- Styled UI renderer.
-- Declarative UI API (think React).
+#### Why is it useful?
+
+It's bold of you to assume I'd make something useful.
+
+#### When would I use it?
+
+If you are writing a JS/TS application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular so WebGPU renderer for instance can be replaced with WebGL, canvas or Skia based one if needed.
 
 > [!IMPORTANT]
 > This is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automa-translations, high-contrast mode etc. Use this only for applications where this is implied that those capabilities are not needed or otherwise would not be available.
@@ -132,7 +134,7 @@ Decorative props used in combination with layout props.
 Control how text is rendered. Note that due to a custom text renderer, there might be some differences in how text is rendered compared to a browser.
 
 > [!NOTE]
-> Property `lineHeight` is not well supported yet.
+> Property `lineHeight` is not fully supported yet.
 
 > [!IMPORTANT]
 > The library uses cap size as opposed to line height for calculating bounding box of text elements (see [CapSize](https://seek-oss.github.io/capsize/) for more explanation). This results in most noticeable differences in buttons which require more vertical space than in browsers.

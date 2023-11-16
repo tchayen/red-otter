@@ -23,11 +23,6 @@ export function paint(ui: ScrollableRenderer, root: View): void {
     const [node, isFirstVisit] = element;
 
     if (isFirstVisit) {
-      // Children are also skipped if the parent is not visible.
-      if (node._style.display === "none") {
-        continue;
-      }
-
       if (node._style.overflow === "scroll") {
         cumulativeScroll = cumulativeScroll.add(node._state.scrollOffset);
         scrollStack.push(cumulativeScroll);
@@ -37,12 +32,12 @@ export function paint(ui: ScrollableRenderer, root: View): void {
 
       if (node._style.overflow === "hidden" || node._style.overflow === "scroll") {
         const newClipStart = new Vec2(node._state.metrics.x, node._state.metrics.y);
-        const newClipEnd = new Vec2(node._state.metrics.width, node._state.metrics.height);
+        const newClipSize = new Vec2(node._state.metrics.width, node._state.metrics.height);
         const newClipBounds = new Vec4(
           Math.max(clipBounds.x, newClipStart.x),
           Math.max(clipBounds.y, newClipStart.y),
-          Math.min(clipBounds.z, newClipEnd.x),
-          Math.min(clipBounds.w, newClipEnd.y)
+          Math.min(clipBounds.z, newClipSize.x),
+          Math.min(clipBounds.w, newClipSize.y)
         );
         clipStack.push(newClipBounds);
         clipBounds = newClipBounds;
@@ -50,14 +45,17 @@ export function paint(ui: ScrollableRenderer, root: View): void {
         clipStack.push(clipBounds);
       }
 
-      paintNode(ui, node, clipBounds, cumulativeScroll);
-
       dfsStack.push([node, false]);
 
-      let p = node.firstChild;
-      while (p) {
-        dfsStack.push([p, true]);
-        p = p.next;
+      paintNode(ui, node, clipBounds, cumulativeScroll);
+
+      // Children are also skipped if the parent is not visible.
+      if (node._style.display !== "none") {
+        let p = node.firstChild;
+        while (p) {
+          dfsStack.push([p, true]);
+          p = p.next;
+        }
       }
     } else {
       cumulativeScroll = scrollStack.pop() || new Vec2(0, 0);

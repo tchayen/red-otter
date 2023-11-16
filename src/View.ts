@@ -52,7 +52,7 @@ export class View {
             this._state.scrollableContentSize.y - this._state.metrics.height
           )
         );
-        console.log(this.props.testID, this._state.scrollOffset);
+        console.debug(this.props.testID, this._state.scrollOffset);
       });
     }
   }

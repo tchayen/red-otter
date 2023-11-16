@@ -54,10 +54,10 @@ export function ui(renderer: ScrollableRenderer): View {
     testID: "container",
   });
   root.add(container);
-  console.log(root);
+  console.debug(root);
 
   function text(value: string) {
-    return new Text(value, { lookups, style: textStyle });
+    return new Text(value, { lookups, style: textStyle, testID: "text" });
   }
 
   container.add(
@@ -76,67 +76,71 @@ export function ui(renderer: ScrollableRenderer): View {
   });
   container.add(examples);
 
-  // const column1 = new View({ style: columnStyle });
-  // examples.add(column1);
+  const column1 = new View({ style: columnStyle });
+  examples.add(column1);
 
-  // column1.add(text("scrollable"));
-  // column1.add(fixtures.scrollable());
-  // column1.add(text("interactive button"));
-  // column1.add(fixtures.interactiveButton());
-  // column1.add(text("trying to break things"));
-  // column1.add(fixtures.tryingToBreakThings());
-  // column1.add(text("flex value"));
-  // column1.add(fixtures.flexValue());
-  // column1.add(text("flexDirection row and column"));
-  // column1.add(fixtures.flexRowAndColumn());
-  // column1.add(text("alignItems and alignSelf"));
-  // column1.add(fixtures.alignItemsAndSelf());
+  column1.add(text("flex value"));
+  column1.add(fixtures.flexValue());
+  column1.add(text("flexDirection row and column"));
+  column1.add(fixtures.flexRowAndColumn());
+  column1.add(text("alignItems and alignSelf"));
+  column1.add(fixtures.alignItemsAndSelf());
 
-  // const column2 = new View({ style: columnStyle });
-  // examples.add(column2);
+  const column2 = new View({ style: columnStyle });
+  examples.add(column2);
 
-  // column2.add(text("flexDirection reverse"));
-  // column2.add(fixtures.flexDirectionReverse());
-  // column2.add(text("flexWrap row"));
-  // column2.add(fixtures.flexWrapRow());
-  // column2.add(text("flexWrap reverse and column"));
-  // column2.add(fixtures.flexWrapColumn());
+  column2.add(text("flexDirection reverse"));
+  column2.add(fixtures.flexDirectionReverse());
+  column2.add(text("flexWrap row"));
+  column2.add(fixtures.flexWrapRow());
+  column2.add(text("flexWrap reverse and column"));
+  column2.add(fixtures.flexWrapColumn());
 
-  // const column3 = new View({ style: columnStyle });
-  // examples.add(column3);
+  const column3 = new View({ style: columnStyle });
+  examples.add(column3);
 
-  // column3.add(text("alignContent"));
-  // column3.add(fixtures.alignContent());
-  // column3.add(text("flexShrink and flexGrow"));
-  // column3.add(fixtures.flexShrinkAndGrow());
-  // column3.add(text("margins, paddings, borders"));
-  // column3.add(fixtures.marginsAndPaddingsAndBorders());
+  column3.add(text("alignContent"));
+  column3.add(fixtures.alignContent());
+  column3.add(text("flexShrink and flexGrow"));
+  column3.add(fixtures.flexShrinkAndGrow());
+  column3.add(text("margins, paddings, borders"));
+  column3.add(fixtures.marginsAndPaddingsAndBorders());
 
-  // const column4 = new View({ style: columnStyle });
-  // examples.add(column4);
+  const column4 = new View({ style: columnStyle });
+  examples.add(column4);
 
-  // column4.add(text("left, top, right, bottom"));
-  // column4.add(fixtures.offsets());
-  // column4.add(text("percentage sizes and min/max"));
-  // column4.add(fixtures.percentageAndMinMaxSizes());
-  // column4.add(text("display and overflow"));
-  // column4.add(fixtures.displayAndOverflow());
+  column4.add(text("left, top, right, bottom"));
+  column4.add(fixtures.offsets());
+  column4.add(text("percentage sizes and min/max"));
+  column4.add(fixtures.percentageAndMinMaxSizes());
+  column4.add(text("display and overflow"));
+  column4.add(fixtures.displayAndOverflow());
 
-  // const column5 = new View({ style: columnStyle });
-  // examples.add(column5);
+  const column5 = new View({ style: columnStyle });
+  examples.add(column5);
 
-  // column5.add(text("zIndex"));
-  // column5.add(fixtures.zIndex());
-  // column5.add(text("text"));
-  // column5.add(fixtures.text());
-  // column5.add(text("aspectRatio"));
-  // column5.add(fixtures.aspectRatio());
+  column5.add(text("zIndex"));
+  column5.add(fixtures.zIndex());
+  column5.add(text("text"));
+  column5.add(fixtures.text());
+  column5.add(text("aspectRatio"));
+  column5.add(fixtures.aspectRatio());
 
-  const column6 = new View({ style: columnStyle, testID: "column6" });
+  const column6 = new View({ style: columnStyle });
   examples.add(column6);
 
-  // column6.add(text("form UI"));
-  // column6.add(fixtures.formUI());
+  column6.add(text("form UI"));
+  column6.add(fixtures.formUI());
+
+  const column7 = new View({ style: columnStyle });
+  examples.add(column7);
+
+  column7.add(text("scrollable"));
+  column7.add(fixtures.scrollable());
+  column7.add(text("interactive button"));
+  column7.add(fixtures.interactiveButton());
+  column7.add(text("trying to break things"));
+  column7.add(fixtures.tryingToBreakThings());
 
   const tooTall = new View({
     style: {
@@ -154,92 +158,37 @@ export function ui(renderer: ScrollableRenderer): View {
   // const scroll = testScroll();
   // container.add(scroll);
 
-  // container.add(
-  //   new Text(
-  // eslint-disable-next-line comment-length/limit-single-line-comments
-  //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
-  //     { lookups, style: { color: "#999", fontName: "Inter", fontSize: 13 } }
-  //   )
-  // );
+  container.add(
+    new Text(
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
+      { lookups, style: { color: "#999", fontName: "Inter", fontSize: 13 } }
+    )
+  );
 
   measure("Layout", () => {
     layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
   });
 
-  // console.log(debugPrintTree(scroll));
-  return container;
-}
-
-function testScroll() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      width: 600,
-    },
-    testID: "root",
-  });
-
-  const inner = new View({
-    style: {
-      backgroundColor: "#50ff50",
-      height: 100,
-      overflow: "scroll",
-      width: 100,
-    },
-    testID: "inner",
-  });
-  root.add(inner);
-
-  const obstructed = new View({
-    style: {
-      backgroundColor: "#ff5050",
-      height: 50,
-      marginLeft: 70,
-      width: 50,
-    },
-    testID: "obstructed",
-  });
-  inner.add(obstructed);
-
+  console.debug(debugPrintTree(root));
   return root;
 }
 
 function debugPrintTree(tree: View | Text, level: number = 0) {
-  let c = tree.firstChild;
-  if (!c) {
+  if (!tree) {
     return "";
   }
 
-  const type = c instanceof Text ? "Text" : "View";
+  const type = tree instanceof Text ? "Text" : "View";
 
-  const { metrics, scrollOffset, scrollableContentSize } = c._state;
+  const { metrics, scrollOffset, scrollableContentSize } = tree._state;
   let info =
-    `- [${c?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${metrics.width}, ${
+    `- [${tree?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${metrics.width}, ${
       metrics.height
     })\n  scrollOffset: (${scrollOffset.x}, ${scrollOffset.y})\n  scrollableContentSize: (${
       scrollableContentSize.x
     }, ${scrollableContentSize.y})\n` ?? "";
-  /*
-   * let info =
-   *   JSON.stringify(
-   *     c?._state,
-   *     (key: string, value: any) => {
-   *       if (key === "metrics") {
-   *         return `(${value.x}, ${value.y}, ${value.width}, ${value.height})`;
-   *       }
-   *       if (key === "scrollOffset") {
-   *         return `(${value.x}, ${value.y})`;
-   *       }
-   *       if (key === "scrollableContentSize") {
-   *         return `(${value.x}, ${value.y})`;
-   *       }
-   *       return value;
-   *     },
-   *     2
-   *   ) + "\n" ?? "";
-   */
 
+  let c = tree.firstChild;
   while (c) {
     info += debugPrintTree(c, level + 1)
       .split("\n")

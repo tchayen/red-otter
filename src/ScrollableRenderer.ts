@@ -11,7 +11,7 @@ import { createTextureFromImageBitmap } from "./createTextureFromBitmap";
  * Second is in this case maximum number of allowed elements (can easily go into
  * high thousands).
  */
-const RECTANGLE_BUFFER_SIZE = 16 * 1024;
+const RECTANGLE_BUFFER_SIZE = 16 * 4096;
 const TEXT_BUFFER_SIZE = 16 * 100_000;
 
 enum DrawingMode {
@@ -70,7 +70,7 @@ export class ScrollableRenderer {
         size: vec2f,
         corners: vec4f,
         clipStart: vec2f,
-        clipEnd: vec2f,
+        clipSize: vec2f,
         clipCorners: vec4f,
         window: vec2f,
         _padding: vec2f
@@ -102,14 +102,14 @@ export class ScrollableRenderer {
       @fragment
       fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
         let r = data.rectangles[input.instance];
-        let inBounds =
-          (input.position.x >= r.clipStart.x) &&
-          (input.position.y >= r.clipStart.y) &&
-          (input.position.x <= r.clipStart.x + r.clipEnd.x) &&
-          (input.position.y <= r.clipStart.y + r.clipEnd.y);
-        if (!inBounds) {
-          return vec4f(0, 0, 0, 0);
-        }
+        // let inBounds =
+        //   (input.position.x >= r.clipStart.x) &&
+        //   (input.position.y >= r.clipStart.y) &&
+        //   (input.position.x <= r.clipStart.x + r.clipSize.x) &&
+        //   (input.position.y <= r.clipStart.y + r.clipSize.y);
+        // if (!inBounds) {
+        //   return vec4f(0, 0, 0, 0);
+        // }
 
         return data.rectangles[input.instance].color;
       }
@@ -376,7 +376,7 @@ export class ScrollableRenderer {
     size: Vec2,
     corners: Vec4,
     clipStart: Vec2,
-    clipEnd: Vec2,
+    clipSize: Vec2,
     clipCorners: Vec4
   ): void {
     if (color.w < 0.01) {
@@ -402,8 +402,8 @@ export class ScrollableRenderer {
     this.rectangleData[this.rectangleCount * struct + 11] = corners.w;
     this.rectangleData[this.rectangleCount * struct + 12] = clipStart.x;
     this.rectangleData[this.rectangleCount * struct + 13] = clipStart.y;
-    this.rectangleData[this.rectangleCount * struct + 14] = clipEnd.x;
-    this.rectangleData[this.rectangleCount * struct + 15] = clipEnd.y;
+    this.rectangleData[this.rectangleCount * struct + 14] = clipSize.x;
+    this.rectangleData[this.rectangleCount * struct + 15] = clipSize.y;
     this.rectangleData[this.rectangleCount * struct + 16] = clipCorners.x;
     this.rectangleData[this.rectangleCount * struct + 17] = clipCorners.y;
     this.rectangleData[this.rectangleCount * struct + 18] = clipCorners.z;
