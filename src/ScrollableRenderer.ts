@@ -5,6 +5,7 @@ import { Lookups } from "./font/types";
 import { Shape, shapeText } from "./font/shapeText";
 import { Settings } from "./consts";
 import { createTextureFromImageBitmap } from "./createTextureFromBitmap";
+import { Renderer } from "./ui/Renderer";
 
 /*
  * First number is the size of Rectangle struct (with padding).
@@ -20,7 +21,7 @@ enum DrawingMode {
   None,
 }
 
-export class ScrollableRenderer {
+export class ScrollableRenderer implements Renderer {
   private drawingMode = DrawingMode.None;
   private drawingIndices: number[] = [];
 
@@ -102,14 +103,14 @@ export class ScrollableRenderer {
       @fragment
       fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
         let r = data.rectangles[input.instance];
-        // let inBounds =
-        //   (input.position.x >= r.clipStart.x) &&
-        //   (input.position.y >= r.clipStart.y) &&
-        //   (input.position.x <= r.clipStart.x + r.clipSize.x) &&
-        //   (input.position.y <= r.clipStart.y + r.clipSize.y);
-        // if (!inBounds) {
-        //   return vec4f(0, 0, 0, 0);
-        // }
+        let inBounds =
+          (input.position.x >= r.clipStart.x) &&
+          (input.position.y >= r.clipStart.y) &&
+          (input.position.x <= r.clipStart.x + r.clipSize.x) &&
+          (input.position.y <= r.clipStart.y + r.clipSize.y);
+        if (!inBounds) {
+          return vec4f(1, 0, 0, 0.3);
+        }
 
         return data.rectangles[input.instance].color;
       }

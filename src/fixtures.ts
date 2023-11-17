@@ -835,6 +835,37 @@ export function displayAndOverflow() {
     },
   });
 
+  const overflow = new View({
+    style: {
+      backgroundColor: colors[1],
+      height: 240,
+      overflow: "scroll",
+      width: 240,
+    },
+    testID: "ovv",
+  });
+
+  const tooTall = new View({
+    style: {
+      backgroundColor: colors[2],
+      height: 360,
+      overflow: "scroll",
+      width: 180,
+    },
+  });
+  overflow.add(tooTall);
+
+  const tooTallInside = new View({
+    style: {
+      backgroundColor: colors[3],
+      height: 540,
+      width: 120,
+    },
+  });
+  tooTall.add(tooTallInside);
+
+  root.add(overflow);
+
   return root;
 }
 

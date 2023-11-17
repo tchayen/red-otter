@@ -302,6 +302,33 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         e._state.metrics.width += longestChildSize;
       }
     }
+
+    if (e._style.overflow === "scroll") {
+      let farthestX = 0;
+      let farthestY = 0;
+      let c = e.firstChild;
+      while (c) {
+        farthestX = Math.max(
+          farthestX,
+          c._state.metrics.x + c._state.metrics.width + c._style.marginRight - e._state.metrics.x
+        );
+        farthestY = Math.max(
+          farthestY,
+          c._state.metrics.y + c._state.metrics.height + c._style.marginBottom - e._state.metrics.y
+        );
+        c = c.next;
+      }
+
+      farthestX += e._style.paddingRight;
+      farthestY += e._style.paddingBottom;
+
+      e._state.scrollableContentSize = new Vec2(
+        Math.max(farthestX, e._state.metrics.width),
+        Math.max(farthestY, e._state.metrics.height)
+      );
+    } else {
+      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
+    }
   }
 
   /*
@@ -664,37 +691,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       main = resetMain;
       cross += maxCrossChild + crossGap;
-    }
-
-    if (e._style.overflow === "scroll") {
-      let farthestX = 0;
-      let farthestY = 0;
-
-      let c = e.firstChild;
-      while (c) {
-        const childFarX = c._state.metrics.x + c._state.metrics.width + c._style.marginRight;
-        const childFarY = c._state.metrics.y + c._state.metrics.height + c._style.marginBottom;
-
-        if (childFarX > farthestX) {
-          farthestX = childFarX;
-        }
-
-        if (childFarY > farthestY) {
-          farthestY = childFarY;
-        }
-
-        c = c.next;
-      }
-
-      farthestX += e._style.paddingRight;
-      farthestY += e._style.paddingBottom;
-
-      e._state.scrollableContentSize = new Vec2(
-        Math.max(farthestX, e._state.metrics.width),
-        Math.max(farthestY, e._state.metrics.height)
-      );
-    } else {
-      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }
 
     // // Trim widths and heights to the root size (including position).
