@@ -4,7 +4,7 @@ import { View } from "./View";
 import { Lookups } from "./font/types";
 import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
-import { TextStyleProps, ViewStyleProps } from "./types";
+import { FlexDirection, Overflow, TextStyleProps, ViewStyleProps } from "./types";
 import { invariant } from "./utils/invariant";
 import * as fixtures from "./fixtures";
 import { measure } from "./measure";
@@ -23,7 +23,7 @@ export function ui(renderer: ScrollableRenderer): View {
   // the one being worked on.
 
   const columnStyle = {
-    flexDirection: "column",
+    flexDirection: FlexDirection.Column,
     width: 300,
   } as ViewStyleProps;
 
@@ -37,7 +37,7 @@ export function ui(renderer: ScrollableRenderer): View {
   const root = new View({
     style: {
       height: "100%",
-      overflow: "scroll",
+      overflow: Overflow.Scroll,
       width: "100%",
     },
     testID: "root",
@@ -46,7 +46,7 @@ export function ui(renderer: ScrollableRenderer): View {
   const container = new View({
     style: {
       backgroundColor: "#333",
-      flexDirection: "column",
+      flexDirection: FlexDirection.Column,
       gap: 10,
       paddingHorizontal: 10,
       width: "100%",
@@ -69,7 +69,7 @@ export function ui(renderer: ScrollableRenderer): View {
   const examples = new View({
     style: {
       flex: 1,
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       gap: 10,
       width: "100%",
     },
