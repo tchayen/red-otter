@@ -842,7 +842,6 @@ export function displayAndOverflow() {
       overflow: "scroll",
       width: 240,
     },
-    testID: "ovv",
   });
 
   const tooTall = new View({

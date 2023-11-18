@@ -52,14 +52,6 @@ export class View {
             this._state.scrollableContentSize.y - this._state.metrics.height
           )
         );
-        if (this.props.testID === "ovv") {
-          console.debug(
-            this.props.testID,
-            this._state.scrollOffset,
-            this._state.scrollableContentSize.y,
-            this._state.metrics.height
-          );
-        }
       });
     }
   }
