@@ -3,6 +3,7 @@ import { View } from "../View";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "../consts";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
+import { Display, Overflow } from "../types";
 import { parseColor } from "../utils/parseColor";
 import { Renderer } from "./Renderer";
 
@@ -24,7 +25,7 @@ export function _paint(
   clipSize: Vec2,
   scrollOffset: Vec2
 ): void {
-  if (root._style.display === "none") {
+  if (root._style.display === Display.None) {
     return;
   }
 
@@ -33,11 +34,11 @@ export function _paint(
   let c = root.firstChild;
   while (c) {
     const childClipStart =
-      root._style.overflow === "scroll" || root._style.overflow === "hidden"
+      root._style.overflow === Overflow.Scroll || root._style.overflow === Overflow.Hidden
         ? new Vec2(root._state.metrics.x, root._state.metrics.y)
         : clipStart;
     const childClipSize =
-      root._style.overflow === "scroll" || root._style.overflow === "hidden"
+      root._style.overflow === Overflow.Scroll || root._style.overflow === Overflow.Hidden
         ? new Vec2(root._state.metrics.width, root._state.metrics.height)
         : clipSize;
 
@@ -78,7 +79,7 @@ function paintNode(
   } else {
     let size = new Vec2(node._state.metrics.width, node._state.metrics.height);
 
-    const scrolls = node._style.overflow === "scroll";
+    const scrolls = node._style.overflow === Overflow.Scroll;
     if (scrolls) {
       size = size.subtract(new Vec2(10, 0));
     }
@@ -97,7 +98,7 @@ function paintNode(
     // Scrollbar.
     if (scrolls) {
       ui.rectangle(
-        parseColor("#ff00ff"),
+        parseColor("#222"),
         position.add(new Vec2(size.x - 10, 0)),
         new Vec2(10, size.y),
         new Vec4(0, 0, 0, 0),
@@ -112,7 +113,7 @@ function paintNode(
         (node._state.scrollOffset.y / node._state.scrollableContentSize.y) * size.y;
 
       ui.rectangle(
-        parseColor("#00ffff"),
+        parseColor("#666"),
         position.add(new Vec2(size.x - 10, scrollTrackPosition)),
         new Vec2(10, scrollTrackSize),
         new Vec4(0, 0, 0, 0),

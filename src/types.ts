@@ -34,17 +34,74 @@ export type LayoutNodeState = {
   textWidthLimit?: number;
 };
 
+export enum AlignItems {
+  Center,
+  End,
+  Start,
+  Stretch,
+}
+
+export enum JustifyContent {
+  Center,
+  End,
+  SpaceAround,
+  SpaceBetween,
+  SpaceEvenly,
+  Start,
+}
+
+export enum AlignContent {
+  Center,
+  End,
+  SpaceAround,
+  SpaceBetween,
+  SpaceEvenly,
+  Start,
+  Stretch,
+}
+
+export enum AlignSelf {
+  Auto,
+  Center,
+  End,
+  Start,
+  Stretch,
+}
+
+export enum FlexDirection {
+  Column,
+  ColumnReverse,
+  Row,
+  RowReverse,
+}
+
+export enum FlexWrap {
+  NoWrap,
+  Wrap,
+  WrapReverse,
+}
+
+export enum Overflow {
+  Auto,
+  Hidden,
+  Scroll,
+  Visible,
+}
+
+export enum Display {
+  Flex,
+  None,
+}
+
+export enum Position {
+  Absolute,
+  Relative,
+}
+
 export type LayoutProps = {
-  alignContent?:
-    | "flex-start"
-    | "flex-end"
-    | "center"
-    | "stretch"
-    | "space-between"
-    | "space-around"
-    | "space-evenly";
-  alignItems?: "flex-start" | "flex-end" | "center" | "stretch";
-  alignSelf?: "auto" | "flex-start" | "center" | "flex-end" | "stretch";
+  alignContent?: AlignContent;
+  alignItems?: AlignItems;
+  alignSelf?: AlignSelf;
   aspectRatio?: number;
   borderBottomWidth?: number;
   borderLeftWidth?: number;
@@ -53,22 +110,16 @@ export type LayoutProps = {
   borderWidth?: number;
   bottom?: number;
   columnGap?: number;
-  display?: "flex" | "none";
+  display?: Display;
   flex?: number;
   flexBasis?: number | `${number}%`;
-  flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
+  flexDirection?: FlexDirection;
   flexGrow?: number;
   flexShrink?: number;
-  flexWrap?: "wrap" | "nowrap" | "wrap-reverse";
+  flexWrap?: FlexWrap;
   gap?: number;
   height?: number | `${number}%`;
-  justifyContent?:
-    | "flex-start"
-    | "flex-end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly";
+  justifyContent?: JustifyContent;
   left?: number;
   margin?: number;
   marginBottom?: number;
@@ -81,7 +132,7 @@ export type LayoutProps = {
   maxWidth?: number | `${number}%`;
   minHeight?: number | `${number}%`;
   minWidth?: number | `${number}%`;
-  overflow?: "auto" | "scroll" | "visible" | "hidden";
+  overflow?: Overflow;
   padding?: number;
   paddingBottom?: number;
   paddingHorizontal?: number;
@@ -89,7 +140,7 @@ export type LayoutProps = {
   paddingRight?: number;
   paddingTop?: number;
   paddingVertical?: number;
-  position?: "relative" | "absolute";
+  position?: Position;
   right?: number;
   rowGap?: number;
   top?: number;
@@ -169,9 +220,9 @@ export type TextStyleProps = {
 export type ViewStyleProps = LayoutProps & DecorativeProps;
 
 const defaultLayoutProps: ExactLayoutProps = {
-  alignContent: "flex-start",
-  alignItems: "flex-start",
-  alignSelf: "auto",
+  alignContent: AlignContent.Start,
+  alignItems: AlignItems.Start,
+  alignSelf: AlignSelf.Auto,
   aspectRatio: undefined,
   borderBottomWidth: 0,
   borderLeftWidth: 0,
@@ -180,16 +231,16 @@ const defaultLayoutProps: ExactLayoutProps = {
   borderWidth: 0,
   bottom: undefined,
   columnGap: 0,
-  display: "flex",
+  display: Display.Flex,
   flex: 0,
   flexBasis: undefined,
-  flexDirection: "column",
+  flexDirection: FlexDirection.Column,
   flexGrow: 0,
   flexShrink: 0,
-  flexWrap: "nowrap",
+  flexWrap: FlexWrap.NoWrap,
   gap: 0,
   height: undefined,
-  justifyContent: "flex-start",
+  justifyContent: JustifyContent.Start,
   left: undefined,
   marginBottom: 0,
   marginLeft: 0,
@@ -199,12 +250,12 @@ const defaultLayoutProps: ExactLayoutProps = {
   maxWidth: undefined,
   minHeight: undefined,
   minWidth: undefined,
-  overflow: "visible",
+  overflow: Overflow.Visible,
   paddingBottom: 0,
   paddingLeft: 0,
   paddingRight: 0,
   paddingTop: 0,
-  position: "relative",
+  position: Position.Relative,
   right: undefined,
   rowGap: 0,
   top: undefined,

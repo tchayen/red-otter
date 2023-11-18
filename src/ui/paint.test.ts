@@ -5,11 +5,12 @@ import { Vec2 } from "../math/Vec2";
 import { paint } from "./paint";
 import { Renderer } from "./Renderer";
 import { Vec4 } from "../math/Vec4";
+import { Overflow } from "../types";
 
 describe("paint", () => {
   it("handles scroll", () => {
     const root = new View({
-      style: { backgroundColor: "#000", height: 300, overflow: "scroll", width: 300 },
+      style: { backgroundColor: "#000", height: 300, overflow: Overflow.Scroll, width: 300 },
     });
     const tooTall = new View({ style: { backgroundColor: "#ff0000", height: 600, width: 200 } });
     root.add(tooTall);
@@ -24,15 +25,15 @@ describe("paint", () => {
     paint(ui, root);
 
     expect(rectangle).toHaveBeenCalledWith(
-      new Vec4(0, 0, 0, 1),
+      new Vec4(1, 0, 0, 1),
       new Vec2(0, -100),
-      new Vec2(300, 300),
+      new Vec2(200, 600),
       new Vec4(0, 0, 0, 0),
-      new Vec2(0, -100),
-      new Vec2(300, 200),
+      new Vec2(0, 0),
+      new Vec2(300, 300),
       new Vec4(0, 0, 0, 0)
     );
-    console.log(root);
+    // console.log(root);
   });
 });
 

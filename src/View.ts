@@ -7,6 +7,7 @@ import {
   normalizeDecorativeProps,
   LayoutNodeState,
   ScrollEvent,
+  Overflow,
 } from "./types";
 import { Text } from "./Text";
 import { Vec2 } from "./math/Vec2";
@@ -40,7 +41,7 @@ export class View {
     if (props.onClick) {
       events.addEventListener(UserEventType.MouseClick, this, props.onClick);
     }
-    if (this._style.overflow === "scroll") {
+    if (this._style.overflow === Overflow.Scroll) {
       events.addEventListener(UserEventType.MouseScroll, this, (event: ScrollEvent) => {
         this._state.scrollOffset = new Vec2(
           Math.min(

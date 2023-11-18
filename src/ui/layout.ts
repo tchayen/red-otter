@@ -6,6 +6,17 @@ import { invariant } from "../utils/invariant";
 import { Text } from "../Text";
 import { shapeText } from "../font/shapeText";
 import { DEFAULT_FONT_SIZE } from "../consts";
+import {
+  AlignContent,
+  AlignItems,
+  AlignSelf,
+  Display,
+  FlexDirection,
+  FlexWrap,
+  JustifyContent,
+  Overflow,
+  Position,
+} from "../types";
 
 /**
  * @param tree tree of views to layout.
@@ -26,10 +37,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   const root = new View({
     style: {
       height: rootSize.y,
-      overflow: "scroll",
+      overflow: Overflow.Scroll,
       width: rootSize.x,
     },
-    testID: "__root__",
+    testID: "layout#root",
   });
   root.add(tree);
 
@@ -46,7 +57,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
 
     const isHorizontal =
-      e.parent?._style.flexDirection === "row" || e.parent?._style.flexDirection === "row-reverse";
+      e.parent?._style.flexDirection === FlexDirection.Row ||
+      e.parent?._style.flexDirection === FlexDirection.RowReverse;
 
     let c = e.firstChild;
     while (c !== null) {
@@ -144,15 +156,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     invariant(e, "Empty queue.");
     thirdPass.enqueue(e);
 
-    const isWrap = e._style.flexWrap === "wrap" || e._style.flexWrap === "wrap-reverse";
+    const isWrap =
+      e._style.flexWrap === FlexWrap.Wrap || e._style.flexWrap === FlexWrap.WrapReverse;
     const isHorizontal =
-      e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse";
+      e._style.flexDirection === FlexDirection.Row ||
+      e._style.flexDirection === FlexDirection.RowReverse;
     const isVertical =
-      e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse";
+      e._style.flexDirection === FlexDirection.Column ||
+      e._style.flexDirection === FlexDirection.ColumnReverse;
     const isJustifySpace =
-      e._style.justifyContent === "space-between" ||
-      e._style.justifyContent === "space-around" ||
-      e._style.justifyContent === "space-evenly";
+      e._style.justifyContent === JustifyContent.SpaceBetween ||
+      e._style.justifyContent === JustifyContent.SpaceAround ||
+      e._style.justifyContent === JustifyContent.SpaceEvenly;
 
     // Width is at least the sum of children with defined widths.
     if (e._style.width === undefined) {
@@ -161,16 +176,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       while (c) {
         if (c._state.metrics.width) {
           if (
-            (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") &&
-            c._style.position === "relative"
+            (e._style.flexDirection === FlexDirection.Row ||
+              e._style.flexDirection === FlexDirection.RowReverse) &&
+            c._style.position === Position.Relative
           ) {
             // Padding is inside the width.
             e._state.metrics.width +=
               c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
           }
           if (
-            (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") &&
-            c._style.position === "relative"
+            (e._style.flexDirection === FlexDirection.Column ||
+              e._style.flexDirection === FlexDirection.ColumnReverse) &&
+            c._style.position === Position.Relative
           ) {
             // For column layout only wraps the widest child.
             e._state.metrics.width = Math.max(
@@ -179,7 +196,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             );
           }
         }
-        if (c._style.position === "relative") {
+        if (c._style.position === Position.Relative) {
           childrenCount += 1;
         }
         c = c.next;
@@ -188,7 +205,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Include padding and gaps.
       e._state.metrics.width += e._style.paddingLeft + e._style.paddingRight;
 
-      if (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") {
+      if (
+        e._style.flexDirection === FlexDirection.Row ||
+        e._style.flexDirection === FlexDirection.RowReverse
+      ) {
         e._state.metrics.width += (childrenCount - 1) * e._style.rowGap;
       }
     }
@@ -199,15 +219,17 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       while (c) {
         if (c._state.metrics.height) {
           if (
-            (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") &&
-            c._style.position === "relative"
+            (e._style.flexDirection === FlexDirection.Column ||
+              e._style.flexDirection === FlexDirection.ColumnReverse) &&
+            c._style.position === Position.Relative
           ) {
             e._state.metrics.height +=
               c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
           }
           if (
-            (e._style.flexDirection === "row" || e._style.flexDirection === "row-reverse") &&
-            c._style.position === "relative"
+            (e._style.flexDirection === FlexDirection.Row ||
+              e._style.flexDirection === FlexDirection.RowReverse) &&
+            c._style.position === Position.Relative
           ) {
             e._state.metrics.height = Math.max(
               e._state.metrics.height,
@@ -215,7 +237,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             );
           }
         }
-        if (c._style.position === "relative") {
+        if (c._style.position === Position.Relative) {
           childrenCount += 1;
         }
         c = c.next;
@@ -224,7 +246,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Include padding and gaps.
       e._state.metrics.height += e._style.paddingTop + e._style.paddingBottom;
 
-      if (e._style.flexDirection === "column" || e._style.flexDirection === "column-reverse") {
+      if (
+        e._style.flexDirection === FlexDirection.Column ||
+        e._style.flexDirection === FlexDirection.ColumnReverse
+      ) {
         e._state.metrics.height += (childrenCount - 1) * e._style.columnGap;
       }
     }
@@ -246,7 +271,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     let longestChildSize = 0;
     let c = e.firstChild;
     while (c) {
-      if (c._style.position !== "relative" || c._style.display === "none") {
+      if (c._style.position !== Position.Relative || c._style.display === Display.None) {
         c = c.next;
         continue;
       }
@@ -303,7 +328,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    if (e._style.overflow === "scroll") {
+    if (e._style.overflow === Overflow.Scroll) {
       let farthestX = 0;
       let farthestY = 0;
       let c = e.firstChild;
@@ -349,17 +374,19 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const parentHeight = p?._state.metrics.height ?? 0;
 
     const direction = e._style.flexDirection;
-    const isHorizontal = direction === "row" || direction === "row-reverse";
-    const isVertical = direction === "column" || direction === "column-reverse";
-    const isReversed = direction === "row-reverse" || direction === "column-reverse";
+    const isHorizontal = direction === FlexDirection.Row || direction === FlexDirection.RowReverse;
+    const isVertical =
+      direction === FlexDirection.Column || direction === FlexDirection.ColumnReverse;
+    const isReversed =
+      direction === FlexDirection.RowReverse || direction === FlexDirection.ColumnReverse;
     const isJustifySpace =
-      e._style.justifyContent === "space-between" ||
-      e._style.justifyContent === "space-around" ||
-      e._style.justifyContent === "space-evenly";
+      e._style.justifyContent === JustifyContent.SpaceBetween ||
+      e._style.justifyContent === JustifyContent.SpaceAround ||
+      e._style.justifyContent === JustifyContent.SpaceEvenly;
     const isContentSpace =
-      e._style.alignContent === "space-between" ||
-      e._style.alignContent === "space-around" ||
-      e._style.alignContent === "space-evenly";
+      e._style.alignContent === AlignContent.SpaceBetween ||
+      e._style.alignContent === AlignContent.SpaceAround ||
+      e._style.alignContent === AlignContent.SpaceEvenly;
 
     // TODO @tchayen: it probably shouldn't really be here? There's calculation  in the first pass.
     // Figure out why this seems to be needed.
@@ -389,7 +416,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     // Handle absolute positioning.
-    if (e._style.position === "absolute") {
+    if (e._style.position === Position.Absolute) {
       e._state.metrics.x = p?._state.metrics.x ?? 0;
       e._state.metrics.y = p?._state.metrics.y ?? 0;
 
@@ -413,7 +440,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    if (e._style.flexWrap === "wrap-reverse") {
+    if (e._style.flexWrap === FlexWrap.WrapReverse) {
       e._state.children.reverse();
     }
 
@@ -439,7 +466,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       let childrenCount = 0;
 
       for (const c of line) {
-        if (c._style.position !== "relative" || c._style.display === "none") {
+        if (c._style.position !== Position.Relative || c._style.display === Display.None) {
           continue;
         }
 
@@ -478,7 +505,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       for (const c of line) {
-        if (c._style.position !== "relative" || c._style.display === "none") {
+        if (c._style.position !== Position.Relative || c._style.display === Display.None) {
           continue;
         }
 
@@ -501,47 +528,47 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Adjust positions for justify content.
-      if (e._style.justifyContent === "center") {
+      if (e._style.justifyContent === JustifyContent.Center) {
         main += availableMain / 2;
       }
       if (
-        (isReversed && e._style.justifyContent === "flex-start") ||
-        (!isReversed && e._style.justifyContent === "flex-end")
+        (isReversed && e._style.justifyContent === JustifyContent.Start) ||
+        (!isReversed && e._style.justifyContent === JustifyContent.End)
       ) {
         main += availableMain;
       }
-      if (e._style.justifyContent === "space-around") {
+      if (e._style.justifyContent === JustifyContent.SpaceAround) {
         main += availableMain / childrenCount / 2;
       }
-      if (e._style.justifyContent === "space-evenly") {
+      if (e._style.justifyContent === JustifyContent.SpaceEvenly) {
         main += availableMain / (childrenCount + 1);
       }
 
       // Align content.
-      if (e._style.alignContent === "center") {
+      if (e._style.alignContent === AlignContent.Center) {
         if (i === 0) {
           cross += availableCross / 2;
         }
       }
-      if (e._style.alignContent === "flex-end") {
+      if (e._style.alignContent === AlignContent.End) {
         if (i === 0) {
           cross += availableCross;
         }
       }
-      if (e._style.alignContent === "space-between") {
+      if (e._style.alignContent === AlignContent.SpaceBetween) {
         if (i > 0) {
           cross += availableCross / (maxCrossChildren.length - 1);
         }
       }
-      if (e._style.alignContent === "space-around") {
+      if (e._style.alignContent === AlignContent.SpaceAround) {
         const gap = availableCross / maxCrossChildren.length;
         cross += i === 0 ? gap / 2 : gap;
       }
-      if (e._style.alignContent === "space-evenly") {
+      if (e._style.alignContent === AlignContent.SpaceEvenly) {
         const gap = availableCross / (maxCrossChildren.length + 1);
         cross += gap;
       }
-      if (e._style.alignContent === "stretch") {
+      if (e._style.alignContent === AlignContent.Stretch) {
         if (i > 0) {
           cross += availableCross / maxCrossChildren.length;
         }
@@ -549,7 +576,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Iterate over children and apply positions and flex sizes.
       for (const c of line) {
-        if (c._style.position !== "relative" || c._style.display === "none") {
+        if (c._style.position !== Position.Relative || c._style.display === Display.None) {
           continue;
         }
 
@@ -578,13 +605,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           c._state.metrics.y += isHorizontal ? cross : main;
           main += isHorizontal ? c._state.metrics.width : c._state.metrics.height;
 
-          if (e._style.justifyContent === "space-between") {
+          if (e._style.justifyContent === JustifyContent.SpaceBetween) {
             main += availableMain / (childrenCount - 1);
           }
-          if (e._style.justifyContent === "space-around") {
+          if (e._style.justifyContent === JustifyContent.SpaceAround) {
             main += availableMain / childrenCount;
           }
-          if (e._style.justifyContent === "space-evenly") {
+          if (e._style.justifyContent === JustifyContent.SpaceEvenly) {
             main += availableMain / (childrenCount + 1);
           }
         } else {
@@ -611,15 +638,15 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           }
 
           // Apply align items.
-          if (c._style.alignSelf === "auto") {
-            if (e._style.alignItems === "center") {
+          if (c._style.alignSelf === AlignSelf.Auto) {
+            if (e._style.alignItems === AlignItems.Center) {
               if (isHorizontal) {
                 c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
               } else {
                 c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
               }
             }
-            if (e._style.alignItems === "flex-end") {
+            if (e._style.alignItems === AlignItems.End) {
               if (isHorizontal) {
                 c._state.metrics.y += lineCrossSize - c._state.metrics.height;
               } else {
@@ -627,7 +654,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
               }
             }
             if (
-              e._style.alignItems === "stretch" &&
+              e._style.alignItems === AlignItems.Stretch &&
               ((isHorizontal && c._style.height === undefined) ||
                 (isVertical && c._style.width === undefined))
             ) {
@@ -640,21 +667,21 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           }
 
           // Apply align self.
-          if (c._style.alignSelf === "flex-start") {
+          if (c._style.alignSelf === AlignSelf.Start) {
             if (isHorizontal) {
               c._state.metrics.y = resetCross;
             } else {
               c._state.metrics.x = resetCross;
             }
           }
-          if (c._style.alignSelf === "center") {
+          if (c._style.alignSelf === AlignSelf.Center) {
             if (isHorizontal) {
               c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
             } else {
               c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
             }
           }
-          if (c._style.alignSelf === "flex-end") {
+          if (c._style.alignSelf === AlignSelf.End) {
             if (isHorizontal) {
               c._state.metrics.y += lineCrossSize - c._state.metrics.height;
             } else {
@@ -662,7 +689,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             }
           }
           if (
-            c._style.alignSelf === "stretch" &&
+            c._style.alignSelf === AlignSelf.Stretch &&
             ((isHorizontal && c._style.height === undefined) ||
               (isVertical && c._style.width === undefined))
           ) {
@@ -759,7 +786,8 @@ function applyMinMaxAndAspectRatio(e: View | Text): void {
   let effectiveHeight = Math.min(Math.max(e._state.metrics.height, minHeight), maxHeight);
 
   const isHorizontal =
-    e.parent?._style.flexDirection === "row" || e.parent?._style.flexDirection === "row-reverse";
+    e.parent?._style.flexDirection === FlexDirection.Row ||
+    e.parent?._style.flexDirection === FlexDirection.RowReverse;
 
   if (e._style.aspectRatio !== undefined) {
     const aspectRatio = e._style.aspectRatio;

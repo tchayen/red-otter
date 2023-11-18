@@ -1,7 +1,19 @@
 import { Text } from "./Text";
 import { View } from "./View";
 import { Lookups } from "./font/types";
-import { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
+import {
+  AlignContent,
+  AlignItems,
+  AlignSelf,
+  FlexDirection,
+  FlexWrap,
+  JustifyContent,
+  LayoutProps,
+  Overflow,
+  Position,
+  TextStyleProps,
+  ViewStyleProps,
+} from "./types";
 import { invariant } from "./utils/invariant";
 
 let lookups: Lookups | null = null;
@@ -19,18 +31,17 @@ const colors = Array.from({ length: colorCount }, (_, i) => {
   return `hsl(220, 100%, ${value}%)`;
 });
 
-export function flexValue() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-    testID: "flexValue",
-  });
+const rootStyle = {
+  backgroundColor: "#000",
+  height: 300,
+  overflow: Overflow.Hidden,
+  width: 300,
+} as ViewStyleProps;
 
-  const row = new View({ style: { flexDirection: "row", marginLeft: 50, width: 250 } });
+export function flexValue() {
+  const root = new View({ style: rootStyle, testID: "flexValue" });
+
+  const row = new View({ style: { flexDirection: FlexDirection.Row, marginLeft: 50, width: 250 } });
   root.add(row);
   const row0 = new View({ style: { backgroundColor: colors[1], flex: 0, height: 50 } });
   row.add(row0);
@@ -41,7 +52,10 @@ export function flexValue() {
   const rowFixed = new View({ style: { backgroundColor: colors[4], height: 50, width: 50 } });
   row.add(rowFixed);
 
-  const column = new View({ style: { flex: 1, flexDirection: "column" }, testID: "column" });
+  const column = new View({
+    style: { flex: 1, flexDirection: FlexDirection.Column },
+    testID: "column",
+  });
   root.add(column);
   const column0 = new View({ style: { backgroundColor: colors[5], flex: 0, width: 50 } });
   column.add(column0);
@@ -56,18 +70,11 @@ export function flexValue() {
 }
 
 export function flexRowAndColumn() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const rows = new View({
     style: {
-      flexDirection: "column",
+      flexDirection: FlexDirection.Column,
       height: "50%",
       width: "100%",
     },
@@ -94,7 +101,7 @@ export function flexRowAndColumn() {
     } as ViewStyleProps;
     const view = new View({
       style: {
-        flexDirection: "row",
+        flexDirection: FlexDirection.Row,
         justifyContent: attribute,
         width: "100%",
       },
@@ -105,16 +112,16 @@ export function flexRowAndColumn() {
     view.add(new View({ style: thirdStyle }));
   }
 
-  generateFlexRow("flex-start");
-  generateFlexRow("flex-end");
-  generateFlexRow("center");
-  generateFlexRow("space-evenly");
-  generateFlexRow("space-around");
-  generateFlexRow("space-between");
+  generateFlexRow(JustifyContent.Start);
+  generateFlexRow(JustifyContent.End);
+  generateFlexRow(JustifyContent.Center);
+  generateFlexRow(JustifyContent.SpaceEvenly);
+  generateFlexRow(JustifyContent.SpaceAround);
+  generateFlexRow(JustifyContent.SpaceBetween);
 
   const columns = new View({
     style: {
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: "50%",
       width: "100%",
     },
@@ -141,7 +148,7 @@ export function flexRowAndColumn() {
     } as ViewStyleProps;
     const view = new View({
       style: {
-        flexDirection: "column",
+        flexDirection: FlexDirection.Column,
         height: "100%",
         justifyContent: attribute,
       },
@@ -152,33 +159,25 @@ export function flexRowAndColumn() {
     view.add(new View({ style: thirdStyle }));
   }
 
-  generateFlexColumn("flex-start");
-  generateFlexColumn("flex-end");
-  generateFlexColumn("center");
-  generateFlexColumn("space-evenly");
-  generateFlexColumn("space-around");
-  generateFlexColumn("space-between");
+  generateFlexColumn(JustifyContent.Start);
+  generateFlexColumn(JustifyContent.End);
+  generateFlexColumn(JustifyContent.Center);
+  generateFlexColumn(JustifyContent.SpaceEvenly);
+  generateFlexColumn(JustifyContent.SpaceAround);
+  generateFlexColumn(JustifyContent.SpaceBetween);
 
   return root;
 }
 
 export function alignItemsAndSelf() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      flexDirection: "column",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const mainAxisValue = 26;
   const crossAxisValue = 48;
 
   const rows = new View({
     style: {
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: 300 - mainAxisValue * 8,
       marginLeft: 300 - mainAxisValue * 8,
     },
@@ -205,7 +204,7 @@ export function alignItemsAndSelf() {
     const row = new View({
       style: {
         alignItems,
-        flexDirection: "row",
+        flexDirection: FlexDirection.Row,
         height: "100%",
       },
       testID: "row",
@@ -218,14 +217,18 @@ export function alignItemsAndSelf() {
     row.add(second);
   }
 
-  addRow("flex-start", { alignSelf: "center" });
-  addRow("flex-end", { alignSelf: "flex-start" });
-  addRow("center", { alignSelf: "stretch", height: undefined });
-  addRow("stretch", { alignSelf: "flex-end", height: crossAxisValue }, { height: undefined });
+  addRow(AlignItems.Start, { alignSelf: AlignSelf.Center });
+  addRow(AlignItems.End, { alignSelf: AlignSelf.Start });
+  addRow(AlignItems.Center, { alignSelf: AlignSelf.Stretch, height: undefined });
+  addRow(
+    AlignItems.Stretch,
+    { alignSelf: AlignSelf.End, height: crossAxisValue },
+    { height: undefined }
+  );
 
   const columns = new View({
     style: {
-      flexDirection: "column",
+      flexDirection: FlexDirection.Column,
       width: 300 - mainAxisValue * 8,
     },
     testID: "columns",
@@ -251,7 +254,7 @@ export function alignItemsAndSelf() {
     const column = new View({
       style: {
         alignItems,
-        flexDirection: "column",
+        flexDirection: FlexDirection.Column,
         width: "100%",
       },
       testID: "column",
@@ -264,27 +267,24 @@ export function alignItemsAndSelf() {
     column.add(second);
   }
 
-  addColumn("flex-start", { alignSelf: "center" });
-  addColumn("flex-end", { alignSelf: "flex-start" });
-  addColumn("center", { alignSelf: "stretch", width: undefined });
-  addColumn("stretch", { alignSelf: "flex-end", width: crossAxisValue }, { width: undefined });
+  addColumn(AlignItems.Start, { alignSelf: AlignSelf.Center });
+  addColumn(AlignItems.End, { alignSelf: AlignSelf.Start });
+  addColumn(AlignItems.Center, { alignSelf: AlignSelf.Stretch, width: undefined });
+  addColumn(
+    AlignItems.Stretch,
+    { alignSelf: AlignSelf.End, width: crossAxisValue },
+    { width: undefined }
+  );
 
   return root;
 }
 
 export function flexDirectionReverse() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const rows = new View({
     style: {
-      flexDirection: "column",
+      flexDirection: FlexDirection.Column,
       height: "50%",
       width: "100%",
     },
@@ -311,7 +311,7 @@ export function flexDirectionReverse() {
     } as ViewStyleProps;
     const view = new View({
       style: {
-        flexDirection: "row-reverse",
+        flexDirection: FlexDirection.RowReverse,
         justifyContent: attribute,
         width: "100%",
       },
@@ -322,16 +322,16 @@ export function flexDirectionReverse() {
     view.add(new View({ style: thirdStyle }));
   }
 
-  generateFlexRow("flex-start");
-  generateFlexRow("flex-end");
-  generateFlexRow("center");
-  generateFlexRow("space-evenly");
-  generateFlexRow("space-around");
-  generateFlexRow("space-between");
+  generateFlexRow(JustifyContent.Start);
+  generateFlexRow(JustifyContent.End);
+  generateFlexRow(JustifyContent.Center);
+  generateFlexRow(JustifyContent.SpaceEvenly);
+  generateFlexRow(JustifyContent.SpaceAround);
+  generateFlexRow(JustifyContent.SpaceBetween);
 
   const columns = new View({
     style: {
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: "50%",
       width: "100%",
     },
@@ -358,7 +358,7 @@ export function flexDirectionReverse() {
     } as ViewStyleProps;
     const view = new View({
       style: {
-        flexDirection: "column-reverse",
+        flexDirection: FlexDirection.ColumnReverse,
         height: "100%",
         justifyContent: attribute,
       },
@@ -369,25 +369,18 @@ export function flexDirectionReverse() {
     view.add(new View({ style: thirdStyle }));
   }
 
-  generateFlexColumn("flex-start");
-  generateFlexColumn("flex-end");
-  generateFlexColumn("center");
-  generateFlexColumn("space-evenly");
-  generateFlexColumn("space-around");
-  generateFlexColumn("space-between");
+  generateFlexColumn(JustifyContent.Start);
+  generateFlexColumn(JustifyContent.End);
+  generateFlexColumn(JustifyContent.Center);
+  generateFlexColumn(JustifyContent.SpaceEvenly);
+  generateFlexColumn(JustifyContent.SpaceAround);
+  generateFlexColumn(JustifyContent.SpaceBetween);
 
   return root;
 }
 
 export function flexWrapRow() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   function box(
     backgroundColor: string | undefined,
@@ -400,12 +393,12 @@ export function flexWrapRow() {
 
   const row = new View({
     style: {
-      alignItems: "center",
+      alignItems: AlignItems.Center,
       backgroundColor: colors[0],
       columnGap: 5,
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "flex-start",
+      flexDirection: FlexDirection.Row,
+      flexWrap: FlexWrap.Wrap,
+      justifyContent: JustifyContent.Start,
       paddingVertical: 10,
       rowGap: 10,
       width: "100%",
@@ -427,7 +420,7 @@ export function flexWrapColumn() {
     style: {
       backgroundColor: "#000",
       height: 300,
-      overflow: "hidden",
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -443,11 +436,11 @@ export function flexWrapColumn() {
 
   const column = new View({
     style: {
-      alignItems: "flex-end",
+      alignItems: AlignItems.End,
       backgroundColor: colors[0],
       columnGap: 10,
-      flexDirection: "column",
-      flexWrap: "wrap-reverse",
+      flexDirection: FlexDirection.Column,
+      flexWrap: FlexWrap.WrapReverse,
       height: "100%",
       paddingHorizontal: 10,
       rowGap: 5,
@@ -468,9 +461,9 @@ export function alignContent() {
   const root = new View({
     style: {
       backgroundColor: "#000",
-      flexWrap: "wrap",
+      flexWrap: FlexWrap.Wrap,
       height: 300,
-      overflow: "hidden",
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -483,8 +476,8 @@ export function alignContent() {
       style: {
         alignContent,
         backgroundColor,
-        flexDirection: "row",
-        flexWrap: "wrap",
+        flexDirection: FlexDirection.Row,
+        flexWrap: FlexWrap.Wrap,
         height: 75,
         width: 150,
       },
@@ -507,31 +500,23 @@ export function alignContent() {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
-  container(colors[0], "flex-start");
-  container(colors[1], "center");
-  container(colors[0], "flex-end");
-  container(colors[1], "space-between");
+  container(colors[0], AlignContent.Start);
+  container(colors[1], AlignContent.Center);
+  container(colors[0], AlignContent.End);
+  container(colors[1], AlignContent.SpaceBetween);
 
-  container(colors[1], "space-around");
-  container(colors[0], "space-evenly");
-  container(colors[1], "stretch");
+  container(colors[1], AlignContent.SpaceAround);
+  container(colors[0], AlignContent.SpaceEvenly);
+  container(colors[1], AlignContent.Stretch);
 
   return root;
 }
 
 export function flexShrinkAndGrow() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-    testID: "shrink",
-  });
+  const root = new View({ style: rootStyle, testID: "shrink" });
 
   function row(testID?: string) {
-    return new View({ style: { flexDirection: "row", width: "100%" }, testID });
+    return new View({ style: { flexDirection: FlexDirection.Row, width: "100%" }, testID });
   }
 
   function box(
@@ -564,7 +549,7 @@ export function marginsAndPaddingsAndBorders() {
     style: {
       backgroundColor: "#000",
       height: 300,
-      overflow: "hidden",
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -572,7 +557,7 @@ export function marginsAndPaddingsAndBorders() {
   const box = new View({
     style: {
       backgroundColor: colors[0],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       padding: 10,
     },
   });
@@ -621,7 +606,7 @@ export function offsets() {
     style: {
       backgroundColor: "#000",
       height: 300,
-      overflow: "hidden",
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -671,7 +656,7 @@ export function offsets() {
   const box = new View({
     style: {
       backgroundColor: colors[4],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: 100,
       width: 120,
     },
@@ -699,7 +684,7 @@ export function offsets() {
     style: {
       backgroundColor: colors[7],
       bottom: 40,
-      position: "absolute",
+      position: Position.Absolute,
       right: 0,
       top: 30,
       width: 50,
@@ -713,7 +698,7 @@ export function offsets() {
       bottom: 30,
       height: 50,
       left: 10,
-      position: "absolute",
+      position: Position.Absolute,
       width: 50,
     },
   });
@@ -723,14 +708,7 @@ export function offsets() {
 }
 
 export function percentageAndMinMaxSizes() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const passThrough = new View({
     style: { backgroundColor: colors[0] },
@@ -740,7 +718,7 @@ export function percentageAndMinMaxSizes() {
   const inside = new View({
     style: {
       backgroundColor: colors[1],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: "50%",
     },
     testID: "inside",
@@ -749,7 +727,7 @@ export function percentageAndMinMaxSizes() {
   const innermost = new View({
     style: {
       backgroundColor: colors[2],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: "100%",
     },
     testID: "innermost",
@@ -794,7 +772,7 @@ export function percentageAndMinMaxSizes() {
   const maxSize = new View({
     style: {
       backgroundColor: colors[7],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       maxHeight: 40,
       maxWidth: 40,
     },
@@ -825,21 +803,20 @@ export function percentageAndMinMaxSizes() {
   return root;
 }
 
+export function overflow() {
+  const root = new View({ style: rootStyle });
+
+  return root;
+}
+
 export function displayAndOverflow() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const overflow = new View({
     style: {
       backgroundColor: colors[1],
       height: 240,
-      overflow: "scroll",
+      overflow: Overflow.Scroll,
       width: 240,
     },
   });
@@ -848,7 +825,7 @@ export function displayAndOverflow() {
     style: {
       backgroundColor: colors[2],
       height: 360,
-      overflow: "scroll",
+      overflow: Overflow.Scroll,
       width: 180,
     },
   });
@@ -869,14 +846,7 @@ export function displayAndOverflow() {
 }
 
 export function zIndex() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const left = new View({
     style: {
@@ -914,15 +884,7 @@ export function zIndex() {
 }
 
 export function text() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      gap: 20,
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   function text(value: string, style?: Partial<TextStyleProps>) {
     invariant(lookups, "Lookups must be set.");
@@ -947,8 +909,8 @@ export function formUI() {
   invariant(lookups, "Lookups must be set.");
 
   const inputGroupStyle = {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: AlignItems.Center,
+    flexDirection: FlexDirection.Row,
     gap: 10,
   } as ViewStyleProps;
 
@@ -958,7 +920,7 @@ export function formUI() {
     borderRadius: 6,
     borderWidth: 1,
     height: 30,
-    justifyContent: "center",
+    justifyContent: JustifyContent.Center,
     paddingHorizontal: 10,
     width: 40,
   } as ViewStyleProps;
@@ -971,11 +933,11 @@ export function formUI() {
 
   const root = new View({
     style: {
-      alignItems: "center",
+      alignItems: AlignItems.Center,
       backgroundColor: "#000",
       height: 300,
-      justifyContent: "center",
-      overflow: "hidden",
+      justifyContent: JustifyContent.Center,
+      overflow: Overflow.Hidden,
       width: 300,
     },
     testID: "formUI root",
@@ -983,11 +945,11 @@ export function formUI() {
 
   const inner = new View({
     style: {
-      alignSelf: "center",
+      alignSelf: AlignSelf.Center,
       backgroundColor: "#222",
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       gap: 20,
-      justifyContent: "center",
+      justifyContent: JustifyContent.Center,
       paddingHorizontal: 20,
       paddingVertical: 10,
     },
@@ -1030,12 +992,12 @@ export function interactiveButton() {
 
   const root = new View({
     style: {
-      alignItems: "center",
+      alignItems: AlignItems.Center,
       backgroundColor: "#000",
       gap: 20,
       height: 300,
-      justifyContent: "center",
-      overflow: "hidden",
+      justifyContent: JustifyContent.Center,
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -1047,7 +1009,7 @@ export function interactiveButton() {
     style: {
       backgroundColor: "#333",
       borderRadius: 6,
-      justifyContent: "center",
+      justifyContent: JustifyContent.Center,
       paddingHorizontal: 16,
       paddingVertical: 12,
     },
@@ -1066,7 +1028,7 @@ export function tryingToBreakThings() {
     style: {
       backgroundColor: "#000",
       height: 300,
-      overflow: "hidden",
+      overflow: Overflow.Hidden,
       width: 300,
     },
   });
@@ -1074,7 +1036,7 @@ export function tryingToBreakThings() {
   const row = new View({
     style: {
       backgroundColor: colors[0],
-      flexDirection: "row",
+      flexDirection: FlexDirection.Row,
       height: 100,
       width: "100%",
     },
@@ -1095,14 +1057,7 @@ export function tryingToBreakThings() {
 }
 
 export function aspectRatio() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "hidden",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   const first = new View({
     style: {
@@ -1152,14 +1107,7 @@ export function aspectRatio() {
 }
 
 export function scrollable() {
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: 300,
-      overflow: "scroll",
-      width: 300,
-    },
-  });
+  const root = new View({ style: rootStyle });
 
   function view(backgroundColor: string | undefined) {
     return new View({ style: { backgroundColor, height: 70, width: 300 } });
