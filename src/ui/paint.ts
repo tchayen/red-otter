@@ -37,20 +37,14 @@ export function _paint(
 
   paintNode(ui, node, clipStart, clipSize, scrollOffset);
 
+  const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;
+  const hasVerticalScroll = node._style.overflowY === Overflow.Scroll;
+
   const nextScrollOffset = scrollOffset.add(node._state.scrollOffset);
 
   const shouldClip =
-    node._style.overflowX === Overflow.Scroll ||
-    node._style.overflowY === Overflow.Scroll ||
-    node._style.overflow === Overflow.Hidden;
-  const availableHorizontal =
-    node._style.overflowX === Overflow.Scroll
-      ? node._state.metrics.width - CROSS_AXIS_SIZE
-      : node._state.metrics.width;
-  const availableVertical =
-    node._style.overflowY === Overflow.Scroll
-      ? node._state.metrics.height - CROSS_AXIS_SIZE
-      : node._state.metrics.height;
+    hasHorizontalScroll || hasVerticalScroll || node._style.overflow === Overflow.Hidden;
+
   const childClipStart = shouldClip
     ? new Vec2(
         Math.max(node._state.metrics.x, clipStart.x),
@@ -58,11 +52,14 @@ export function _paint(
       )
     : clipStart.subtract(scrollOffset);
   let childClipSize = shouldClip
-    ? new Vec2(Math.min(availableHorizontal, clipSize.x), Math.min(availableVertical, clipSize.y))
+    ? new Vec2(
+        Math.min(node._state.metrics.width, clipSize.x),
+        Math.min(node._state.metrics.height, clipSize.y)
+      )
     : clipSize;
   const scrollBarDifference = new Vec2(
-    node._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0,
-    node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0
+    hasHorizontalScroll ? CROSS_AXIS_SIZE : 0,
+    hasVerticalScroll ? CROSS_AXIS_SIZE : 0
   );
   childClipSize = childClipSize.subtract(scrollBarDifference);
 
@@ -104,14 +101,7 @@ function paintNode(
       }
     );
   } else {
-    let size = new Vec2(node._state.metrics.width, node._state.metrics.height);
-
-    if (node._style.overflowX === Overflow.Scroll) {
-      size = size.subtract(new Vec2(CROSS_AXIS_SIZE, 0));
-    }
-    if (node._style.overflowY === Overflow.Scroll) {
-      size = size.subtract(new Vec2(0, CROSS_AXIS_SIZE));
-    }
+    const size = new Vec2(node._state.metrics.width, node._state.metrics.height);
 
     // Actual rendering.
     ui.rectangle(

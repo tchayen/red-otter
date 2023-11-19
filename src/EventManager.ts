@@ -81,6 +81,7 @@ export class EventManager {
   }
 }
 
+// TODO @tchayen: this does not take scroll position into account.
 function hitTest(view: View, event: UserEvent): boolean {
   return (
     event.position.x >= view._state.metrics.x &&
