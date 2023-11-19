@@ -133,6 +133,8 @@ export type LayoutProps = {
   minHeight?: number | `${number}%`;
   minWidth?: number | `${number}%`;
   overflow?: Overflow;
+  overflowX?: Overflow;
+  overflowY?: Overflow;
   padding?: number;
   paddingBottom?: number;
   paddingHorizontal?: number;
@@ -251,6 +253,8 @@ const defaultLayoutProps: ExactLayoutProps = {
   minHeight: undefined,
   minWidth: undefined,
   overflow: Overflow.Visible,
+  overflowX: Overflow.Visible,
+  overflowY: Overflow.Visible,
   paddingBottom: 0,
   paddingLeft: 0,
   paddingRight: 0,
@@ -298,6 +302,9 @@ export function normalizeLayoutProps<T extends LayoutProps>(input: LayoutProps):
 
   result.columnGap = input.columnGap ?? input.gap ?? 0;
   result.rowGap = input.rowGap ?? input.gap ?? 0;
+
+  result.overflowX = input.overflowX ?? input.overflow;
+  result.overflowY = input.overflowY ?? input.overflow;
 
   return result;
 }

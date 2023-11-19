@@ -29,7 +29,7 @@ export function _paint(
     return;
   }
 
-  paintNode(ui, root, clipStart, clipSize, scrollOffset);
+  paintNode(ui, root, clipStart.subtract(scrollOffset), clipSize, scrollOffset);
 
   let c = root.firstChild;
   while (c) {
@@ -98,7 +98,7 @@ function paintNode(
     // Scrollbar.
     if (scrolls) {
       ui.rectangle(
-        parseColor("#222"),
+        parseColor("#2B2B2B"),
         position.add(new Vec2(size.x - 10, 0)),
         new Vec2(10, size.y),
         new Vec4(0, 0, 0, 0),
@@ -113,7 +113,7 @@ function paintNode(
         (node._state.scrollOffset.y / node._state.scrollableContentSize.y) * size.y;
 
       ui.rectangle(
-        parseColor("#666"),
+        parseColor("#3C3C3C"),
         position.add(new Vec2(size.x - 10, scrollTrackPosition)),
         new Vec2(10, scrollTrackSize),
         new Vec4(0, 0, 0, 0),

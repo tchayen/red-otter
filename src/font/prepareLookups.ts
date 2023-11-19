@@ -1,6 +1,7 @@
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { packShelves } from "../math/packShelves";
+import { invariant } from "../utils/invariant";
 import { calculateGlyphQuads } from "./calculateGlyphQuads";
 import { generateKerningFunction } from "./generateKerningFunction";
 import { TTF } from "./parseTTF";
@@ -86,6 +87,8 @@ export function prepareLookups(
     for (let i = 0; i < glyphs.length; i++) {
       const position = lookups.atlas.positions[start + i];
       const size = lookups.atlas.sizes[start + i];
+      invariant(position, "Could not find position for glyph.");
+      invariant(size, "Could not find size for glyph.");
 
       uvs.push(
         new Vec4(
@@ -99,7 +102,11 @@ export function prepareLookups(
     start += glyphs.length;
 
     for (let i = 0; i < glyphs.length; i++) {
-      lookups.uvs.set(`${font.name}-${glyphs[i].id}`, uvs[i]);
+      const glyph = glyphs[i];
+      const uv = uvs[i];
+      invariant(glyph, "Could not find glyph.");
+      invariant(uv, "Could not find uv.");
+      lookups.uvs.set(`${font.name}-${glyph.id}`, uv);
     }
   }
 

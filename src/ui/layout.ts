@@ -351,6 +351,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         Math.max(farthestX, e._state.metrics.width),
         Math.max(farthestY, e._state.metrics.height)
       );
+      console.log(e.props.testID, e._state.scrollableContentSize, e);
     } else {
       e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }

@@ -42,13 +42,16 @@ export async function renderFontAtlas(
     const fontFace = new FontFace(fontName, font.buffer);
     await fontFace.load();
     document.fonts.add(fontFace);
-    context.font = `${fontSize}px ${fontName}`;
+    context.font = `100 ${fontSize}px ${fontName}`;
 
     const glyphs = [...font.glyphs.values()];
     for (let i = 0; i < glyphs.length; i++) {
       const glyph = glyphs[i];
       const position = lookups.atlas.positions[start + i];
       const size = lookups.atlas.sizes[start + i];
+      invariant(glyph, "Could not find glyph.");
+      invariant(position, "Could not find position for glyph.");
+      invariant(size, "Could not find size for glyph.");
 
       if (DEBUG_FONT_ATLAS_SHOW_GLYPH_BACKGROUNDS) {
         context.fillStyle = "rgba(255, 0, 255, 0.3)";

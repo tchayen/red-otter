@@ -17,11 +17,27 @@ export function ui(renderer: ScrollableRenderer): View {
 
   fixtures.setLookups(lookups);
 
-  // NOTE:
-  // This screen is built within the library so if anything fundamental get  broken when e.g.
-  // debugging some problem, a good trick to enable moving  forward is to turn off all the tests but
-  // the one being worked on.
+  const root = new View({
+    style: {
+      height: "100%",
+      overflow: Overflow.Scroll,
+      width: "100%",
+    },
+    testID: "root",
+  });
 
+  root.add(exampleGrid());
+  root.add(scrollbarTest());
+
+  measure("Layout", () => {
+    layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+  });
+
+  // console.debug(debugPrintTree(root));
+  return root;
+}
+
+function exampleGrid() {
   const columnStyle = {
     flexDirection: FlexDirection.Column,
     width: 300,
@@ -34,18 +50,9 @@ export function ui(renderer: ScrollableRenderer): View {
     marginVertical: 10,
   } as TextStyleProps;
 
-  const root = new View({
-    style: {
-      height: "100%",
-      overflow: Overflow.Scroll,
-      width: "100%",
-    },
-    testID: "root",
-  });
-
   const container = new View({
     style: {
-      backgroundColor: "#333",
+      backgroundColor: "#2B2B2B",
       flexDirection: FlexDirection.Column,
       gap: 10,
       paddingHorizontal: 10,
@@ -53,8 +60,6 @@ export function ui(renderer: ScrollableRenderer): View {
     },
     testID: "container",
   });
-  root.add(container);
-  console.debug(root);
 
   function text(value: string) {
     return new Text(value, { lookups, style: textStyle, testID: "text" });
@@ -159,14 +164,57 @@ export function ui(renderer: ScrollableRenderer): View {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
     { lookups, style: { color: "#999", fontName: "Inter", fontSize: 13 } }
   );
-  // container.add(longText);
+  container.add(longText);
 
-  measure("Layout", () => {
-    layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+  return container;
+}
+
+function scrollbarTest() {
+  const container = new View({
+    style: {
+      backgroundColor: "#2B2B2B",
+      flexDirection: FlexDirection.Column,
+      gap: 10,
+      paddingHorizontal: 10,
+      width: "100%",
+    },
+    testID: "container",
   });
 
-  console.debug(debugPrintTree(root));
-  return root;
+  const text = new Text(
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
+    {
+      lookups,
+      style: {
+        color: "#fff",
+        fontName: "Inter",
+        fontSize: 14,
+        marginVertical: 10,
+      },
+    }
+  );
+  container.add(text);
+
+  const rows = new View({
+    style: {
+      flexDirection: FlexDirection.Row,
+      gap: 20,
+    },
+  });
+  container.add(rows);
+
+  for (let i = 0; i < 6; i++) {
+    const e = new View({
+      style: {
+        backgroundColor: "#00ff00",
+        height: 1200,
+        width: 200,
+      },
+    });
+    rows.add(e);
+  }
+
+  return container;
 }
 
 function debugPrintTree(tree: View | Text, level: number = 0) {

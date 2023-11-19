@@ -29,28 +29,30 @@ export function parseTTF(data: ArrayBuffer): TTF {
     };
 
     if (tag !== "head") {
+      const table = tables[tag];
+      invariant(table, `Table ${tag} is missing.`);
       const calculated = calculateChecksum(
-        reader.getDataSlice(tables[tag].offset, 4 * Math.ceil(tables[tag].length / 4))
+        reader.getDataSlice(table.offset, 4 * Math.ceil(table.length / 4))
       );
-      invariant(calculated === tables[tag].checksum, `Checksum for table ${tag} is invalid.`);
+      invariant(calculated === table.checksum, `Checksum for table ${tag} is invalid.`);
     }
   }
 
   const shared = "table is missing. Please use other font variant that contains it.";
 
-  invariant(tables["head"].offset, `head ${shared}`);
+  invariant(tables["head"], `head ${shared}`);
   ttf.head = readHeadTable(reader, tables["head"].offset);
 
-  invariant(tables["cmap"].offset, `cmap ${shared}`);
+  invariant(tables["cmap"], `cmap ${shared}`);
   ttf.cmap = readCmapTable(reader, tables["cmap"].offset);
 
-  invariant(tables["maxp"].offset, `maxp ${shared}`);
+  invariant(tables["maxp"], `maxp ${shared}`);
   ttf.maxp = readMaxpTable(reader, tables["maxp"].offset);
 
-  invariant(tables["hhea"].offset, `hhea ${shared}`);
+  invariant(tables["hhea"], `hhea ${shared}`);
   ttf.hhea = readHheaTable(reader, tables["hhea"].offset);
 
-  invariant(tables["hmtx"].offset, `hmtx ${shared}`);
+  invariant(tables["hmtx"], `hmtx ${shared}`);
   ttf.hmtx = readHmtxTable(
     reader,
     tables["hmtx"].offset,
@@ -58,7 +60,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
     ttf.hhea?.numberOfHMetrics
   );
 
-  invariant(tables["loca"].offset, `loca ${shared}`);
+  invariant(tables["loca"], `loca ${shared}`);
   ttf.loca = readLocaTable(
     reader,
     tables["loca"].offset,
@@ -66,7 +68,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
     ttf.head?.indexToLocFormat
   );
 
-  invariant(tables["glyf"].offset, `glyf ${shared}`);
+  invariant(tables["glyf"], `glyf ${shared}`);
   ttf.glyf = readGlyfTable(reader, tables["glyf"].offset, ttf.loca, ttf.head?.indexToLocFormat);
 
   if (tables["GPOS"]) {
@@ -86,7 +88,7 @@ function calculateChecksum(data: Uint8Array): number {
   let sum = 0;
   for (let i = 0; i < nlongs; i++) {
     const int32 =
-      (data[i * 4] << 24) + (data[i * 4 + 1] << 16) + (data[i * 4 + 2] << 8) + data[i * 4 + 3];
+      (data[i * 4]! << 24) + (data[i * 4 + 1]! << 16) + (data[i * 4 + 2]! << 8) + data[i * 4 + 3]!;
     const unsigned = int32 >>> 0;
     sum = ((sum + unsigned) & 0xff_ff_ff_ff) >>> 0;
   }
@@ -260,6 +262,10 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
     const startCode = startCodes[i];
     const idDelta = idDeltas[i];
     const idRangeOffset = idRangeOffsets[i];
+    invariant(endCode !== undefined, "endCode is undefined.");
+    invariant(startCode !== undefined, "startCode is undefined.");
+    invariant(idDelta !== undefined, "idDelta is undefined.");
+    invariant(idRangeOffset !== undefined, "idRangeOffset is undefined.");
 
     for (let c = startCode; c <= endCode; c++) {
       if (idRangeOffset !== 0) {
@@ -447,9 +453,10 @@ function readGlyfTable(
   const glyfs = [];
   for (let i = 0; i < loca.offsets.length - 1; i++) {
     const multiplier = indexToLocFormat === 0 ? 2 : 1;
-    const locaOffset = loca.offsets[i] * multiplier;
+    const locaOffset = loca.offsets[i];
+    invariant(locaOffset !== undefined, "Loca offset is undefined.");
 
-    reader.setPosition(offset + locaOffset);
+    reader.setPosition(offset + locaOffset * multiplier);
 
     const numberOfContours = reader.getInt16();
     const xMin = reader.getInt16();
@@ -498,7 +505,9 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
   }
 
   for (let i = 0; i < featureCount; i++) {
-    reader.setPosition(offset + featureListOffset + featureInfo[i].offset);
+    const featureInfoElement = featureInfo[i];
+    invariant(featureInfoElement !== undefined, "Feature info is undefined.");
+    reader.setPosition(offset + featureListOffset + featureInfoElement.offset);
 
     const paramsOffset = reader.getUint16();
     const lookupIndexCount = reader.getUint16();
@@ -511,7 +520,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
     features.push({
       lookupListIndices,
       paramsOffset,
-      tag: featureInfo[i].tag,
+      tag: featureInfoElement.tag,
     });
   }
 
@@ -537,7 +546,9 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
 
   const lookups: GPOSLookup[] = [];
   for (let i = 0; i < lookupCount; i++) {
-    reader.setPosition(offset + lookupListOffset + lookupTables[i]);
+    const lookupTable = lookupTables[i];
+    invariant(lookupTable !== undefined, "Lookup table is undefined.");
+    reader.setPosition(offset + lookupListOffset + lookupTable);
 
     const lookupType = reader.getUint16();
     const lookupFlag = reader.getUint16();
@@ -562,7 +573,9 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
     // Only extension supported for now.
     if (lookupType === LookupType.ExtensionPositioning) {
       for (let j = 0; j < subTableCount; j++) {
-        reader.setPosition(offset + lookupListOffset + lookupTables[i] + subTableOffsets[j]);
+        const subTableOffset = subTableOffsets[j];
+        invariant(subTableOffset !== undefined, "Subtable offset is undefined.");
+        reader.setPosition(offset + lookupListOffset + lookupTable + subTableOffset);
 
         const posFormat = reader.getUint16();
         const extensionLookupType = reader.getUint16();
@@ -570,7 +583,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
 
         let extension = {} as ExtensionLookupType2Format1 | ExtensionLookupType2Format2;
         reader.runAt(
-          offset + lookupListOffset + lookupTables[i] + subTableOffsets[j] + extensionOffset,
+          offset + lookupListOffset + lookupTable + subTableOffset + extensionOffset,
           () => {
             if (extensionLookupType === LookupType.PairAdjustment) {
               const posFormat = reader.getUint16();
@@ -593,13 +606,15 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                   value2?: ValueRecord;
                 }[][] = [];
                 for (let k = 0; k < pairSetCount; k++) {
+                  const pairSetOffset = pairSetOffsets[k];
+                  invariant(pairSetOffset !== undefined, "Pair set offset is undefined.");
                   reader.setPosition(
                     offset +
                       lookupListOffset +
-                      lookupTables[i] +
-                      subTableOffsets[j] +
+                      lookupTable +
+                      subTableOffset +
                       extensionOffset +
-                      pairSetOffsets[k]
+                      pairSetOffset
                   );
 
                   const pairValueCount = reader.getUint16();
@@ -625,8 +640,8 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 extension.coverage = reader.runAt(
                   offset +
                     lookupListOffset +
-                    lookupTables[i] +
-                    subTableOffsets[j] +
+                    lookupTable +
+                    subTableOffset +
                     extensionOffset +
                     coverageOffset,
                   () => {
@@ -654,8 +669,8 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 extension.coverage = reader.runAt(
                   offset +
                     lookupListOffset +
-                    lookupTables[i] +
-                    subTableOffsets[j] +
+                    lookupTable +
+                    subTableOffset +
                     extensionOffset +
                     coverageOffset,
                   () => {
@@ -667,8 +682,8 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 const classDef1 = reader.runAt(
                   offset +
                     lookupListOffset +
-                    lookupTables[i] +
-                    subTableOffsets[j] +
+                    lookupTable +
+                    subTableOffset +
                     extensionOffset +
                     classDef1Offset,
                   () => {
@@ -679,8 +694,8 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 const classDef2 = reader.runAt(
                   offset +
                     lookupListOffset +
-                    lookupTables[i] +
-                    subTableOffsets[j] +
+                    lookupTable +
+                    subTableOffset +
                     extensionOffset +
                     classDef2Offset,
                   () => {

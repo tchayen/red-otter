@@ -1,6 +1,7 @@
 import { TTF, ValueRecord } from "./parseTTF";
 import { KerningFunction } from "./types";
 import { generateGlyphToClassMap } from "./generateGlyphToClassMap";
+import { invariant } from "../utils/invariant";
 
 /**
  * @param ttf parsed TTF file (see parseTTF.ts)
@@ -36,6 +37,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
                 for (const range of coverage.rangeRecords) {
                   for (let glyphID = range.startGlyphID; glyphID <= range.endGlyphID; glyphID++) {
                     const pairs = pairSets[indexCounter];
+                    invariant(pairs, "Could not find pair set.");
 
                     const glyphKernMap = kerningPairs.get(glyphID) || new Map<number, number>();
                     for (const pair of pairs) {
@@ -96,7 +98,7 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
     const firstClass = firstGlyphClassMapping.get(firstGlyphID) ?? 0;
     const secondClass = secondGlyphClassMapping.get(secondGlyphID) ?? 0;
 
-    const record = classRecords[firstClass][secondClass];
-    return record.value1?.xAdvance ?? 0;
+    const record = classRecords[firstClass]![secondClass];
+    return record?.value1?.xAdvance ?? 0;
   };
 }

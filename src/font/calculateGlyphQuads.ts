@@ -39,9 +39,11 @@ export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Glyph[] {
         ? ttf.hmtx.hMetrics[index]
         : {
             advanceWidth: lastMetric.advanceWidth,
-            leftSideBearing: ttf.hmtx.leftSideBearings[index - ttf.hhea.numberOfHMetrics],
+            leftSideBearing: ttf.hmtx.leftSideBearings[index - ttf.hhea.numberOfHMetrics] ?? 0,
           };
     const glyf = ttf.glyf[index];
+    invariant(glyf, "Glyph is missing.");
+    invariant(hmtx, "HMTX is missing.");
 
     const glyph: Glyph = {
       character: String.fromCharCode(code),
