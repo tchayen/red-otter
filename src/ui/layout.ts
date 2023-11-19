@@ -348,12 +348,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       farthestX += e._style.paddingRight;
       farthestY += e._style.paddingBottom;
 
-      e._state.scrollableContentSize = new Vec2(
+      e._state.scrollSize = new Vec2(
         Math.max(farthestX, e._state.metrics.width),
         Math.max(farthestY, e._state.metrics.height)
       );
     } else {
-      e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
+      e._state.scrollSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }
   }
 
@@ -498,13 +498,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
       if (
         e._style.overflowX === Overflow.Scroll &&
-        e._state.scrollableContentSize.x > e._state.metrics.width
+        e._state.scrollSize.x > e._state.metrics.width
       ) {
         availableMain -= CROSS_AXIS_SIZE;
       }
       if (
         e._style.overflowY === Overflow.Scroll &&
-        e._state.scrollableContentSize.y > e._state.metrics.height
+        e._state.scrollSize.y > e._state.metrics.height
       ) {
         availableMain -= CROSS_AXIS_SIZE;
       }
@@ -748,7 +748,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.metrics.width = Math.round(e._state.metrics.width);
     e._state.metrics.height = Math.round(e._state.metrics.height);
 
-    console.log(e.props.testID, e._state.scrollableContentSize, e);
+    console.log(e.props.testID, e._state.scrollSize, e);
   }
 }
 

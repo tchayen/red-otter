@@ -226,13 +226,13 @@ function debugPrintTree(tree: View | Text, level: number = 0) {
 
   const type = tree instanceof Text ? "Text" : "View";
 
-  const { metrics, scrollOffset, scrollableContentSize } = tree._state;
+  const { metrics, scrollOffset, scrollSize } = tree._state;
   let info =
     `- [${tree?.props.testID ?? type}]\n  metrics: (${metrics.x}, ${metrics.y}, ${metrics.width}, ${
       metrics.height
     })\n  scrollOffset: (${scrollOffset.x}, ${scrollOffset.y})\n  scrollableContentSize: (${
-      scrollableContentSize.x
-    }, ${scrollableContentSize.y})\n` ?? "";
+      scrollSize.x
+    }, ${scrollSize.y})\n` ?? "";
 
   let c = tree.firstChild;
   while (c) {

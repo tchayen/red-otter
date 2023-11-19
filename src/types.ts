@@ -30,7 +30,7 @@ export type LayoutNodeState = {
   children: Array<Array<View | Text>>;
   metrics: { height: number; width: number; x: number; y: number };
   scrollOffset: Vec2;
-  scrollableContentSize: Vec2;
+  scrollSize: Vec2;
   textWidthLimit?: number;
 };
 

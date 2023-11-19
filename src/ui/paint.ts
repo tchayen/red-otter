@@ -151,9 +151,9 @@ function paintNode(
       );
 
       const scrollTrackSize =
-        (node._state.metrics.height / node._state.scrollableContentSize.y) * scrollbarSize;
+        (node._state.metrics.height / node._state.scrollSize.y) * scrollbarSize;
       const scrollTrackPosition =
-        (node._state.scrollOffset.y / node._state.scrollableContentSize.y) * scrollbarSize;
+        (node._state.scrollOffset.y / node._state.scrollSize.y) * scrollbarSize;
 
       ui.rectangle(
         parseColor(SCROLLBAR_TRACK_COLOR),
@@ -180,9 +180,9 @@ function paintNode(
       );
 
       const scrollTrackSize =
-        (node._state.metrics.width / node._state.scrollableContentSize.x) * scrollbarSize;
+        (node._state.metrics.width / node._state.scrollSize.x) * scrollbarSize;
       const scrollTrackPosition =
-        (node._state.scrollOffset.x / node._state.scrollableContentSize.x) * scrollbarSize;
+        (node._state.scrollOffset.x / node._state.scrollSize.x) * scrollbarSize;
 
       ui.rectangle(
         parseColor(SCROLLBAR_TRACK_COLOR),

@@ -23,7 +23,7 @@ export class View {
     children: [],
     metrics: { height: 0, width: 0, x: 0, y: 0 },
     scrollOffset: new Vec2(0, 0),
-    scrollableContentSize: new Vec2(0, 0),
+    scrollSize: new Vec2(0, 0),
   };
   /**
    * Should always be normalized.
@@ -46,11 +46,11 @@ export class View {
         this._state.scrollOffset = new Vec2(
           Math.min(
             Math.max(this._state.scrollOffset.x + event.delta.x, 0),
-            this._state.scrollableContentSize.x - this._state.metrics.width
+            this._state.scrollSize.x - this._state.metrics.width
           ),
           Math.min(
             Math.max(this._state.scrollOffset.y + event.delta.y, 0),
-            this._state.scrollableContentSize.y - this._state.metrics.height
+            this._state.scrollSize.y - this._state.metrics.height
           )
         );
       });
