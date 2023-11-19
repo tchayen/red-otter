@@ -810,7 +810,7 @@ export function overflow() {
 }
 
 export function displayAndOverflow() {
-  const root = new View({ style: rootStyle });
+  const root = new View({ style: { ...rootStyle, margin: 100 }, testID: "D-root" });
 
   const overflow = new View({
     style: {
@@ -819,6 +819,7 @@ export function displayAndOverflow() {
       overflow: Overflow.Scroll,
       width: 240,
     },
+    testID: "D-overlow",
   });
 
   const tooTall = new View({
@@ -828,17 +829,14 @@ export function displayAndOverflow() {
       overflow: Overflow.Scroll,
       width: 180,
     },
+    testID: "D-tooTall",
   });
   overflow.add(tooTall);
-
-  const tooTallInside = new View({
-    style: {
-      backgroundColor: colors[3],
-      height: 540,
-      width: 120,
-    },
-  });
-  tooTall.add(tooTallInside);
+  for (let i = 0; i < 6; i++) {
+    tooTall.add(
+      new View({ style: { backgroundColor: colors[i + 3], height: 60, width: 180 - i * 20 } })
+    );
+  }
 
   root.add(overflow);
 

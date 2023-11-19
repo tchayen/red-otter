@@ -17,6 +17,7 @@ import {
   Overflow,
   Position,
 } from "../types";
+import { CROSS_AXIS_SIZE } from "./consts";
 
 /**
  * @param tree tree of views to layout.
@@ -351,7 +352,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         Math.max(farthestX, e._state.metrics.width),
         Math.max(farthestY, e._state.metrics.height)
       );
-      console.log(e.props.testID, e._state.scrollableContentSize, e);
     } else {
       e._state.scrollableContentSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
     }
@@ -481,6 +481,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       childrenInLine.push(childrenCount);
     }
 
+    // Iterate over lines.
     for (let i = 0; i < e._state.children.length; i++) {
       const line = e._state.children[i]!;
       const maxCrossChild = maxCrossChildren[i]!;
@@ -494,6 +495,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         : e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
       if (!isJustifySpace) {
         availableMain -= mainGap * (line.length - 1);
+      }
+      if (
+        e._style.overflowX === Overflow.Scroll &&
+        e._state.scrollableContentSize.x > e._state.metrics.width
+      ) {
+        availableMain -= CROSS_AXIS_SIZE;
+      }
+      if (
+        e._style.overflowY === Overflow.Scroll &&
+        e._state.scrollableContentSize.y > e._state.metrics.height
+      ) {
+        availableMain -= CROSS_AXIS_SIZE;
       }
       let availableCross = isHorizontal
         ? e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom
@@ -735,9 +748,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.metrics.width = Math.round(e._state.metrics.width);
     e._state.metrics.height = Math.round(e._state.metrics.height);
 
-    if (Number.isNaN(e._state.metrics.width)) {
-      console.warn("Width is NaN", e.props.testID, e._style.width, e._state.metrics.width);
-    }
+    console.log(e.props.testID, e._state.scrollableContentSize, e);
   }
 }
 
