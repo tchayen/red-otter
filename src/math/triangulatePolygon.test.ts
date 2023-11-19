@@ -18,7 +18,7 @@ describe("triangulatePolygon", () => {
     ];
     const triangles = triangulatePolygon(data);
     expect(triangles).toHaveLength(24);
-    expect(triangles[0].equals(new Vec2(50, 185))).toBeTruthy();
-    expect(triangles[1].equals(new Vec2(45, 95))).toBeTruthy();
+    expect(triangles[0]!.equals(new Vec2(50, 185))).toBeTruthy();
+    expect(triangles[1]!.equals(new Vec2(45, 95))).toBeTruthy();
   });
 });

@@ -50,10 +50,10 @@ describe("Layout", () => {
     const nodes = [first, second, third, fourth, fifth, sixth, seventh, eighth];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i][0].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i][0].y);
-      expect(nodes[i]?._state.metrics.width).toBe(expectedValues[i][1].x);
-      expect(nodes[i]?._state.metrics.height).toBe(expectedValues[i][1].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i]![0]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i]![0]?.y);
+      expect(nodes[i]?._state.metrics.width).toBe(expectedValues[i]![1]?.x);
+      expect(nodes[i]?._state.metrics.height).toBe(expectedValues[i]![1]?.y);
     }
   });
 
@@ -77,7 +77,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedRowPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedRowPositions[i]) {
+      for (const expected of expectedRowPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -98,7 +98,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedColumnPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedColumnPositions[i]) {
+      for (const expected of expectedColumnPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -124,7 +124,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedRowPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedRowPositions[i]) {
+      for (const expected of expectedRowPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -143,7 +143,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedColumnPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedColumnPositions[i]) {
+      for (const expected of expectedColumnPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -172,7 +172,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedRowPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedRowPositions[i]) {
+      for (const expected of expectedRowPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -193,7 +193,7 @@ describe("Layout", () => {
 
     for (let i = 0; i < expectedColumnPositions.length; i++) {
       c = box?.firstChild;
-      for (const expected of expectedColumnPositions[i]) {
+      for (const expected of expectedColumnPositions[i]!) {
         expect(c?._state.metrics.x).toBe(expected.x);
         expect(c?._state.metrics.y).toBe(expected.y);
         c = c?.next;
@@ -228,8 +228,8 @@ describe("Layout", () => {
     ];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i]?.y);
     }
   });
 
@@ -259,8 +259,8 @@ describe("Layout", () => {
     ];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i]?.y);
     }
   });
 
@@ -332,8 +332,8 @@ describe("Layout", () => {
     ];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i]?.y);
     }
   });
 
@@ -385,10 +385,10 @@ describe("Layout", () => {
     const nodes = [box, first, inFirst, second];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i][0].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i][0].y);
-      expect(nodes[i]?._state.metrics.width).toBe(expectedValues[i][1].x);
-      expect(nodes[i]?._state.metrics.height).toBe(expectedValues[i][1].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedValues[i]![0]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedValues[i]![0]?.y);
+      expect(nodes[i]?._state.metrics.width).toBe(expectedValues[i]![1]?.x);
+      expect(nodes[i]?._state.metrics.height).toBe(expectedValues[i]![1]?.y);
     }
   });
 
@@ -421,8 +421,8 @@ describe("Layout", () => {
     const nodes = [first, second, third, fourth, fifth, sixth, seventh, eighth];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i].x);
-      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i].y);
+      expect(nodes[i]?._state.metrics.x).toBe(expectedPositions[i]?.x);
+      expect(nodes[i]?._state.metrics.y).toBe(expectedPositions[i]?.y);
     }
   });
 
@@ -462,8 +462,8 @@ describe("Layout", () => {
     const nodes = [passThrough, inside, innermost, first, minSize, maxSize, maxSizeSecond];
 
     for (let i = 0; i < nodes.length; i++) {
-      expect(nodes[i]?._state.metrics.width).toBe(expectedSizes[i].x);
-      expect(nodes[i]?._state.metrics.height).toBe(expectedSizes[i].y);
+      expect(nodes[i]?._state.metrics.width).toBe(expectedSizes[i]?.x);
+      expect(nodes[i]?._state.metrics.height).toBe(expectedSizes[i]?.y);
     }
   });
 
@@ -501,8 +501,8 @@ describe("Layout", () => {
       const height = nodes[i]?._state.metrics.height ?? 0;
 
       expect(width / height).toBeCloseTo(1.77, 1);
-      expect(width).toBe(expectedSizes[i].x);
-      expect(height).toBe(expectedSizes[i].y);
+      expect(width).toBe(expectedSizes[i]?.x);
+      expect(height).toBe(expectedSizes[i]?.y);
     }
   });
 

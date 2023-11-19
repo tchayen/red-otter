@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Vec3 } from "./Vec3";
 import { Vec4 } from "./Vec4";
 

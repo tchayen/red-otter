@@ -1,4 +1,5 @@
 import { Vec4 } from "../math/Vec4";
+import { invariant } from "./invariant";
 
 /**
  * https://stackoverflow.com/a/54014428
@@ -80,17 +81,17 @@ export function parseColor(color: string): Vec4 {
     }
 
     return new Vec4(
-      channels[0] / 255,
-      channels[1] / 255,
-      channels[2] / 255,
-      hasAlpha ? channels[3] : 1
+      channels[0]! / 255,
+      channels[1]! / 255,
+      channels[2]! / 255,
+      hasAlpha ? channels[3]! : 1
     );
   } else if (color.startsWith("hsl")) {
     const separator = color.includes(",") ? "," : " ";
     const channels = color.slice(color.indexOf("(") + 1, -1).split(separator);
 
     if (color.includes("/")) {
-      channels[3] = channels[4];
+      channels[3] = channels[4]!;
       channels.pop();
     }
 
@@ -102,8 +103,8 @@ export function parseColor(color: string): Vec4 {
     const alpha = hasAlpha ? Number(channels[3]) : 1;
     const converted = hslToRgb(
       Number(channels[0]),
-      Number(channels[1].slice(0, -1)) / 100,
-      Number(channels[2].slice(0, -1)) / 100
+      Number(channels[1]!.slice(0, -1)) / 100,
+      Number(channels[2]!.slice(0, -1)) / 100
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);
@@ -111,17 +112,18 @@ export function parseColor(color: string): Vec4 {
     const separator = color.includes(",") ? "," : " ";
     const hasAlpha = color[3] === "a";
     const channels = color.slice(hasAlpha ? 5 : 4, -1).split(separator);
+    invariant(channels.length === 3 || channels.length === 4, "Invalid HSV color.");
 
     if (color.includes("/")) {
-      channels[3] = channels[4];
+      channels[3] = channels[4]!;
       channels.pop();
     }
 
     const alpha = hasAlpha ? Number(channels[3]) : 1;
     const converted = hsvToRgb(
       Number(channels[0]),
-      Number(channels[1].slice(0, -1)) / 100,
-      Number(channels[2].slice(0, -1)) / 100
+      Number(channels[1]!.slice(0, -1)) / 100,
+      Number(channels[2]!.slice(0, -1)) / 100
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);

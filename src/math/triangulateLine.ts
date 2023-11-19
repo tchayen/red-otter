@@ -8,18 +8,23 @@ export function triangulateLine(points: Vec2[], thickness: number): Vec2[] {
   const triangles = [];
 
   for (let i = 0; i < points.length - 1; i++) {
-    const dx = points[i + 1].x - points[i].x;
-    const dy = points[i + 1].y - points[i].y;
+    const point = points[i];
+    const nextPoint = points[i + 1];
+    invariant(point, "Point is missing.");
+    invariant(nextPoint, "Next point is missing.");
+
+    const dx = nextPoint.x - point.x;
+    const dy = nextPoint.y - point.y;
     const n1 = new Vec2(dy, -dx).normalize().scale(thickness / 2);
     const n2 = new Vec2(-dy, dx).normalize().scale(thickness / 2);
 
     triangles.push(
-      points[i + 1].add(n2),
-      points[i].add(n2),
-      points[i].add(n1),
-      points[i].add(n1),
-      points[i + 1].add(n1),
-      points[i + 1].add(n2)
+      nextPoint.add(n2),
+      point.add(n2),
+      point.add(n1),
+      point.add(n1),
+      nextPoint.add(n1),
+      nextPoint.add(n2)
     );
   }
 

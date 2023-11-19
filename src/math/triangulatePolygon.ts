@@ -134,16 +134,20 @@ function isPointInPolygon(point: Vec2, points: Vec2[]): boolean {
   let oddNodes = false;
 
   while (i < points.length) {
+    const leftPoint = points[i];
+    const rightPoint = points[j];
+    invariant(leftPoint, "Left point is missing.");
+    invariant(rightPoint, "Right point is missing.");
     // Check if the point is between the y coordinates of the two points of the edge.
     if (
-      (points[i].y < point.y && points[j].y >= point.y) ||
-      (points[j].y < point.y && points[i].y >= point.y)
+      (leftPoint.y < point.y && rightPoint.y >= point.y) ||
+      (rightPoint.y < point.y && leftPoint.y >= point.y)
     ) {
       // Calculate the x coordinate of the point based on the slope of the edge and the y
       // coordinate of the point.
       if (
-        points[i].x +
-          ((point.y - points[i].y) / (points[j].y - points[i].y)) * (points[j].x - points[i].x) <
+        leftPoint.x +
+          ((point.y - leftPoint.y) / (rightPoint.y - leftPoint.y)) * (rightPoint.x - leftPoint.x) <
         point.x
       ) {
         oddNodes = !oddNodes;

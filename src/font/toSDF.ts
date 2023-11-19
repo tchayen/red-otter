@@ -14,7 +14,7 @@ export function toSDF(
 
   const INF = 1e20;
   for (let i = 0; i < width * height; i++) {
-    const a = imageData.data[i * 4 + 3] / 255; // Alpha value.
+    const a = imageData.data[i * 4 + 3]! / 255; // Alpha value.
 
     if (a === 1) {
       gridOuter[i] = 0;
@@ -39,16 +39,16 @@ export function toSDF(
 
   const alphaChannel = new Uint8ClampedArray(width * height);
   for (let i = 0; i < width * height; i++) {
-    const d = Math.sqrt(gridOuter[i]) - Math.sqrt(gridInner[i]);
+    const d = Math.sqrt(gridOuter[i]!) - Math.sqrt(gridInner[i]!);
     alphaChannel[i] = Math.round(255 - 255 * (d / radius + 0.25));
   }
 
   const data = new Uint8ClampedArray(width * height * 4);
   for (let i = 0; i < width * height; i++) {
-    data[4 * i + 0] = alphaChannel[i];
-    data[4 * i + 1] = alphaChannel[i];
-    data[4 * i + 2] = alphaChannel[i];
-    data[4 * i + 3] = alphaChannel[i];
+    data[4 * i + 0] = alphaChannel[i]!;
+    data[4 * i + 1] = alphaChannel[i]!;
+    data[4 * i + 2] = alphaChannel[i]!;
+    data[4 * i + 3] = alphaChannel[i]!;
   }
 
   return new ImageData(data, width, height);
@@ -73,14 +73,14 @@ function edt1d(
   z[1] = INF;
 
   for (q = 0; q < length; q++) {
-    f[q] = grid[offset + q * stride];
+    f[q] = grid[offset + q * stride]!;
   }
 
   for (q = 1, k = 0, s = 0; q < length; q++) {
     do {
-      r = v[k];
-      s = (f[q] - f[r] + q * q - r * r) / (q - r) / 2;
-    } while (s <= z[k] && --k > -1);
+      r = v[k]!;
+      s = (f[q]! - f[r]! + q * q - r * r) / (q - r) / 2;
+    } while (s <= z[k]! && --k > -1);
 
     k++;
 
@@ -89,12 +89,12 @@ function edt1d(
     z[k + 1] = INF;
   }
   for (q = 0, k = 0; q < length; q++) {
-    while (z[k + 1] < q) {
+    while (z[k + 1]! < q) {
       k++;
     }
 
-    r = v[k];
-    grid[offset + q * stride] = f[r] + (q - r) * (q - r);
+    r = v[k]!;
+    grid[offset + q * stride] = f[r]! + (q - r) * (q - r);
   }
 }
 

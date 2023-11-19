@@ -16,9 +16,9 @@ describe("packShelves", () => {
     expect(packing.width).toBe(128);
     expect(packing.height).toBe(128);
 
-    expect(packing.positions[0].x).toBe(40);
-    expect(packing.positions[0].y).toBe(65);
-    expect(packing.positions[3].x).toBe(55);
-    expect(packing.positions[3].y).toBe(50);
+    expect(packing.positions[0]?.x).toBe(40);
+    expect(packing.positions[0]?.y).toBe(65);
+    expect(packing.positions[3]?.x).toBe(55);
+    expect(packing.positions[3]?.y).toBe(50);
   });
 });

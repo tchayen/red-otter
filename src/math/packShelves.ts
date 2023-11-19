@@ -42,6 +42,7 @@ export function packShelves(sizes: Vec2[]): Packing {
   for (const box of rectangles) {
     for (let i = regions.length - 1; i >= 0; i--) {
       const region = regions[i];
+      invariant(region, "Region is missing.");
       if (box.width > region.width || box.height > region.height) {
         continue;
       }
