@@ -49,6 +49,13 @@ export function _paint(
     hasParentVerticalScroll
   );
 
+  // TODO: finish this, turn this into compose() and then make separate pass for painting.
+  node._state.clipStart = clipStart;
+  node._state.clipSize = clipSize;
+  node._state.totalScrollX = scrollOffset.x;
+  node._state.totalScrollY = scrollOffset.y;
+  //
+
   const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;
   const hasVerticalScroll = node._style.overflowY === Overflow.Scroll;
 
@@ -60,10 +67,6 @@ export function _paint(
   const childClipStart = shouldClip
     ? new Vec2(Math.max(node._state.x, clipStart.x), Math.max(node._state.y, clipStart.y))
     : clipStart.subtract(scrollOffset);
-  // const scrollBarDifference = new Vec2(
-  //   hasHorizontalScroll ? CROSS_AXIS_SIZE : 0,
-  //   hasVerticalScroll ? CROSS_AXIS_SIZE : 0
-  // );
   const scrollBarDifference = new Vec2(0, 0);
   const childClipSize = shouldClip
     ? new Vec2(

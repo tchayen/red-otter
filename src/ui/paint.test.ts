@@ -17,7 +17,8 @@ describe("paint", () => {
 
     layout(root, null, new Vec2(300, 300));
 
-    root._state.scrollOffset = new Vec2(0, 100);
+    root._state.scrollX = 0;
+    root._state.scrollY = 100;
 
     const ui = new MockRenderer();
     const rectangle = vi.spyOn(ui, "rectangle");

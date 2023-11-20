@@ -27,15 +27,61 @@ export type ScrollEvent = {
 export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
 
 export type LayoutNodeState = {
+  /**
+   * Temporary array used by layout.
+   */
   children: Array<Array<View | Text>>;
+  /**
+   * Height of the element excluding scrollbar.
+   */
   clientHeight: number;
+  /**
+   * Width of the element excluding scrollbar.
+   */
   clientWidth: number;
+  /**
+   * WIP
+   */
+  clipSize: Vec2;
+  /**
+   * WIP
+   */
+  clipStart: Vec2;
+  /**
+   * Height of the element including (potential) scrollbar and scrollable content.
+   */
   scrollHeight: number;
+  /**
+   * Width of the element including (potential) scrollbar and scrollable content.
+   */
   scrollWidth: number;
+  /**
+   * Current scroll position.
+   */
   scrollX: number;
+  /**
+   * Current scroll position.
+   */
   scrollY: number;
+  /**
+   * Is it still needed?
+   */
   textWidthLimit?: number;
+  /**
+   * WIP
+   */
+  totalScrollX: number;
+  /**
+   * WIP
+   */
+  totalScrollY: number;
+  /**
+   * Screen-space position of element after layout.
+   */
   x: number;
+  /**
+   * Screen-space position of element after layout.
+   */
   y: number;
 };
 
