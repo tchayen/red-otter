@@ -67,20 +67,27 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       secondPass.enqueue(c);
       c = c.next;
     }
-    e._state.metrics = { height: 0, width: 0, x: 0, y: 0 };
+    e._state.x = 0;
+    e._state.y = 0;
+    e._state.clientWidth = 0;
+    e._state.clientHeight = 0;
+    e._state.scrollWidth = 0;
+    e._state.scrollHeight = 0;
+    e._state.scrollX = 0;
+    e._state.scrollY = 0;
 
     // If element has defined width or height, set it.
     if (typeof e._style.width === "number") {
-      e._state.metrics.width = e._style.width;
+      e._state.clientWidth = e._style.width;
     }
     if (typeof e._style.height === "number") {
-      e._state.metrics.height = e._style.height;
+      e._state.clientHeight = e._style.height;
     }
     if (typeof e._style.flexBasis === "number") {
       if (isHorizontal) {
-        e._state.metrics.width = e._style.flexBasis;
+        e._state.clientWidth = e._style.flexBasis;
       } else {
-        e._state.metrics.height = e._style.flexBasis;
+        e._state.clientHeight = e._style.flexBasis;
       }
     }
 
@@ -97,7 +104,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         _p = _p.parent;
       }
 
-      e._state.metrics.width =
+      e._state.clientWidth =
         toPercentage(e._style.width) * accumulatedMultiplier * (definedWidth ?? 0);
     }
     if (typeof e._style.height === "string") {
@@ -113,23 +120,23 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         _p = _p.parent;
       }
 
-      e._state.metrics.height =
+      e._state.clientHeight =
         toPercentage(e._style.height) * accumulatedMultiplier * (definedHeight ?? 0);
     }
     if (typeof e._style.flexBasis === "string") {
       if (isHorizontal) {
-        e._state.metrics.width =
-          toPercentage(e._style.flexBasis) * (e.parent?._state.metrics.width ?? 0);
+        e._state.clientWidth =
+          toPercentage(e._style.flexBasis) * (e.parent?._state.clientWidth ?? 0);
       } else {
-        e._state.metrics.height =
-          toPercentage(e._style.flexBasis) * (e.parent?._state.metrics.height ?? 0);
+        e._state.clientHeight =
+          toPercentage(e._style.flexBasis) * (e.parent?._state.clientHeight ?? 0);
       }
     }
 
     const p = e.parent;
     if (e instanceof Text && fontLookups) {
-      if (p?._state.metrics.width !== undefined) {
-        const maxWidth = p._state.metrics.width - p._style.paddingLeft - p._style.paddingRight;
+      if (p?._state.clientWidth !== undefined) {
+        const maxWidth = p._state.clientWidth - p._style.paddingLeft - p._style.paddingRight;
         e._state.textWidthLimit = maxWidth;
 
         const shape = shapeText({
@@ -142,8 +149,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           textAlignment: e._style.textAlign ?? "left",
         });
 
-        e._state.metrics.width = shape.boundingRectangle.width;
-        e._state.metrics.height = shape.boundingRectangle.height;
+        e._state.clientWidth = shape.boundingRectangle.width;
+        e._state.clientHeight = shape.boundingRectangle.height;
       }
     }
   }
@@ -175,15 +182,15 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       let childrenCount = 0;
       let c = e.firstChild;
       while (c) {
-        if (c._state.metrics.width) {
+        if (c._state.clientWidth) {
           if (
             (e._style.flexDirection === FlexDirection.Row ||
               e._style.flexDirection === FlexDirection.RowReverse) &&
             c._style.position === Position.Relative
           ) {
             // Padding is inside the width.
-            e._state.metrics.width +=
-              c._state.metrics.width + c._style.marginLeft + c._style.marginRight;
+            e._state.clientWidth +=
+              c._state.clientWidth + c._style.marginLeft + c._style.marginRight;
           }
           if (
             (e._style.flexDirection === FlexDirection.Column ||
@@ -191,9 +198,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             c._style.position === Position.Relative
           ) {
             // For column layout only wraps the widest child.
-            e._state.metrics.width = Math.max(
-              e._state.metrics.width,
-              c._state.metrics.width + c._style.marginLeft + c._style.marginRight
+            e._state.clientWidth = Math.max(
+              e._state.clientWidth,
+              c._state.clientWidth + c._style.marginLeft + c._style.marginRight
             );
           }
         }
@@ -204,13 +211,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Include padding and gaps.
-      e._state.metrics.width += e._style.paddingLeft + e._style.paddingRight;
+      e._state.clientWidth += e._style.paddingLeft + e._style.paddingRight;
 
       if (
         e._style.flexDirection === FlexDirection.Row ||
         e._style.flexDirection === FlexDirection.RowReverse
       ) {
-        e._state.metrics.width += (childrenCount - 1) * e._style.rowGap;
+        e._state.clientWidth += (childrenCount - 1) * e._style.rowGap;
       }
     }
     // Height is at least the sum of children with defined heights.
@@ -218,23 +225,23 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       let childrenCount = 0;
       let c = e.firstChild;
       while (c) {
-        if (c._state.metrics.height) {
+        if (c._state.clientHeight) {
           if (
             (e._style.flexDirection === FlexDirection.Column ||
               e._style.flexDirection === FlexDirection.ColumnReverse) &&
             c._style.position === Position.Relative
           ) {
-            e._state.metrics.height +=
-              c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
+            e._state.clientHeight +=
+              c._state.clientHeight + c._style.marginTop + c._style.marginBottom;
           }
           if (
             (e._style.flexDirection === FlexDirection.Row ||
               e._style.flexDirection === FlexDirection.RowReverse) &&
             c._style.position === Position.Relative
           ) {
-            e._state.metrics.height = Math.max(
-              e._state.metrics.height,
-              c._state.metrics.height + c._style.marginTop + c._style.marginBottom
+            e._state.clientHeight = Math.max(
+              e._state.clientHeight,
+              c._state.clientHeight + c._style.marginTop + c._style.marginBottom
             );
           }
         }
@@ -245,13 +252,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Include padding and gaps.
-      e._state.metrics.height += e._style.paddingTop + e._style.paddingBottom;
+      e._state.clientHeight += e._style.paddingTop + e._style.paddingBottom;
 
       if (
         e._style.flexDirection === FlexDirection.Column ||
         e._style.flexDirection === FlexDirection.ColumnReverse
       ) {
-        e._state.metrics.height += (childrenCount - 1) * e._style.columnGap;
+        e._state.clientHeight += (childrenCount - 1) * e._style.columnGap;
       }
     }
 
@@ -259,10 +266,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // The size that was first calculated is size of the tallest child of all plus paddings. So
       // here we reset the size and build it again, for all rows.
       if (isHorizontal && e._style.height === undefined) {
-        e._state.metrics.height = e._style.paddingTop + e._style.paddingBottom;
+        e._state.clientHeight = e._style.paddingTop + e._style.paddingBottom;
       }
       if (isVertical && e._style.width === undefined) {
-        e._state.metrics.width = e._style.paddingLeft + e._style.paddingRight;
+        e._state.clientWidth = e._style.paddingLeft + e._style.paddingRight;
       }
     }
 
@@ -278,17 +285,17 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       const deltaMain = isHorizontal
-        ? c._state.metrics.width +
+        ? c._state.clientWidth +
           c._style.marginLeft +
           c._style.marginRight +
           (!isJustifySpace ? e._style.rowGap : 0)
-        : c._state.metrics.height +
+        : c._state.clientHeight +
           c._style.marginTop +
           c._style.marginBottom +
           (!isJustifySpace ? e._style.columnGap : 0);
       const parentMain = isHorizontal
-        ? e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight
-        : e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+        ? e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight
+        : e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom;
 
       if (isWrap && main + deltaMain > parentMain) {
         let length = longestChildSize;
@@ -297,10 +304,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         rows.push([]);
         if (isWrap) {
           if (isHorizontal && e._style.height === undefined) {
-            e._state.metrics.height += length;
+            e._state.clientHeight += length;
           }
           if (isVertical && e._style.width === undefined) {
-            e._state.metrics.width += length;
+            e._state.clientWidth += length;
           }
         }
         main = 0;
@@ -311,7 +318,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Keep track of the longest child in the flex container for the purpose of wrapping.
       longestChildSize = Math.max(
         longestChildSize,
-        isHorizontal ? c._state.metrics.height : c._state.metrics.width
+        isHorizontal ? c._state.clientHeight : c._state.clientWidth
       );
 
       rows.at(-1)?.push(c);
@@ -322,25 +329,25 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     // The last row.
     if (isWrap) {
       if (isHorizontal && e._style.height === undefined) {
-        e._state.metrics.height += longestChildSize;
+        e._state.clientHeight += longestChildSize;
       }
       if (isVertical && e._style.width === undefined) {
-        e._state.metrics.width += longestChildSize;
+        e._state.clientWidth += longestChildSize;
       }
     }
 
-    if (e._style.overflow === Overflow.Scroll) {
+    if (e._style.overflowX === Overflow.Scroll || e._style.overflowY === Overflow.Scroll) {
       let farthestX = 0;
       let farthestY = 0;
       let c = e.firstChild;
       while (c) {
         farthestX = Math.max(
           farthestX,
-          c._state.metrics.x + c._state.metrics.width + c._style.marginRight - e._state.metrics.x
+          c._state.x + c._state.clientWidth + c._style.marginRight - e._state.x
         );
         farthestY = Math.max(
           farthestY,
-          c._state.metrics.y + c._state.metrics.height + c._style.marginBottom - e._state.metrics.y
+          c._state.y + c._state.clientHeight + c._style.marginBottom - e._state.y
         );
         c = c.next;
       }
@@ -348,12 +355,37 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       farthestX += e._style.paddingRight;
       farthestY += e._style.paddingBottom;
 
-      e._state.scrollSize = new Vec2(
-        Math.max(farthestX, e._state.metrics.width),
-        Math.max(farthestY, e._state.metrics.height)
-      );
+      // TODO @tchayen: take flexBasis into account too.
+      // Scrollbar can expand scroll size if that size is not strictly defined.
+      if (
+        e._style.overflowX === Overflow.Scroll &&
+        farthestX > e._state.clientWidth &&
+        e._style.width === undefined
+      ) {
+        farthestX += CROSS_AXIS_SIZE;
+      }
+      if (
+        e._style.overflowY === Overflow.Scroll &&
+        farthestY > e._state.clientHeight &&
+        e._style.height === undefined
+      ) {
+        farthestY += CROSS_AXIS_SIZE;
+      }
+
+      e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
+      e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
+
+      const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
+      const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
+      if (hasHorizontalScroll) {
+        e._state.clientWidth -= CROSS_AXIS_SIZE;
+      }
+      if (hasVerticalScroll) {
+        e._state.clientHeight -= CROSS_AXIS_SIZE;
+      }
     } else {
-      e._state.scrollSize = new Vec2(e._state.metrics.width, e._state.metrics.height);
+      e._state.scrollWidth = e._state.clientWidth;
+      e._state.scrollHeight = e._state.clientHeight;
     }
   }
 
@@ -371,8 +403,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._style.flex = 0;
     }
 
-    const parentWidth = p?._state.metrics.width ?? 0;
-    const parentHeight = p?._state.metrics.height ?? 0;
+    const parentWidth = p?._state.clientWidth ?? 0;
+    const parentHeight = p?._state.clientHeight ?? 0;
 
     const direction = e._style.flexDirection;
     const isHorizontal = direction === FlexDirection.Row || direction === FlexDirection.RowReverse;
@@ -392,10 +424,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     // TODO @tchayen: it probably shouldn't really be here? There's calculation  in the first pass.
     // Figure out why this seems to be needed.
     if (typeof e._style.width === "string") {
-      e._state.metrics.width = toPercentage(e._style.width) * parentWidth;
+      e._state.clientWidth = toPercentage(e._style.width) * parentWidth;
     }
     if (typeof e._style.height === "string") {
-      e._state.metrics.height = toPercentage(e._style.height) * parentHeight;
+      e._state.clientHeight = toPercentage(e._style.height) * parentHeight;
     }
 
     // If element has both left, right offsets and no width, calculate width (analogues for height).
@@ -404,39 +436,36 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._style.bottom !== undefined &&
       e._style.height === undefined
     ) {
-      e._state.metrics.y = (p?._state.metrics.y ?? 0) + e._style.top;
-      e._state.metrics.height = parentHeight - e._style.top - e._style.bottom;
+      e._state.y = (p?._state.y ?? 0) + e._style.top;
+      e._state.clientHeight = parentHeight - e._style.top - e._style.bottom;
     }
     if (
       e._style.left !== undefined &&
       e._style.right !== undefined &&
       e._style.width === undefined
     ) {
-      e._state.metrics.x = (p?._state.metrics.x ?? 0) + e._style.left;
-      e._state.metrics.width = parentWidth - e._style.left - e._style.right;
+      e._state.x = (p?._state.x ?? 0) + e._style.left;
+      e._state.clientWidth = parentWidth - e._style.left - e._style.right;
     }
 
     // Handle absolute positioning.
     if (e._style.position === Position.Absolute) {
-      e._state.metrics.x = p?._state.metrics.x ?? 0;
-      e._state.metrics.y = p?._state.metrics.y ?? 0;
+      e._state.x = p?._state.x ?? 0;
+      e._state.y = p?._state.y ?? 0;
 
       if (e._style.left !== undefined) {
-        e._state.metrics.x = e._state.metrics.x + e._style.left;
+        e._state.x = e._state.x + e._style.left;
       } else if (e._style.right !== undefined) {
-        e._state.metrics.x =
-          (p?._state.metrics.x ?? 0) +
-          (p?._state.metrics.width ?? 0) -
-          e._state.metrics.width -
-          e._style.right;
+        e._state.x =
+          (p?._state.x ?? 0) + (p?._state.clientWidth ?? 0) - e._state.clientWidth - e._style.right;
       }
       if (e._style.top !== undefined) {
-        e._state.metrics.y = e._state.metrics.y + e._style.top;
+        e._state.y = e._state.y + e._style.top;
       } else if (e._style.bottom !== undefined) {
-        e._state.metrics.y =
-          (p?._state.metrics.y ?? 0) +
-          (p?._state.metrics.height ?? 0) -
-          e._state.metrics.height -
+        e._state.y =
+          (p?._state.y ?? 0) +
+          (p?._state.clientHeight ?? 0) -
+          e._state.clientHeight -
           e._style.bottom;
       }
     }
@@ -450,11 +479,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     const resetMain = isHorizontal
-      ? e._state.metrics.x + e._style.paddingLeft
-      : e._state.metrics.y + e._style.paddingTop;
+      ? e._state.x + e._style.paddingLeft
+      : e._state.y + e._style.paddingTop;
     const resetCross = isHorizontal
-      ? e._state.metrics.y + e._style.paddingTop
-      : e._state.metrics.x + e._style.paddingLeft;
+      ? e._state.y + e._style.paddingTop
+      : e._state.x + e._style.paddingLeft;
     let main = resetMain;
     let cross = resetCross;
     const mainGap = (isHorizontal ? e._style.rowGap : e._style.columnGap) ?? 0;
@@ -474,7 +503,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         childrenCount += 1;
         maxCrossChild = Math.max(
           maxCrossChild,
-          isHorizontal ? c._state.metrics.height : c._state.metrics.width
+          isHorizontal ? c._state.clientHeight : c._state.clientWidth
         );
       }
       maxCrossChildren.push(maxCrossChild);
@@ -491,26 +520,20 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Calculate available space for justify content along the main axis.
       let availableMain = isHorizontal
-        ? e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight
-        : e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom;
+        ? e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight
+        : e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom;
       if (!isJustifySpace) {
         availableMain -= mainGap * (line.length - 1);
       }
-      if (
-        e._style.overflowX === Overflow.Scroll &&
-        e._state.scrollSize.x > e._state.metrics.width
-      ) {
+      if (e._style.overflowX === Overflow.Scroll && e._state.scrollWidth > e._state.clientWidth) {
         availableMain -= CROSS_AXIS_SIZE;
       }
-      if (
-        e._style.overflowY === Overflow.Scroll &&
-        e._state.scrollSize.y > e._state.metrics.height
-      ) {
+      if (e._style.overflowY === Overflow.Scroll && e._state.scrollHeight > e._state.clientHeight) {
         availableMain -= CROSS_AXIS_SIZE;
       }
       let availableCross = isHorizontal
-        ? e._state.metrics.height - e._style.paddingTop - e._style.paddingBottom
-        : e._state.metrics.width - e._style.paddingLeft - e._style.paddingRight;
+        ? e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom
+        : e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight;
       for (let i = 0; i < maxCrossChildren.length; i++) {
         availableCross -= maxCrossChildren[i]!;
         if (i !== maxCrossChildren.length - 1 && !isContentSpace) {
@@ -524,9 +547,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         }
 
         availableMain -= isHorizontal
-          ? c._state.metrics.width +
+          ? c._state.clientWidth +
             (!isJustifySpace ? c._style.marginLeft + c._style.marginRight : 0)
-          : c._state.metrics.height +
+          : c._state.clientHeight +
             (!isJustifySpace ? c._style.marginTop + c._style.marginBottom : 0);
 
         if (c._style.flex > 0 || c._style.flexGrow > 0) {
@@ -598,16 +621,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (availableMain > 0 && (c._style.flex > 0 || c._style.flexGrow > 0)) {
             const flexValue = c._style.flex || c._style.flexGrow;
             if (isHorizontal) {
-              c._state.metrics.width += (flexValue / totalFlexGrow) * availableMain;
+              c._state.clientWidth += (flexValue / totalFlexGrow) * availableMain;
             } else {
-              c._state.metrics.height += (flexValue / totalFlexGrow) * availableMain;
+              c._state.clientHeight += (flexValue / totalFlexGrow) * availableMain;
             }
           }
           if (availableMain < 0 && c._style.flexShrink > 0) {
             if (isHorizontal) {
-              c._state.metrics.width += (c._style.flexShrink / totalFlexShrink) * availableMain;
+              c._state.clientWidth += (c._style.flexShrink / totalFlexShrink) * availableMain;
             } else {
-              c._state.metrics.height += (c._style.flexShrink / totalFlexShrink) * availableMain;
+              c._state.clientHeight += (c._style.flexShrink / totalFlexShrink) * availableMain;
             }
           }
         }
@@ -615,9 +638,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         applyMinMaxAndAspectRatio(c);
 
         if (isJustifySpace) {
-          c._state.metrics.x += isHorizontal ? main : cross;
-          c._state.metrics.y += isHorizontal ? cross : main;
-          main += isHorizontal ? c._state.metrics.width : c._state.metrics.height;
+          c._state.x += isHorizontal ? main : cross;
+          c._state.y += isHorizontal ? cross : main;
+          main += isHorizontal ? c._state.clientWidth : c._state.clientHeight;
 
           if (e._style.justifyContent === JustifyContent.SpaceBetween) {
             main += availableMain / (childrenCount - 1);
@@ -629,16 +652,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             main += availableMain / (childrenCount + 1);
           }
         } else {
-          c._state.metrics.x += isHorizontal
-            ? main + c._style.marginLeft
-            : cross + c._style.marginLeft;
-          c._state.metrics.y += isHorizontal
-            ? cross + c._style.marginTop
-            : main + c._style.marginTop;
+          c._state.x += isHorizontal ? main + c._style.marginLeft : cross + c._style.marginLeft;
+          c._state.y += isHorizontal ? cross + c._style.marginTop : main + c._style.marginTop;
 
           main += isHorizontal
-            ? c._state.metrics.width + c._style.marginLeft + c._style.marginRight
-            : c._state.metrics.height + c._style.marginTop + c._style.marginBottom;
+            ? c._state.clientWidth + c._style.marginLeft + c._style.marginRight
+            : c._state.clientHeight + c._style.marginTop + c._style.marginBottom;
           main += mainGap;
 
           let lineCrossSize = maxCrossChild;
@@ -647,7 +666,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (e._state.children.length === 1) {
             lineCrossSize = Math.max(
               lineCrossSize,
-              isHorizontal ? e._state.metrics.height : e._state.metrics.width
+              isHorizontal ? e._state.clientHeight : e._state.clientWidth
             );
           }
 
@@ -655,16 +674,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (c._style.alignSelf === AlignSelf.Auto) {
             if (e._style.alignItems === AlignItems.Center) {
               if (isHorizontal) {
-                c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
+                c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
               } else {
-                c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
+                c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
               }
             }
             if (e._style.alignItems === AlignItems.End) {
               if (isHorizontal) {
-                c._state.metrics.y += lineCrossSize - c._state.metrics.height;
+                c._state.y += lineCrossSize - c._state.clientHeight;
               } else {
-                c._state.metrics.x += lineCrossSize - c._state.metrics.width;
+                c._state.x += lineCrossSize - c._state.clientWidth;
               }
             }
             if (
@@ -673,9 +692,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
                 (isVertical && c._style.width === undefined))
             ) {
               if (isHorizontal) {
-                c._state.metrics.height = lineCrossSize;
+                c._state.clientHeight = lineCrossSize;
               } else {
-                c._state.metrics.width = lineCrossSize;
+                c._state.clientWidth = lineCrossSize;
               }
             }
           }
@@ -683,23 +702,23 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           // Apply align self.
           if (c._style.alignSelf === AlignSelf.Start) {
             if (isHorizontal) {
-              c._state.metrics.y = resetCross;
+              c._state.y = resetCross;
             } else {
-              c._state.metrics.x = resetCross;
+              c._state.x = resetCross;
             }
           }
           if (c._style.alignSelf === AlignSelf.Center) {
             if (isHorizontal) {
-              c._state.metrics.y += (lineCrossSize - c._state.metrics.height) / 2;
+              c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
             } else {
-              c._state.metrics.x += (lineCrossSize - c._state.metrics.width) / 2;
+              c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
             }
           }
           if (c._style.alignSelf === AlignSelf.End) {
             if (isHorizontal) {
-              c._state.metrics.y += lineCrossSize - c._state.metrics.height;
+              c._state.y += lineCrossSize - c._state.clientHeight;
             } else {
-              c._state.metrics.x += lineCrossSize - c._state.metrics.width;
+              c._state.x += lineCrossSize - c._state.clientWidth;
             }
           }
           if (
@@ -708,25 +727,25 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
               (isVertical && c._style.width === undefined))
           ) {
             if (isHorizontal) {
-              c._state.metrics.y = resetCross;
-              c._state.metrics.height = lineCrossSize;
+              c._state.y = resetCross;
+              c._state.clientHeight = lineCrossSize;
             } else {
-              c._state.metrics.x = resetCross;
-              c._state.metrics.width = lineCrossSize;
+              c._state.x = resetCross;
+              c._state.clientWidth = lineCrossSize;
             }
           }
         }
 
         // Add left, top, right, bottom offsets.
         if (c._style.left) {
-          c._state.metrics.x += c._style.left;
+          c._state.x += c._style.left;
         } else if (c._style.right) {
-          c._state.metrics.x -= c._style.right;
+          c._state.x -= c._style.right;
         }
         if (c._style.top) {
-          c._state.metrics.y += c._style.top;
+          c._state.y += c._style.top;
         } else if (c._style.bottom) {
-          c._state.metrics.y -= c._style.bottom;
+          c._state.y -= c._style.bottom;
         }
       }
 
@@ -735,20 +754,20 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     // // Trim widths and heights to the root size (including position).
-    // if (e._state.metrics.x + e._state.metrics.width > rootSize.x) {
-    //   e._state.metrics.width = Math.max(0, rootSize.x - e._state.metrics.x);
+    // if (e._state.x + e._state.clientWidth > rootSize.x) {
+    //   e._state.clientWidth = Math.max(0, rootSize.x - e._state.x);
     // }
-    // if (e._state.metrics.y + e._state.metrics.height > rootSize.y) {
-    //   e._state.metrics.height = Math.max(0, rootSize.y - e._state.metrics.y);
+    // if (e._state.y + e._state.clientHeight > rootSize.y) {
+    //   e._state.clientHeight = Math.max(0, rootSize.y - e._state.y);
     // }
 
     e._state.children = [];
-    e._state.metrics.x = Math.round(e._state.metrics.x);
-    e._state.metrics.y = Math.round(e._state.metrics.y);
-    e._state.metrics.width = Math.round(e._state.metrics.width);
-    e._state.metrics.height = Math.round(e._state.metrics.height);
+    e._state.x = Math.round(e._state.x);
+    e._state.y = Math.round(e._state.y);
+    e._state.clientWidth = Math.round(e._state.clientWidth);
+    e._state.clientHeight = Math.round(e._state.clientHeight);
 
-    console.log(e.props.testID, e._state.scrollSize, e);
+    console.log(e.props.testID, e._state.scrollWidth, e._state.scrollHeight, e);
   }
 }
 
@@ -768,34 +787,34 @@ function applyMinMaxAndAspectRatio(e: View | Text): void {
   if (e._style.minHeight !== undefined) {
     const value =
       typeof e._style.minHeight === "string"
-        ? toPercentage(e._style.minHeight) * (e.parent?._state.metrics.height ?? 0)
+        ? toPercentage(e._style.minHeight) * (e.parent?._state.clientHeight ?? 0)
         : e._style.minHeight;
     minHeight = value;
   }
   if (e._style.minWidth !== undefined) {
     const value =
       typeof e._style.minWidth === "string"
-        ? toPercentage(e._style.minWidth) * (e.parent?._state.metrics.width ?? 0)
+        ? toPercentage(e._style.minWidth) * (e.parent?._state.clientWidth ?? 0)
         : e._style.minWidth;
     minWidth = value;
   }
   if (e._style.maxHeight !== undefined) {
     const value =
       typeof e._style.maxHeight === "string"
-        ? toPercentage(e._style.maxHeight) * (e.parent?._state.metrics.height ?? 0)
+        ? toPercentage(e._style.maxHeight) * (e.parent?._state.clientHeight ?? 0)
         : e._style.maxHeight;
     maxHeight = value;
   }
   if (e._style.maxWidth !== undefined) {
     const value =
       typeof e._style.maxWidth === "string"
-        ? toPercentage(e._style.maxWidth) * (e.parent?._state.metrics.width ?? 0)
+        ? toPercentage(e._style.maxWidth) * (e.parent?._state.clientWidth ?? 0)
         : e._style.maxWidth;
     maxWidth = value;
   }
 
-  let effectiveWidth = Math.min(Math.max(e._state.metrics.width, minWidth), maxWidth);
-  let effectiveHeight = Math.min(Math.max(e._state.metrics.height, minHeight), maxHeight);
+  let effectiveWidth = Math.min(Math.max(e._state.clientWidth, minWidth), maxWidth);
+  let effectiveHeight = Math.min(Math.max(e._state.clientHeight, minHeight), maxHeight);
 
   const isHorizontal =
     e.parent?._style.flexDirection === FlexDirection.Row ||
@@ -828,6 +847,6 @@ function applyMinMaxAndAspectRatio(e: View | Text): void {
     }
   }
 
-  e._state.metrics.width = effectiveWidth;
-  e._state.metrics.height = effectiveHeight;
+  e._state.clientWidth = effectiveWidth;
+  e._state.clientHeight = effectiveHeight;
 }

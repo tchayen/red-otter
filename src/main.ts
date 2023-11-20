@@ -1,6 +1,5 @@
 import { EventManager } from "./EventManager";
 import { ScrollableRenderer } from "./ScrollableRenderer";
-import { applyZIndex } from "./applyZIndex";
 import { isWindowDefined, settings } from "./consts";
 import { paint } from "./ui/paint";
 import { parseTTF } from "./font/parseTTF";
@@ -78,14 +77,13 @@ async function initialize() {
   );
 
   const root = ui(renderer);
-  const node = applyZIndex(root);
 
   function render(): void {
     invariant(context, "WebGPU is not supported in this browser.");
 
     const commandEncoder = device.createCommandEncoder();
 
-    events.deliverEvents();
+    events.deliverEvents(root);
 
     paint(renderer, root);
     renderer.render(commandEncoder);

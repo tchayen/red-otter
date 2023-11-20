@@ -15,6 +15,12 @@ It's bold of you to assume I'd make something useful.
 
 If you are writing a JS/TS application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular so WebGPU renderer for instance can be replaced with WebGL, canvas or Skia based one if needed.
 
+#### Why retained mode?
+
+- Immediate mode often involves heavily caching which effectively becomes retained mode under the hood.
+- Declarative expressiveness and ease of use of IMGUI can be for the most part achieved using a declarative API like React (and is some way it boils down to the same thing, oversimplifying it… greatly).
+- Screen readers and other assistive technologies are easier to support with persistent UI trees.
+
 > [!IMPORTANT]
 > This is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automa-translations, high-contrast mode etc. Use this only for applications where this is implied that those capabilities are not needed or otherwise would not be available.
 

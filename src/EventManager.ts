@@ -1,17 +1,12 @@
 import { View } from "./View";
 import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
-import type { ClickEvent, MoveEvent, ScrollEvent, UserEvent } from "./types";
-import { UserEventType } from "./types";
-
-type UserEventTuple =
-  | [UserEventType.MouseClick, View, (event: ClickEvent) => void]
-  | [UserEventType.MouseMove, View, (event: MoveEvent) => void]
-  | [UserEventType.MouseScroll, View, (event: ScrollEvent) => void];
+import type { UserEvent } from "./types";
+import { Display, UserEventType } from "./types";
+import { invariant } from "./utils/invariant";
 
 export class EventManager {
   private readonly events: UserEvent[] = [];
-  private readonly listeningViews: Array<UserEventTuple> = [];
 
   constructor() {
     if (!isWindowDefined) {
@@ -53,40 +48,57 @@ export class EventManager {
     return this.events.shift();
   }
 
-  public addEventListener(
-    type: UserEventType,
-    view: View,
-    callback: (event: ClickEvent | ScrollEvent | MoveEvent) => void
-  ): void {
-    this.listeningViews.push([type, view, callback]);
-  }
+  public deliverEvents(root: View): void {
+    const stack: Array<View> = [root];
+    const reverse = [];
 
-  public removeEventListener(callback: () => void): void {
-    const index = this.listeningViews.findIndex(([, , c]) => c === callback);
-    if (index !== -1) {
-      this.listeningViews.splice(index, 1);
+    while (stack.length > 0) {
+      const node = stack.pop();
+      invariant(node, "Node should be defined.");
+
+      if (node._style.display === Display.None) {
+        continue;
+      }
+
+      // TODO: maybe also build-up scroll offset and store it in the array so the node 'knows'
+      // where it is on the screen?
+      reverse.push(node);
+
+      let c = node.firstChild;
+      while (c) {
+        if (c instanceof View) {
+          stack.push(c);
+        }
+        c = c.firstChild;
+      }
     }
-  }
 
-  public deliverEvents(): void {
-    let event = this.pop();
-    while (event) {
-      for (const [type, view, callback] of this.listeningViews) {
-        if (type === event.type && hitTest(view, event)) {
-          callback(event);
+    for (let i = reverse.length - 1; i >= 0; i--) {
+      const node = reverse[i];
+      invariant(node, "Node should be defined.");
+      for (const [type, listener] of node._eventListeners) {
+        for (let j = 0; j < this.events.length; j++) {
+          const event = this.events[j];
+          invariant(event, "Event should be defined.");
+          if (event.type === type && hitTest(node, event)) {
+            listener(event);
+            // remove event from queue
+            this.events.splice(j, 1);
+            j--;
+          }
         }
       }
-      event = this.pop();
     }
   }
 }
 
-// TODO @tchayen: this does not take scroll position into account.
+// TODO @tchayen: this does not take into account: scroll position, parent clipping, scrollbar
+// (it's outside of the metrics size now).
 function hitTest(view: View, event: UserEvent): boolean {
   return (
-    event.position.x >= view._state.metrics.x &&
-    event.position.x <= view._state.metrics.x + view._state.metrics.width &&
-    event.position.y >= view._state.metrics.y &&
-    event.position.y <= view._state.metrics.y + view._state.metrics.height
+    event.position.x >= view._state.x &&
+    event.position.x <= view._state.x + view._state.clientWidth &&
+    event.position.y >= view._state.y &&
+    event.position.y <= view._state.y + view._state.clientHeight
   );
 }

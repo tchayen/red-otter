@@ -8,10 +8,15 @@ import {
   LayoutNodeState,
   ScrollEvent,
   Overflow,
+  ClickEvent,
+  MoveEvent,
 } from "./types";
 import { Text } from "./Text";
-import { Vec2 } from "./math/Vec2";
-import { events } from "./main";
+
+type UserEventTuple =
+  | [UserEventType.MouseClick, (event: ClickEvent) => void]
+  | [UserEventType.MouseMove, (event: MoveEvent) => void]
+  | [UserEventType.MouseScroll, (event: ScrollEvent) => void];
 
 export class View {
   next: View | Text | null = null;
@@ -21,14 +26,20 @@ export class View {
   parent: View | null = null;
   _state: LayoutNodeState = {
     children: [],
-    metrics: { height: 0, width: 0, x: 0, y: 0 },
-    scrollOffset: new Vec2(0, 0),
-    scrollSize: new Vec2(0, 0),
+    clientHeight: 0,
+    clientWidth: 0,
+    scrollHeight: 0,
+    scrollWidth: 0,
+    scrollX: 0,
+    scrollY: 0,
+    x: 0,
+    y: 0,
   };
   /**
    * Should always be normalized.
    */
   _style: ExactDecorativeProps & ExactLayoutProps;
+  _eventListeners: Array<UserEventTuple> = [];
 
   constructor(
     public props: {
@@ -39,21 +50,30 @@ export class View {
   ) {
     this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
     if (props.onClick) {
-      events.addEventListener(UserEventType.MouseClick, this, props.onClick);
+      this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
     if (this._style.overflow === Overflow.Scroll) {
-      events.addEventListener(UserEventType.MouseScroll, this, (event: ScrollEvent) => {
-        this._state.scrollOffset = new Vec2(
-          Math.min(
-            Math.max(this._state.scrollOffset.x + event.delta.x, 0),
-            this._state.scrollSize.x - this._state.metrics.width
-          ),
-          Math.min(
-            Math.max(this._state.scrollOffset.y + event.delta.y, 0),
-            this._state.scrollSize.y - this._state.metrics.height
-          )
-        );
-      });
+      this._eventListeners.push([
+        UserEventType.MouseScroll,
+        (event: ScrollEvent) => {
+          // BRAINSTORM: so technically here the this._state.metrics.height (or width) should be
+          // lowered by the presence of parent scrollbars
+          // But if implemented as described then also the outer root is being moved inside the page
+          // which is not what should happen.
+          const hasParentHorizontalScroll = this.parent?._style.overflowX === Overflow.Scroll;
+          const hasParentVerticalScroll = this.parent?._style.overflowY === Overflow.Scroll;
+          this._state.scrollX = Math.min(
+            Math.max(this._state.scrollX + event.delta.x, 0),
+            this._state.scrollWidth - this._state.clientWidth
+            // + (hasParentVerticalScroll ? CROSS_AXIS_SIZE : 0)
+          );
+          this._state.scrollY = Math.min(
+            Math.max(this._state.scrollY + event.delta.y, 0),
+            this._state.scrollHeight - this._state.clientHeight
+            //  + (hasParentHorizontalScroll ? CROSS_AXIS_SIZE : 0)
+          );
+        },
+      ]);
     }
   }
 

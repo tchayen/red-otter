@@ -8,7 +8,6 @@ import {
   UserEvent,
   normalizeLayoutProps,
 } from "./types";
-import { Vec2 } from "./math/Vec2";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
 
 export class Text {
@@ -23,9 +22,14 @@ export class Text {
   _style: TextStyleProps & ExactLayoutProps;
   _state: LayoutNodeState = {
     children: [],
-    metrics: { height: 0, width: 0, x: 0, y: 0 },
-    scrollOffset: new Vec2(0, 0),
-    scrollSize: new Vec2(0, 0),
+    clientHeight: 0,
+    clientWidth: 0,
+    scrollHeight: 0,
+    scrollWidth: 0,
+    scrollX: 0,
+    scrollY: 0,
+    x: 0,
+    y: 0,
   };
 
   constructor(

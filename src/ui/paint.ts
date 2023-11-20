@@ -20,7 +20,9 @@ export function paint(ui: Renderer, root: View): void {
     root,
     new Vec2(0, 0),
     new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
-    new Vec2(0, 0)
+    new Vec2(0, 0),
+    false,
+    false
   );
 }
 
@@ -29,43 +31,58 @@ export function _paint(
   node: View | Text,
   clipStart: Vec2,
   clipSize: Vec2,
-  scrollOffset: Vec2
+  scrollOffset: Vec2,
+  hasParentHorizontalScroll: boolean,
+  hasParentVerticalScroll: boolean
 ): void {
   if (node._style.display === Display.None) {
     return;
   }
 
-  paintNode(ui, node, clipStart, clipSize, scrollOffset);
+  paintNode(
+    ui,
+    node,
+    clipStart,
+    clipSize,
+    scrollOffset,
+    hasParentHorizontalScroll,
+    hasParentVerticalScroll
+  );
 
   const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;
   const hasVerticalScroll = node._style.overflowY === Overflow.Scroll;
 
-  const nextScrollOffset = scrollOffset.add(node._state.scrollOffset);
+  const nextScrollOffset = scrollOffset.add(new Vec2(node._state.scrollX, node._state.scrollY));
 
   const shouldClip =
     hasHorizontalScroll || hasVerticalScroll || node._style.overflow === Overflow.Hidden;
 
   const childClipStart = shouldClip
-    ? new Vec2(
-        Math.max(node._state.metrics.x, clipStart.x),
-        Math.max(node._state.metrics.y, clipStart.y)
-      )
+    ? new Vec2(Math.max(node._state.x, clipStart.x), Math.max(node._state.y, clipStart.y))
     : clipStart.subtract(scrollOffset);
-  let childClipSize = shouldClip
+  // const scrollBarDifference = new Vec2(
+  //   hasHorizontalScroll ? CROSS_AXIS_SIZE : 0,
+  //   hasVerticalScroll ? CROSS_AXIS_SIZE : 0
+  // );
+  const scrollBarDifference = new Vec2(0, 0);
+  const childClipSize = shouldClip
     ? new Vec2(
-        Math.min(node._state.metrics.width, clipSize.x),
-        Math.min(node._state.metrics.height, clipSize.y)
+        Math.min(node._state.clientWidth - scrollBarDifference.x, clipSize.x),
+        Math.min(node._state.clientHeight - scrollBarDifference.y, clipSize.y)
       )
     : clipSize;
-  const scrollBarDifference = new Vec2(
-    hasHorizontalScroll ? CROSS_AXIS_SIZE : 0,
-    hasVerticalScroll ? CROSS_AXIS_SIZE : 0
-  );
-  childClipSize = childClipSize.subtract(scrollBarDifference);
 
   let c = node.firstChild;
   while (c) {
-    _paint(ui, c, childClipStart, childClipSize, nextScrollOffset);
+    _paint(
+      ui,
+      c,
+      childClipStart,
+      childClipSize,
+      nextScrollOffset,
+      hasHorizontalScroll,
+      hasVerticalScroll
+    );
     c = c.next;
   }
 }
@@ -80,11 +97,11 @@ function paintNode(
   node: View | Text,
   clipStart: Vec2,
   clipSize: Vec2,
-  cumulativeScroll: Vec2
+  cumulativeScroll: Vec2,
+  hasParentHorizontalScroll: boolean,
+  hasParentVerticalScroll: boolean
 ): void {
-  const position = new Vec2(node._state.metrics.x, node._state.metrics.y).subtract(
-    cumulativeScroll
-  );
+  const position = new Vec2(node._state.x, node._state.y).subtract(cumulativeScroll);
   if (node instanceof Text) {
     ui.text(
       node.text,
@@ -101,7 +118,10 @@ function paintNode(
       }
     );
   } else {
-    const size = new Vec2(node._state.metrics.width, node._state.metrics.height);
+    const size = new Vec2(node._state.clientWidth, node._state.clientHeight);
+
+    const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;
+    const hasVerticalScroll = node._style.overflowY === Overflow.Scroll;
 
     // Actual rendering.
     ui.rectangle(
@@ -118,7 +138,7 @@ function paintNode(
     if (node._style.overflow === Overflow.Scroll) {
       ui.rectangle(
         parseColor(SCROLLBAR_CORNER_COLOR),
-        position.add(new Vec2(size.x - CROSS_AXIS_SIZE, size.y - CROSS_AXIS_SIZE)),
+        position.add(new Vec2(size.x, size.y)),
         new Vec2(CROSS_AXIS_SIZE, CROSS_AXIS_SIZE),
         new Vec4(0, 0, 0, 0),
         clipStart,
@@ -126,13 +146,12 @@ function paintNode(
         new Vec4(0, 0, 0, 0)
       );
     }
-    if (node._style.overflowX === Overflow.Scroll) {
-      const scrollbarSize =
-        node._style.overflowY === Overflow.Scroll ? size.y - CROSS_AXIS_SIZE : size.y;
+    if (hasHorizontalScroll) {
+      const scrollbarSize = hasVerticalScroll ? size.y : size.y + CROSS_AXIS_SIZE;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),
-        position.add(new Vec2(size.x - CROSS_AXIS_SIZE, 0)),
+        position.add(new Vec2(size.x, 0)),
         new Vec2(CROSS_AXIS_SIZE, scrollbarSize),
         new Vec4(0, 0, 0, 0),
         clipStart,
@@ -140,14 +159,12 @@ function paintNode(
         new Vec4(0, 0, 0, 0)
       );
 
-      const scrollTrackSize =
-        (node._state.metrics.height / node._state.scrollSize.y) * scrollbarSize;
-      const scrollTrackPosition =
-        (node._state.scrollOffset.y / node._state.scrollSize.y) * scrollbarSize;
+      const scrollTrackSize = (node._state.clientHeight / node._state.scrollHeight) * scrollbarSize;
+      const scrollTrackPosition = (node._state.scrollY / node._state.scrollHeight) * scrollbarSize;
 
       ui.rectangle(
         parseColor(SCROLLBAR_TRACK_COLOR),
-        position.add(new Vec2(size.x - CROSS_AXIS_SIZE, scrollTrackPosition)),
+        position.add(new Vec2(size.x, scrollTrackPosition)),
         new Vec2(CROSS_AXIS_SIZE, scrollTrackSize),
         new Vec4(0, 0, 0, 0),
         clipStart,
@@ -155,13 +172,12 @@ function paintNode(
         new Vec4(0, 0, 0, 0)
       );
     }
-    if (node._style.overflowY === Overflow.Scroll) {
-      const scrollbarSize =
-        node._style.overflowX === Overflow.Scroll ? size.x - CROSS_AXIS_SIZE : size.x;
+    if (hasVerticalScroll) {
+      const scrollbarSize = hasHorizontalScroll ? size.x : size.x + CROSS_AXIS_SIZE;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),
-        position.add(new Vec2(0, size.y - CROSS_AXIS_SIZE)),
+        position.add(new Vec2(0, size.y)),
         new Vec2(scrollbarSize, CROSS_AXIS_SIZE),
         new Vec4(0, 0, 0, 0),
         clipStart,
@@ -169,14 +185,12 @@ function paintNode(
         new Vec4(0, 0, 0, 0)
       );
 
-      const scrollTrackSize =
-        (node._state.metrics.width / node._state.scrollSize.x) * scrollbarSize;
-      const scrollTrackPosition =
-        (node._state.scrollOffset.x / node._state.scrollSize.x) * scrollbarSize;
+      const scrollTrackSize = (node._state.clientWidth / node._state.scrollWidth) * scrollbarSize;
+      const scrollTrackPosition = (node._state.scrollX / node._state.scrollWidth) * scrollbarSize;
 
       ui.rectangle(
         parseColor(SCROLLBAR_TRACK_COLOR),
-        position.add(new Vec2(scrollTrackPosition, size.y - CROSS_AXIS_SIZE)),
+        position.add(new Vec2(scrollTrackPosition, size.y)),
         new Vec2(scrollTrackSize, CROSS_AXIS_SIZE),
         new Vec4(0, 0, 0, 0),
         clipStart,

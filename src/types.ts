@@ -28,10 +28,15 @@ export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
 
 export type LayoutNodeState = {
   children: Array<Array<View | Text>>;
-  metrics: { height: number; width: number; x: number; y: number };
-  scrollOffset: Vec2;
-  scrollSize: Vec2;
+  clientHeight: number;
+  clientWidth: number;
+  scrollHeight: number;
+  scrollWidth: number;
+  scrollX: number;
+  scrollY: number;
   textWidthLimit?: number;
+  x: number;
+  y: number;
 };
 
 export enum AlignItems {
