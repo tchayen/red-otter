@@ -1,8 +1,11 @@
 import { View } from "./View";
 import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
+import { Vec4 } from "./math/Vec4";
+import { intersection as getIntersection, isInside } from "./math/utils";
 import type { UserEvent } from "./types";
-import { Display, UserEventType } from "./types";
+import { Display, Overflow, UserEventType } from "./types";
+import { CROSS_AXIS_SIZE } from "./ui/consts";
 import { invariant } from "./utils/invariant";
 
 export class EventManager {
@@ -92,14 +95,22 @@ export class EventManager {
   }
 }
 
-// TODO @tchayen: should also take into account clipping so that you can't scroll the invisible
-// part.
-// TODO: @tchayen: scorllbar should be also part of the hit test.
 function hitTest(view: View, event: UserEvent): boolean {
-  return (
-    event.position.x >= view._state.x - view._state.totalScrollX &&
-    event.position.x <= view._state.x - view._state.totalScrollX + view._state.clientWidth &&
-    event.position.y >= view._state.y - view._state.totalScrollY &&
-    event.position.y <= view._state.y - view._state.totalScrollY + view._state.clientHeight
+  const { totalScrollX, totalScrollY, clipStart, clipSize, clientHeight, clientWidth } =
+    view._state;
+
+  const nodeRectangle = new Vec4(
+    view._state.x - totalScrollX,
+    view._state.y - totalScrollY,
+    clientWidth + (view._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
+    clientHeight + (view._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0)
   );
+  const boundary = new Vec4(
+    clipStart.x - totalScrollX,
+    clipStart.y - totalScrollY,
+    clipSize.x,
+    clipSize.y
+  );
+  const intersection = getIntersection(nodeRectangle, boundary);
+  return isInside(event.position, intersection);
 }

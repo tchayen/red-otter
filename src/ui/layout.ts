@@ -38,7 +38,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   const root = new View({
     style: {
       height: rootSize.y,
-      overflow: Overflow.Scroll,
       width: rootSize.x,
     },
     testID: "layout#root",

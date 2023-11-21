@@ -40,11 +40,11 @@ export type LayoutNodeState = {
    */
   clientWidth: number;
   /**
-   * WIP
+   * Screen-space position.
    */
   clipSize: Vec2;
   /**
-   * WIP
+   * Screen-space position.
    */
   clipStart: Vec2;
   /**
@@ -163,6 +163,9 @@ export type LayoutProps = {
   columnGap?: number;
   display?: Display;
   flex?: number;
+  /**
+   * In row does the same as `width` and in column does the same as `height`.
+   */
   flexBasis?: number | `${number}%`;
   flexDirection?: FlexDirection;
   flexGrow?: number;

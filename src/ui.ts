@@ -19,7 +19,7 @@ export function ui(renderer: ScrollableRenderer): View {
 
   const root = new View({
     style: {
-      height: "100%",
+      height: 2000,
       overflow: Overflow.Scroll,
       width: "100%",
     },
