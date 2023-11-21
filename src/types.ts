@@ -56,11 +56,11 @@ export type LayoutNodeState = {
    */
   scrollWidth: number;
   /**
-   * Current scroll position.
+   * Current scroll position relative to parent.
    */
   scrollX: number;
   /**
-   * Current scroll position.
+   * Current scroll position relative to parent.
    */
   scrollY: number;
   /**
@@ -68,11 +68,11 @@ export type LayoutNodeState = {
    */
   textWidthLimit?: number;
   /**
-   * WIP
+   * Sum of all scroll positions inside the parent chain.
    */
   totalScrollX: number;
   /**
-   * WIP
+   * Sum of all scroll positions inside the parent chain.
    */
   totalScrollY: number;
   /**

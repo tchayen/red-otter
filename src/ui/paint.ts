@@ -14,27 +14,7 @@ import {
 } from "./consts";
 
 // TODO: probably construct an array and sort by z-index.
-export function paint(ui: Renderer, root: View): void {
-  _paint(
-    ui,
-    root,
-    new Vec2(0, 0),
-    new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
-    new Vec2(0, 0),
-    false,
-    false
-  );
-}
-
-export function _paint(
-  ui: Renderer,
-  node: View | Text,
-  clipStart: Vec2,
-  clipSize: Vec2,
-  scrollOffset: Vec2,
-  hasParentHorizontalScroll: boolean,
-  hasParentVerticalScroll: boolean
-): void {
+export function paint(ui: Renderer, node: View | Text) {
   if (node._style.display === Display.None) {
     return;
   }
@@ -42,50 +22,14 @@ export function _paint(
   paintNode(
     ui,
     node,
-    clipStart,
-    clipSize,
-    scrollOffset,
-    hasParentHorizontalScroll,
-    hasParentVerticalScroll
+    node._state.clipStart,
+    node._state.clipSize,
+    new Vec2(node._state.totalScrollX, node._state.totalScrollY)
   );
-
-  // TODO: finish this, turn this into compose() and then make separate pass for painting.
-  node._state.clipStart = clipStart;
-  node._state.clipSize = clipSize;
-  node._state.totalScrollX = scrollOffset.x;
-  node._state.totalScrollY = scrollOffset.y;
-  //
-
-  const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;
-  const hasVerticalScroll = node._style.overflowY === Overflow.Scroll;
-
-  const nextScrollOffset = scrollOffset.add(new Vec2(node._state.scrollX, node._state.scrollY));
-
-  const shouldClip =
-    hasHorizontalScroll || hasVerticalScroll || node._style.overflow === Overflow.Hidden;
-
-  const childClipStart = shouldClip
-    ? new Vec2(Math.max(node._state.x, clipStart.x), Math.max(node._state.y, clipStart.y))
-    : clipStart.subtract(scrollOffset);
-  const scrollBarDifference = new Vec2(0, 0);
-  const childClipSize = shouldClip
-    ? new Vec2(
-        Math.min(node._state.clientWidth - scrollBarDifference.x, clipSize.x),
-        Math.min(node._state.clientHeight - scrollBarDifference.y, clipSize.y)
-      )
-    : clipSize;
 
   let c = node.firstChild;
   while (c) {
-    _paint(
-      ui,
-      c,
-      childClipStart,
-      childClipSize,
-      nextScrollOffset,
-      hasHorizontalScroll,
-      hasVerticalScroll
-    );
+    paint(ui, c);
     c = c.next;
   }
 }
@@ -100,9 +44,7 @@ function paintNode(
   node: View | Text,
   clipStart: Vec2,
   clipSize: Vec2,
-  cumulativeScroll: Vec2,
-  hasParentHorizontalScroll: boolean,
-  hasParentVerticalScroll: boolean
+  cumulativeScroll: Vec2
 ): void {
   const position = new Vec2(node._state.x, node._state.y).subtract(cumulativeScroll);
   if (node instanceof Text) {

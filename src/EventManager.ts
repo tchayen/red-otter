@@ -92,13 +92,14 @@ export class EventManager {
   }
 }
 
-// TODO @tchayen: this does not take into account: scroll position, parent clipping, scrollbar
-// (it's outside of the metrics size now).
+// TODO @tchayen: should also take into account clipping so that you can't scroll the invisible
+// part.
+// TODO: @tchayen: scorllbar should be also part of the hit test.
 function hitTest(view: View, event: UserEvent): boolean {
   return (
-    event.position.x >= view._state.x &&
-    event.position.x <= view._state.x + view._state.clientWidth &&
-    event.position.y >= view._state.y &&
-    event.position.y <= view._state.y + view._state.clientHeight
+    event.position.x >= view._state.x - view._state.totalScrollX &&
+    event.position.x <= view._state.x - view._state.totalScrollX + view._state.clientWidth &&
+    event.position.y >= view._state.y - view._state.totalScrollY &&
+    event.position.y <= view._state.y - view._state.totalScrollY + view._state.clientHeight
   );
 }

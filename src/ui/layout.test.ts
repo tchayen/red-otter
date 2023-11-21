@@ -9,6 +9,9 @@ import { View } from "../View";
 import { Text } from "../Text";
 import * as fixtures from "../fixtures";
 
+// Silence console.debug() output during tests.
+console.debug = () => {};
+
 const alphabet =
   "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
 const lookups = prepareLookups(

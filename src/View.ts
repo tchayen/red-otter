@@ -12,6 +12,7 @@ import {
   MoveEvent,
 } from "./types";
 import { Text } from "./Text";
+import { Vec2 } from "./math/Vec2";
 
 type UserEventTuple =
   | [UserEventType.MouseClick, (event: ClickEvent) => void]
@@ -28,10 +29,14 @@ export class View {
     children: [],
     clientHeight: 0,
     clientWidth: 0,
+    clipSize: new Vec2(0, 0),
+    clipStart: new Vec2(0, 0),
     scrollHeight: 0,
     scrollWidth: 0,
     scrollX: 0,
     scrollY: 0,
+    totalScrollX: 0,
+    totalScrollY: 0,
     x: 0,
     y: 0,
   };

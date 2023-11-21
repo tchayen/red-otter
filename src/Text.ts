@@ -9,6 +9,7 @@ import {
   normalizeLayoutProps,
 } from "./types";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
+import { Vec2 } from "./math/Vec2";
 
 export class Text {
   next: Text | null = null;
@@ -24,10 +25,14 @@ export class Text {
     children: [],
     clientHeight: 0,
     clientWidth: 0,
+    clipSize: new Vec2(0, 0),
+    clipStart: new Vec2(0, 0),
     scrollHeight: 0,
     scrollWidth: 0,
     scrollX: 0,
     scrollY: 0,
+    totalScrollX: 0,
+    totalScrollY: 0,
     x: 0,
     y: 0,
   };
