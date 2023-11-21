@@ -65,17 +65,13 @@ export class View {
           // lowered by the presence of parent scrollbars
           // But if implemented as described then also the outer root is being moved inside the page
           // which is not what should happen.
-          const hasParentHorizontalScroll = this.parent?._style.overflowX === Overflow.Scroll;
-          const hasParentVerticalScroll = this.parent?._style.overflowY === Overflow.Scroll;
           this._state.scrollX = Math.min(
             Math.max(this._state.scrollX + event.delta.x, 0),
             this._state.scrollWidth - this._state.clientWidth
-            // + (hasParentVerticalScroll ? CROSS_AXIS_SIZE : 0)
           );
           this._state.scrollY = Math.min(
             Math.max(this._state.scrollY + event.delta.y, 0),
             this._state.scrollHeight - this._state.clientHeight
-            //  + (hasParentHorizontalScroll ? CROSS_AXIS_SIZE : 0)
           );
         },
       ]);

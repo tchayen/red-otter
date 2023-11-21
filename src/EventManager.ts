@@ -75,6 +75,8 @@ export class EventManager {
         c = c.firstChild;
       }
     }
+    // TODO: does this make sense?
+    // console.log(reverse);
 
     for (let i = reverse.length - 1; i >= 0; i--) {
       const node = reverse[i];
@@ -85,7 +87,7 @@ export class EventManager {
           invariant(event, "Event should be defined.");
           if (event.type === type && hitTest(node, event)) {
             listener(event);
-            // remove event from queue
+            // Remove event from queue.
             this.events.splice(j, 1);
             j--;
           }

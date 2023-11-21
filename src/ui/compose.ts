@@ -28,7 +28,6 @@ export function compose(
     new Vec4(node._state.x, node._state.y, node._state.clientWidth, node._state.clientHeight),
     new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y)
   );
-  console.log(node.props.testID, clipped);
 
   let c = node.firstChild;
   while (c) {

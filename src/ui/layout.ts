@@ -766,7 +766,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.clientWidth = Math.round(e._state.clientWidth);
     e._state.clientHeight = Math.round(e._state.clientHeight);
 
-    console.debug(e.props.testID, e._state.scrollWidth, e._state.scrollHeight, e);
+    console.debug(e.props.testID, e._state);
   }
 }
 
