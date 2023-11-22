@@ -72,7 +72,7 @@ export class EventManager {
         if (c instanceof View) {
           stack.push(c);
         }
-        c = c.firstChild;
+        c = c.next;
       }
     }
     // TODO: does this make sense?

@@ -834,7 +834,10 @@ export function displayAndOverflow() {
   overflow.add(tooTall);
   for (let i = 0; i < 6; i++) {
     tooTall.add(
-      new View({ style: { backgroundColor: colors[i + 3], height: 60, width: 180 - i * 20 } })
+      new View({
+        style: { backgroundColor: colors[i + 3], height: 60, width: 180 - i * 20 },
+        testID: `D-${i}`,
+      })
     );
   }
 

@@ -25,7 +25,12 @@ export function compose(
   const nextScrollOffset = scrollOffset.add(new Vec2(node._state.scrollX, node._state.scrollY));
 
   const clipped = intersection(
-    new Vec4(node._state.x, node._state.y, node._state.clientWidth, node._state.clientHeight),
+    new Vec4(
+      node._state.x - scrollOffset.x,
+      node._state.y - scrollOffset.y,
+      node._state.clientWidth,
+      node._state.clientHeight
+    ),
     new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y)
   );
 
