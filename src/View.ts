@@ -73,6 +73,7 @@ export class View {
             Math.max(this._state.scrollY + event.delta.y, 0),
             this._state.scrollHeight - this._state.clientHeight
           );
+          console.log(this._state);
         },
       ]);
     }

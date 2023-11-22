@@ -76,11 +76,11 @@ export type LayoutNodeState = {
    */
   totalScrollY: number;
   /**
-   * Screen-space position of element after layout.
+   * Screen-space position of element after layout (pre-scroll).
    */
   x: number;
   /**
-   * Screen-space position of element after layout.
+   * Screen-space position of element after layout (pre-scroll).
    */
   y: number;
 };

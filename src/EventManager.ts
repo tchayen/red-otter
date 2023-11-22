@@ -63,8 +63,6 @@ export class EventManager {
         continue;
       }
 
-      // TODO: maybe also build-up scroll offset and store it in the array so the node 'knows'
-      // where it is on the screen?
       reverse.push(node);
 
       let c = node.firstChild;
@@ -75,8 +73,6 @@ export class EventManager {
         c = c.next;
       }
     }
-    // TODO: does this make sense?
-    // console.log(reverse);
 
     for (let i = reverse.length - 1; i >= 0; i--) {
       const node = reverse[i];
@@ -100,7 +96,6 @@ export class EventManager {
 function hitTest(view: View, event: UserEvent): boolean {
   const { totalScrollX, totalScrollY, clipStart, clipSize, clientHeight, clientWidth } =
     view._state;
-
   const nodeRectangle = new Vec4(
     view._state.x - totalScrollX,
     view._state.y - totalScrollY,

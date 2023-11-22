@@ -356,18 +356,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // TODO @tchayen: take flexBasis into account too.
       // Scrollbar can expand scroll size if that size is not strictly defined.
-      if (
-        e._style.overflowX === Overflow.Scroll &&
-        farthestX > e._state.clientWidth &&
-        e._style.width === undefined
-      ) {
+      if (e._style.overflowX === Overflow.Scroll && farthestX > e._state.clientWidth) {
         farthestX += CROSS_AXIS_SIZE;
       }
-      if (
-        e._style.overflowY === Overflow.Scroll &&
-        farthestY > e._state.clientHeight &&
-        e._style.height === undefined
-      ) {
+      if (e._style.overflowY === Overflow.Scroll && farthestY > e._state.clientHeight) {
         farthestY += CROSS_AXIS_SIZE;
       }
 
