@@ -219,6 +219,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         e._state.clientWidth += (childrenCount - 1) * e._style.rowGap;
       }
     }
+    if (e.props.testID === "container") {
+      console.log(e._state, e);
+    }
     // Height is at least the sum of children with defined heights.
     if (e._style.height === undefined) {
       let childrenCount = 0;
@@ -335,7 +338,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    if (e._style.overflowX === Overflow.Scroll || e._style.overflowY === Overflow.Scroll) {
+    const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
+    const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
+
+    if (hasHorizontalScroll || hasVerticalScroll) {
       let farthestX = 0;
       let farthestY = 0;
       let c = e.firstChild;
@@ -366,8 +372,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
       e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
 
-      const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
-      const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
       if (hasHorizontalScroll) {
         e._state.clientWidth -= CROSS_AXIS_SIZE;
       }
@@ -744,21 +748,13 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       cross += maxCrossChild + crossGap;
     }
 
-    // // Trim widths and heights to the root size (including position).
-    // if (e._state.x + e._state.clientWidth > rootSize.x) {
-    //   e._state.clientWidth = Math.max(0, rootSize.x - e._state.x);
-    // }
-    // if (e._state.y + e._state.clientHeight > rootSize.y) {
-    //   e._state.clientHeight = Math.max(0, rootSize.y - e._state.y);
-    // }
-
     e._state.children = [];
     e._state.x = Math.round(e._state.x);
     e._state.y = Math.round(e._state.y);
     e._state.clientWidth = Math.round(e._state.clientWidth);
     e._state.clientHeight = Math.round(e._state.clientHeight);
 
-    console.debug(e.props.testID, e._state);
+    // console.debug(e.props.testID, e);
   }
 }
 

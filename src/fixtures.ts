@@ -810,21 +810,21 @@ export function overflow() {
 }
 
 export function displayAndOverflow() {
-  const root = new View({ style: { ...rootStyle, margin: 100 }, testID: "D-root" });
+  const root = new View({ style: { ...rootStyle } });
 
   const overflow = new View({
     style: {
-      backgroundColor: colors[1],
-      height: 240,
+      backgroundColor: colors[0],
+      height: 300,
       overflow: Overflow.Scroll,
-      width: 240,
+      width: "100%",
     },
     testID: "D-overlow",
   });
 
   const tooTall = new View({
     style: {
-      backgroundColor: colors[2],
+      backgroundColor: colors[1],
       height: 360,
       overflow: Overflow.Scroll,
       width: 180,
@@ -835,7 +835,7 @@ export function displayAndOverflow() {
   for (let i = 0; i < 6; i++) {
     tooTall.add(
       new View({
-        style: { backgroundColor: colors[i + 3], height: 60, width: 180 - i * 20 },
+        style: { backgroundColor: colors[i + 2], height: 60, width: 180 - i * 20 },
         testID: `D-${i}`,
       })
     );
@@ -1103,22 +1103,6 @@ export function aspectRatio() {
     },
   });
   root.add(fifth);
-
-  return root;
-}
-
-export function scrollable() {
-  const root = new View({ style: rootStyle });
-
-  function view(backgroundColor: string | undefined) {
-    return new View({ style: { backgroundColor, height: 70, width: 300 } });
-  }
-
-  root.add(view(colors[0]));
-  root.add(view(colors[1]));
-  root.add(view(colors[2]));
-  root.add(view(colors[3]));
-  root.add(view(colors[4]));
 
   return root;
 }

@@ -53,29 +53,28 @@ export class View {
       testID?: string;
     }
   ) {
+    const onScroll = (event: ScrollEvent) => {
+      // BRAINSTORM: so technically here the this._state.metrics.height (or width) should be
+      // lowered by the presence of parent scrollbars
+      // But if implemented as described then also the outer root is being moved inside the page
+      // which is not what should happen.
+      this._state.scrollX = Math.min(
+        Math.max(this._state.scrollX + Math.round(event.delta.x), 0),
+        this._state.scrollWidth - this._state.clientWidth
+      );
+      this._state.scrollY = Math.min(
+        Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
+        this._state.scrollHeight - this._state.clientHeight
+      );
+      console.log(this._state);
+    };
+
     this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
     if (this._style.overflow === Overflow.Scroll) {
-      this._eventListeners.push([
-        UserEventType.MouseScroll,
-        (event: ScrollEvent) => {
-          // BRAINSTORM: so technically here the this._state.metrics.height (or width) should be
-          // lowered by the presence of parent scrollbars
-          // But if implemented as described then also the outer root is being moved inside the page
-          // which is not what should happen.
-          this._state.scrollX = Math.min(
-            Math.max(this._state.scrollX + event.delta.x, 0),
-            this._state.scrollWidth - this._state.clientWidth
-          );
-          this._state.scrollY = Math.min(
-            Math.max(this._state.scrollY + event.delta.y, 0),
-            this._state.scrollHeight - this._state.clientHeight
-          );
-          console.log(this._state);
-        },
-      ]);
+      this._eventListeners.push([UserEventType.MouseScroll, onScroll]);
     }
   }
 

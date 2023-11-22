@@ -74,6 +74,8 @@ export class EventManager {
       }
     }
 
+    // console.log(reverse.map((r) => r.props.testID));
+
     for (let i = reverse.length - 1; i >= 0; i--) {
       const node = reverse[i];
       invariant(node, "Node should be defined.");
@@ -90,17 +92,20 @@ export class EventManager {
         }
       }
     }
+
+    // Remove all events that were not handled.
+    this.events.length = 0;
   }
 }
 
-function hitTest(view: View, event: UserEvent): boolean {
+function hitTest(node: View, event: UserEvent): boolean {
   const { totalScrollX, totalScrollY, clipStart, clipSize, clientHeight, clientWidth } =
-    view._state;
+    node._state;
   const nodeRectangle = new Vec4(
-    view._state.x - totalScrollX,
-    view._state.y - totalScrollY,
-    clientWidth + (view._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
-    clientHeight + (view._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0)
+    node._state.x - totalScrollX,
+    node._state.y - totalScrollY,
+    clientWidth + (node._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
+    clientHeight + (node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0)
   );
   const boundary = new Vec4(
     clipStart.x - totalScrollX,
@@ -108,6 +113,12 @@ function hitTest(view: View, event: UserEvent): boolean {
     clipSize.x,
     clipSize.y
   );
+  // TODO @tchayen: boundary is calculated wrong!
   const intersection = getIntersection(nodeRectangle, boundary);
+
+  if (node?.props.testID === "button") {
+    console.log("button", nodeRectangle, boundary, intersection);
+  }
+
   return isInside(event.position, intersection);
 }
