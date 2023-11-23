@@ -19,13 +19,7 @@ export function paint(ui: Renderer, node: View | Text) {
     return;
   }
 
-  paintNode(
-    ui,
-    node,
-    node._state.clipStart,
-    node._state.clipSize,
-    new Vec2(node._state.totalScrollX, node._state.totalScrollY)
-  );
+  paintNode(ui, node, node._state.clipStart, node._state.clipSize);
 
   let c = node.firstChild;
   while (c) {
@@ -39,14 +33,10 @@ export function paint(ui: Renderer, node: View | Text) {
  * be renderered to for this node. They need to be adjusted for the node's position, scroll offset
  * and size.
  */
-function paintNode(
-  ui: Renderer,
-  node: View | Text,
-  clipStart: Vec2,
-  clipSize: Vec2,
-  cumulativeScroll: Vec2
-): void {
-  const position = new Vec2(node._state.x, node._state.y).subtract(cumulativeScroll);
+function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: Vec2): void {
+  const position = new Vec2(node._state.x, node._state.y).subtract(
+    new Vec2(node._state.totalScrollX, node._state.totalScrollY)
+  );
   if (node instanceof Text) {
     ui.text(
       node.text,

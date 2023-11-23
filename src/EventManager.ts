@@ -74,8 +74,6 @@ export class EventManager {
       }
     }
 
-    // console.log(reverse.map((r) => r.props.testID));
-
     for (let i = reverse.length - 1; i >= 0; i--) {
       const node = reverse[i];
       invariant(node, "Node should be defined.");
@@ -107,13 +105,7 @@ function hitTest(node: View, event: UserEvent): boolean {
     clientWidth + (node._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
     clientHeight + (node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0)
   );
-  const boundary = new Vec4(
-    clipStart.x - totalScrollX,
-    clipStart.y - totalScrollY,
-    clipSize.x,
-    clipSize.y
-  );
-  // TODO @tchayen: boundary is calculated wrong!
+  const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
   const intersection = getIntersection(nodeRectangle, boundary);
 
   if (node?.props.testID === "button") {
