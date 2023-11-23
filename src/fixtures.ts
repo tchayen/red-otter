@@ -825,7 +825,6 @@ export function displayAndOverflow() {
   const tooTall = new View({
     style: {
       backgroundColor: colors[1],
-      height: 360,
       overflow: Overflow.Scroll,
       width: 180,
     },

@@ -66,7 +66,6 @@ export class View {
         Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
         this._state.scrollHeight - this._state.clientHeight
       );
-      console.log(this._state);
     };
 
     this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));

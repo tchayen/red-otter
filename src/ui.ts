@@ -19,16 +19,16 @@ export function ui(renderer: ScrollableRenderer): View {
 
   const root = new View({
     style: {
-      height: 2000,
+      height: "100%",
       overflow: Overflow.Scroll,
       width: "100%",
     },
     testID: "root",
   });
 
-  // root.add(exampleGrid());
+  root.add(exampleGrid());
   // root.add(scrollbarTest());
-  root.add(fixtures.displayAndOverflow());
+  // root.add(fixtures.displayAndOverflow());
 
   measure("Layout", () => {
     layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));

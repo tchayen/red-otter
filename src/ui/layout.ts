@@ -30,9 +30,7 @@ import { CROSS_AXIS_SIZE } from "./consts";
  * not relative to the parent.
  */
 export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2): void {
-  const firstPass = new Queue<View | Text>();
-  const secondPass = new Queue<View | Text>();
-  const thirdPass = new Queue<View | Text>();
+  const traversalQueue = new Queue<View | Text>();
 
   // TODO: inspect what would it take to get rid of root and use tree directly.
   const root = new View({
@@ -44,17 +42,19 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   });
   root.add(tree);
 
+  const nodesInLevelOrder: Array<View | Text> = [root];
+
   /*
    * NOTE:
    * Code style detail: `e` is an element, `c` is a child, `p` is a parent.
    */
 
   // Traverse tree in level order and generate the reverse queue.
-  firstPass.enqueue(root);
-  secondPass.enqueue(root);
-  while (!firstPass.isEmpty()) {
-    const e = firstPass.dequeue();
+  traversalQueue.enqueue(root);
+  while (!traversalQueue.isEmpty()) {
+    const e = traversalQueue.dequeue();
     invariant(e, "Empty queue.");
+    nodesInLevelOrder.push(e);
 
     const isHorizontal =
       e.parent?._style.flexDirection === FlexDirection.Row ||
@@ -62,8 +62,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
     let c = e.firstChild;
     while (c !== null) {
-      firstPass.enqueue(c);
-      secondPass.enqueue(c);
+      traversalQueue.enqueue(c);
       c = c.next;
     }
     e._state.x = 0;
@@ -158,10 +157,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
    * Second tree pass: resolve wrapping children.
    * Going bottom-up, level order.
    */
-  while (!secondPass.isEmpty()) {
-    const e = secondPass.dequeueFront();
+  for (let i = nodesInLevelOrder.length - 1; i >= 0; i--) {
+    const e = nodesInLevelOrder[i]!;
     invariant(e, "Empty queue.");
-    thirdPass.enqueue(e);
 
     const isWrap =
       e._style.flexWrap === FlexWrap.Wrap || e._style.flexWrap === FlexWrap.WrapReverse;
@@ -312,64 +310,27 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         e._state.clientWidth += longestChildSize;
       }
     }
-
-    const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
-    const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
-
-    if (hasHorizontalScroll || hasVerticalScroll) {
-      let farthestX = 0;
-      let farthestY = 0;
-      let c = e.firstChild;
-      while (c) {
-        farthestX = Math.max(
-          farthestX,
-          c._state.x + c._state.clientWidth + c._style.marginRight - e._state.x
-        );
-        farthestY = Math.max(
-          farthestY,
-          c._state.y + c._state.clientHeight + c._style.marginBottom - e._state.y
-        );
-        c = c.next;
-      }
-
-      farthestX += e._style.paddingRight;
-      farthestY += e._style.paddingBottom;
-
-      // Scrollbar expands scroll size.
-      if (e._style.overflowX === Overflow.Scroll && farthestX > e._state.clientWidth) {
-        farthestX += CROSS_AXIS_SIZE;
-      }
-      if (e._style.overflowY === Overflow.Scroll && farthestY > e._state.clientHeight) {
-        farthestY += CROSS_AXIS_SIZE;
-      }
-
-      console.log(e.props.testID, e.parent?._state.clientWidth);
-      e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth - CROSS_AXIS_SIZE);
-      e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight - CROSS_AXIS_SIZE);
-    } else {
-      e._state.scrollWidth = e._state.clientWidth;
-      e._state.scrollHeight = e._state.clientHeight;
-    }
-    if (hasHorizontalScroll) {
-      e._state.clientWidth -= CROSS_AXIS_SIZE;
-    }
-    if (hasVerticalScroll) {
-      e._state.clientHeight -= CROSS_AXIS_SIZE;
-    }
   }
 
   /*
    * Third tree pass: resolve flex.
    * Going top-down, level order.
    */
-  while (!thirdPass.isEmpty()) {
-    const e = thirdPass.dequeueFront();
+  for (let i = 0; i < nodesInLevelOrder.length; i++) {
+    const e = nodesInLevelOrder[i]!;
     invariant(e, "Empty queue.");
     const p = e.parent;
 
     if (e._style.flex < 0) {
       console.warn(`Found flex value ${e._style.flex} lower than 0. Resetting to 0.`);
       e._style.flex = 0;
+    }
+
+    if (e._style.overflowX === Overflow.Scroll) {
+      e._state.clientWidth -= CROSS_AXIS_SIZE;
+    }
+    if (e._style.overflowY === Overflow.Scroll) {
+      e._state.clientHeight -= CROSS_AXIS_SIZE;
     }
 
     const parentWidth = p?._state.clientWidth ?? 0;
@@ -727,6 +688,65 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.y = Math.round(e._state.y);
     e._state.clientWidth = Math.round(e._state.clientWidth);
     e._state.clientHeight = Math.round(e._state.clientHeight);
+  }
+
+  /*
+   * Fourth tree pass: calculate scroll sizes.
+   * Going top-down, level order.
+   */
+  for (let i = 0; i < nodesInLevelOrder.length; i++) {
+    const e = nodesInLevelOrder[i]!;
+    invariant(e, "Empty queue.");
+
+    const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
+    const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
+
+    if (hasHorizontalScroll || hasVerticalScroll) {
+      let farthestX = 0;
+      let farthestY = 0;
+      let c = e.firstChild;
+      while (c) {
+        const potentialHorizontalScroll =
+          c._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0;
+        const potentialVerticalScroll =
+          c._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0;
+        farthestX = Math.max(
+          farthestX,
+          c._state.x +
+            c._style.marginLeft +
+            c._state.clientWidth +
+            potentialHorizontalScroll +
+            c._style.marginRight -
+            e._state.x
+        );
+        farthestY = Math.max(
+          farthestY,
+          c._state.y +
+            c._style.marginTop +
+            c._state.clientHeight +
+            potentialVerticalScroll +
+            c._style.marginBottom -
+            e._state.y
+        );
+        c = c.next;
+      }
+
+      farthestX += e._style.paddingRight;
+      farthestY += e._style.paddingBottom;
+
+      e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
+      e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
+      // if (hasHorizontalScroll) {
+      //   e._state.scrollWidth += CROSS_AXIS_SIZE;
+      // }
+      // if (hasVerticalScroll) {
+      //   e._state.scrollHeight += CROSS_AXIS_SIZE;
+      // }
+      console.log(e.props.testID, e._state.scrollHeight, e._state.clientHeight);
+    } else {
+      e._state.scrollWidth = e._state.clientWidth;
+      e._state.scrollHeight = e._state.clientHeight;
+    }
   }
 }
 
