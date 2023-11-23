@@ -8,6 +8,7 @@ import { Vec2 } from "../math/Vec2";
 import { View } from "../View";
 import { Text } from "../Text";
 import * as fixtures from "../fixtures";
+import { getByTestId } from "./getByTestId";
 
 // Silence console.debug() output during tests.
 console.debug = () => {};
@@ -536,20 +537,3 @@ describe("Layout", () => {
     expect(xValue?._state.y).toBe(145);
   });
 });
-
-function getByTestId(root: View, testId: string): View | Text | null {
-  let c = root.firstChild;
-  while (c) {
-    if (c.props.testID === testId) {
-      return c;
-    }
-    if (c instanceof View) {
-      const inSubTree = getByTestId(c, testId);
-      if (inSubTree) {
-        return inSubTree;
-      }
-    }
-    c = c.next;
-  }
-  return null;
-}

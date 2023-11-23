@@ -819,7 +819,7 @@ export function displayAndOverflow() {
       overflow: Overflow.Scroll,
       width: "100%",
     },
-    testID: "D-overlow",
+    testID: "D-overflow",
   });
 
   const tooTall = new View({

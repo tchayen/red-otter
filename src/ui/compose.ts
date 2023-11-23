@@ -6,6 +6,9 @@ import { intersection } from "../math/utils";
 import { Display } from "../types";
 import { Renderer } from "./Renderer";
 
+/**
+ * TODO: description.
+ */
 export function compose(
   ui: Renderer,
   node: View | Text,

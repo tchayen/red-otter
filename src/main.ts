@@ -9,7 +9,7 @@ import { ui } from "./ui";
 import { invariant } from "./utils/invariant";
 import { compose } from "./ui/compose";
 
-export const eventManager = new EventManager();
+const eventManager = new EventManager();
 
 async function initialize() {
   const alphabet =
@@ -84,8 +84,8 @@ async function initialize() {
 
     const commandEncoder = device.createCommandEncoder();
 
-    compose(renderer, root);
     eventManager.deliverEvents(root);
+    compose(renderer, root);
     paint(renderer, root);
 
     renderer.render(commandEncoder);

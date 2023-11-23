@@ -1,39 +1,47 @@
-import { describe, it, vi } from "vitest";
-import { View } from "../View";
+import { describe, expect, it } from "vitest";
 import { layout } from "./layout";
 import { Vec2 } from "../math/Vec2";
 import { paint } from "./paint";
 import { Renderer } from "./Renderer";
 import { Vec4 } from "../math/Vec4";
-import { Overflow } from "../types";
+import * as fixtures from "../fixtures";
+import { compose } from "./compose";
+import { EventManager } from "../EventManager";
+import { UserEventType } from "../types";
+import { getByTestId } from "./getByTestId";
 
 describe("paint", () => {
   it("handles scroll", () => {
-    const root = new View({
-      style: { backgroundColor: "#000", height: 300, overflow: Overflow.Scroll, width: 300 },
-    });
-    const tooTall = new View({ style: { backgroundColor: "#ff0000", height: 600, width: 200 } });
-    root.add(tooTall);
-
-    layout(root, null, new Vec2(300, 300));
-
-    root._state.scrollX = 0;
-    root._state.scrollY = 100;
-
+    const eventManager = new EventManager();
     const ui = new MockRenderer();
-    const rectangle = vi.spyOn(ui, "rectangle");
 
-    paint(ui, root);
+    const root = fixtures.displayAndOverflow();
 
-    // expect(rectangle).toHaveBeenCalledWith(
-    //   new Vec4(1, 0, 0, 1),
-    //   new Vec2(0, -100),
-    //   new Vec2(200, 600),
-    //   new Vec4(0, 0, 0, 0),
-    //   new Vec2(0, 0),
-    //   new Vec2(300, 300),
-    //   new Vec4(0, 0, 0, 0)
-    // );
+    layout(root, null, new Vec2(1000, 1000));
+
+    compose(ui, root);
+
+    function scroll(delta: Vec2, where: Vec2) {
+      eventManager.dispatchEvent({
+        delta: delta,
+        position: where,
+        type: UserEventType.MouseScroll,
+      });
+
+      eventManager.deliverEvents(root);
+      compose(ui, root);
+      paint(ui, root);
+    }
+
+    scroll(new Vec2(0, 100), new Vec2(10, 10));
+    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(15);
+
+    scroll(new Vec2(100, 0), new Vec2(10, 10));
+    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(15);
+    expect(getByTestId(root, "D-tooTall")?._state.scrollX).toBe(15);
+
+    scroll(new Vec2(0, 100), new Vec2(240, 150));
+    expect(getByTestId(root, "D-overflow")?._state.scrollY).toBe(75);
   });
 });
 

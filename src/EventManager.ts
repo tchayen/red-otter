@@ -16,39 +16,36 @@ export class EventManager {
       return;
     }
 
-    window.addEventListener("pointermove", (event) => {
-      this.push({
-        position: new Vec2(event.clientX, event.clientY),
-        type: UserEventType.MouseMove,
+    if (typeof window !== "undefined") {
+      window.addEventListener("pointermove", (event) => {
+        this.dispatchEvent({
+          position: new Vec2(event.clientX, event.clientY),
+          type: UserEventType.MouseMove,
+        });
       });
-    });
 
-    window.addEventListener("pointerup", (event) => {
-      console.log("pointerup", event.clientX, event.clientY);
-      this.push({
-        position: new Vec2(event.clientX, event.clientY),
-        type: UserEventType.MouseClick,
+      window.addEventListener("pointerup", (event) => {
+        this.dispatchEvent({
+          position: new Vec2(event.clientX, event.clientY),
+          type: UserEventType.MouseClick,
+        });
       });
-    });
 
-    window.addEventListener("wheel", (event) => {
-      this.push({
-        delta: new Vec2(event.deltaX, event.deltaY),
-        position: new Vec2(event.clientX, event.clientY),
-        type: UserEventType.MouseScroll,
+      window.addEventListener("wheel", (event) => {
+        this.dispatchEvent({
+          delta: new Vec2(event.deltaX, event.deltaY),
+          position: new Vec2(event.clientX, event.clientY),
+          type: UserEventType.MouseScroll,
+        });
       });
-    });
+    }
 
     // Turn off right-click since it will be used within the UI.
     document.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
-  public push(event: UserEvent): void {
+  public dispatchEvent(event: UserEvent): void {
     this.events.push(event);
-  }
-
-  public pop(): UserEvent | undefined {
-    return this.events.shift();
   }
 
   public deliverEvents(root: View): void {
@@ -107,10 +104,6 @@ function hitTest(node: View, event: UserEvent): boolean {
   );
   const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
   const intersection = getIntersection(nodeRectangle, boundary);
-
-  if (node?.props.testID === "button") {
-    console.log("button", nodeRectangle, boundary, intersection);
-  }
 
   return isInside(event.position, intersection);
 }

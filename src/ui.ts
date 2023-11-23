@@ -26,9 +26,9 @@ export function ui(renderer: ScrollableRenderer): View {
     testID: "root",
   });
 
-  root.add(exampleGrid());
+  // root.add(exampleGrid());
   // root.add(scrollbarTest());
-  // root.add(fixtures.displayAndOverflow());
+  root.add(fixtures.displayAndOverflow());
 
   measure("Layout", () => {
     layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
