@@ -109,8 +109,8 @@ export class ScrollableRenderer implements Renderer {
           (input.position.x <= r.clipStart.x + r.clipSize.x) &&
           (input.position.y <= r.clipStart.y + r.clipSize.y);
         if (!inBounds) {
-          // return vec4f(0, 0, 0, 0);
-          return vec4f(1, 0, 0, 0.3);
+          return vec4f(0, 0, 0, 0);
+          // return vec4f(1, 0, 0, 0.3);
         }
 
         return data.rectangles[input.instance].color;

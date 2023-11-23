@@ -182,20 +182,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       let c = e.firstChild;
       while (c) {
         if (c._state.clientWidth) {
-          if (
-            (e._style.flexDirection === FlexDirection.Row ||
-              e._style.flexDirection === FlexDirection.RowReverse) &&
-            c._style.position === Position.Relative
-          ) {
+          if (isHorizontal && c._style.position === Position.Relative) {
             // Padding is inside the width.
             e._state.clientWidth +=
               c._state.clientWidth + c._style.marginLeft + c._style.marginRight;
           }
-          if (
-            (e._style.flexDirection === FlexDirection.Column ||
-              e._style.flexDirection === FlexDirection.ColumnReverse) &&
-            c._style.position === Position.Relative
-          ) {
+          if (isVertical && c._style.position === Position.Relative) {
             // For column layout only wraps the widest child.
             e._state.clientWidth = Math.max(
               e._state.clientWidth,
@@ -212,15 +204,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Include padding and gaps.
       e._state.clientWidth += e._style.paddingLeft + e._style.paddingRight;
 
-      if (
-        e._style.flexDirection === FlexDirection.Row ||
-        e._style.flexDirection === FlexDirection.RowReverse
-      ) {
+      if (isHorizontal) {
         e._state.clientWidth += (childrenCount - 1) * e._style.rowGap;
       }
-    }
-    if (e.props.testID === "container") {
-      console.log(e._state, e);
     }
     // Height is at least the sum of children with defined heights.
     if (e._style.height === undefined) {
@@ -228,19 +214,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       let c = e.firstChild;
       while (c) {
         if (c._state.clientHeight) {
-          if (
-            (e._style.flexDirection === FlexDirection.Column ||
-              e._style.flexDirection === FlexDirection.ColumnReverse) &&
-            c._style.position === Position.Relative
-          ) {
+          if (isVertical && c._style.position === Position.Relative) {
             e._state.clientHeight +=
               c._state.clientHeight + c._style.marginTop + c._style.marginBottom;
           }
-          if (
-            (e._style.flexDirection === FlexDirection.Row ||
-              e._style.flexDirection === FlexDirection.RowReverse) &&
-            c._style.position === Position.Relative
-          ) {
+          if (isHorizontal && c._style.position === Position.Relative) {
             e._state.clientHeight = Math.max(
               e._state.clientHeight,
               c._state.clientHeight + c._style.marginTop + c._style.marginBottom
@@ -256,10 +234,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Include padding and gaps.
       e._state.clientHeight += e._style.paddingTop + e._style.paddingBottom;
 
-      if (
-        e._style.flexDirection === FlexDirection.Column ||
-        e._style.flexDirection === FlexDirection.ColumnReverse
-      ) {
+      if (isVertical) {
         e._state.clientHeight += (childrenCount - 1) * e._style.columnGap;
       }
     }
@@ -360,8 +335,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       farthestX += e._style.paddingRight;
       farthestY += e._style.paddingBottom;
 
-      // TODO @tchayen: take flexBasis into account too.
-      // Scrollbar can expand scroll size if that size is not strictly defined.
+      // Scrollbar expands scroll size.
       if (e._style.overflowX === Overflow.Scroll && farthestX > e._state.clientWidth) {
         farthestX += CROSS_AXIS_SIZE;
       }
@@ -369,18 +343,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         farthestY += CROSS_AXIS_SIZE;
       }
 
-      e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
-      e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
-
-      if (hasHorizontalScroll) {
-        e._state.clientWidth -= CROSS_AXIS_SIZE;
-      }
-      if (hasVerticalScroll) {
-        e._state.clientHeight -= CROSS_AXIS_SIZE;
-      }
+      console.log(e.props.testID, e.parent?._state.clientWidth);
+      e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth - CROSS_AXIS_SIZE);
+      e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight - CROSS_AXIS_SIZE);
     } else {
       e._state.scrollWidth = e._state.clientWidth;
       e._state.scrollHeight = e._state.clientHeight;
+    }
+    if (hasHorizontalScroll) {
+      e._state.clientWidth -= CROSS_AXIS_SIZE;
+    }
+    if (hasVerticalScroll) {
+      e._state.clientHeight -= CROSS_AXIS_SIZE;
     }
   }
 
@@ -416,12 +390,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       e._style.alignContent === AlignContent.SpaceAround ||
       e._style.alignContent === AlignContent.SpaceEvenly;
 
-    // TODO @tchayen: it probably shouldn't really be here? There's calculation  in the first pass.
-    // Figure out why this seems to be needed.
-    if (typeof e._style.width === "string") {
+    // If parent had undefined width or height and its size was only calculated once children sizes
+    // were added, then percentage sizing should happen now.
+    if (p?._style.width === undefined && typeof e._style.width === "string") {
       e._state.clientWidth = toPercentage(e._style.width) * parentWidth;
     }
-    if (typeof e._style.height === "string") {
+    if (p?._style.height === undefined && typeof e._style.height === "string") {
       e._state.clientHeight = toPercentage(e._style.height) * parentHeight;
     }
 
@@ -753,8 +727,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.y = Math.round(e._state.y);
     e._state.clientWidth = Math.round(e._state.clientWidth);
     e._state.clientHeight = Math.round(e._state.clientHeight);
-
-    // console.debug(e.props.testID, e);
   }
 }
 
