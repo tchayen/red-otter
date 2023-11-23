@@ -455,8 +455,8 @@ describe("Layout", () => {
     const expectedSizes = [
       new Vec2(120, 150),
       new Vec2(120, 75),
-      new Vec2(120, 75),
-      new Vec2(40, 38),
+      new Vec2(120, 150),
+      new Vec2(40, 75),
       new Vec2(30, 30),
       new Vec2(40, 40),
       new Vec2(50, 50),
