@@ -34,14 +34,14 @@ describe("paint", () => {
     }
 
     scroll(new Vec2(0, 100), new Vec2(10, 10));
-    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(15);
+    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(10);
 
     scroll(new Vec2(100, 0), new Vec2(10, 10));
-    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(15);
-    expect(getByTestId(root, "D-tooTall")?._state.scrollX).toBe(15);
+    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(10);
+    expect(getByTestId(root, "D-tooTall")?._state.scrollX).toBe(10);
 
     scroll(new Vec2(0, 100), new Vec2(240, 150));
-    expect(getByTestId(root, "D-overflow")?._state.scrollY).toBe(75);
+    expect(getByTestId(root, "D-overflow")?._state.scrollY).toBe(70);
   });
 });
 
@@ -51,6 +51,8 @@ class MockRenderer implements Renderer {
     _position: Vec2,
     _size: Vec2,
     _corners: Vec4,
+    _borderWidth: Vec4,
+    _borderColor: Vec4,
     _clipStart: Vec2,
     _clipSize: Vec2,
     _clipCorners: Vec4
@@ -63,6 +65,8 @@ class MockRenderer implements Renderer {
     _fontSize: number,
     _color: Vec4,
     _textAlignment: "left" | "right" | "center",
+    _clipStart: Vec2,
+    _clipSize: Vec2,
     _options?:
       | {
           lineHeight?: number | undefined;

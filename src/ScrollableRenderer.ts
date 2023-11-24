@@ -70,6 +70,8 @@ export class ScrollableRenderer implements Renderer {
         position: vec2f,
         size: vec2f,
         corners: vec4f,
+        borderWidth: vec4f,
+        borderColor: vec4f,
         clipStart: vec2f,
         clipSize: vec2f,
         clipCorners: vec4f,
@@ -100,6 +102,11 @@ export class ScrollableRenderer implements Renderer {
         return output;
       }
 
+      fn rectangle(position: vec2f, size: vec2f, radius: f32, border: vec2f) -> f32 {
+        let q = abs(position - border) - (size / 2.0) + vec2f(radius);
+        return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - radius;
+      }
+
       @fragment
       fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
         let r = data.rectangles[input.instance];
@@ -109,11 +116,54 @@ export class ScrollableRenderer implements Renderer {
           (input.position.x <= r.clipStart.x + r.clipSize.x) &&
           (input.position.y <= r.clipStart.y + r.clipSize.y);
         if (!inBounds) {
-          return vec4f(0, 0, 0, 0);
-          // return vec4f(1, 0, 0, 0.3);
+          // return vec4f(0, 0, 0, 0);
+          return vec4f(1, 0, 0, 0.3);
         }
 
-        return data.rectangles[input.instance].color;
+        let p = input.position.xy - r.position - r.size / 2.0;
+        var radius = r.corners.w;
+        if (p.x > 0.0 && p.y > 0.0) {
+          radius = r.corners.y;
+        } else if (p.x < 0.0 && p.y > 0.0) {
+          radius = r.corners.x;
+        } else if (p.x < 0.0 && p.y < 0.0) {
+          radius = r.corners.z;
+        }
+
+        var border = vec2f(0, 0);
+        if (p.y > 0.0) {
+          border.y -= r.borderWidth.x;
+        } else {
+          border.y += r.borderWidth.z;
+        }
+        if (p.x > 0.0) {
+          border.x -= r.borderWidth.y;
+        } else {
+          border.x += r.borderWidth.w;
+        }
+
+        var borderCorrection = 0.0;
+        if (p.x < 0.0 && p.y < 0.0) {
+          borderCorrection = min(r.borderWidth.x, r.borderWidth.y);
+        } else if (p.x > 0.0 && p.y < 0.0) {
+          borderCorrection = min(r.borderWidth.z, r.borderWidth.y);
+        } else if (p.x < 0.0 && p.y > 0.0) {
+          borderCorrection = min(r.borderWidth.x, r.borderWidth.w);
+        } else if (p.x > 0.0 && p.y > 0.0) {
+          borderCorrection = min(r.borderWidth.z, r.borderWidth.w);
+        }
+
+        let outerDistance = rectangle(p, r.size, radius, vec2(0.0));
+        let innerDistance = rectangle(p, r.size, radius - borderCorrection, border);
+
+        var color = r.color;
+        if (length(border) > 0.0) {
+          color = mix(color, r.borderColor, smoothstep(-0.5, 0.5, innerDistance));
+        }
+        color.a *= 1.0 - smoothstep(-0.5, 0.5, outerDistance);
+        return color;
+
+        // return data.rectangles[input.instance].color;
       }
     `;
 
@@ -138,6 +188,8 @@ export class ScrollableRenderer implements Renderer {
         size: vec2f,
         uv: vec2f,
         uvSize: vec2f,
+        clipStart: vec2f,
+        clipSize: vec2f,
         window: vec2f,
       };
 
@@ -167,6 +219,16 @@ export class ScrollableRenderer implements Renderer {
       fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
         let g = text.glyphs[input.instance];
         let distance = textureSample(fontAtlas, fontAtlasSampler, input.uv).a;
+
+        let inBounds =
+          (input.position.x >= g.clipStart.x) &&
+          (input.position.y >= g.clipStart.y) &&
+          (input.position.x <= g.clipStart.x + g.clipSize.x) &&
+          (input.position.y <= g.clipStart.y + g.clipSize.y);
+        if (!inBounds) {
+          return vec4f(0, 0, 0, 0);
+          // return vec4f(1, 0, 0, 0.3);
+        }
 
         var width = mix(0.45, 0.12, clamp(g.fontSize, 0, 40) / 40.0);
         width /= ${window.devicePixelRatio};
@@ -377,6 +439,8 @@ export class ScrollableRenderer implements Renderer {
     position: Vec2,
     size: Vec2,
     corners: Vec4,
+    borderWidth: Vec4,
+    borderColor: Vec4,
     clipStart: Vec2,
     clipSize: Vec2,
     clipCorners: Vec4
@@ -389,7 +453,7 @@ export class ScrollableRenderer implements Renderer {
       this.drawingIndices.push(this.rectangleCount, this.glyphCount);
     }
 
-    const struct = 24;
+    const struct = 32;
     this.rectangleData[this.rectangleCount * struct + 0] = color.x;
     this.rectangleData[this.rectangleCount * struct + 1] = color.y;
     this.rectangleData[this.rectangleCount * struct + 2] = color.z;
@@ -402,18 +466,26 @@ export class ScrollableRenderer implements Renderer {
     this.rectangleData[this.rectangleCount * struct + 9] = corners.y;
     this.rectangleData[this.rectangleCount * struct + 10] = corners.z;
     this.rectangleData[this.rectangleCount * struct + 11] = corners.w;
-    this.rectangleData[this.rectangleCount * struct + 12] = clipStart.x;
-    this.rectangleData[this.rectangleCount * struct + 13] = clipStart.y;
-    this.rectangleData[this.rectangleCount * struct + 14] = clipSize.x;
-    this.rectangleData[this.rectangleCount * struct + 15] = clipSize.y;
-    this.rectangleData[this.rectangleCount * struct + 16] = clipCorners.x;
-    this.rectangleData[this.rectangleCount * struct + 17] = clipCorners.y;
-    this.rectangleData[this.rectangleCount * struct + 18] = clipCorners.z;
-    this.rectangleData[this.rectangleCount * struct + 19] = clipCorners.w;
-    this.rectangleData[this.rectangleCount * struct + 20] = this.settings.windowWidth;
-    this.rectangleData[this.rectangleCount * struct + 21] = this.settings.windowHeight;
-    this.rectangleData[this.rectangleCount * struct + 22] = 0;
-    this.rectangleData[this.rectangleCount * struct + 23] = 0;
+    this.rectangleData[this.rectangleCount * struct + 12] = borderWidth.x;
+    this.rectangleData[this.rectangleCount * struct + 13] = borderWidth.y;
+    this.rectangleData[this.rectangleCount * struct + 14] = borderWidth.z;
+    this.rectangleData[this.rectangleCount * struct + 15] = borderWidth.w;
+    this.rectangleData[this.rectangleCount * struct + 16] = borderColor.x;
+    this.rectangleData[this.rectangleCount * struct + 17] = borderColor.y;
+    this.rectangleData[this.rectangleCount * struct + 18] = borderColor.z;
+    this.rectangleData[this.rectangleCount * struct + 19] = borderColor.w;
+    this.rectangleData[this.rectangleCount * struct + 20] = clipStart.x;
+    this.rectangleData[this.rectangleCount * struct + 21] = clipStart.y;
+    this.rectangleData[this.rectangleCount * struct + 22] = clipSize.x;
+    this.rectangleData[this.rectangleCount * struct + 23] = clipSize.y;
+    this.rectangleData[this.rectangleCount * struct + 24] = clipCorners.x;
+    this.rectangleData[this.rectangleCount * struct + 25] = clipCorners.y;
+    this.rectangleData[this.rectangleCount * struct + 26] = clipCorners.z;
+    this.rectangleData[this.rectangleCount * struct + 27] = clipCorners.w;
+    this.rectangleData[this.rectangleCount * struct + 28] = this.settings.windowWidth;
+    this.rectangleData[this.rectangleCount * struct + 29] = this.settings.windowHeight;
+    this.rectangleData[this.rectangleCount * struct + 30] = 0;
+    this.rectangleData[this.rectangleCount * struct + 31] = 0;
 
     this.rectangleCount += 1;
     this.drawingMode = DrawingMode.Rectangles;
@@ -426,6 +498,8 @@ export class ScrollableRenderer implements Renderer {
     fontSize: number,
     color: Vec4,
     textAlignment: "left" | "center" | "right",
+    clipStart: Vec2,
+    clipSize: Vec2,
     options?: {
       lineHeight?: number;
       maxWidth?: number;
@@ -528,7 +602,7 @@ export class ScrollableRenderer implements Renderer {
         }
       }
 
-      const struct = 16;
+      const struct = 20;
       this.glyphData[this.glyphCount * struct + 0] = shapePosition.x;
       this.glyphData[this.glyphCount * struct + 1] = shapePosition.y;
       this.glyphData[this.glyphCount * struct + 2] = 0;
@@ -543,8 +617,12 @@ export class ScrollableRenderer implements Renderer {
       this.glyphData[this.glyphCount * struct + 11] = uv.y;
       this.glyphData[this.glyphCount * struct + 12] = uv.z;
       this.glyphData[this.glyphCount * struct + 13] = uv.w;
-      this.glyphData[this.glyphCount * struct + 14] = this.settings.windowWidth;
-      this.glyphData[this.glyphCount * struct + 15] = this.settings.windowHeight;
+      this.glyphData[this.glyphCount * struct + 14] = clipStart.x;
+      this.glyphData[this.glyphCount * struct + 15] = clipStart.y;
+      this.glyphData[this.glyphCount * struct + 16] = clipSize.x;
+      this.glyphData[this.glyphCount * struct + 17] = clipSize.y;
+      this.glyphData[this.glyphCount * struct + 18] = this.settings.windowWidth;
+      this.glyphData[this.glyphCount * struct + 19] = this.settings.windowHeight;
 
       this.glyphCount += 1;
     }

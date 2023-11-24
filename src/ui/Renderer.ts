@@ -7,6 +7,8 @@ export interface Renderer {
     position: Vec2,
     size: Vec2,
     corners: Vec4,
+    borderWidth: Vec4,
+    borderColor: Vec4,
     clipStart: Vec2,
     clipSize: Vec2,
     clipCorners: Vec4
@@ -21,6 +23,8 @@ export interface Renderer {
     fontSize: number,
     color: Vec4,
     textAlignment: "left" | "center" | "right",
+    clipStart: Vec2,
+    clipSize: Vec2,
     options?: {
       lineHeight?: number;
       maxWidth?: number;

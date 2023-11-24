@@ -4,7 +4,14 @@ import { View } from "./View";
 import { Lookups } from "./font/types";
 import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
-import { FlexDirection, Overflow, TextStyleProps, ViewStyleProps } from "./types";
+import {
+  AlignSelf,
+  FlexDirection,
+  JustifyContent,
+  Overflow,
+  TextStyleProps,
+  ViewStyleProps,
+} from "./types";
 import { invariant } from "./utils/invariant";
 import * as fixtures from "./fixtures";
 import { measure } from "./measure";
@@ -27,8 +34,8 @@ export function ui(renderer: ScrollableRenderer): View {
   });
 
   // root.add(exampleGrid());
-  // root.add(scrollbarTest());
-  root.add(fixtures.displayAndOverflow());
+  // root.add(fixtures.displayAndOverflow());
+  root.add(complexWindow());
 
   measure("Layout", () => {
     layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
@@ -165,50 +172,127 @@ function exampleGrid() {
   return container;
 }
 
-function scrollbarTest() {
+function complexWindow() {
   const container = new View({
     style: {
-      backgroundColor: "#2B2B2B",
+      backgroundColor: "#000",
       flexDirection: FlexDirection.Column,
       gap: 10,
+      // height: "100%",
       paddingHorizontal: 10,
-      width: "100%",
+      // width: "100%",
     },
     testID: "container",
   });
 
-  const text = new Text(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices auctor lectus accumsan tincidunt. Etiam ut augue in turpis accumsan ornare. Maecenas viverra vitae mauris nec pretium. Suspendisse dignissim eleifend lorem, nec luctus magna sollicitudin ac. Sed velit velit, porta non mattis et, ullamcorper ac erat. Vestibulum ultrices nisl metus, varius auctor magna feugiat id. Fusce dapibus metus non nibh ornare ultricies. Aliquam pharetra quis nunc sed vestibulum. Curabitur ut dignissim urna. Quisque vitae hendrerit lacus. Aliquam sollicitudin, orci a mollis luctus, massa ligula vulputate mi, et volutpat metus ex ac turpis. Nullam elementum congue euismod. Mauris vestibulum lectus risus, at dignissim enim facilisis commodo. Etiam tincidunt malesuada leo eget efficitur. Praesent eleifend neque ac tellus dictum sodales. Nam sed imperdiet nibh. Nunc sagittis, felis et dapibus molestie, quam neque venenatis odio, sit amet cursus justo arcu at metus. Cras pharetra risus blandit, efficitur lacus eu, sollicitudin nunc. Cras in tellus nisl. Integer vitae est pellentesque, imperdiet nunc sit amet, condimentum lacus. Suspendisse a dolor sed tellus vulputate ultricies non sed turpis. Curabitur ullamcorper massa risus, vitae fringilla mi volutpat id. Curabitur cursus pellentesque elit, at tincidunt ipsum vehicula eget. Maecenas pulvinar eu mauris non commodo. Etiam a fermentum lorem, eget venenatis elit. Quisque convallis, ligula eget sagittis venenatis, velit metus dignissim enim, id cursus risus ligula vitae mauris. Proin congue ornare ligula at hendrerit. Nam id ipsum mattis, consectetur ante quis, placerat lacus. Sed lacinia, sem at sollicitudin pulvinar, augue felis faucibus odio, vitae sodales justo libero vitae arcu. Sed finibus felis quis dictum finibus. Aliquam mattis interdum fringilla. Mauris nisl nunc, dignissim eget porta sed, vestibulum ac neque. Nunc vehicula tempor lectus, sit amet pretium tortor. Aliquam arcu ligula, viverra in sapien non, consequat luctus nisi. Proin suscipit metus eget magna rutrum imperdiet sit amet eget dui.",
-    {
-      lookups,
-      style: {
-        color: "#fff",
-        fontName: "Inter",
-        fontSize: 14,
-        marginVertical: 10,
-      },
-    }
-  );
-  container.add(text);
-
-  const rows = new View({
+  const window = new View({
     style: {
-      flexDirection: FlexDirection.Row,
-      gap: 20,
+      backgroundColor: "#2B2B2B",
+      borderColor: "#555",
+      borderRadius: 12,
+      borderWidth: 1,
+      flexDirection: FlexDirection.Column,
+      margin: 200,
     },
+    testID: "window",
   });
-  container.add(rows);
+  container.add(window);
 
-  for (let i = 0; i < 6; i++) {
-    const e = new View({
+  const header = new View({ style: { gap: 8, padding: 12 } });
+  window.add(header);
+
+  function text(value: string, fontSize: number, color: string) {
+    return new Text(value, { lookups, style: { color, fontName: "Inter", fontSize } });
+  }
+
+  function button(label: string) {
+    const button = new View({
       style: {
-        backgroundColor: "#00ff00",
-        height: 1200,
-        width: 200,
+        backgroundColor: "#fff",
+        borderRadius: 6,
+        height: 28,
+        justifyContent: JustifyContent.Center,
+        paddingHorizontal: 12,
       },
     });
-    rows.add(e);
+    button.add(text(label, 14, "#000"));
+    return button;
   }
+
+  header.add(text("Browse games", 20, "#fff"));
+  header.add(text("See available lobbies.", 14, "#7B7B7B"));
+
+  const body = new View({
+    style: {
+      backgroundColor: "#111",
+      flexDirection: FlexDirection.Row,
+      height: 150,
+      overflow: Overflow.Scroll,
+      width: 400,
+    },
+  });
+  window.add(body);
+
+  const list = [
+    { mode: "FFA", name: "Random map", password: false, players: { current: 3, limit: 8 } },
+    { mode: "FFA", name: "Black forest", password: false, players: { current: 3, limit: 8 } },
+    { mode: "FFA", name: "Arabia", password: false, players: { current: 3, limit: 8 } },
+    { mode: "2v2", name: "Danube River", password: false, players: { current: 2, limit: 4 } },
+    { mode: "2v2v2v2", name: "Alaska", password: false, players: { current: 3, limit: 8 } },
+    { mode: "1v1", name: "Amazon Tunnel", password: true, players: { current: 1, limit: 2 } },
+    { mode: "1v1", name: "Random map", password: false, players: { current: 2, limit: 2 } },
+  ];
+
+  const columns = ["name", "players", "mode", "password"];
+
+  for (let i = 0; i < columns.length; i++) {
+    const column = new View({
+      style: { flex: 1 },
+    });
+    body.add(column);
+
+    for (let j = 0; j < list.length; j++) {
+      const item = list[j]![columns[i]!];
+
+      const cell = new View({
+        style: {
+          height: 28,
+          justifyContent: JustifyContent.Center,
+          paddingHorizontal: 12,
+        },
+      });
+      column.add(cell);
+
+      switch (columns[i]) {
+        case "mode":
+          cell.add(text(item, 14, "#7B7B7B"));
+          break;
+        case "name":
+          cell.add(text(item, 14, "#7B7B7B"));
+          break;
+        case "password":
+          cell.add(text(item ? "Yes" : "No", 14, "#7B7B7B"));
+          break;
+        case "players":
+          cell.add(text(`${item.current}/${item.limit}`, 14, "#7B7B7B"));
+          break;
+      }
+    }
+  }
+
+  const footer = new View({
+    style: {
+      alignSelf: AlignSelf.Stretch,
+      flexDirection: FlexDirection.Row,
+      gap: 12,
+      justifyContent: JustifyContent.End,
+      padding: 12,
+    },
+  });
+  window.add(footer);
+
+  footer.add(button("Cancel"));
+  footer.add(button("Join"));
 
   return container;
 }

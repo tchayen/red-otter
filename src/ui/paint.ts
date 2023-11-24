@@ -45,6 +45,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
       node._style.fontSize ?? DEFAULT_FONT_SIZE,
       parseColor(node._style.color),
       node._style.textAlign ?? "left",
+      clipStart,
+      clipSize,
       {
         lineHeight:
           node._style.lineHeight ??
@@ -63,18 +65,33 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
       parseColor(node._style.backgroundColor),
       position,
       size,
-      new Vec4(0, 0, 0, 0),
+      new Vec4(
+        node._style.borderTopLeftRadius,
+        node._style.borderTopRightRadius,
+        node._style.borderBottomRightRadius,
+        node._style.borderBottomLeftRadius
+      ),
+      new Vec4(
+        node._style.borderBottomWidth,
+        node._style.borderRightWidth,
+        node._style.borderTopWidth,
+        node._style.borderLeftWidth
+      ),
+      parseColor(node._style.borderColor),
       clipStart,
       clipSize,
       new Vec4(0, 0, 0, 0)
     );
 
+    const scrollbarRadius = CROSS_AXIS_SIZE / 2;
     // Scrollbar.
     if (node._style.overflow === Overflow.Scroll) {
       ui.rectangle(
         parseColor(SCROLLBAR_CORNER_COLOR),
         position.add(new Vec2(size.x, size.y)),
         new Vec2(CROSS_AXIS_SIZE, CROSS_AXIS_SIZE),
+        new Vec4(0, 0, 0, 0),
+        new Vec4(0, 0, 0, 0),
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
@@ -89,6 +106,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         position.add(new Vec2(size.x, 0)),
         new Vec2(CROSS_AXIS_SIZE, scrollbarSize),
         new Vec4(0, 0, 0, 0),
+        new Vec4(0, 0, 0, 0),
+        new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
         new Vec4(0, 0, 0, 0)
@@ -101,6 +120,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         parseColor(SCROLLBAR_TRACK_COLOR),
         position.add(new Vec2(size.x, scrollTrackPosition)),
         new Vec2(CROSS_AXIS_SIZE, scrollTrackSize),
+        new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
+        new Vec4(0, 0, 0, 0),
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
@@ -115,6 +136,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         position.add(new Vec2(0, size.y)),
         new Vec2(scrollbarSize, CROSS_AXIS_SIZE),
         new Vec4(0, 0, 0, 0),
+        new Vec4(0, 0, 0, 0),
+        new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
         new Vec4(0, 0, 0, 0)
@@ -127,6 +150,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         parseColor(SCROLLBAR_TRACK_COLOR),
         position.add(new Vec2(scrollTrackPosition, size.y)),
         new Vec2(scrollTrackSize, CROSS_AXIS_SIZE),
+        new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
+        new Vec4(0, 0, 0, 0),
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,

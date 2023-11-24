@@ -825,6 +825,7 @@ export function displayAndOverflow() {
   const tooTall = new View({
     style: {
       backgroundColor: colors[1],
+      borderRadius: 20,
       overflow: Overflow.Scroll,
       width: 180,
     },
@@ -1007,17 +1008,17 @@ export function interactiveButton() {
       window.alert("Clicked!");
     },
     style: {
-      backgroundColor: "#333",
+      backgroundColor: "#fff",
       borderRadius: 6,
+      height: 28,
       justifyContent: JustifyContent.Center,
       paddingHorizontal: 16,
-      paddingVertical: 12,
     },
     testID: "button",
   });
   root.add(button);
   button.add(
-    new Text("Sign up", { lookups, style: { color: "#fff", fontName: "Inter", fontSize: 16 } })
+    new Text("Accept", { lookups, style: { color: "#000", fontName: "InterBold", fontSize: 15 } })
   );
 
   return root;
