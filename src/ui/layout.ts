@@ -134,7 +134,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     const p = e.parent;
     if (e instanceof Text && fontLookups) {
       if (p?._state.clientWidth !== undefined) {
-        const maxWidth = p._state.clientWidth - p._style.paddingLeft - p._style.paddingRight;
+        const maxWidth =
+          p._state.clientWidth -
+          p._style.paddingLeft -
+          p._style.paddingRight -
+          p._style.borderLeftWidth -
+          p._style.borderRightWidth;
         e._state.textWidthLimit = maxWidth;
 
         const shape = shapeText({
@@ -200,7 +205,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Include padding and gaps.
-      e._state.clientWidth += e._style.paddingLeft + e._style.paddingRight;
+      e._state.clientWidth +=
+        e._style.paddingLeft +
+        e._style.paddingRight +
+        e._style.borderLeftWidth +
+        e._style.borderRightWidth;
 
       if (isHorizontal) {
         e._state.clientWidth += (childrenCount - 1) * e._style.rowGap;
@@ -230,7 +239,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Include padding and gaps.
-      e._state.clientHeight += e._style.paddingTop + e._style.paddingBottom;
+      e._state.clientHeight +=
+        e._style.paddingTop +
+        e._style.paddingBottom +
+        e._style.borderTopWidth +
+        e._style.borderBottomWidth;
 
       if (isVertical) {
         e._state.clientHeight += (childrenCount - 1) * e._style.columnGap;
@@ -241,10 +254,18 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // The size that was first calculated is size of the tallest child of all plus paddings. So
       // here we reset the size and build it again, for all rows.
       if (isHorizontal && e._style.height === undefined) {
-        e._state.clientHeight = e._style.paddingTop + e._style.paddingBottom;
+        e._state.clientHeight =
+          e._style.paddingTop +
+          e._style.paddingBottom +
+          e._style.borderTopWidth +
+          e._style.borderBottomWidth;
       }
       if (isVertical && e._style.width === undefined) {
-        e._state.clientWidth = e._style.paddingLeft + e._style.paddingRight;
+        e._state.clientWidth =
+          e._style.paddingLeft +
+          e._style.paddingRight +
+          e._style.borderLeftWidth +
+          e._style.borderRightWidth;
       }
     }
 
@@ -269,8 +290,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           c._style.marginBottom +
           (!isJustifySpace ? e._style.columnGap : 0);
       const parentMain = isHorizontal
-        ? e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight
-        : e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom;
+        ? e._state.clientWidth -
+          e._style.paddingLeft -
+          e._style.paddingRight -
+          e._style.borderLeftWidth -
+          e._style.borderRightWidth
+        : e._state.clientHeight -
+          e._style.paddingTop -
+          e._style.paddingBottom -
+          e._style.borderTopWidth -
+          e._style.borderBottomWidth;
 
       if (isWrap && main + deltaMain > parentMain) {
         let length = longestChildSize;
@@ -409,11 +438,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     const resetMain = isHorizontal
-      ? e._state.x + e._style.paddingLeft
-      : e._state.y + e._style.paddingTop;
+      ? e._state.x + e._style.paddingLeft + e._style.borderLeftWidth
+      : e._state.y + e._style.paddingTop + e._style.borderTopWidth;
     const resetCross = isHorizontal
-      ? e._state.y + e._style.paddingTop
-      : e._state.x + e._style.paddingLeft;
+      ? e._state.y + e._style.paddingTop + e._style.borderTopWidth
+      : e._state.x + e._style.paddingLeft + e._style.borderLeftWidth;
     let main = resetMain;
     let cross = resetCross;
     const mainGap = (isHorizontal ? e._style.rowGap : e._style.columnGap) ?? 0;
@@ -450,8 +479,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Calculate available space for justify content along the main axis.
       let availableMain = isHorizontal
-        ? e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight
-        : e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom;
+        ? e._state.clientWidth -
+          e._style.paddingLeft -
+          e._style.paddingRight -
+          e._style.borderLeftWidth -
+          e._style.borderRightWidth
+        : e._state.clientHeight -
+          e._style.paddingTop -
+          e._style.paddingBottom -
+          e._style.borderTopWidth -
+          e._style.borderBottomWidth;
       if (!isJustifySpace) {
         availableMain -= mainGap * (line.length - 1);
       }
@@ -462,8 +499,16 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         availableMain -= CROSS_AXIS_SIZE;
       }
       let availableCross = isHorizontal
-        ? e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom
-        : e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight;
+        ? e._state.clientHeight -
+          e._style.paddingTop -
+          e._style.paddingBottom -
+          e._style.borderTopWidth -
+          e._style.borderBottomWidth
+        : e._state.clientWidth -
+          e._style.paddingLeft -
+          e._style.paddingRight -
+          e._style.borderLeftWidth -
+          e._style.borderRightWidth;
       for (let i = 0; i < maxCrossChildren.length; i++) {
         availableCross -= maxCrossChildren[i]!;
         if (i !== maxCrossChildren.length - 1 && !isContentSpace) {
@@ -731,18 +776,11 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         c = c.next;
       }
 
-      farthestX += e._style.paddingRight;
-      farthestY += e._style.paddingBottom;
+      farthestX += e._style.paddingRight + e._style.borderRightWidth;
+      farthestY += e._style.paddingBottom + e._style.borderBottomWidth;
 
       e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
       e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
-      // if (hasHorizontalScroll) {
-      //   e._state.scrollWidth += CROSS_AXIS_SIZE;
-      // }
-      // if (hasVerticalScroll) {
-      //   e._state.scrollHeight += CROSS_AXIS_SIZE;
-      // }
-      console.log(e.props.testID, e._state.scrollHeight, e._state.clientHeight);
     } else {
       e._state.scrollWidth = e._state.clientWidth;
       e._state.scrollHeight = e._state.clientHeight;

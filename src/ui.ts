@@ -187,8 +187,8 @@ function complexWindow() {
 
   const window = new View({
     style: {
-      backgroundColor: "#2B2B2B",
-      borderColor: "#555",
+      backgroundColor: "#191919",
+      borderColor: "#444",
       borderRadius: 12,
       borderWidth: 1,
       flexDirection: FlexDirection.Column,
@@ -201,25 +201,27 @@ function complexWindow() {
   const header = new View({ style: { gap: 8, padding: 12 } });
   window.add(header);
 
-  function text(value: string, fontSize: number, color: string) {
-    return new Text(value, { lookups, style: { color, fontName: "Inter", fontSize } });
+  function text(value: string, fontSize: number, color: string, fontName: string = "Inter") {
+    return new Text(value, { lookups, style: { color, fontName, fontSize } });
   }
 
-  function button(label: string) {
+  function button(label: string, theme: "primary" | "secondary" = "primary") {
     const button = new View({
       style: {
-        backgroundColor: "#fff",
+        backgroundColor: theme === "primary" ? "#104D87" : "#3A3A3A",
+        borderColor: theme === "primary" ? "#2870BD" : "#606060",
         borderRadius: 6,
-        height: 28,
+        borderTopWidth: 1,
+        height: 24,
         justifyContent: JustifyContent.Center,
         paddingHorizontal: 12,
       },
     });
-    button.add(text(label, 14, "#000"));
+    button.add(text(label, 14, "#fff", "InterBold"));
     return button;
   }
 
-  header.add(text("Browse games", 20, "#fff"));
+  header.add(text("Browse games", 20, "#fff", "InterBold"));
   header.add(text("See available lobbies.", 14, "#7B7B7B"));
 
   const body = new View({
@@ -256,6 +258,8 @@ function complexWindow() {
 
       const cell = new View({
         style: {
+          alignSelf: AlignSelf.Stretch,
+          backgroundColor: j % 2 === 0 ? "#111111" : "#191919",
           height: 28,
           justifyContent: JustifyContent.Center,
           paddingHorizontal: 12,
@@ -265,16 +269,16 @@ function complexWindow() {
 
       switch (columns[i]) {
         case "mode":
-          cell.add(text(item, 14, "#7B7B7B"));
+          cell.add(text(item, 14, "#B4B4B4"));
           break;
         case "name":
-          cell.add(text(item, 14, "#7B7B7B"));
+          cell.add(text(item, 14, "#B4B4B4"));
           break;
         case "password":
-          cell.add(text(item ? "Yes" : "No", 14, "#7B7B7B"));
+          cell.add(text(item ? "Yes" : "No", 14, "#B4B4B4"));
           break;
         case "players":
-          cell.add(text(`${item.current}/${item.limit}`, 14, "#7B7B7B"));
+          cell.add(text(`${item.current}/${item.limit}`, 14, "#B4B4B4"));
           break;
       }
     }
@@ -291,7 +295,7 @@ function complexWindow() {
   });
   window.add(footer);
 
-  footer.add(button("Cancel"));
+  footer.add(button("Cancel", "secondary"));
   footer.add(button("Join"));
 
   return container;
