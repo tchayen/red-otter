@@ -117,7 +117,7 @@ export class ScrollableRenderer implements Renderer {
           (input.position.x <= r.clipStart.x + r.clipSize.x) &&
           (input.position.y <= r.clipStart.y + r.clipSize.y);
         if (!inBounds) {
-          return vec4f(0, 0, 0, 0);
+          discard;
           // return vec4f(1, 0, 0, 0.3);
         }
 
@@ -163,8 +163,6 @@ export class ScrollableRenderer implements Renderer {
         }
         color.a *= 1.0 - smoothstep(-0.5, 0.5, outerDistance);
         return color;
-
-        // return data.rectangles[input.instance].color;
       }
     `;
 
@@ -227,7 +225,7 @@ export class ScrollableRenderer implements Renderer {
           (input.position.x <= g.clipStart.x + g.clipSize.x) &&
           (input.position.y <= g.clipStart.y + g.clipSize.y);
         if (!inBounds) {
-          return vec4f(0, 0, 0, 0);
+          discard;
           // return vec4f(1, 0, 0, 0.3);
         }
 

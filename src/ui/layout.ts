@@ -551,6 +551,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Adjust positions for justify content.
       if (e._style.justifyContent === JustifyContent.Center) {
+        // TODO: availableMain/cross is useful here for skipping own size, but we should ignore
+        // border or padding here (and we don't).
         main += availableMain / 2;
       }
       if (
@@ -568,6 +570,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Align content.
       if (e._style.alignContent === AlignContent.Center) {
+        // TODO: availableMain/cross is useful here for skipping own size, but we should ignore
+        // border or padding here (and we don't).
         if (i === 0) {
           cross += availableCross / 2;
         }
