@@ -601,7 +601,9 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
 
       // Iterate over children and apply positions and flex sizes.
-      for (const c of line) {
+      let usedMain = 0;
+      for (let j = 0; j < line.length; j++) {
+        const c = line[j]!;
         if (c._style.position !== Position.Relative || c._style.display === Display.None) {
           continue;
         }
@@ -609,13 +611,22 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         if (!isJustifySpace) {
           if (availableMain > 0 && (c._style.flex > 0 || c._style.flexGrow > 0)) {
             const flexValue = c._style.flex || c._style.flexGrow;
+
+            // When splitting the available space, the last child gets the remainder.
+            let size = Math.round((flexValue / totalFlexGrow) * availableMain);
+            usedMain += size;
+            if (j === line.length - 1 && usedMain < availableMain) {
+              size += availableMain - usedMain;
+            }
+
             if (isHorizontal) {
-              c._state.clientWidth += (flexValue / totalFlexGrow) * availableMain;
+              c._state.clientWidth += size;
             } else {
-              c._state.clientHeight += (flexValue / totalFlexGrow) * availableMain;
+              c._state.clientHeight += size;
             }
           }
           if (availableMain < 0 && c._style.flexShrink > 0) {
+            // TODO: figure out similar logic as above with splitting remainder.
             if (isHorizontal) {
               c._state.clientWidth += (c._style.flexShrink / totalFlexShrink) * availableMain;
             } else {
