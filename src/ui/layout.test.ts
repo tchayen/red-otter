@@ -2,11 +2,11 @@ import { describe, it, expect } from "vitest";
 
 import interTTF from "../../public/interTTF.json"; // This is a 1.8MB JSON file (95kB gzipped).
 import { prepareLookups } from "../font/prepareLookups";
-import { TTF } from "../font/parseTTF";
+import type { TTF } from "../font/parseTTF";
 import { layout } from "./layout";
 import { Vec2 } from "../math/Vec2";
-import { View } from "../View";
-import { Text } from "../Text";
+import type { View } from "../View";
+import type { Text } from "../Text";
 import * as fixtures from "../fixtures";
 import { getByTestId } from "./getByTestId";
 
@@ -378,7 +378,7 @@ describe("Layout", () => {
     const expectedValues = [
       [new Vec2(0, 0), new Vec2(270, 120)],
       [new Vec2(20, 10), new Vec2(100, 100)],
-      [new Vec2(30, 30), new Vec2(50, 50)],
+      [new Vec2(34, 34), new Vec2(50, 50)],
       [new Vec2(170, 10), new Vec2(50, 50)],
     ];
 
@@ -533,7 +533,7 @@ describe("Layout", () => {
     expect(xLabel?._state.y).toBe(145);
 
     const xValue = getByTestId(root, "xValue");
-    expect(xValue?._state.x).toBe(72);
+    expect(xValue?._state.x).toBe(73);
     expect(xValue?._state.y).toBe(145);
   });
 });

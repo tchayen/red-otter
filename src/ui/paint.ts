@@ -1,11 +1,11 @@
 import { Text } from "../Text";
-import { View } from "../View";
+import type { View } from "../View";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "../consts";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { Display, Overflow } from "../types";
 import { parseColor } from "../utils/parseColor";
-import { Renderer } from "./Renderer";
+import type { Renderer } from "./Renderer";
 import {
   CROSS_AXIS_SIZE,
   SCROLLBAR_COLOR,
@@ -85,6 +85,10 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
 
     const scrollbarRadius = CROSS_AXIS_SIZE / 2;
     // Scrollbar.
+
+    // if (node.props.testID === "body") {
+    //   console.log("paintNode", node._state);
+    // }
     if (node._style.overflow === Overflow.Scroll) {
       ui.rectangle(
         parseColor(SCROLLBAR_CORNER_COLOR),
@@ -98,8 +102,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0)
       );
     }
-    if (hasHorizontalScroll) {
-      const scrollbarSize = hasVerticalScroll ? size.y : size.y + CROSS_AXIS_SIZE;
+    if (hasVerticalScroll) {
+      const scrollbarSize = hasHorizontalScroll ? size.y : size.y + CROSS_AXIS_SIZE;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),
@@ -128,8 +132,8 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0)
       );
     }
-    if (hasVerticalScroll) {
-      const scrollbarSize = hasHorizontalScroll ? size.x : size.x + CROSS_AXIS_SIZE;
+    if (hasHorizontalScroll) {
+      const scrollbarSize = hasVerticalScroll ? size.x : size.x + CROSS_AXIS_SIZE;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),

@@ -1,10 +1,10 @@
-import { Text } from "../Text";
-import { View } from "../View";
+import type { Text } from "../Text";
+import type { View } from "../View";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { intersection } from "../math/utils";
 import { Display } from "../types";
-import { Renderer } from "./Renderer";
+import type { Renderer } from "./Renderer";
 
 /**
  * TODO: description.

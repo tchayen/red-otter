@@ -1,5 +1,6 @@
 import { invariant } from "../utils/invariant";
-import { BinaryReader, Fixed, FWord, Int16, Uint16, Uint32 } from "./BinaryReader";
+import type { Fixed, FWord, Int16, Uint16, Uint32 } from "./BinaryReader";
+import { BinaryReader } from "./BinaryReader";
 
 /**
  * @param data TTF file in binary format.

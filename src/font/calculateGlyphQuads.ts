@@ -1,6 +1,6 @@
 import { invariant } from "../utils/invariant";
-import { TTF } from "./parseTTF";
-import { Glyph } from "./types";
+import type { TTF } from "./parseTTF";
+import type { Glyph } from "./types";
 
 /**
  * @param ttf parsed TTF file (see parseTTF.ts).

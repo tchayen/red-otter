@@ -18,6 +18,9 @@ module.exports = {
     "plugin:comment-length/recommended",
   ],
   parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: "./tsconfig.json",
+  },
   plugins: [
     "@typescript-eslint",
     "import",
@@ -33,6 +36,9 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": Rule.Off,
     "@typescript-eslint/no-unused-vars": Rule.Off,
     "@typescript-eslint/no-var-requires": Rule.Off,
+    "@typescript-eslint/consistent-type-imports": Rule.Error,
+    "@typescript-eslint/consistent-type-exports": Rule.Error,
+    "@typescript-eslint/restrict-template-expressions": Rule.Error,
     "comment-length/limit-multi-line-comments": [Rule.Warn, { maxLength: 100 }],
     "comment-length/limit-single-line-comments": [Rule.Warn, { maxLength: 100 }],
     curly: Rule.Error,

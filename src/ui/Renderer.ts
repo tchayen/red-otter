@@ -1,5 +1,5 @@
-import { Vec2 } from "../math/Vec2";
-import { Vec4 } from "../math/Vec4";
+import type { Vec2 } from "../math/Vec2";
+import type { Vec4 } from "../math/Vec4";
 
 export interface Renderer {
   rectangle(

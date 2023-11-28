@@ -2,7 +2,7 @@ import { Vec2 } from "../math/Vec2";
 import { LRUCache } from "../utils/LRUCache";
 import { invariant } from "../utils/invariant";
 import { fontSizeToGap } from "./renderFontAtlas";
-import { Lookups } from "./types";
+import type { Lookups } from "./types";
 
 export const ENABLE_KERNING = true;
 

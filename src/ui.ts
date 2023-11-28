@@ -1,17 +1,11 @@
 import { Text } from "./Text";
-import { ScrollableRenderer } from "./ScrollableRenderer";
+import type { ScrollableRenderer } from "./ScrollableRenderer";
 import { View } from "./View";
-import { Lookups } from "./font/types";
+import type { Lookups } from "./font/types";
 import { layout } from "./ui/layout";
 import { Vec2 } from "./math/Vec2";
-import {
-  AlignSelf,
-  FlexDirection,
-  JustifyContent,
-  Overflow,
-  TextStyleProps,
-  ViewStyleProps,
-} from "./types";
+import type { TextStyleProps, ViewStyleProps } from "./types";
+import { AlignSelf, FlexDirection, JustifyContent, Overflow } from "./types";
 import { invariant } from "./utils/invariant";
 import * as fixtures from "./fixtures";
 import { measure } from "./measure";
@@ -229,9 +223,11 @@ function complexWindow() {
       backgroundColor: "#111",
       flexDirection: FlexDirection.Row,
       height: 150,
-      overflow: Overflow.Scroll,
+      overflowX: Overflow.Scroll,
+      overflowY: Overflow.Scroll,
       width: 400,
     },
+    testID: "body",
   });
   window.add(body);
 

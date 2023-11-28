@@ -1,4 +1,4 @@
-import { Vec2 } from "./Vec2";
+import type { Vec2 } from "./Vec2";
 import { Vec4 } from "./Vec4";
 
 /**

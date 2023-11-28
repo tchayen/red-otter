@@ -1,17 +1,14 @@
-import {
-  UserEventType,
+import type {
   ExactDecorativeProps,
   ExactLayoutProps,
   ViewStyleProps,
-  normalizeLayoutProps,
-  normalizeDecorativeProps,
   LayoutNodeState,
   ScrollEvent,
-  Overflow,
   ClickEvent,
   MoveEvent,
 } from "./types";
-import { Text } from "./Text";
+import { UserEventType, normalizeLayoutProps, normalizeDecorativeProps, Overflow } from "./types";
+import type { Text } from "./Text";
 import { Vec2 } from "./math/Vec2";
 
 type UserEventTuple =
@@ -72,7 +69,7 @@ export class View {
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
-    if (this._style.overflow === Overflow.Scroll) {
+    if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
       this._eventListeners.push([UserEventType.MouseScroll, onScroll]);
     }
   }

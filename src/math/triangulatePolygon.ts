@@ -1,5 +1,5 @@
 import { invariant } from "../utils/invariant";
-import { Vec2 } from "./Vec2";
+import type { Vec2 } from "./Vec2";
 
 type RingNode = {
   next: RingNode;

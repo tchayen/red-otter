@@ -1,5 +1,5 @@
-import { TTF, ValueRecord } from "./parseTTF";
-import { KerningFunction } from "./types";
+import type { TTF, ValueRecord } from "./parseTTF";
+import type { KerningFunction } from "./types";
 import { generateGlyphToClassMap } from "./generateGlyphToClassMap";
 import { invariant } from "../utils/invariant";
 

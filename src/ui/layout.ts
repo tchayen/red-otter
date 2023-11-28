@@ -1,5 +1,5 @@
 import { Queue } from "../utils/Queue";
-import { Vec2 } from "../math/Vec2";
+import type { Vec2 } from "../math/Vec2";
 import type { Lookups } from "../font/types";
 import { View } from "../View";
 import { invariant } from "../utils/invariant";
@@ -492,12 +492,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       if (!isJustifySpace) {
         availableMain -= mainGap * (line.length - 1);
       }
-      if (e._style.overflowX === Overflow.Scroll && e._state.scrollWidth > e._state.clientWidth) {
-        availableMain -= CROSS_AXIS_SIZE;
-      }
-      if (e._style.overflowY === Overflow.Scroll && e._state.scrollHeight > e._state.clientHeight) {
-        availableMain -= CROSS_AXIS_SIZE;
-      }
+
       let availableCross = isHorizontal
         ? e._state.clientHeight -
           e._style.paddingTop -
@@ -513,6 +508,21 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         availableCross -= maxCrossChildren[i]!;
         if (i !== maxCrossChildren.length - 1 && !isContentSpace) {
           availableCross -= crossGap;
+        }
+      }
+
+      if (e._style.overflowX === Overflow.Scroll && e._state.scrollWidth > e._state.clientWidth) {
+        if (isHorizontal) {
+          availableMain -= CROSS_AXIS_SIZE;
+        } else {
+          availableCross -= CROSS_AXIS_SIZE;
+        }
+      }
+      if (e._style.overflowY === Overflow.Scroll && e._state.scrollHeight > e._state.clientHeight) {
+        if (isVertical) {
+          availableMain -= CROSS_AXIS_SIZE;
+        } else {
+          availableCross -= CROSS_AXIS_SIZE;
         }
       }
 

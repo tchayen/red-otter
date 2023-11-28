@@ -1,11 +1,12 @@
 import { invariant } from "./utils/invariant";
 import { Vec2 } from "./math/Vec2";
 import { Vec4 } from "./math/Vec4";
-import { Lookups } from "./font/types";
-import { Shape, shapeText } from "./font/shapeText";
-import { Settings } from "./consts";
+import type { Lookups } from "./font/types";
+import type { Shape } from "./font/shapeText";
+import { shapeText } from "./font/shapeText";
+import type { Settings } from "./consts";
 import { createTextureFromImageBitmap } from "./createTextureFromBitmap";
-import { Renderer } from "./ui/Renderer";
+import type { Renderer } from "./ui/Renderer";
 
 /*
  * First number is the size of Rectangle struct (with padding).

@@ -1,13 +1,7 @@
 import { shapeText } from "./font/shapeText";
-
-import { Lookups } from "./font/types";
-import {
-  ExactLayoutProps,
-  LayoutNodeState,
-  TextStyleProps,
-  UserEvent,
-  normalizeLayoutProps,
-} from "./types";
+import type { Lookups } from "./font/types";
+import type { ExactLayoutProps, LayoutNodeState, TextStyleProps, UserEvent } from "./types";
+import { normalizeLayoutProps } from "./types";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
 import { Vec2 } from "./math/Vec2";
 

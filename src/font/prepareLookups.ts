@@ -4,9 +4,9 @@ import { packShelves } from "../math/packShelves";
 import { invariant } from "../utils/invariant";
 import { calculateGlyphQuads } from "./calculateGlyphQuads";
 import { generateKerningFunction } from "./generateKerningFunction";
-import { TTF } from "./parseTTF";
+import type { TTF } from "./parseTTF";
 import { fontSizeToGap } from "./renderFontAtlas";
-import { Glyph, Lookups } from "./types";
+import type { Glyph, Lookups } from "./types";
 
 /**
  * This is generally extension of the font parsing process.

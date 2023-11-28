@@ -1,6 +1,7 @@
 import { Text } from "./Text";
 import { View } from "./View";
-import { Lookups } from "./font/types";
+import type { Lookups } from "./font/types";
+import type { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
 import {
   AlignContent,
   AlignItems,
@@ -8,11 +9,8 @@ import {
   FlexDirection,
   FlexWrap,
   JustifyContent,
-  LayoutProps,
   Overflow,
   Position,
-  TextStyleProps,
-  ViewStyleProps,
 } from "./types";
 import { invariant } from "./utils/invariant";
 

@@ -1,6 +1,6 @@
-import { Text } from "./Text";
-import { View } from "./View";
-import { Vec2 } from "./math/Vec2";
+import type { Text } from "./Text";
+import type { View } from "./View";
+import type { Vec2 } from "./math/Vec2";
 
 export enum UserEventType {
   MouseClick,
