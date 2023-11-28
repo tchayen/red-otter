@@ -356,10 +356,10 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     if (e._style.overflowX === Overflow.Scroll) {
-      e._state.clientWidth -= CROSS_AXIS_SIZE;
+      e._state.clientHeight -= CROSS_AXIS_SIZE;
     }
     if (e._style.overflowY === Overflow.Scroll) {
-      e._state.clientHeight -= CROSS_AXIS_SIZE;
+      e._state.clientWidth -= CROSS_AXIS_SIZE;
     }
 
     const parentWidth = p?._state.clientWidth ?? 0;
@@ -754,6 +754,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     e._state.children = [];
+
     e._state.x = Math.round(e._state.x);
     e._state.y = Math.round(e._state.y);
     e._state.clientWidth = Math.round(e._state.clientWidth);

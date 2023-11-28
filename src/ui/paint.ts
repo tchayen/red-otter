@@ -89,7 +89,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
     // if (node.props.testID === "body") {
     //   console.log("paintNode", node._state);
     // }
-    if (node._style.overflow === Overflow.Scroll) {
+    if (hasVerticalScroll && hasHorizontalScroll) {
       ui.rectangle(
         parseColor(SCROLLBAR_CORNER_COLOR),
         position.add(new Vec2(size.x, size.y)),
@@ -103,7 +103,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
       );
     }
     if (hasVerticalScroll) {
-      const scrollbarSize = hasHorizontalScroll ? size.y : size.y + CROSS_AXIS_SIZE;
+      const scrollbarSize = size.y;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),
@@ -133,7 +133,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
       );
     }
     if (hasHorizontalScroll) {
-      const scrollbarSize = hasVerticalScroll ? size.x : size.x + CROSS_AXIS_SIZE;
+      const scrollbarSize = size.x;
 
       ui.rectangle(
         parseColor(SCROLLBAR_COLOR),

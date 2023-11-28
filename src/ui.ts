@@ -223,7 +223,7 @@ function complexWindow() {
       backgroundColor: "#111",
       flexDirection: FlexDirection.Row,
       height: 150,
-      overflowX: Overflow.Scroll,
+      // overflowX: Overflow.Scroll,
       overflowY: Overflow.Scroll,
       width: 400,
     },
