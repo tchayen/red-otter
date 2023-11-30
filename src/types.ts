@@ -1,8 +1,8 @@
 import type { Text } from "./Text";
 import type { View } from "./View";
-import type { Vec2 } from "./math/Vec2";
+import { Vec2 } from "./math/Vec2";
 
-export enum UserEventType {
+export const enum UserEventType {
   MouseClick,
   MouseMove,
   MouseScroll,
@@ -85,14 +85,30 @@ export type LayoutNodeState = {
   y: number;
 };
 
-export enum AlignItems {
+export const defaultLayoutNodeState = {
+  children: [],
+  clientHeight: 0,
+  clientWidth: 0,
+  clipSize: new Vec2(0, 0),
+  clipStart: new Vec2(0, 0),
+  scrollHeight: 0,
+  scrollWidth: 0,
+  scrollX: 0,
+  scrollY: 0,
+  totalScrollX: 0,
+  totalScrollY: 0,
+  x: 0,
+  y: 0,
+};
+
+export const enum AlignItems {
   Center,
   End,
   Start,
   Stretch,
 }
 
-export enum JustifyContent {
+export const enum JustifyContent {
   Center,
   End,
   SpaceAround,
@@ -101,7 +117,7 @@ export enum JustifyContent {
   Start,
 }
 
-export enum AlignContent {
+export const enum AlignContent {
   Center,
   End,
   SpaceAround,
@@ -111,7 +127,7 @@ export enum AlignContent {
   Stretch,
 }
 
-export enum AlignSelf {
+export const enum AlignSelf {
   Auto,
   Center,
   End,
@@ -119,32 +135,47 @@ export enum AlignSelf {
   Stretch,
 }
 
-export enum FlexDirection {
+export const enum FlexDirection {
   Column,
   ColumnReverse,
   Row,
   RowReverse,
 }
 
-export enum FlexWrap {
+export const enum FlexWrap {
   NoWrap,
   Wrap,
   WrapReverse,
 }
 
-export enum Overflow {
+/**
+ * Determines how the element is clipped.
+ */
+export const enum Overflow {
+  /**
+   * Shows scrollbars if needed.
+   */
   Auto,
+  /**
+   * Clips content but doesn't show scrollbars.
+   */
   Hidden,
+  /**
+   * Shows scrollbars always.
+   */
   Scroll,
+  /**
+   * Lets content overflow the parent.
+   */
   Visible,
 }
 
-export enum Display {
+export const enum Display {
   Flex,
   None,
 }
 
-export enum Position {
+export const enum Position {
   Absolute,
   Relative,
 }
@@ -336,8 +367,10 @@ const defaultDecorativeProps: DecorativeProps = {
   opacity: 1,
 };
 
-export function normalizeLayoutProps<T extends LayoutProps>(input: LayoutProps): T {
-  const result = { ...defaultLayoutProps, ...input } as T;
+export function normalizeLayoutProps<T extends LayoutProps, S extends ExactLayoutProps>(
+  input: T,
+): S {
+  const result = { ...defaultLayoutProps, ...input };
 
   result.paddingTop = input.paddingTop ?? input.paddingVertical ?? input.padding ?? 0;
   result.paddingBottom = input.paddingBottom ?? input.paddingVertical ?? input.padding ?? 0;
@@ -357,19 +390,21 @@ export function normalizeLayoutProps<T extends LayoutProps>(input: LayoutProps):
   result.columnGap = input.columnGap ?? input.gap ?? 0;
   result.rowGap = input.rowGap ?? input.gap ?? 0;
 
-  result.overflowX = input.overflowX ?? input.overflow;
-  result.overflowY = input.overflowY ?? input.overflow;
+  result.overflowX = input.overflowX ?? input.overflow ?? Overflow.Visible;
+  result.overflowY = input.overflowY ?? input.overflow ?? Overflow.Visible;
 
-  return result;
+  return result as S;
 }
 
-export function normalizeDecorativeProps<T extends DecorativeProps>(input: DecorativeProps): T {
-  const result = { ...defaultDecorativeProps, ...input } as T;
+export function normalizeDecorativeProps<T extends DecorativeProps, S extends ExactDecorativeProps>(
+  input: T,
+): S {
+  const result = { ...defaultDecorativeProps, ...input };
 
   result.borderTopLeftRadius = input.borderTopLeftRadius ?? input.borderRadius;
   result.borderTopRightRadius = input.borderTopRightRadius ?? input.borderRadius;
   result.borderBottomLeftRadius = input.borderBottomLeftRadius ?? input.borderRadius;
   result.borderBottomRightRadius = input.borderBottomRightRadius ?? input.borderRadius;
 
-  return result;
+  return result as S;
 }

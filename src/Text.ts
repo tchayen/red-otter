@@ -1,9 +1,8 @@
 import { shapeText } from "./font/shapeText";
 import type { Lookups } from "./font/types";
 import type { ExactLayoutProps, LayoutNodeState, TextStyleProps, UserEvent } from "./types";
-import { normalizeLayoutProps } from "./types";
+import { defaultLayoutNodeState, normalizeLayoutProps } from "./types";
 import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
-import { Vec2 } from "./math/Vec2";
 
 export class Text {
   next: Text | null = null;
@@ -15,21 +14,7 @@ export class Text {
    * Should always be normalized.
    */
   _style: TextStyleProps & ExactLayoutProps;
-  _state: LayoutNodeState = {
-    children: [],
-    clientHeight: 0,
-    clientWidth: 0,
-    clipSize: new Vec2(0, 0),
-    clipStart: new Vec2(0, 0),
-    scrollHeight: 0,
-    scrollWidth: 0,
-    scrollX: 0,
-    scrollY: 0,
-    totalScrollX: 0,
-    totalScrollY: 0,
-    x: 0,
-    y: 0,
-  };
+  _state: LayoutNodeState = { ...defaultLayoutNodeState };
 
   constructor(
     public text: string,
@@ -37,7 +22,7 @@ export class Text {
       lookups: Lookups;
       style: TextStyleProps;
       testID?: string;
-    }
+    },
   ) {
     const fontSize = props.style.fontSize ?? DEFAULT_FONT_SIZE;
     const shape = shapeText({

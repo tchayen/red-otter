@@ -14,7 +14,7 @@ export function compose(
   node: View | Text,
   clipStart = new Vec2(0, 0),
   clipSize = new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
-  scrollOffset = new Vec2(0, 0)
+  scrollOffset = new Vec2(0, 0),
 ): void {
   if (node._style.display === Display.None) {
     return;
@@ -32,9 +32,9 @@ export function compose(
       node._state.x - scrollOffset.x,
       node._state.y - scrollOffset.y,
       node._state.clientWidth,
-      node._state.clientHeight
+      node._state.clientHeight,
     ),
-    new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y)
+    new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y),
   );
 
   let c = node.firstChild;

@@ -2,3 +2,5 @@ node_modules/
 .vercel/
 .DS_Store
 coverage/
+
+.next/

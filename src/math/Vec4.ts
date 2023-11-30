@@ -11,7 +11,7 @@ export class Vec4 {
     public readonly x: number,
     public readonly y: number,
     public readonly z: number,
-    public readonly w: number
+    public readonly w: number,
   ) {}
 
   add(other: Vec4): Vec4 {
@@ -40,7 +40,7 @@ export class Vec4 {
       this.y * other.z - this.z * other.y,
       this.z * other.x - this.x * other.z,
       this.x * other.y - this.y * other.x,
-      0
+      0,
     );
   }
 

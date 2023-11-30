@@ -5,7 +5,7 @@ import type { ClassDefFormat1, ClassDefFormat2 } from "./parseTTF";
  * @returns a map from glyph ID to class ID.
  */
 export function generateGlyphToClassMap(
-  classDef: ClassDefFormat1 | ClassDefFormat2
+  classDef: ClassDefFormat1 | ClassDefFormat2,
 ): Map<number, number> {
   const glyphToClass = new Map<number, number>();
 

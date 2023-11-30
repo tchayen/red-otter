@@ -102,7 +102,7 @@ export class Mat4 {
     bottom: number,
     top: number,
     near: number,
-    far: number
+    far: number,
   ): Mat4 {
     // prettier-ignore
     return new Mat4([
@@ -181,7 +181,7 @@ export class Mat4 {
       this.data[0] * vec.x + this.data[1] * vec.y + this.data[2] * vec.z + this.data[3] * vec.w,
       this.data[4] * vec.x + this.data[5] * vec.y + this.data[6] * vec.z + this.data[7] * vec.w,
       this.data[8] * vec.x + this.data[9] * vec.y + this.data[10] * vec.z + this.data[11] * vec.w,
-      this.data[12] * vec.x + this.data[13] * vec.y + this.data[14] * vec.z + this.data[15] * vec.w
+      this.data[12] * vec.x + this.data[13] * vec.y + this.data[14] * vec.z + this.data[15] * vec.w,
     );
   }
 

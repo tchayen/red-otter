@@ -16,8 +16,8 @@ async function initialize() {
     "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
   const [interTTF, interBoldTTF] = await Promise.all(
     ["/Inter.ttf", "/Inter-SemiBold.ttf"].map(async (url) =>
-      fetch(url).then(async (response) => response.arrayBuffer())
-    )
+      fetch(url).then(async (response) => response.arrayBuffer()),
+    ),
   );
   invariant(interTTF, "Inter.ttf not found.");
   invariant(interBoldTTF, "Inter-SemiBold.ttf not found.");
@@ -29,7 +29,7 @@ async function initialize() {
   canvas.height = settings.windowHeight * window.devicePixelRatio;
   canvas.setAttribute(
     "style",
-    `width: ${settings.windowWidth}px; height: ${settings.windowHeight}px; display: flex; position: fixed`
+    `width: ${settings.windowWidth}px; height: ${settings.windowHeight}px; display: flex; position: fixed`,
   );
   document.body.append(canvas);
   const entry = navigator.gpu;
@@ -54,7 +54,7 @@ async function initialize() {
       { buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) },
       { buffer: interBoldTTF, name: "InterBold", ttf: parseTTF(interBoldTTF) },
     ],
-    { alphabet, fontSize: 150 }
+    { alphabet, fontSize: 150 },
   );
 
   const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
@@ -74,7 +74,7 @@ async function initialize() {
     colorTextureView,
     settings,
     lookups,
-    fontAtlas
+    fontAtlas,
   );
 
   const root = ui(renderer);
@@ -91,7 +91,7 @@ async function initialize() {
     renderer.render(commandEncoder);
     device.queue.submit([commandEncoder.finish()]);
 
-    requestAnimationFrame(render);
+    // requestAnimationFrame(render);
   }
 
   render();

@@ -17,7 +17,7 @@ const alphabet =
   "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
 const lookups = prepareLookups(
   [{ buffer: new ArrayBuffer(0), name: "Inter", ttf: interTTF as TTF }],
-  { alphabet, fontSize: 150 }
+  { alphabet, fontSize: 150 },
 );
 
 fixtures.setLookups(lookups);

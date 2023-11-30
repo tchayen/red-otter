@@ -24,7 +24,7 @@ export function prepareLookups(
   options?: {
     alphabet?: string;
     fontSize?: number;
-  }
+  },
 ): Lookups {
   const atlasFontSize = options?.fontSize ?? 96;
   const atlasGap = fontSizeToGap(atlasFontSize);
@@ -48,8 +48,8 @@ export function prepareLookups(
 
     sizes.push(
       ...glyphs.map(
-        (g) => new Vec2(g.width * scale + atlasGap * 2, g.height * scale + atlasGap * 2)
-      )
+        (g) => new Vec2(g.width * scale + atlasGap * 2, g.height * scale + atlasGap * 2),
+      ),
     );
 
     const glyphMap = new Map<number, Glyph>();
@@ -95,8 +95,8 @@ export function prepareLookups(
           position.x / lookups.atlas.width,
           position.y / lookups.atlas.height,
           size.x / lookups.atlas.width,
-          size.y / lookups.atlas.height
-        )
+          size.y / lookups.atlas.height,
+        ),
       );
     }
     start += glyphs.length;

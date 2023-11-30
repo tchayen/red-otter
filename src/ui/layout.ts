@@ -194,7 +194,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             // For column layout only wraps the widest child.
             e._state.clientWidth = Math.max(
               e._state.clientWidth,
-              c._state.clientWidth + c._style.marginLeft + c._style.marginRight
+              c._state.clientWidth + c._style.marginLeft + c._style.marginRight,
             );
           }
         }
@@ -228,7 +228,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (isHorizontal && c._style.position === Position.Relative) {
             e._state.clientHeight = Math.max(
               e._state.clientHeight,
-              c._state.clientHeight + c._style.marginTop + c._style.marginBottom
+              c._state.clientHeight + c._style.marginTop + c._style.marginBottom,
             );
           }
         }
@@ -322,7 +322,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       // Keep track of the longest child in the flex container for the purpose of wrapping.
       longestChildSize = Math.max(
         longestChildSize,
-        isHorizontal ? c._state.clientHeight : c._state.clientWidth
+        isHorizontal ? c._state.clientHeight : c._state.clientWidth,
       );
 
       rows.at(-1)?.push(c);
@@ -462,7 +462,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         childrenCount += 1;
         maxCrossChild = Math.max(
           maxCrossChild,
-          isHorizontal ? c._state.clientHeight : c._state.clientWidth
+          isHorizontal ? c._state.clientHeight : c._state.clientWidth,
         );
       }
       maxCrossChildren.push(maxCrossChild);
@@ -666,7 +666,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           if (e._state.children.length === 1) {
             lineCrossSize = Math.max(
               lineCrossSize,
-              isHorizontal ? e._state.clientHeight : e._state.clientWidth
+              isHorizontal ? e._state.clientHeight : e._state.clientWidth,
             );
           }
 
@@ -788,7 +788,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             c._state.clientWidth +
             potentialHorizontalScroll +
             c._style.marginRight -
-            e._state.x
+            e._state.x,
         );
         farthestY = Math.max(
           farthestY,
@@ -797,7 +797,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             c._state.clientHeight +
             potentialVerticalScroll +
             c._style.marginBottom -
-            e._state.y
+            e._state.y,
         );
         c = c.next;
       }

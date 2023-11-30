@@ -16,7 +16,7 @@ export async function renderFontAtlas(
   options?: {
     alphabet?: string;
     useSDF?: boolean;
-  }
+  },
 ): Promise<ImageBitmap> {
   const fontSize = lookups.atlas.fontSize;
   const atlasRadius = options?.useSDF ? fontSizeToGap(fontSize) : 0;
@@ -63,7 +63,7 @@ export async function renderFontAtlas(
         String.fromCharCode(glyph.id),
         // Additionally offset by glyph (X, Y).
         position.x - glyph.x * scale + atlasGap,
-        position.y + size.y + glyph.y * scale - atlasGap
+        position.y + size.y + glyph.y * scale - atlasGap,
       );
     }
     start += glyphs.length;

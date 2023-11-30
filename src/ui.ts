@@ -27,9 +27,10 @@ export function ui(renderer: ScrollableRenderer): View {
     testID: "root",
   });
 
+  root.add(fixtures.text());
   // root.add(exampleGrid());
   // root.add(fixtures.displayAndOverflow());
-  root.add(complexWindow());
+  // root.add(complexWindow());
 
   measure("Layout", () => {
     layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
@@ -68,8 +69,8 @@ function exampleGrid() {
 
   container.add(
     text(
-      "NOTE:\nthe examples are not enumerating all features but rather try to catch as many edge cases as they can fit. So don't interpret them as direct representation of their description."
-    )
+      "NOTE:\nthe examples are not enumerating all features but rather try to catch as many edge cases as they can fit. So don't interpret them as direct representation of their description.",
+    ),
   );
 
   const examples = new View({
@@ -195,10 +196,6 @@ function complexWindow() {
   const header = new View({ style: { gap: 8, padding: 12 } });
   window.add(header);
 
-  function text(value: string, fontSize: number, color: string, fontName: string = "Inter") {
-    return new Text(value, { lookups, style: { color, fontName, fontSize } });
-  }
-
   function button(label: string, theme: "primary" | "secondary" = "primary") {
     const button = new View({
       style: {
@@ -231,6 +228,8 @@ function complexWindow() {
   });
   window.add(body);
 
+  const columns = ["name", "players", "mode", "password"] as const;
+
   const list = [
     { mode: "FFA", name: "Random map", password: false, players: { current: 3, limit: 8 } },
     { mode: "FFA", name: "Black forest", password: false, players: { current: 3, limit: 8 } },
@@ -240,8 +239,6 @@ function complexWindow() {
     { mode: "1v1", name: "Amazon Tunnel", password: true, players: { current: 1, limit: 2 } },
     { mode: "1v1", name: "Random map", password: false, players: { current: 2, limit: 2 } },
   ];
-
-  const columns = ["name", "players", "mode", "password"];
 
   for (let i = 0; i < columns.length; i++) {
     const column = new View({
@@ -265,16 +262,23 @@ function complexWindow() {
 
       switch (columns[i]) {
         case "mode":
-          cell.add(text(item, 14, "#B4B4B4"));
+          cell.add(text(item as string, 14, "#B4B4B4"));
           break;
         case "name":
-          cell.add(text(item, 14, "#B4B4B4"));
+          cell.add(text(item as string, 14, "#B4B4B4"));
           break;
         case "password":
           cell.add(text(item ? "Yes" : "No", 14, "#B4B4B4"));
           break;
         case "players":
-          cell.add(text(`${item.current}/${item.limit}`, 14, "#B4B4B4"));
+          if (
+            typeof item !== "boolean" &&
+            typeof item !== "string" &&
+            "current" in item &&
+            "limit" in item
+          ) {
+            cell.add(text(`${item.current}/${item.limit}`, 14, "#B4B4B4"));
+          }
           break;
       }
     }
@@ -295,6 +299,10 @@ function complexWindow() {
   footer.add(button("Join"));
 
   return container;
+}
+
+function text(value: string, fontSize: number, color: string, fontName: string = "Inter") {
+  return new Text(value, { lookups, style: { color, fontName, fontSize } });
 }
 
 function debugPrintTree(tree: View | Text, level: number = 0) {

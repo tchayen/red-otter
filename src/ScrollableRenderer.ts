@@ -1,6 +1,6 @@
 import { invariant } from "./utils/invariant";
-import { Vec2 } from "./math/Vec2";
-import { Vec4 } from "./math/Vec4";
+import type { Vec2 } from "./math/Vec2";
+import type { Vec4 } from "./math/Vec4";
 import type { Lookups } from "./font/types";
 import type { Shape } from "./font/shapeText";
 import { shapeText } from "./font/shapeText";
@@ -52,7 +52,7 @@ export class ScrollableRenderer implements Renderer {
     private readonly colorTextureView: GPUTextureView,
     private readonly settings: Settings,
     public readonly fontLookups: Lookups,
-    fontAtlasTexture: ImageBitmap
+    fontAtlasTexture: ImageBitmap,
   ) {
     const rectangleShader = /* wgsl */ `
       struct VertexInput {
@@ -442,7 +442,7 @@ export class ScrollableRenderer implements Renderer {
     borderColor: Vec4,
     clipStart: Vec2,
     clipSize: Vec2,
-    clipCorners: Vec4
+    clipCorners: Vec4,
   ): void {
     if (color.w < 0.01) {
       return;
@@ -502,9 +502,7 @@ export class ScrollableRenderer implements Renderer {
     options?: {
       lineHeight?: number;
       maxWidth?: number;
-      trimEnd?: Vec2;
-      trimStart?: Vec2;
-    }
+    },
   ): void {
     if (this.drawingMode !== DrawingMode.Text) {
       this.drawingIndices.push(this.rectangleCount, this.glyphCount);
@@ -523,7 +521,7 @@ export class ScrollableRenderer implements Renderer {
       });
     } catch (error) {
       console.error(
-        `Failed while shaping the word "${text.slice(0, 50)}${text.length > 50 ? "…" : ""}".`
+        `Failed while shaping the word "${text.slice(0, 50)}${text.length > 50 ? "…" : ""}".`,
       );
       console.error(error);
       return;
@@ -532,7 +530,7 @@ export class ScrollableRenderer implements Renderer {
     invariant(shape.positions.length === text.length, "Shape length does not match text length.");
 
     for (let i = 0; i < shape.positions.length; i++) {
-      let size = shape.sizes[i];
+      const size = shape.sizes[i];
       const character = text[i];
       invariant(size, "Size does not exist.");
       invariant(character, "Text does not exist.");
@@ -542,64 +540,12 @@ export class ScrollableRenderer implements Renderer {
         continue;
       }
 
-      let shapePosition = shape.positions[i]!.add(position);
+      const shapePosition = shape.positions[i]!.add(position);
 
-      let uv =
+      const uv =
         this.fontLookups.uvs.get(`${fontName}-${character.charCodeAt(0)}`) ??
         this.fontLookups.uvs.get(`${fontName}-${"□".charCodeAt(0)}`)!;
       invariant(uv, "UV does not exist.");
-
-      if (options?.trimStart) {
-        const diffX = options.trimStart.x - shapePosition.x;
-        const diffY = options.trimStart.y - shapePosition.y;
-
-        if (shapePosition.x + size.x < options.trimStart.x) {
-          size = new Vec2(0, 0);
-        }
-
-        if (shapePosition.y + size.y < options.trimStart.y) {
-          size = new Vec2(0, 0);
-        }
-
-        if (diffX > 0) {
-          const uvDiffX = (diffX / size.x) * uv.z;
-          uv = new Vec4(uv.x + uvDiffX, uv.y, uv.z - uvDiffX, uv.w);
-          size = new Vec2(size.x - diffX, size.y);
-          shapePosition = new Vec2(options.trimStart.x, shapePosition.y);
-        }
-
-        if (diffY > 0) {
-          const uvDiffY = (diffY / size.y) * uv.w;
-          uv = new Vec4(uv.x, uv.y + uvDiffY, uv.z, uv.w - uvDiffY);
-          size = new Vec2(size.x, size.y - diffY);
-          shapePosition = new Vec2(shapePosition.x, options.trimStart.y);
-        }
-      }
-
-      if (options?.trimEnd) {
-        const diffX = shapePosition.x + size.x - options.trimEnd.x;
-        const diffY = shapePosition.y + size.y - options.trimEnd.y;
-
-        if (shapePosition.x > options.trimEnd.x) {
-          size = new Vec2(0, 0);
-        }
-
-        if (shapePosition.y > options.trimEnd.y) {
-          size = new Vec2(0, 0);
-        }
-
-        if (diffX > 0) {
-          const uvDiffX = (diffX / size.x) * uv.z;
-          uv = new Vec4(uv.x, uv.y, uv.z - uvDiffX, uv.w);
-          size = new Vec2(size.x - diffX, size.y);
-        }
-
-        if (diffY > 0) {
-          const uvDiffY = (diffY / size.y) * uv.w;
-          uv = new Vec4(uv.x, uv.y, uv.z, uv.w - uvDiffY);
-          size = new Vec2(size.x, size.y - diffY);
-        }
-      }
 
       const struct = 20;
       this.glyphData[this.glyphCount * struct + 0] = shapePosition.x;
@@ -659,7 +605,7 @@ export class ScrollableRenderer implements Renderer {
       this.settings.windowWidth * window.devicePixelRatio,
       this.settings.windowHeight * window.devicePixelRatio,
       0,
-      1
+      1,
     );
     renderPass.setVertexBuffer(0, this.vertexBuffer);
 

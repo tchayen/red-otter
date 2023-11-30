@@ -186,7 +186,7 @@ export function alignItemsAndSelf() {
   function addRow(
     alignItems: LayoutProps["alignItems"],
     last?: Partial<LayoutProps>,
-    all?: Partial<LayoutProps>
+    all?: Partial<LayoutProps>,
   ) {
     const firstStyle = {
       backgroundColor: colors[1],
@@ -221,7 +221,7 @@ export function alignItemsAndSelf() {
   addRow(
     AlignItems.Stretch,
     { alignSelf: AlignSelf.End, height: crossAxisValue },
-    { height: undefined }
+    { height: undefined },
   );
 
   const columns = new View({
@@ -236,7 +236,7 @@ export function alignItemsAndSelf() {
   function addColumn(
     alignItems: LayoutProps["alignItems"],
     last?: Partial<LayoutProps>,
-    all?: Partial<LayoutProps>
+    all?: Partial<LayoutProps>,
   ) {
     const firstStyle = {
       backgroundColor: colors[1],
@@ -271,7 +271,7 @@ export function alignItemsAndSelf() {
   addColumn(
     AlignItems.Stretch,
     { alignSelf: AlignSelf.End, width: crossAxisValue },
-    { width: undefined }
+    { width: undefined },
   );
 
   return root;
@@ -384,7 +384,7 @@ export function flexWrapRow() {
     backgroundColor: string | undefined,
     width: number,
     height: number,
-    style?: Partial<ViewStyleProps>
+    style?: Partial<ViewStyleProps>,
   ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
@@ -427,7 +427,7 @@ export function flexWrapColumn() {
     backgroundColor: string,
     width: number,
     height: number,
-    style?: Partial<ViewStyleProps>
+    style?: Partial<ViewStyleProps>,
   ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
@@ -468,7 +468,7 @@ export function alignContent() {
 
   function container(
     backgroundColor: string | undefined,
-    alignContent: LayoutProps["alignContent"]
+    alignContent: LayoutProps["alignContent"],
   ) {
     const c = new View({
       style: {
@@ -493,7 +493,7 @@ export function alignContent() {
     backgroundColor: string | undefined,
     width: number,
     height: number,
-    style?: Partial<ViewStyleProps>
+    style?: Partial<ViewStyleProps>,
   ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
@@ -521,7 +521,7 @@ export function flexShrinkAndGrow() {
     backgroundColor: string | undefined,
     width: number,
     height: number,
-    style?: Partial<ViewStyleProps>
+    style?: Partial<ViewStyleProps>,
   ) {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
@@ -835,7 +835,7 @@ export function displayAndOverflow() {
       new View({
         style: { backgroundColor: colors[i + 2], height: 60, width: 180 - i * 20 },
         testID: `D-${i}`,
-      })
+      }),
     );
   }
 
@@ -883,7 +883,7 @@ export function zIndex() {
 }
 
 export function text() {
-  const root = new View({ style: rootStyle });
+  const root = new View({ style: { ...rootStyle, backgroundColor: "#222" } });
 
   function text(value: string, style?: Partial<TextStyleProps>) {
     invariant(lookups, "Lookups must be set.");
@@ -891,15 +891,15 @@ export function text() {
       new Text(value, {
         lookups,
         style: { color: "#fff", fontName: "Inter", fontSize: 16, ...style },
-      })
+      }),
     );
   }
 
   text(
-    "Some multiline text that will be wrapped when it runs out of space and it also follows the defined line height."
+    "Some multiline text that will be wrapped when it runs out of space and it also follows the defined line height.",
   );
-  text("This is right aligned text.", { textAlign: "right" });
-  text("This is centered.", { textAlign: "center" });
+  // text("This is right aligned text.", { textAlign: "right" });
+  // text("This is centered.", { textAlign: "center" });
 
   return root;
 }
@@ -1016,7 +1016,7 @@ export function interactiveButton() {
   });
   root.add(button);
   button.add(
-    new Text("Accept", { lookups, style: { color: "#000", fontName: "InterBold", fontSize: 15 } })
+    new Text("Accept", { lookups, style: { color: "#000", fontName: "InterBold", fontSize: 15 } }),
   );
 
   return root;

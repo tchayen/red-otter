@@ -4,7 +4,10 @@ const EPSILON = 0.001;
  * A 2D vector.
  */
 export class Vec2 {
-  constructor(public readonly x: number, public readonly y: number) {}
+  constructor(
+    public readonly x: number,
+    public readonly y: number,
+  ) {}
 
   add(other: Vec2): Vec2 {
     return new Vec2(this.x + other.x, this.y + other.y);

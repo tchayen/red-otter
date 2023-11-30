@@ -38,7 +38,7 @@ type ShapeTextOptions = {
 export function shapeText(options: ShapeTextOptions): Shape {
   const { lookups, text, fontSize, fontName, lineHeight, maxWidth, textAlignment } = options;
   const cached = cache.get(
-    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlignment })
+    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlignment }),
   );
 
   if (cached) {
@@ -72,9 +72,13 @@ export function shapeText(options: ShapeTextOptions): Shape {
       kerning = font.kern(text[i - 1]!.charCodeAt(0), text[i]!.charCodeAt(0));
     }
 
+    // TODO: implement this again.
+    // Maybe store and build up length of current word and if it exceeds maxWidth, calculate offset
+    // from start of the word and put whole word the line below
+
     const nextPosition = new Vec2(
       positionX + (lsb + kerning) * scale - padding,
-      positionY + (font.capHeight - y - height) * scale - padding
+      positionY + (font.capHeight - y - height) * scale - padding,
     );
 
     positions[i] = nextPosition;

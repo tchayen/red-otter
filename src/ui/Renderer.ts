@@ -11,7 +11,7 @@ export interface Renderer {
     borderColor: Vec4,
     clipStart: Vec2,
     clipSize: Vec2,
-    clipCorners: Vec4
+    clipCorners: Vec4,
   ): void;
 
   render(commandEncoder: GPUCommandEncoder): void;
@@ -25,11 +25,6 @@ export interface Renderer {
     textAlignment: "left" | "center" | "right",
     clipStart: Vec2,
     clipSize: Vec2,
-    options?: {
-      lineHeight?: number;
-      maxWidth?: number;
-      trimEnd?: Vec2;
-      trimStart?: Vec2;
-    }
+    options?: { lineHeight?: number; maxWidth?: number },
   ): void;
 }

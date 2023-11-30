@@ -55,7 +55,7 @@ class MockRenderer implements Renderer {
     _borderColor: Vec4,
     _clipStart: Vec2,
     _clipSize: Vec2,
-    _clipCorners: Vec4
+    _clipCorners: Vec4,
   ): void {}
   render(_commandEncoder: GPUCommandEncoder): void {}
   text(
@@ -67,13 +67,6 @@ class MockRenderer implements Renderer {
     _textAlignment: "left" | "right" | "center",
     _clipStart: Vec2,
     _clipSize: Vec2,
-    _options?:
-      | {
-          lineHeight?: number | undefined;
-          maxWidth?: number | undefined;
-          trimEnd?: Vec2 | undefined;
-          trimStart?: Vec2 | undefined;
-        }
-      | undefined
+    _options?: { lineHeight?: number | undefined; maxWidth?: number | undefined } | undefined,
   ): void {}
 }

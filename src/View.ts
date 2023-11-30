@@ -7,9 +7,14 @@ import type {
   ClickEvent,
   MoveEvent,
 } from "./types";
-import { UserEventType, normalizeLayoutProps, normalizeDecorativeProps, Overflow } from "./types";
+import {
+  UserEventType,
+  normalizeLayoutProps,
+  normalizeDecorativeProps,
+  Overflow,
+  defaultLayoutNodeState,
+} from "./types";
 import type { Text } from "./Text";
-import { Vec2 } from "./math/Vec2";
 
 type UserEventTuple =
   | [UserEventType.MouseClick, (event: ClickEvent) => void]
@@ -22,21 +27,7 @@ export class View {
   firstChild: View | Text | null = null;
   lastChild: View | Text | null = null;
   parent: View | null = null;
-  _state: LayoutNodeState = {
-    children: [],
-    clientHeight: 0,
-    clientWidth: 0,
-    clipSize: new Vec2(0, 0),
-    clipStart: new Vec2(0, 0),
-    scrollHeight: 0,
-    scrollWidth: 0,
-    scrollX: 0,
-    scrollY: 0,
-    totalScrollX: 0,
-    totalScrollY: 0,
-    x: 0,
-    y: 0,
-  };
+  _state: LayoutNodeState = { ...defaultLayoutNodeState };
   /**
    * Should always be normalized.
    */
@@ -46,34 +37,33 @@ export class View {
   constructor(
     public props: {
       onClick?(): void;
-      style: ViewStyleProps;
+      style?: ViewStyleProps;
       testID?: string;
-    }
+    },
   ) {
-    const onScroll = (event: ScrollEvent) => {
-      // BRAINSTORM: so technically here the this._state.metrics.height (or width) should be
-      // lowered by the presence of parent scrollbars
-      // But if implemented as described then also the outer root is being moved inside the page
-      // which is not what should happen.
-      this._state.scrollX = Math.min(
-        Math.max(this._state.scrollX + Math.round(event.delta.x), 0),
-        this._state.scrollWidth - this._state.clientWidth
-      );
-      this._state.scrollY = Math.min(
-        Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
-        this._state.scrollHeight - this._state.clientHeight
-      );
-    };
-
-    this._style = normalizeDecorativeProps(normalizeLayoutProps(props.style));
+    this._style = normalizeDecorativeProps(
+      normalizeLayoutProps(props.style ?? {}) as ViewStyleProps,
+    );
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
-      this._eventListeners.push([UserEventType.MouseScroll, onScroll]);
+      this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
     }
   }
 
+  onScroll = (event: ScrollEvent) => {
+    this._state.scrollX = Math.min(
+      Math.max(this._state.scrollX + Math.round(event.delta.x), 0),
+      this._state.scrollWidth - this._state.clientWidth,
+    );
+    this._state.scrollY = Math.min(
+      Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
+      this._state.scrollHeight - this._state.clientHeight,
+    );
+  };
+
+  // TODO: this could be in some base class.
   add(node: View | Text): View | Text {
     node.parent = this;
 

@@ -35,7 +35,7 @@ export function paint(ui: Renderer, node: View | Text) {
  */
 function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: Vec2): void {
   const position = new Vec2(node._state.x, node._state.y).subtract(
-    new Vec2(node._state.totalScrollX, node._state.totalScrollY)
+    new Vec2(node._state.totalScrollX, node._state.totalScrollY),
   );
   if (node instanceof Text) {
     ui.text(
@@ -52,7 +52,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
           node._style.lineHeight ??
           DEFAULT_LINE_HEIGHT_MULTIPLIER * (node._style.fontSize ?? DEFAULT_FONT_SIZE),
         maxWidth: node._state.textWidthLimit,
-      }
+      },
     );
   } else {
     const size = new Vec2(node._state.clientWidth, node._state.clientHeight);
@@ -69,26 +69,22 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         node._style.borderTopLeftRadius,
         node._style.borderTopRightRadius,
         node._style.borderBottomRightRadius,
-        node._style.borderBottomLeftRadius
+        node._style.borderBottomLeftRadius,
       ),
       new Vec4(
         node._style.borderBottomWidth,
         node._style.borderRightWidth,
         node._style.borderTopWidth,
-        node._style.borderLeftWidth
+        node._style.borderLeftWidth,
       ),
       parseColor(node._style.borderColor),
       clipStart,
       clipSize,
-      new Vec4(0, 0, 0, 0)
+      new Vec4(0, 0, 0, 0),
     );
 
     const scrollbarRadius = CROSS_AXIS_SIZE / 2;
     // Scrollbar.
-
-    // if (node.props.testID === "body") {
-    //   console.log("paintNode", node._state);
-    // }
     if (hasVerticalScroll && hasHorizontalScroll) {
       ui.rectangle(
         parseColor(SCROLLBAR_CORNER_COLOR),
@@ -99,7 +95,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
-        new Vec4(0, 0, 0, 0)
+        new Vec4(0, 0, 0, 0),
       );
     }
     if (hasVerticalScroll) {
@@ -114,7 +110,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
-        new Vec4(0, 0, 0, 0)
+        new Vec4(0, 0, 0, 0),
       );
 
       const scrollTrackSize = (node._state.clientHeight / node._state.scrollHeight) * scrollbarSize;
@@ -129,7 +125,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
-        new Vec4(0, 0, 0, 0)
+        new Vec4(0, 0, 0, 0),
       );
     }
     if (hasHorizontalScroll) {
@@ -144,7 +140,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
-        new Vec4(0, 0, 0, 0)
+        new Vec4(0, 0, 0, 0),
       );
 
       const scrollTrackSize = (node._state.clientWidth / node._state.scrollWidth) * scrollbarSize;
@@ -159,7 +155,7 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
         new Vec4(0, 0, 0, 0),
         clipStart,
         clipSize,
-        new Vec4(0, 0, 0, 0)
+        new Vec4(0, 0, 0, 0),
       );
     }
   }

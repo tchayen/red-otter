@@ -10,7 +10,10 @@ export class BinaryReader {
   private readonly view: DataView;
   private position = 0;
 
-  constructor(data: ArrayBuffer, private readonly options?: { littleEndian?: boolean }) {
+  constructor(
+    data: ArrayBuffer,
+    private readonly options?: { littleEndian?: boolean },
+  ) {
     this.view = new DataView(data);
   }
 

@@ -62,6 +62,7 @@ Some differences (or unobvious cases) from RN and/or CSS:
 - Similarly to CSS and RN, if both top and bottom (or left and right) are defined and `height` (or `width`) is _not_ defined, the element will span the distance between those two edges.
 - Properties with higher specificity override properties with lower specificity (in CSS order matters).
   In CSS `style="flex-grow: 1; flex: 2"` would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
+- `box-sizing` is always `border-box`, which means that `width` and `height` include both `padding` and `border` (CSS default is `content-box`).
 
 ### Layout props
 
