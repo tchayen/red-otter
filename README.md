@@ -1,4 +1,4 @@
-# red-otter
+# Red Otter
 
 > [!WARNING]
 > This project is in early development stage. It's not ready for production use.
@@ -7,13 +7,15 @@
 
 A flexbox (think CSS or Yoga) layout engine that comes with its own TTF font parser, WebGPU-based text and UI renderer and a declarative UI API (think React).
 
+Using TypeScript/JavaScript you can create a fully interactive, browser-like layout that lives inside a `<canvas />`.
+
 #### Why is it useful?
 
 It's bold of you to assume I'd make something useful.
 
 #### When would I use it?
 
-If you are writing a JS/TS application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular so WebGPU renderer for instance can be replaced with WebGL, canvas or Skia based one if needed.
+If you are writing a TypeScript/JavaScript application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular so WebGPU renderer for instance can be replaced with WebGL, canvas or Skia based one if needed.
 
 #### Why retained mode?
 
@@ -36,15 +38,12 @@ Even though this library does a lot of things, you don't need to use it all. Mod
 
 ## Design and structure
 
-> [!NOTE]
-> Properties starting with double underscore (`__`) are considered internal and should not be used. Relying on them will be a time bomb that will break your app in the future.
-
 Layers:
 
-- UI
-- `layout()` - takes tree of nodes and calculates screen positions and sizes.
-- `paint()` - takes tree of nodes after layout and prepares commands for the renderer that consider clipping, scrolling, etc.
-- `UIRenderer` - given precise commands renderes styled rectangles and text to the screen.
+- `layout()` - takes tree of nodes and calculates screen positions and sizes. Runs only when component tree changes.
+- `compose()` - takes tree of nodes after layout and calculates screen-space positions after including scrolling. Runs after user events.
+- `paint()` - takes tree of nodes after compose and prepares commands for the renderer.
+- `Renderer` - given precise commands renderes styled rectangles and text to the screen.
 
 ## Styling
 
@@ -63,94 +62,3 @@ Some differences (or unobvious cases) from RN and/or CSS:
 - Properties with higher specificity override properties with lower specificity (in CSS order matters).
   In CSS `style="flex-grow: 1; flex: 2"` would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
 - `box-sizing` is always `border-box`, which means that `width` and `height` include both `padding` and `border` (CSS default is `content-box`).
-
-### Layout props
-
-Instructions for the layout engine.
-
-| Prop              | Default        | Type                                                                                                         |
-| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| alignContent      | `"flex-start"` | `"flex-start" \| "flex-end" \| "center" \| "stretch" \| "space-between" \| "space-around" \| "space-evenly"` |
-| alignItems        | `"flex-start"` | `"flex-start" \| "flex-end" \| "center" \| "stretch"`                                                        |
-| alignSelf         | `"auto"`       | `"auto" \| "flex-start" \| "center" \| "flex-end" \| "stretch"`                                              |
-| borderBottomWidth | `0`            | `number`                                                                                                     |
-| borderLeftWidth   | `0`            | `number`                                                                                                     |
-| borderRightWidth  | `0`            | `number`                                                                                                     |
-| borderTopWidth    | `0`            | `number`                                                                                                     |
-| borderWidth       | `0`            | `number`                                                                                                     |
-| bottom            | `0`            | `number`                                                                                                     |
-| columnGap         | `0`            | `number`                                                                                                     |
-| display           | `"flex"`       | `"flex" \| "none"`                                                                                           |
-| flex              | `0`            | `number`                                                                                                     |
-| flexBasis         | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| flexDirection     | `"column"`     | `"row" \| "column" \| "row-reverse" \| "column-reverse"`                                                     |
-| flexGrow          | `0`            | `number`                                                                                                     |
-| flexShrink        | `0`            | `number`                                                                                                     |
-| flexWrap          | `"nowrap"`     | `"wrap" \| "nowrap" \| "wrap-reverse"`                                                                       |
-| gap               | `0`            | `number`                                                                                                     |
-| height            | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| justifyContent    | `"flex-start"` | `"flex-start" \| "flex-end" \| "center" \| "space-between" \| "space-around" \| "space-evenly"`              |
-| left              | `0`            | `number`                                                                                                     |
-| margin            | `0`            | `number`                                                                                                     |
-| marginBottom      | `0`            | `number`                                                                                                     |
-| marginHorizontal  | `0`            | `number`                                                                                                     |
-| marginLeft        | `0`            | `number`                                                                                                     |
-| marginRight       | `0`            | `number`                                                                                                     |
-| marginTop         | `0`            | `number`                                                                                                     |
-| marginVertical    | `0`            | `number`                                                                                                     |
-| maxHeight         | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| maxWidth          | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| minHeight         | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| minWidth          | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| overflow          | `visible`      | `"auto" \| "scroll" \| "visible" \| "hidden"`                                                                |
-| padding           | `0`            | `number`                                                                                                     |
-| paddingBottom     | `0`            | `number`                                                                                                     |
-| paddingHorizontal | `0`            | `number`                                                                                                     |
-| paddingLeft       | `0`            | `number`                                                                                                     |
-| paddingRight      | `0`            | `number`                                                                                                     |
-| paddingTop        | `0`            | `number`                                                                                                     |
-| paddingVertical   | `0`            | `number`                                                                                                     |
-| position          | `relative`     | `"relative" \| "absolute"`                                                                                   |
-| right             | `0`            | `number`                                                                                                     |
-| rowGap            | `0`            | `number`                                                                                                     |
-| top               | `0`            | `number`                                                                                                     |
-| width             | `undefined`    | `number \| "${number}%" \| undefined`                                                                        |
-| zIndex            | `0`            | `number`                                                                                                     |
-
-### View style props
-
-Decorative props used in combination with layout props.
-
-| Prop                    | Default         | Type     |
-| ----------------------- | --------------- | -------- |
-| backgroundColor         | `"transparent"` | `string` |
-| borderBottomLeftRadius  | `0`             | `number` |
-| borderBottomRightRadius | `0`             | `number` |
-| borderColor             | `0`             | `string` |
-| borderRadius            | `0`             | `number` |
-| borderTopLeftRadius     | `0`             | `number` |
-| borderTopRightRadius    | `0`             | `number` |
-| boxShadowColor          | `transparent`   | `string` |
-| boxShadowOffsetX        | `0`             | `number` |
-| boxShadowOffsetY        | `0`             | `number` |
-| boxShadowRadius         | `0`             | `number` |
-| opacity                 | `1`             | `number` |
-
-### Text style props
-
-Control how text is rendered. Note that due to a custom text renderer, there might be some differences in how text is rendered compared to a browser.
-
-> [!NOTE]
-> Property `lineHeight` is not fully supported yet.
-
-> [!IMPORTANT]
-> The library uses cap size as opposed to line height for calculating bounding box of text elements (see [CapSize](https://seek-oss.github.io/capsize/) for more explanation). This results in most noticeable differences in buttons which require more vertical space than in browsers.
-
-| Prop          | Default              | Type                                                   |
-| ------------- | -------------------- | ------------------------------------------------------ |
-| color         | `transparent`        | `string`                                               |
-| fontName      | `throws new Error()` | `string`                                               |
-| fontSize      | `16`                 | `number`                                               |
-| lineHeight    | `1.4 * fontSize`     | `number`                                               |
-| textAlign     | `left`               | `"left" \| "center" \| "right"`                        |
-| textTransform | `none`               | `"none" \| "uppercase" \| "lowercase" \| "capitalize"` |

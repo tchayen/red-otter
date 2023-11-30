@@ -5,7 +5,6 @@ import { View } from "../View";
 import { invariant } from "../utils/invariant";
 import { Text } from "../Text";
 import { shapeText } from "../font/shapeText";
-import { DEFAULT_FONT_SIZE } from "../consts";
 import {
   AlignContent,
   AlignItems,
@@ -16,6 +15,8 @@ import {
   JustifyContent,
   Overflow,
   Position,
+  TextAlign,
+  defaultTextStyleProps,
 } from "../types";
 import { CROSS_AXIS_SIZE } from "./consts";
 
@@ -144,12 +145,12 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
         const shape = shapeText({
           fontName: e._style.fontName,
-          fontSize: e._style.fontSize ?? DEFAULT_FONT_SIZE,
-          lineHeight: e._style.lineHeight,
+          fontSize: e._style.fontSize ?? defaultTextStyleProps.fontSize,
+          lineHeight: e._style.lineHeight ?? defaultTextStyleProps.lineHeight,
           lookups: fontLookups,
           maxWidth,
           text: e.text,
-          textAlignment: e._style.textAlign ?? "left",
+          textAlignment: e._style.textAlign ?? TextAlign.Left,
         });
 
         e._state.clientWidth = shape.boundingRectangle.width;
@@ -204,7 +205,6 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
         c = c.next;
       }
 
-      // Include padding and gaps.
       e._state.clientWidth +=
         e._style.paddingLeft +
         e._style.paddingRight +

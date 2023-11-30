@@ -3,6 +3,7 @@ import { shapeText } from "./shapeText";
 import interTTF from "../../public/interTTF.json"; // This is a 1.8MB JSON file (95kB gzipped).
 import { prepareLookups } from "../font/prepareLookups";
 import type { TTF } from "../font/parseTTF";
+import { TextAlign } from "../types";
 
 const alphabet =
   "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
@@ -21,7 +22,7 @@ describe("shapeText", () => {
       lineHeight: 20,
       lookups,
       text: "Hello, World!",
-      textAlignment: "left",
+      textAlignment: TextAlign.Left,
     });
   });
 });

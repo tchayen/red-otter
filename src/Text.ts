@@ -1,8 +1,7 @@
 import { shapeText } from "./font/shapeText";
 import type { Lookups } from "./font/types";
 import type { ExactLayoutProps, LayoutNodeState, TextStyleProps, UserEvent } from "./types";
-import { defaultLayoutNodeState, normalizeLayoutProps } from "./types";
-import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "./consts";
+import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./types";
 
 export class Text {
   next: Text | null = null;
@@ -24,14 +23,11 @@ export class Text {
       testID?: string;
     },
   ) {
-    const fontSize = props.style.fontSize ?? DEFAULT_FONT_SIZE;
     const shape = shapeText({
-      fontName: props.style.fontName,
-      fontSize: fontSize,
-      lineHeight: props.style.lineHeight ?? DEFAULT_LINE_HEIGHT_MULTIPLIER * fontSize,
+      ...defaultTextStyleProps,
+      ...props.style,
       lookups: props.lookups,
       text: text, // TODO @tchayen: enforce in eslint not repeating value when same as key.
-      textAlignment: "left",
     });
     const { width, height } = shape.boundingRectangle;
 

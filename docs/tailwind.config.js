@@ -1,4 +1,13 @@
-const { slate, slateDark } = require("@radix-ui/colors");
+const {
+  mauve,
+  mauveDark,
+  blue,
+  blueDark,
+  orange,
+  orangeDark,
+  purple,
+  purpleDark,
+} = require("@radix-ui/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -8,8 +17,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ...slate,
-        ...renameKeys("slate", slateDark),
+        ...mauve,
+        ...renameKeys("mauve", mauveDark),
+        ...blue,
+        ...renameKeys("blue", blueDark),
+        ...orange,
+        ...renameKeys("orange", orangeDark),
+        ...purple,
+        ...renameKeys("purple", purpleDark),
       },
     },
   },

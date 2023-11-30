@@ -1,4 +1,5 @@
 import { Vec2 } from "../math/Vec2";
+import { TextAlign } from "../types";
 import { LRUCache } from "../utils/LRUCache";
 import { invariant } from "../utils/invariant";
 import { fontSizeToGap } from "./renderFontAtlas";
@@ -22,11 +23,11 @@ export type Shape = {
 type ShapeTextOptions = {
   fontName: string;
   fontSize: number;
-  lineHeight?: number;
+  lineHeight: number;
   lookups: Lookups;
   maxWidth?: number;
   text: string;
-  textAlignment: "left" | "center" | "right";
+  textAlignment: TextAlign;
 };
 
 // TODO @tchayen: text alignment.
@@ -97,13 +98,13 @@ export function shapeText(options: ShapeTextOptions): Shape {
       // We exceeded the maxWidth, backtrack. Move i back to the start of the current word.
       i = wordStartIndex - 1;
 
-      positionY += lineHeight ?? 20;
+      positionY += lineHeight;
       positionX = 0;
       longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
     }
 
     if (text[i] === "\n") {
-      positionY += lineHeight ?? 20;
+      positionY += lineHeight;
       positionX = 0;
       longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
     }
@@ -121,7 +122,11 @@ export function shapeText(options: ShapeTextOptions): Shape {
       : 0;
     if (leftSpace > 0) {
       const offset =
-        textAlignment === "center" ? leftSpace / 2 : textAlignment === "right" ? leftSpace : 0;
+        textAlignment === TextAlign.Center
+          ? leftSpace / 2
+          : textAlignment === TextAlign.Right
+            ? leftSpace
+            : 0;
       for (let i = 0; i < positions.length; i++) {
         positions[i] = new Vec2(positions[i]!.x + offset, positions[i]!.y);
       }

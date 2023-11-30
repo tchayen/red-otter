@@ -67,7 +67,7 @@
     },
     "LayoutNodeState": {
       "name": "LayoutNodeState",
-      "description": "",
+      "description": "Internal state of the node. Might be useful for debugging or hacking around but they are subject\nto change in **any** release.",
       "properties": {
         "children": {
           "name": "children",
@@ -157,7 +157,7 @@
     },
     "LayoutProps": {
       "name": "LayoutProps",
-      "description": "",
+      "description": "All layout properties.",
       "properties": {
         "alignContent": {
           "name": "alignContent",
@@ -552,13 +552,43 @@
     },
     "TextStyleProps": {
       "name": "TextStyleProps",
-      "description": "",
+      "description": "Controls how text is rendered. Note that due to a custom text renderer, there might be some\ndifferences in how text is rendered compared to a browser.",
       "properties": {
-        "__type": {
-          "name": "__type",
-          "type": "{ color: string; fontName: string; fontSize?: number; lineHeight?: number; textAlign?: \"left\" | \"center\" | \"right\"; textTransform?: \"none\" | \"uppercase\" | \"lowercase\" | \"capitalize\"; }",
+        "color": {
+          "name": "color",
+          "type": "string",
           "description": "",
-          "default": ""
+          "default": "\"#000\""
+        },
+        "fontName": {
+          "name": "fontName",
+          "type": "string",
+          "description": "",
+          "default": "\"Inter\""
+        },
+        "fontSize": {
+          "name": "fontSize",
+          "type": "number",
+          "description": "",
+          "default": "16"
+        },
+        "lineHeight": {
+          "name": "lineHeight",
+          "type": "number",
+          "description": "",
+          "default": "20"
+        },
+        "textAlign": {
+          "name": "textAlign",
+          "type": "TextAlign",
+          "description": "",
+          "default": "TextAlign.Left"
+        },
+        "textTransform": {
+          "name": "textTransform",
+          "type": "TextTransform",
+          "description": "",
+          "default": "TextTransform.None"
         }
       }
     },
@@ -589,7 +619,7 @@
     },
     {
       "name": "AlignItems",
-      "description": "",
+      "description": "Corresponds to CSS align-items.",
       "values": [
         {
           "name": "Center",
@@ -611,7 +641,7 @@
     },
     {
       "name": "JustifyContent",
-      "description": "",
+      "description": "Corresponds to CSS align-items.",
       "values": [
         {
           "name": "Center",
@@ -641,7 +671,7 @@
     },
     {
       "name": "AlignContent",
-      "description": "",
+      "description": "Corresponds to CSS align-content.",
       "values": [
         {
           "name": "Center",
@@ -675,7 +705,7 @@
     },
     {
       "name": "AlignSelf",
-      "description": "",
+      "description": "Corresponds to CSS align-self.",
       "values": [
         {
           "name": "Auto",
@@ -701,7 +731,7 @@
     },
     {
       "name": "FlexDirection",
-      "description": "",
+      "description": "Corresponds to CSS flex-direction.",
       "values": [
         {
           "name": "Column",
@@ -723,7 +753,7 @@
     },
     {
       "name": "FlexWrap",
-      "description": "",
+      "description": "Corresponds to CSS flex-wrap.",
       "values": [
         {
           "name": "NoWrap",
@@ -741,7 +771,7 @@
     },
     {
       "name": "Overflow",
-      "description": "Determines how the element is clipped.",
+      "description": "Determines how the element is clipped. Corresponds to CSS overflow.",
       "values": [
         {
           "name": "Auto",
@@ -763,7 +793,7 @@
     },
     {
       "name": "Display",
-      "description": "",
+      "description": "Corresponds to CSS display.",
       "values": [
         {
           "name": "Flex",
@@ -777,7 +807,7 @@
     },
     {
       "name": "Position",
-      "description": "",
+      "description": "Corresponds to CSS position.",
       "values": [
         {
           "name": "Absolute",
@@ -785,6 +815,46 @@
         },
         {
           "name": "Relative",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TextTransform",
+      "description": "Corresponds to CSS text-transform.",
+      "values": [
+        {
+          "name": "None",
+          "description": ""
+        },
+        {
+          "name": "Capitalize",
+          "description": ""
+        },
+        {
+          "name": "Lowercase",
+          "description": ""
+        },
+        {
+          "name": "Uppercase",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TextAlign",
+      "description": "Corresponds to CSS text-align.",
+      "values": [
+        {
+          "name": "Center",
+          "description": ""
+        },
+        {
+          "name": "Left",
+          "description": ""
+        },
+        {
+          "name": "Right",
           "description": ""
         }
       ]

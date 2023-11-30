@@ -1,9 +1,8 @@
 import { Text } from "../Text";
 import type { View } from "../View";
-import { DEFAULT_FONT_SIZE, DEFAULT_LINE_HEIGHT_MULTIPLIER } from "../consts";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
-import { Display, Overflow } from "../types";
+import { Display, Overflow, TextAlign, defaultTextStyleProps } from "../types";
 import { parseColor } from "../utils/parseColor";
 import type { Renderer } from "./Renderer";
 import {
@@ -42,15 +41,13 @@ function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: V
       node.text,
       position,
       node._style.fontName,
-      node._style.fontSize ?? DEFAULT_FONT_SIZE,
+      node._style.fontSize ?? defaultTextStyleProps.fontSize,
       parseColor(node._style.color),
-      node._style.textAlign ?? "left",
+      node._style.textAlign ?? TextAlign.Left,
       clipStart,
       clipSize,
       {
-        lineHeight:
-          node._style.lineHeight ??
-          DEFAULT_LINE_HEIGHT_MULTIPLIER * (node._style.fontSize ?? DEFAULT_FONT_SIZE),
+        lineHeight: node._style.lineHeight ?? defaultTextStyleProps.lineHeight,
         maxWidth: node._state.textWidthLimit,
       },
     );

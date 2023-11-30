@@ -1,4 +1,3 @@
-export const DEFAULT_FONT_SIZE = 16;
 export const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.4;
 
 export const isWindowDefined = typeof window !== "undefined";

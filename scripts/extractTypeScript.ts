@@ -104,4 +104,4 @@ export function extractTypeScript(fileName: string) {
 }
 
 const result = extractTypeScript(import.meta.dir + "/../src/types.ts");
-fs.writeFileSync(import.meta.dir + "/types.json", JSON.stringify(result, null, 2));
+fs.writeFileSync(import.meta.dir + "/../docs/app/types.json", JSON.stringify(result, null, 2));

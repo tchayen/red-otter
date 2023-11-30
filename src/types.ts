@@ -26,6 +26,10 @@ export type ScrollEvent = {
 
 export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
 
+/**
+ * Internal state of the node. Might be useful for debugging or hacking around but they are subject
+ * to change in **any** release.
+ */
 export type LayoutNodeState = {
   /**
    * Temporary array used by layout.
@@ -101,6 +105,9 @@ export const defaultLayoutNodeState = {
   y: 0,
 };
 
+/**
+ * Corresponds to CSS align-items.
+ */
 export const enum AlignItems {
   Center,
   End,
@@ -108,6 +115,9 @@ export const enum AlignItems {
   Stretch,
 }
 
+/**
+ *  Corresponds to CSS align-items.
+ */
 export const enum JustifyContent {
   Center,
   End,
@@ -117,6 +127,9 @@ export const enum JustifyContent {
   Start,
 }
 
+/**
+ * Corresponds to CSS align-content.
+ */
 export const enum AlignContent {
   Center,
   End,
@@ -127,6 +140,9 @@ export const enum AlignContent {
   Stretch,
 }
 
+/**
+ * Corresponds to CSS align-self.
+ */
 export const enum AlignSelf {
   Auto,
   Center,
@@ -135,6 +151,9 @@ export const enum AlignSelf {
   Stretch,
 }
 
+/**
+ * Corresponds to CSS flex-direction.
+ */
 export const enum FlexDirection {
   Column,
   ColumnReverse,
@@ -142,6 +161,9 @@ export const enum FlexDirection {
   RowReverse,
 }
 
+/**
+ * Corresponds to CSS flex-wrap.
+ */
 export const enum FlexWrap {
   NoWrap,
   Wrap,
@@ -149,7 +171,7 @@ export const enum FlexWrap {
 }
 
 /**
- * Determines how the element is clipped.
+ * Determines how the element is clipped. Corresponds to CSS overflow.
  */
 export const enum Overflow {
   /**
@@ -170,16 +192,25 @@ export const enum Overflow {
   Visible,
 }
 
+/**
+ * Corresponds to CSS display.
+ */
 export const enum Display {
   Flex,
   None,
 }
 
+/**
+ * Corresponds to CSS position.
+ */
 export const enum Position {
   Absolute,
   Relative,
 }
 
+/**
+ * All layout properties.
+ */
 export type LayoutProps = {
   alignContent?: AlignContent;
   alignItems?: AlignItems;
@@ -295,14 +326,37 @@ export type DecorativeProps = {
 
 export type ExactDecorativeProps = Required<DecorativeProps>;
 
+/**
+ * Corresponds to CSS text-transform.
+ */
+export const enum TextTransform {
+  None,
+  Capitalize,
+  Lowercase,
+  Uppercase,
+}
+
+/**
+ * Corresponds to CSS text-align.
+ */
+export const enum TextAlign {
+  Center,
+  Left,
+  Right,
+}
+
+/**
+ * Controls how text is rendered. Note that due to a custom text renderer, there might be some
+ * differences in how text is rendered compared to a browser.
+ */
 export type TextStyleProps = {
   color: string;
   fontName: string;
   fontSize?: number;
   lineHeight?: number;
-  textAlign?: "left" | "center" | "right";
-  textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
-} & LayoutProps;
+  textAlign?: TextAlign;
+  textTransform?: TextTransform;
+};
 
 export type ViewStyleProps = LayoutProps & DecorativeProps;
 
@@ -352,7 +406,7 @@ const defaultLayoutProps: ExactLayoutProps = {
   zIndex: undefined,
 };
 
-const defaultDecorativeProps: DecorativeProps = {
+const defaultDecorativeProps: Required<DecorativeProps> = {
   backgroundColor: "transparent",
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
@@ -365,6 +419,15 @@ const defaultDecorativeProps: DecorativeProps = {
   boxShadowOffsetY: 0,
   boxShadowRadius: 0,
   opacity: 1,
+};
+
+export const defaultTextStyleProps: Required<TextStyleProps> = {
+  color: "#000",
+  fontName: "Inter",
+  fontSize: 16,
+  lineHeight: 20,
+  textAlign: TextAlign.Left,
+  textTransform: TextTransform.None,
 };
 
 export function normalizeLayoutProps<T extends LayoutProps, S extends ExactLayoutProps>(

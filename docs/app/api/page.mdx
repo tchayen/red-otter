@@ -1,0 +1,22 @@
+import { TypeTable } from "../TypeTable";
+import { Enums } from "../Enums";
+
+<TypeTable type="LayoutProps" />
+
+<TypeTable type="DecorativeProps" />
+
+<TypeTable type="TextStyleProps">
+> [!NOTE]
+> Property `lineHeight` is not fully supported yet.
+
+> [!IMPORTANT]
+> The library uses cap size as opposed to line height for calculating bounding
+> box of text elements (see [CapSize](https://seek-oss.github.io/capsize/) for
+> more explanation). This results in most noticeable differences in buttons
+> which require more vertical space than in browsers.
+
+</TypeTable>
+
+<TypeTable type="LayoutNodeState" />
+
+<Enums />

@@ -7,6 +7,7 @@ import type { Vec4 } from "../math/Vec4";
 import * as fixtures from "../fixtures";
 import { compose } from "./compose";
 import { EventManager } from "../EventManager";
+import type { TextAlign } from "../types";
 import { UserEventType } from "../types";
 import { getByTestId } from "./getByTestId";
 
@@ -64,7 +65,7 @@ class MockRenderer implements Renderer {
     _fontName: string,
     _fontSize: number,
     _color: Vec4,
-    _textAlignment: "left" | "right" | "center",
+    _textAlignment: TextAlign,
     _clipStart: Vec2,
     _clipSize: Vec2,
     _options?: { lineHeight?: number | undefined; maxWidth?: number | undefined } | undefined,
