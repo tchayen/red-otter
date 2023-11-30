@@ -13,6 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-mauvedark1">
+      <head>
+        <link rel="preconnect" href="https://rsms.me/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+      </head>
       <Body>{children}</Body>
     </html>
   );

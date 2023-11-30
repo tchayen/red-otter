@@ -1,18 +1,11 @@
 import { Children, cloneElement, isValidElement } from "react";
 import type { ReactNode, PropsWithChildren } from "react";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 import type { LinkProps } from "next/link";
 import Link from "next/link";
 
 const jetBrainsMono = JetBrains_Mono({
-  display: "swap",
-  preload: true,
-  style: "normal",
-  subsets: ["latin"],
-});
-
-export const inter = Inter({
   display: "swap",
   preload: true,
   style: "normal",

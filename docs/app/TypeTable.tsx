@@ -65,7 +65,7 @@ export function TypeTable({
           return (
             <Fragment key={field.name}>
               <Cell>{field.name}</Cell>
-              <Cell className="">
+              <Cell className="whitespace-nowrap">
                 {enumType ? (
                   <Tooltip.Root>
                     <Tooltip.Trigger>
