@@ -382,7 +382,7 @@ export type DecorativeProps = {
   opacity?: number;
 };
 
-export type ExactDecorativeProps = Required<DecorativeProps>;
+export type ExactDecorativeProps = Required<Omit<DecorativeProps, "borderRadius">>;
 
 /**
  * Corresponds to CSS text-transform.
@@ -465,12 +465,11 @@ const defaultLayoutProps: ExactLayoutProps = {
   zIndex: undefined,
 };
 
-const defaultDecorativeProps: Required<DecorativeProps> = {
+const defaultDecorativeProps: ExactDecorativeProps = {
   backgroundColor: "transparent",
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
   borderColor: "transparent",
-  borderRadius: 0,
   borderTopLeftRadius: 0,
   borderTopRightRadius: 0,
   boxShadowColor: "#000",
@@ -523,10 +522,10 @@ export function normalizeDecorativeProps<T extends DecorativeProps, S extends Ex
 ): S {
   const result = { ...defaultDecorativeProps, ...input };
 
-  result.borderTopLeftRadius = input.borderTopLeftRadius ?? input.borderRadius;
-  result.borderTopRightRadius = input.borderTopRightRadius ?? input.borderRadius;
-  result.borderBottomLeftRadius = input.borderBottomLeftRadius ?? input.borderRadius;
-  result.borderBottomRightRadius = input.borderBottomRightRadius ?? input.borderRadius;
+  result.borderTopLeftRadius = input.borderTopLeftRadius ?? input.borderRadius ?? 0;
+  result.borderTopRightRadius = input.borderTopRightRadius ?? input.borderRadius ?? 0;
+  result.borderBottomLeftRadius = input.borderBottomLeftRadius ?? input.borderRadius ?? 0;
+  result.borderBottomRightRadius = input.borderBottomRightRadius ?? input.borderRadius ?? 0;
 
   return result as S;
 }
