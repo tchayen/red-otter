@@ -35,9 +35,11 @@ function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
  *
  * - `hsl(60, 100%, 50%)`
  * - `hsl(60 100% 50%)`
- * - `hsla(30, 60%, 90%, 0.8)`
- * - `hsla(30 60% 90% 0.8)`
- * - `hsla(30 60% 90% / 0.8)`
+ * - `hsl(60, 100%, 50%, 0.8)`
+ * - `hsl(60 100% 50% 0.8)`
+ * - `hsla(60, 100%, 50%, 0.8)`
+ * - `hsla(60 100% 50% 0.8)`
+ * - `hsla(60 100% 50% / 0.8)`
  *
  * ### HSV
  *
@@ -84,7 +86,7 @@ export function parseColor(color: string): Vec4 {
       channels[0]! / 255,
       channels[1]! / 255,
       channels[2]! / 255,
-      hasAlpha ? channels[3]! : 1
+      hasAlpha ? channels[3]! : 1,
     );
   } else if (color.startsWith("hsl")) {
     const separator = color.includes(",") ? "," : " ";
@@ -104,7 +106,7 @@ export function parseColor(color: string): Vec4 {
     const converted = hslToRgb(
       Number(channels[0]),
       Number(channels[1]!.slice(0, -1)) / 100,
-      Number(channels[2]!.slice(0, -1)) / 100
+      Number(channels[2]!.slice(0, -1)) / 100,
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);
@@ -123,7 +125,7 @@ export function parseColor(color: string): Vec4 {
     const converted = hsvToRgb(
       Number(channels[0]),
       Number(channels[1]!.slice(0, -1)) / 100,
-      Number(channels[2]!.slice(0, -1)) / 100
+      Number(channels[2]!.slice(0, -1)) / 100,
     );
 
     return new Vec4(converted[0], converted[1], converted[2], alpha);

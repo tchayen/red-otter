@@ -12,6 +12,7 @@ import {
   H1,
   H3,
   Box,
+  Hr,
 } from "./app/tags";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -27,6 +28,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h2: H2,
     h3: H3,
     h4: H4,
+    hr: Hr,
     li: Li,
     ol: Ol,
     p: P,

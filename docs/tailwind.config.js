@@ -7,6 +7,12 @@ const {
   orangeDark,
   purple,
   purpleDark,
+  crimson,
+  crimsonDark,
+  tomato,
+  tomatoDark,
+  amber,
+  amberDark,
 } = require("@radix-ui/colors");
 
 /** @type {import('tailwindcss').Config} */
@@ -25,6 +31,12 @@ module.exports = {
         ...renameKeys("orange", orangeDark),
         ...purple,
         ...renameKeys("purple", purpleDark),
+        ...crimson,
+        ...renameKeys("crimson", crimsonDark),
+        ...tomato,
+        ...renameKeys("tomato", tomatoDark),
+        ...amber,
+        ...renameKeys("amber", amberDark),
       },
     },
   },

@@ -1,1 +1,15 @@
-TODO: describe layout engine.
+import { packageJson } from "../PackageJson";
+
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter – Layout",
+};
+
+# Layout engine
+
+Layout engine executes 4 pass algorithm:
+
+- Pass 1: Traverse tree in level order and generate the reverse queue.
+- Pass 2: Resolve wrapping children. Going bottom-up, level order.
+- Pass 3: Resolve flex sizes and assign positions. Going top-down, level order.
+- Pass 4: Calculate scroll sizes (actual space used by children versus available component size). Going top-down, level order.

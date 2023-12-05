@@ -15,39 +15,51 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  font-feature-settings: "ss02", "calt", "ccmp", "locl", "kern";
+  font-feature-settings: "ss04", "tnum", "ss08";
 }
 
-/* ::-webkit-scrollbar {
+.sidebar::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track {
   background: var(--scrollbar-track);
 }
 
-::-webkit-scrollbar-corner {
+.sidebar::-webkit-scrollbar-corner {
   background: var(--scrollbar-track);
 }
 
-::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
+  border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.sidebar::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
 
-::-webkit-scrollbar-thumb:active {
+.sidebar::-webkit-scrollbar-thumb:active {
   background: var(--scrollbar-thumb-active);
 }
 
-.codeblock::-webkit-scrollbar-track {
+/* .codeblock::-webkit-scrollbar-track {
   background: transparent;
 } */
 
 * {
   box-sizing: border-box;
   font-family: Inter;
+}
+
+ul {
+  list-style-type: none;
+}
+ul > li {
+  text-indent: -11px;
+  margin-left: 11px;
+}
+ul > li:before {
+  content: "- ";
 }

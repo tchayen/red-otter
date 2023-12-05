@@ -4,7 +4,7 @@
   "description": "Fancy Next.js app",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "bun ../scripts/extractTypeScript.ts && next build",
     "start": "next start",
     "build:static": "next build && next out"
   },
@@ -12,7 +12,9 @@
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@radix-ui/colors": "^3.0.0",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "flexsearch": "^0.7.31",
     "next": "^14.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -21,24 +23,16 @@
   "devDependencies": {
     "@next/mdx": "^14.0.3",
     "@total-typescript/ts-reset": "^0.5.1",
+    "@types/flexsearch": "^0.7.6",
     "@types/mdx": "^2.0.10",
     "@types/react": "18.2.39",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
     "autoprefixer": "^10.4.16",
-    "eslint": "^8.54.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-comment-length": "^1.7.2",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-sort-keys-fix": "^1.1.2",
-    "eslint-plugin-typescript-sort-keys": "^3.1.0",
-    "eslint-plugin-unicorn": "^49.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "^8.4.31",
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.0.0",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "webpack": "^5.89.0"
   }
 }

@@ -1,13 +1,55 @@
+import { packageJson } from "../PackageJson";
 import { TypeTable } from "../TypeTable";
 import { Enums } from "../Enums";
 
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter – API",
+};
+
+# API Reference
+
+Everything to know about the API.
+
+---
+
+## Edge cases
+
+Some differences (or unobvious cases) from RN and/or CSS:
+
+- Default `flexDirection` is `column` (CSS default is `row`).
+- Default `alignContent` is `flex-start` (CSS default is `stretch`).
+- Default `flexShrink` is `0` (CSS default is `1`).
+- `flexBasis` takes precedence over `width` and `height` if defined.
+- There's no `margin: auto`.
+- Similarly to CSS and RN, if both top and bottom (or left and right) are defined and `height` (or `width`) is _not_ defined, the element will span the distance between those two edges.
+- Properties with higher specificity override properties with lower specificity (in CSS order matters).
+  In CSS `style="flex-grow: 1; flex: 2"` would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
+- `box-sizing` is always `border-box`, which means that `width` and `height` include both `padding` and `border` (CSS default is `content-box`).
+
+---
+
+## Colors
+
+Colors are defined as strings, similar to CSS.
+
+Supported formats are hex (long and short variants – `#f00` and `#ff0000`), RGB, RGBA (`rgba(255, 0, 0, 0.5)`), HSL (`hsl(60 100% 50%)`, `hsl(60, 100%, 50%, 0.8)`), HSLA, HSV.
+
+RGB and HSV require adding A in the end to support alpha. In HSL it is optional.
+
+For the most up-to-date info check `parseColor()` in the code.
+
+---
+
 <TypeTable type="LayoutProps" />
+
+---
 
 <TypeTable type="DecorativeProps" />
 
+---
+
 <TypeTable type="TextStyleProps">
-> [!NOTE]
-> Property `lineHeight` is not fully supported yet.
 
 > [!IMPORTANT]
 > The library uses cap size as opposed to line height for calculating bounding
@@ -17,6 +59,10 @@ import { Enums } from "../Enums";
 
 </TypeTable>
 
+---
+
 <TypeTable type="LayoutNodeState" />
+
+---
 
 <Enums />

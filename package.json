@@ -1,8 +1,16 @@
 {
-  "name": "red-otter-experiment",
+  "name": "red-otter",
+  "description": "Self-contained UI rendering library for 3D graphics APIs.",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "homepage": "https://red-otter.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tchayen/red-otter"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -12,9 +20,9 @@
     "coverage": "vitest --coverage",
     "loc": "find . -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "@petamoriken/float16": "^3.8.4"
+  },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
@@ -35,8 +43,5 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
-  },
-  "dependencies": {
-    "@petamoriken/float16": "^3.8.4"
   }
 }

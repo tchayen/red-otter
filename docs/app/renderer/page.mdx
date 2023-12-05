@@ -1,1 +1,12 @@
-TODO: describe renderer.
+import { packageJson } from "../PackageJson";
+
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter – Renderer",
+};
+
+# Renderer
+
+For each rectangle on the screen, an instance of a full-screen quad is renderered, which is then assigned to proper positions based on data stored in storage buffer. Fragment shader uses SDF to calculate border radius.
+
+Text uses SDF font rendering to display glyphs from a font atlas.

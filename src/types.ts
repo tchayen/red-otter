@@ -27,8 +27,8 @@ export type ScrollEvent = {
 export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
 
 /**
- * Internal state of the node. Might be useful for debugging or hacking around but they are subject
- * to change in **any** release.
+ * Internal state of the node. Might be useful for debugging or hacking around but it is subject
+ * to change at any point without notice.
  */
 export type LayoutNodeState = {
   /**
@@ -212,9 +212,23 @@ export const enum Position {
  * All layout properties.
  */
 export type LayoutProps = {
+  /**
+   * Controls positioning of rows (or columns) when wrapping.
+   */
   alignContent?: AlignContent;
+  /**
+   * Controls positioning of children on the cross axis.
+   */
   alignItems?: AlignItems;
+  /**
+   * Controls positioning of the item itself on the cross axis.
+   */
   alignSelf?: AlignSelf;
+  /**
+   * Enforces a specific aspect ratio on the size of the element. Uses the specified size
+   * (either `width` or `height`) for calculating the other dimension. Respects `minWidth` and
+   * `minHeight`.
+   */
   aspectRatio?: number;
   borderBottomWidth?: number;
   borderLeftWidth?: number;
@@ -222,6 +236,9 @@ export type LayoutProps = {
   borderTopWidth?: number;
   borderWidth?: number;
   bottom?: number;
+  /**
+   * Overrides `gap` for columns.
+   */
   columnGap?: number;
   display?: Display;
   flex?: number;
@@ -235,14 +252,35 @@ export type LayoutProps = {
   flexWrap?: FlexWrap;
   gap?: number;
   height?: number | `${number}%`;
+  /**
+   * Controls positioning of children on the main axis.
+   */
   justifyContent?: JustifyContent;
   left?: number;
   margin?: number;
+  /**
+   * Overrides `marginVertical` on the bottom.
+   */
   marginBottom?: number;
+  /**
+   * Overrides `margin` on horizontal directions.
+   */
   marginHorizontal?: number;
+  /**
+   * Overrides `marginHorizontal` on the left.
+   */
   marginLeft?: number;
+  /**
+   * Overrides `marginHorizontal` on the right.
+   */
   marginRight?: number;
+  /**
+   * Overrides `marginVertical` on the top.
+   */
   marginTop?: number;
+  /**
+   * Overrides `margin` on vertical directions.
+   */
   marginVertical?: number;
   maxHeight?: number | `${number}%`;
   maxWidth?: number | `${number}%`;
@@ -260,6 +298,9 @@ export type LayoutProps = {
   paddingVertical?: number;
   position?: Position;
   right?: number;
+  /**
+   * Overrides `gap` for rows.
+   */
   rowGap?: number;
   top?: number;
   width?: number | `${number}%`;
@@ -285,6 +326,8 @@ export type ExactLayoutProps = Required<
     | "maxWidth"
     | "minHeight"
     | "minWidth"
+    | "overflowX"
+    | "overflowY"
     | "padding"
     | "paddingHorizontal"
     | "paddingVertical"
@@ -317,10 +360,25 @@ export type DecorativeProps = {
   borderRadius?: number;
   borderTopLeftRadius?: number;
   borderTopRightRadius?: number;
+  /**
+   * Not implemented yet.
+   */
   boxShadowColor?: string;
+  /**
+   * Not implemented yet.
+   */
   boxShadowOffsetX?: number;
+  /**
+   * Not implemented yet.
+   */
   boxShadowOffsetY?: number;
+  /**
+   * Not implemented yet.
+   */
   boxShadowRadius?: number;
+  /**
+   * Not implemented yet.
+   */
   opacity?: number;
 };
 
@@ -351,6 +409,9 @@ export const enum TextAlign {
  */
 export type TextStyleProps = {
   color: string;
+  /**
+   * As defined in the lookups object.
+   */
   fontName: string;
   fontSize?: number;
   lineHeight?: number;
@@ -392,8 +453,6 @@ const defaultLayoutProps: ExactLayoutProps = {
   minHeight: undefined,
   minWidth: undefined,
   overflow: Overflow.Visible,
-  overflowX: Overflow.Visible,
-  overflowY: Overflow.Visible,
   paddingBottom: 0,
   paddingLeft: 0,
   paddingRight: 0,

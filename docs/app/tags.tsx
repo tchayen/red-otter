@@ -12,10 +12,7 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-export function Code({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+export function Code({ children, className }: PropsWithChildren<{ className?: string }>) {
   if (typeof children === "string" && children.length === 0) {
     return null;
   }
@@ -24,7 +21,7 @@ export function Code({
     <code
       className={twMerge(
         jetBrainsMono.className,
-        "bg-mauvedark4 rounded-sm px-1",
+        "whitespace-nowrap rounded-md border border-mauvedark5 bg-mauvedark3 px-1 text-[14px]",
         className,
       )}
     >
@@ -33,67 +30,62 @@ export function Code({
   );
 }
 
-export function H1({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+export function H1({ children, className }: PropsWithChildren<{ className?: string }>) {
   return (
-    <h2
-      className={twMerge(
-        "text-mauvedark12 my-2 text-2xl font-semibold",
-        className,
-      )}
-    >
+    <h2 className={twMerge("my-2 text-3xl font-semibold text-mauvedark12", className)}>
       {children}
     </h2>
   );
 }
 
-export function H2({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+const outline = "rounded-sm focus-visible:ring-tomatodark9 outline-none focus-visible:ring-2";
+const underline = "decoration-1 underline-offset-4 decoration-mauvedark8 hover:underline";
+
+export function H2({ children, className }: PropsWithChildren<{ className?: string }>) {
+  const slug = slugify(typeof children === "string" ? children : "");
   return (
     <h2
+      id={slug}
       className={twMerge(
-        "text-mauvedark12 my-2 text-xl font-semibold",
+        "mb-2 mt-6 scroll-mt-8 text-2xl font-semibold text-mauvedark12",
         className,
       )}
     >
-      {children}
+      <a href={`#${slug}`} className={twMerge(outline, underline)}>
+        {children}
+      </a>
     </h2>
   );
 }
 
-export function H3({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+export function H3({ children, className }: PropsWithChildren<{ className?: string }>) {
+  const slug = slugify(typeof children === "string" ? children : "");
   return (
-    <h2
-      className={twMerge(
-        "text-mauvedark12 my-2 text-lg font-semibold",
-        className,
-      )}
+    <h3
+      id={slug}
+      className={twMerge("mb-2 mt-6 scroll-mt-8 text-lg font-semibold text-mauvedark12", className)}
     >
-      {children}
-    </h2>
+      <a href={`#${slug}`} className={twMerge(outline, underline)}>
+        {children}
+      </a>
+    </h3>
   );
 }
 
-export function H4({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+export function H4({ children, className }: PropsWithChildren<{ className?: string }>) {
+  const slug = slugify(typeof children === "string" ? children : "");
   return (
-    <h2
+    <h4
+      id={slug}
       className={twMerge(
-        "text-mauvedark12 my-2 text-base font-semibold",
+        "mb-2 mt-6 scroll-mt-8 text-base font-semibold text-mauvedark12",
         className,
       )}
     >
-      {children}
-    </h2>
+      <a href={`#${slug}`} className={twMerge(outline, underline)}>
+        {children}
+      </a>
+    </h4>
   );
 }
 
@@ -112,8 +104,8 @@ export function A({
   return (
     <Link
       className={twMerge(
-        "decoration-mauvedark8 hover:decoration-mauve12 font-semibold text-white underline decoration-1 underline-offset-4 focus-visible:no-underline",
-        "focus-visible:ring-indigo9 rounded-sm outline-none focus-visible:ring-2",
+        "font-semibold text-white underline decoration-mauvedark8 decoration-1 underline-offset-4 hover:decoration-mauve12 focus-visible:no-underline",
+        outline,
       )}
       href={href}
       target={isExternal ? "_blank" : undefined}
@@ -125,32 +117,22 @@ export function A({
   );
 }
 
-export function P({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
+export function P({ children, className }: PropsWithChildren<{ className?: string }>) {
   return (
-    <p
-      className={twMerge(
-        "text-mauvedark11 my-4 text-base leading-6",
-        className,
-      )}
-    >
-      {children}
-    </p>
+    <p className={twMerge("my-2 text-base leading-6 text-mauvedark11", className)}>{children}</p>
   );
 }
 
 export function Ul({ children }: PropsWithChildren) {
-  return <ul className="mx-8 my-4 list-disc text-base md:mx-4">{children}</ul>;
+  return <ul className="mx-8 my-4 list-outside text-base md:mx-0 [&>li>ul]:my-2">{children}</ul>;
 }
 
 export function Ol({ children }: PropsWithChildren) {
-  return <ol className="mx-8 my-4 list-decimal md:mx-4">{children}</ol>;
+  return <ol className="mx-8 my-4 list-decimal md:mx-0">{children}</ol>;
 }
 
 export function Li({ children }: PropsWithChildren) {
-  return <li className="text-mauvedark11 my-1 leading-6">{children}</li>;
+  return <li className="my-2 leading-6 text-mauvedark11">{children}</li>;
 }
 
 export function Strong({ children }: PropsWithChildren) {
@@ -161,10 +143,11 @@ export function Em({ children }: PropsWithChildren) {
   return <strong className="font-normal italic">{children}</strong>;
 }
 
-export function Box({
-  children,
-  className,
-}: React.PropsWithChildren<{ className?: string }>) {
+export function Hr() {
+  return <hr className="my-8 border-t border-mauvedark5" />;
+}
+
+export function Box({ children, className }: React.PropsWithChildren<{ className?: string }>) {
   let boxType = "";
 
   const modifiedChildren = Children.map(children, (child) => {
@@ -178,42 +161,52 @@ export function Box({
     } else if (isValidElement(child)) {
       return cloneElement(child, {
         ...child.props,
-        children: replaceAnnotatedTag(
-          child.props.children,
-          (type) => (boxType = type || boxType),
-        ),
+        children: replaceAnnotatedTag(child.props.children, (type) => (boxType = type || boxType)),
       });
     }
     return child;
   });
 
-  let styling = "[&>*]:text-mauvedark12 bg-mauvedark2 border-mauvedark5";
-  switch (boxType) {
-    case "WARNING":
-      styling = "[&>*]:text-orangedark12 bg-orangedark2 border-orangedark5";
-      break;
-    case "IMPORTANT":
-      styling = "[&>*]:text-purpledark12 bg-purpledark2 border-purpledark5";
-      break;
-    case "NOTE":
-      styling = "[&>*]:text-bluedark12 bg-bluedark2 border-bluedark5";
-      break;
-  }
+  const styling = "[&>*]:text-mauvedark12 bg-mauvedark3 border-mauvedark5";
+  // switch (boxType) {
+  //   case "WARNING":
+  //     styling = "[&>*]:text-amberdark12 bg-amberdark3 border-amberdark5";
+  //     break;
+  //   case "IMPORTANT":
+  //     styling = "[&>*]:text-purpledark12 bg-purpledark3 border-purpledark5";
+  //     break;
+  //   case "NOTE":
+  //     styling = "[&>*]:text-bluedark12 bg-bluedark3 border-bluedark5";
+  //     break;
+  // }
 
   return (
     <blockquote
-      className={twMerge(styling, "my-4 rounded-md border px-4", className)}
+      className={twMerge(
+        styling,
+        "relative my-6 overflow-hidden rounded-md border px-4",
+        className,
+      )}
     >
-      {boxType && <div className="-mb-2 mt-3 font-bold">{boxType}</div>}
+      {boxType && (
+        <>
+          <div className="-mb-2 mt-3 text-xs font-bold">{boxType}</div>
+          <span className="absolute -left-4 top-1 select-none text-[48px] font-bold leading-[36px] opacity-[15%]">
+            
+          </span>
+        </>
+      )}
+      {!boxType && (
+        <span className="absolute -left-4 top-12 select-none text-[200px] leading-[36px] opacity-10">
+          &rdquo;
+        </span>
+      )}
       {modifiedChildren}
     </blockquote>
   );
 }
 
-function replaceAnnotatedTag(
-  children: ReactNode,
-  setType: (type: string) => void,
-) {
+function replaceAnnotatedTag(children: ReactNode, setType: (type: string) => void) {
   return Children.map(children, (child) => {
     if (typeof child === "string") {
       const match = child.match(/\[!(WARNING|IMPORTANT|NOTE)]/);
@@ -230,4 +223,19 @@ function replaceAnnotatedTag(
     }
     return child;
   });
+}
+
+export function slugify(value: string) {
+  return (
+    value
+      .toLocaleLowerCase()
+      // Change diacritics to their base character.
+      .normalize("NFD")
+      // Remove all non-alphanumeric characters.
+      .replaceAll(/[^\d A-Za-z-]/g, "")
+      // In case the text had leading or trailing spaces after removal.
+      .trim()
+      // Replace spaces with dashes.
+      .replaceAll(/\s/g, "-")
+  );
 }

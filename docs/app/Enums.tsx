@@ -5,6 +5,7 @@ export function Enums() {
   return (
     <>
       <H2>Enums</H2>
+      <P>List of enums used in the types above.</P>
       {types.enums.map((e) => {
         return (
           <>
