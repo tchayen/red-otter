@@ -152,7 +152,7 @@ export function Search() {
         href={result.url}
         className={twMerge(
           outline,
-          "block overflow-hidden rounded-md border border-mauvedark6 p-2 text-mauvedark12 hover:bg-mauvedark3 focus:border-transparent",
+          "block overflow-hidden rounded-md border border-mauvedark6 px-4 py-3 text-mauvedark12 hover:bg-mauvedark3 focus:border-transparent",
         )}
       >
         <div className="flex flex-col items-start gap-1">

@@ -17,7 +17,7 @@ It's bold of you to assume I'd make something useful.
 
 It is lightweight, zero-dependency solution for building complex UIs in environments where the only external APIs are the one to communicate to GPU the (like WebGPU, DirectX, Vulkan, Metal etc.) and the one to receive user input events.
 
-Although in situations where JS is used, DOM is usually available, but the idea of this project is that the code is meant to be simple and C-style so it can easily be ported to many other languages and used in compiled code.
+In situations where JS is used DOM is usually available so it is not much of help. However, the idea behind the code style of the project is that it is meant to be simple and C-style so that it can easily be translated to many other languages and used in compiled code.
 
 ### When would I use it?
 

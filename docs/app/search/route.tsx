@@ -40,24 +40,25 @@ export async function GET() {
           level: Number.parseInt(tagName.slice(1)),
           url: `${baseUrl}${searchablePages[index]}#${document(element).attr("id")}`,
         };
-      } else if (currentSection && document(element).children().length === 0) {
-        // Add text to the current section if it's not another header.
-        currentSection.content +=
-          " " +
-          document(element)
-            .html()
-            .toString()
-            .replaceAll(/<(?:"[^"]*"["']*|'[^']*'["']*|[^"'>])+>/g, " ")
-            .replaceAll(/\s\s+/g, " ")
-            .trim();
+      } else {
+        if (currentSection && document(element).children().length === 0) {
+          // Add text to the current section if it's not another header.
+          currentSection.content +=
+            " " +
+            document(element)
+              .html()
+              .toString()
+              .replaceAll(/<(?:"[^"]*"["']*|'[^']*'["']*|[^"'>])+>/g, " ")
+              .replaceAll(/\s\s+/g, " ")
+              .trim();
+        }
+        // Recursively process child elements.
+        document(element)
+          .children()
+          .each(function () {
+            processElement(this);
+          });
       }
-
-      // Recursively process child elements.
-      document(element)
-        .children()
-        .each(function () {
-          processElement(this);
-        });
     }
 
     processElement(document("main"));
