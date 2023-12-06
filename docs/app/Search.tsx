@@ -99,7 +99,7 @@ export function Search() {
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+        <Dialog.Overlay className="fixed inset-0 flex justify-center bg-[rgba(0,0,0,0.4)] pt-32">
           <Dialog.Content className="scrollbar fixed flex max-h-[calc(100dvh-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-8">
             <H2 className="my-0">Search</H2>
             <Dialog.Close asChild>
@@ -142,7 +142,7 @@ export function Search() {
               }}
               className={twMerge(
                 outline,
-                "relative flex h-7 w-full shrink-0 items-center rounded-md bg-mauvedark4 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
+                "relative flex h-8 w-full shrink-0 items-center rounded-md bg-mauvedark4 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
               )}
             />
             <div className="flex flex-col gap-2">
