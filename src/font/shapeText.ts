@@ -27,7 +27,7 @@ type ShapeTextOptions = {
   lookups: Lookups;
   maxWidth?: number;
   text: string;
-  textAlignment: TextAlign;
+  textAlign: TextAlign;
 };
 
 // TODO @tchayen: text alignment.
@@ -37,9 +37,9 @@ type ShapeTextOptions = {
  * @returns a shape object that can be used to render the text.
  */
 export function shapeText(options: ShapeTextOptions): Shape {
-  const { lookups, text, fontSize, fontName, lineHeight, maxWidth, textAlignment } = options;
+  const { lookups, text, fontSize, fontName, lineHeight, maxWidth, textAlign } = options;
   const cached = cache.get(
-    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlignment }),
+    JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlign }),
   );
 
   if (cached) {
@@ -122,9 +122,9 @@ export function shapeText(options: ShapeTextOptions): Shape {
       : 0;
     if (leftSpace > 0) {
       const offset =
-        textAlignment === TextAlign.Center
+        textAlign === TextAlign.Center
           ? leftSpace / 2
-          : textAlignment === TextAlign.Right
+          : textAlign === TextAlign.Right
             ? leftSpace
             : 0;
       for (let i = 0; i < positions.length; i++) {

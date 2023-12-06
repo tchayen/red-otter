@@ -1,6 +1,12 @@
 import { shapeText } from "./font/shapeText";
 import type { Lookups } from "./font/types";
-import type { ExactLayoutProps, LayoutNodeState, TextStyleProps, UserEvent } from "./types";
+import type {
+  ExactLayoutProps,
+  LayoutNodeState,
+  LayoutProps,
+  TextStyleProps,
+  UserEvent,
+} from "./types";
 import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./types";
 
 export class Text {
@@ -31,7 +37,7 @@ export class Text {
     });
     const { width, height } = shape.boundingRectangle;
 
-    this._style = normalizeLayoutProps(props.style);
+    this._style = normalizeLayoutProps(props.style as LayoutProps);
     this._style.width = width;
     this._style.height = height;
   }

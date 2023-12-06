@@ -5,7 +5,11 @@ import { jetBrainsMono } from "./tags";
 
 export const CHARACTER_LIMIT = 76;
 
-export function CodeBlock({ children, fileName }: { children?: any; fileName?: string }) {
+type CodeBlockProps = {
+  children?: JSX.Element;
+};
+
+export function CodeBlock({ children }: CodeBlockProps) {
   let language = null;
   let code = children.props.children;
 
@@ -91,7 +95,11 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
   );
 }
 
-function DivWrapper({ children }: { children: React.ReactNode }) {
+type DivWrapperProps = {
+  children: React.ReactNode;
+};
+
+function DivWrapper({ children }: DivWrapperProps) {
   return (
     <div className="relative my-5 overflow-hidden border-x-0 border-y border-mauvedark5 bg-mauvedark2 md:rounded-lg md:border-x">
       {children}

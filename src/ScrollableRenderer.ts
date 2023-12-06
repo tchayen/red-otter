@@ -7,7 +7,7 @@ import { shapeText } from "./font/shapeText";
 import type { Settings } from "./consts";
 import { createTextureFromImageBitmap } from "./createTextureFromBitmap";
 import type { Renderer } from "./ui/Renderer";
-import type { TextAlign } from "./types";
+import { defaultTextStyleProps, type TextAlign } from "./types";
 
 /*
  * First number is the size of Rectangle struct (with padding).
@@ -497,7 +497,7 @@ export class ScrollableRenderer implements Renderer {
     fontName: string,
     fontSize: number,
     color: Vec4,
-    textAlignment: TextAlign,
+    textAlign: TextAlign,
     clipStart: Vec2,
     clipSize: Vec2,
     options?: {
@@ -514,11 +514,11 @@ export class ScrollableRenderer implements Renderer {
       shape = shapeText({
         fontName,
         fontSize,
-        lineHeight: options?.lineHeight,
+        lineHeight: options?.lineHeight ?? defaultTextStyleProps.lineHeight,
         lookups: this.fontLookups,
         maxWidth: options?.maxWidth,
         text,
-        textAlignment,
+        textAlign,
       });
     } catch (error) {
       console.error(

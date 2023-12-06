@@ -3,7 +3,12 @@ import { Code, slugify } from "./tags";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import type { Enum, Field } from "./TypeTable";
 
-export function TypeTooltip({ field, enumType }: { enumType: Enum; field: Field }) {
+type TypeTooltipProps = {
+  enumType: Enum;
+  field: Field;
+};
+
+export function TypeTooltip({ field, enumType }: TypeTooltipProps) {
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>

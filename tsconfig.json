@@ -16,6 +16,6 @@
     "lib": ["es2022", "dom", "dom.iterable"],
     "typeRoots": ["./node_modules/@webgpu/types"]
   },
-  "include": ["src", "scripts", "docs", ".eslintrc.cjs"],
+  "include": ["src", "scripts", ".eslintrc.cjs"],
   "exclude": ["node_modules"]
 }

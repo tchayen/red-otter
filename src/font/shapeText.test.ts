@@ -22,7 +22,7 @@ describe("shapeText", () => {
       lineHeight: 20,
       lookups,
       text: "Hello, World!",
-      textAlignment: TextAlign.Left,
+      textAlign: TextAlign.Left,
     });
   });
 });

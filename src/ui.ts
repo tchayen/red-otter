@@ -27,8 +27,8 @@ export function ui(renderer: ScrollableRenderer): View {
     testID: "root",
   });
 
-  root.add(fixtures.text());
-  // root.add(exampleGrid());
+  // root.add(fixtures.text());
+  root.add(exampleGrid());
   // root.add(fixtures.displayAndOverflow());
   // root.add(complexWindow());
 

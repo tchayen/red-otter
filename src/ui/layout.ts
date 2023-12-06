@@ -150,7 +150,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           lookups: fontLookups,
           maxWidth,
           text: e.text,
-          textAlignment: e._style.textAlign ?? TextAlign.Left,
+          textAlign: e._style.textAlign ?? TextAlign.Left,
         });
 
         e._state.clientWidth = shape.boundingRectangle.width;

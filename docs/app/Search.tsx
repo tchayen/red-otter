@@ -8,6 +8,8 @@ import { H2, outline } from "./tags";
 import { HighlightMatches } from "./HighlightMatches";
 import { withClient } from "./withClient";
 
+// TODO: this are not connected.
+
 declare let sectionIndex: FlexSearch.Document<{
   content: string;
   header: string;
@@ -214,7 +216,12 @@ export function Search() {
   );
 }
 
-function Key({ children, className }: { children: string; className?: string }) {
+type KeyProps = {
+  children: string;
+  className?: string;
+};
+
+function Key({ children, className }: KeyProps) {
   return (
     <span
       className={twMerge(

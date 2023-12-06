@@ -91,7 +91,7 @@ async function initialize() {
     renderer.render(commandEncoder);
     device.queue.submit([commandEncoder.finish()]);
 
-    // requestAnimationFrame(render);
+    requestAnimationFrame(render);
   }
 
   render();

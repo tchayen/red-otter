@@ -29,10 +29,9 @@ export type Enum = {
   }>;
 };
 
-export function TypeTable({
-  type,
-  children,
-}: PropsWithChildren<{ type: keyof typeof types.types }>) {
+type TypeTableProps = PropsWithChildren<{ type: keyof typeof types.types }>;
+
+export function TypeTable({ type, children }: TypeTableProps) {
   const t = types as { enums: Array<Enum>; types: Types };
   return (
     <>
@@ -106,7 +105,9 @@ function shortenDefault(value: string) {
   return value;
 }
 
-function Cell({ children, className }: PropsWithChildren<{ className?: string }>) {
+type CellProps = PropsWithChildren<{ className?: string }>;
+
+function Cell({ children, className }: CellProps) {
   return (
     <div
       className={twMerge(
@@ -119,7 +120,9 @@ function Cell({ children, className }: PropsWithChildren<{ className?: string }>
   );
 }
 
-function Description({ children, className }: { children: string; className?: string }) {
+type DescriptionProps = { children: string };
+
+function Description({ children }: DescriptionProps) {
   const splitOnCode = children
     .split(/(`.*?`)/)
     .map((s) => (s.startsWith("`") ? <Code>{s.slice(1, -1)}</Code> : s));

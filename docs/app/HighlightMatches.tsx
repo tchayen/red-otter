@@ -1,6 +1,11 @@
 // TODO: replace HTML symbols.
 
-export function HighlightMatches({ match, value }: { match: string; value: string }) {
+type HighlightMatchesProps = {
+  match: string;
+  value: string;
+};
+
+export function HighlightMatches({ match, value }: HighlightMatchesProps) {
   // Create a RegExp with word boundaries to match whole words only, case-insensitive.
   const regExp = new RegExp(regExpEscape(match), "ig");
   let startIndex = 0;

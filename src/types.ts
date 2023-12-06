@@ -326,6 +326,7 @@ export type ExactLayoutProps = Required<
     | "maxWidth"
     | "minHeight"
     | "minWidth"
+    | "overflow"
     | "overflowX"
     | "overflowY"
     | "padding"
@@ -346,6 +347,8 @@ export type ExactLayoutProps = Required<
   maxWidth: LayoutProps["maxWidth"];
   minHeight: LayoutProps["minHeight"];
   minWidth: LayoutProps["minWidth"];
+  overflowX: LayoutProps["overflowX"];
+  overflowY: LayoutProps["overflowY"];
   right: LayoutProps["right"];
   top: LayoutProps["top"];
   width: LayoutProps["width"];
@@ -452,7 +455,8 @@ const defaultLayoutProps: ExactLayoutProps = {
   maxWidth: undefined,
   minHeight: undefined,
   minWidth: undefined,
-  overflow: Overflow.Visible,
+  overflowX: Overflow.Visible,
+  overflowY: Overflow.Visible,
   paddingBottom: 0,
   paddingLeft: 0,
   paddingRight: 0,

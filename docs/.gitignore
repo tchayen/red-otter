@@ -1,3 +1,4 @@
 .next
 app/types.json
 node_modules/
+tsconfig.tsbuildinfo
