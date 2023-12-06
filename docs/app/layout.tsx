@@ -31,11 +31,15 @@ setProperty("--scrollbar-thumb-active", "${mauveDark.mauve8}");
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
-      <Body>
-        {children}
-        <Hr />
-        <span className="text-sm text-mauvedark10">Copyright © Tomasz Czajęcki 2023</span>
-      </Body>
+      <body className="selection:bg-mauvedark12 selection:text-black">
+        <Body>
+          <main>{children}</main>
+          <Hr />
+          <footer>
+            <span className="text-sm text-mauvedark10">Copyright © Tomasz Czajęcki 2023</span>
+          </footer>
+        </Body>
+      </body>
     </html>
   );
 }

@@ -12,6 +12,10 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+export const outline =
+  "rounded-sm focus-visible:ring-tomatodark9 outline-none focus-visible:ring-2";
+export const underline = "decoration-1 underline-offset-4 decoration-mauvedark8 hover:underline";
+
 export function Code({ children, className }: PropsWithChildren<{ className?: string }>) {
   if (typeof children === "string" && children.length === 0) {
     return null;
@@ -37,9 +41,6 @@ export function H1({ children, className }: PropsWithChildren<{ className?: stri
     </h2>
   );
 }
-
-const outline = "rounded-sm focus-visible:ring-tomatodark9 outline-none focus-visible:ring-2";
-const underline = "decoration-1 underline-offset-4 decoration-mauvedark8 hover:underline";
 
 export function H2({ children, className }: PropsWithChildren<{ className?: string }>) {
   const slug = slugify(typeof children === "string" ? children : "");

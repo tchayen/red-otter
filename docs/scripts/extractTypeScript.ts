@@ -1,18 +1,18 @@
 import ts from "typescript";
-import fs from "fs";
+import fs from "node:fs";
 
 type Field = {
+  default: string;
+  description: string;
   name: string;
   type: string;
-  description: string;
-  default: string;
 };
 
 type Types = Record<
   string,
   {
-    name: string;
     description: string;
+    name: string;
     properties: Record<string, Field>;
   }
 >;
@@ -38,12 +38,12 @@ export function extractTypeScript(fileName: string) {
     sourceFile.statements.filter((s) => ts.isEnumDeclaration(s)) as Array<ts.EnumDeclaration>
   ).map((e) => {
     return {
-      name: e.name.escapedText,
       description: ts.displayPartsToString(e.symbol.getDocumentationComment(checker)),
+      name: e.name.escapedText,
       values: e.members.map((m) => {
         return {
-          name: m.name.escapedText,
           description: ts.displayPartsToString(m.symbol.getDocumentationComment(checker)),
+          name: m.name.escapedText,
         };
       }),
     };
@@ -65,17 +65,17 @@ export function extractTypeScript(fileName: string) {
       }
       const name = symbol.escapedName.toString();
       properties[name] = {
+        default: "",
+        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
         name,
         type: checker.typeToString(checker.getTypeAtLocation(child)),
-        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-        default: "",
       };
     });
 
     const name = symbol.escapedName.toString();
     types[name] = {
-      name,
       description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+      name,
       properties,
     };
   });
@@ -100,8 +100,8 @@ export function extractTypeScript(fileName: string) {
     });
   });
 
-  return { types, enums };
+  return { enums, types };
 }
 
-const result = extractTypeScript(import.meta.dir + "/../src/types.ts");
-fs.writeFileSync(import.meta.dir + "/../docs/app/types.json", JSON.stringify(result, null, 2));
+const result = extractTypeScript(import.meta.dir + "/../../src/types.ts");
+fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, null, 2));

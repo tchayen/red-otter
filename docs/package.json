@@ -4,7 +4,7 @@
   "description": "Fancy Next.js app",
   "scripts": {
     "dev": "next",
-    "build": "bun ../scripts/extractTypeScript.ts && next build",
+    "build": "bun scripts/extractTypeScript.ts && next build",
     "start": "next start",
     "build:static": "next build && next out"
   },
@@ -14,6 +14,7 @@
     "@radix-ui/colors": "^3.0.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "cheerio": "^1.0.0-rc.12",
     "flexsearch": "^0.7.31",
     "next": "^14.0.3",
     "react": "^18.2.0",

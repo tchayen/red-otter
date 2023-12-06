@@ -1,4 +1,3 @@
-import { SearchWebpackPlugin } from "./SearchWebpackPlugin.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import addMdx from "@next/mdx";
@@ -13,12 +12,7 @@ const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   reactStrictMode: true,
   swcMinify: true,
-  webpack: (config, options) => {
-    if (options.nextRuntime !== "edge" && options.isServer) {
-      config.plugins ||= [];
-      config.plugins.push(new SearchWebpackPlugin());
-    }
-
+  webpack: (config) => {
     return {
       ...config,
       resolve: {

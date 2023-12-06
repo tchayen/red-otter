@@ -1,3 +1,9 @@
-import README from "../../README.md";
+import { packageJson } from "./PackageJson";
+import Readme from "../../README.md";
 
-<README />
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter",
+};
+
+<Readme />
