@@ -27,7 +27,7 @@ export function Body({ children }: PropsWithChildren) {
           ⌘
         </div>
         {showMobileMenu && (
-          <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-2 bg-mauvedark1 px-4">
+          <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-4 bg-mauvedark1 px-4">
             <Sidebar />
             <div
               role="button"
@@ -40,7 +40,7 @@ export function Body({ children }: PropsWithChildren) {
             </div>
           </div>
         )}
-        <div className="sidebar fixed top-0 hidden h-[100dvh] w-56 flex-col items-start gap-2 overflow-auto p-6 pt-4 lg:flex">
+        <div className="scrollbar fixed top-0 hidden h-[100dvh] w-56 flex-col items-start gap-4 overflow-auto p-6 pt-4 lg:flex">
           <Sidebar />
         </div>
       </Tooltip.Provider>
@@ -53,36 +53,40 @@ function Sidebar() {
 
   return (
     <>
-      <img src="/logo.svg" className="h-24 w-24" alt="Red Otter logo" />
-      <div className="flex items-baseline gap-1">
-        <div className="text-2xl font-bold text-white">Red Otter</div>
-        <div className="text-xs text-mauvedark10">{packageJson.version}</div>
-      </div>
+      <Link href="/" className="outline-none">
+        <img src="/logo.svg" className="h-24 w-24" alt="Red Otter logo" />
+        <div className="flex items-baseline gap-1">
+          <div className="text-2xl font-bold text-white">Red Otter</div>
+          <div className="text-xs text-mauvedark10">{packageJson.version}</div>
+        </div>
+      </Link>
       <Search />
-      <SidebarLink currentPath={path} href="/">
-        Home
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="/api-reference">
-        API reference
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="/roadmap">
-        Roadmap
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="/renderer">
-        Renderer
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="/layout">
-        Layout engine
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="https://github.com/tchayen/red-otter">
-        GitHub
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="https://npmjs.com/package/red-otter">
-        NPM
-      </SidebarLink>
-      <SidebarLink currentPath={path} href="https://x.com/tchayen">
-        X
-      </SidebarLink>
+      <div className="flex flex-col items-start gap-2">
+        <SidebarLink currentPath={path} href="/">
+          Home
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/api-reference">
+          API reference
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/roadmap">
+          Roadmap
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/renderer">
+          Renderer
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/layout">
+          Layout engine
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="https://github.com/tchayen/red-otter">
+          GitHub
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="https://npmjs.com/package/red-otter">
+          NPM
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="https://x.com/tchayen">
+          X
+        </SidebarLink>
+      </div>
     </>
   );
 }
