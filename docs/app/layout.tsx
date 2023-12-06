@@ -26,6 +26,24 @@ setProperty("--scrollbar-track", "${mauveDark.mauve1}");
 setProperty("--scrollbar-thumb", "${mauveDark.mauve6}");
 setProperty("--scrollbar-thumb-hover", "${mauveDark.mauve7}");
 setProperty("--scrollbar-thumb-active", "${mauveDark.mauve8}");
+
+setProperty("--code-theme-main", "#c9d1d9");
+setProperty("--code-theme-keyword", "#ff7b72");
+setProperty("--code-theme-title", "#d2a8ff");
+setProperty("--code-theme-number", "#79c0ff");
+setProperty("--code-theme-symbol", "#ffa657");
+setProperty("--code-theme-comment", "#8b949e");
+setProperty("--code-theme-string", "#a5d6ff");
+setProperty("--code-theme-quote", "#7ee787");
+setProperty("--code-theme-subst", "#c9d1d9");
+setProperty("--code-theme-bullet", "#f2cc60");
+setProperty("--code-theme-section", "#1f6feb");
+setProperty("--code-theme-strong", "#c9d1d9");
+setProperty("--code-theme-emphasis", "#c9d1d9");
+setProperty("--code-theme-addition", "#aff5b4");
+setProperty("--code-theme-addition-background", "#033a16");
+setProperty("--code-theme-deletion", "#ffdcd7");
+setProperty("--code-theme-deletion-background", "#67060c");
 `,
           }}
         />

@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import type { LinkProps } from "next/link";
 import Link from "next/link";
 
-const jetBrainsMono = JetBrains_Mono({
+export const jetBrainsMono = JetBrains_Mono({
   display: "swap",
   preload: true,
   style: "normal",

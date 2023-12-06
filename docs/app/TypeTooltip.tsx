@@ -4,8 +4,6 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import type { Enum, Field } from "./TypeTable";
 
 export function TypeTooltip({ field, enumType }: { enumType: Enum; field: Field }) {
-  return <Code className="text-[13px] underline">{field.type}</Code>;
-
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>

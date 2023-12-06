@@ -1,13 +1,9 @@
 import hljs from "highlight.js";
 import type { HTMLAttributes } from "react";
-import { JetBrains_Mono } from "next/font/google";
 import { twMerge } from "tailwind-merge";
+import { jetBrainsMono } from "./tags";
 
 export const CHARACTER_LIMIT = 76;
-
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-});
 
 export function CodeBlock({ children, fileName }: { children?: any; fileName?: string }) {
   let language = null;
@@ -45,8 +41,6 @@ export function CodeBlock({ children, fileName }: { children?: any; fileName?: s
   } catch {
     /* empty */
   }
-
-  console.log({ code });
 
   return (
     <DivWrapper>
@@ -99,7 +93,7 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
 
 function DivWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative my-5 overflow-hidden border-x-0 border-y border-mauvedark6 bg-mauvedark2 md:rounded-lg md:border-x">
+    <div className="relative my-5 overflow-hidden border-x-0 border-y border-mauvedark5 bg-mauvedark2 md:rounded-lg md:border-x">
       {children}
     </div>
   );
