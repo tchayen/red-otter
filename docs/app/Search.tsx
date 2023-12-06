@@ -18,11 +18,24 @@ globalThis.sectionIndex = null;
 let id = 1;
 const idToSection = new Map<number, Section>();
 
+function getPlatform() {
+  if (navigator.userAgent.match(/Macintosh/)) {
+    return "mac";
+  }
+
+  if (navigator.userAgent.match(/Windows/)) {
+    return "windows";
+  }
+
+  return "linux";
+}
+
 export function Search() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<Array<Section>>([]);
 
+  // Load the search index.
   useEffect(() => {
     if (globalThis.sectionIndex) {
       return;
@@ -33,31 +46,34 @@ export function Search() {
       .then((data) => {
         globalThis.sectionIndex = new FlexSearch.Document({
           cache: 100,
-          context: {
-            bidirectional: true,
-            depth: 2,
-            resolution: 9,
-          },
-          document: {
-            id: "id",
-            index: ["content", "header"],
-          },
+          context: { bidirectional: true, depth: 2, resolution: 9 },
+          document: { id: "id", index: ["content", "header"] },
           tokenize: "full",
         });
 
         for (const page of data as Array<Page>) {
           for (const section of page.sections) {
-            globalThis.sectionIndex.add({
-              content: section.content,
-              header: section.header,
-              id: id,
-              url: section.url,
-            });
+            globalThis.sectionIndex.add({ id, ...section });
             idToSection.set(id, section);
             id += 1;
           }
         }
       });
+  }, []);
+
+  // Detect CMD+K or CTRL+K to open the search dialog.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen(true);
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
 
   return (
@@ -78,8 +94,10 @@ export function Search() {
           )}
         >
           Search...
-          <Key className="right-7">⌘</Key>
-          <Key className="right-1">K</Key>
+          <div className="absolute right-1 top-1 flex gap-1">
+            <Key className="right-7">{getPlatform() === "mac" ? "⌘" : "CTRL"}</Key>
+            <Key className="right-1">K</Key>
+          </div>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -99,15 +117,14 @@ export function Search() {
               let newValue = event.target.value;
               setSearch(newValue);
               newValue = newValue.trim();
+
               if (newValue === search) {
                 return;
               }
-
               if (newValue.length < 3) {
                 setResults([]);
                 return;
               }
-
               if (!globalThis.sectionIndex) {
                 setResults([]);
                 return;
@@ -170,7 +187,7 @@ function Key({ children, className }: { children: string; className?: string }) 
   return (
     <span
       className={twMerge(
-        "absolute top-1 box-content flex h-5 w-5 select-none items-center justify-center rounded border-b-2 border-mauvedark1 bg-mauvedark7 text-sm text-mauvedark12",
+        "box-content flex h-5 select-none items-center justify-center rounded border-b-2 border-mauvedark1 bg-mauvedark7 px-1.5 text-xs text-mauvedark12",
         className,
       )}
     >
