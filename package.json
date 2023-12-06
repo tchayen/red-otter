@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.5.1",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "@vitest/coverage-istanbul": "^0.34.6",
-    "@vitest/coverage-v8": "^0.34.6",
-    "@vitest/ui": "^0.34.6",
-    "@webgpu/types": "^0.1.38",
-    "eslint": "^8.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitest/coverage-istanbul": "^1.0.1",
+    "@vitest/coverage-v8": "^1.0.1",
+    "@vitest/ui": "^1.0.1",
+    "@webgpu/types": "^0.1.40",
+    "eslint": "^8.55.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-comment-length": "^1.7.2",
     "eslint-plugin-import": "^2.29.0",
@@ -40,8 +40,8 @@
     "eslint-plugin-unicorn": "^49.0.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "prettier": "^3.1.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.0",
-    "vitest": "^0.34.6"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.6",
+    "vitest": "^1.0.1"
   }
 }
