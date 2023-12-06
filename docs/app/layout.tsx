@@ -3,6 +3,7 @@ import { Body } from "./Body";
 import { mauveDark } from "@radix-ui/colors";
 import { Hr } from "./tags";
 import { packageJson } from "./PackageJson";
+import "./code-theme.css";
 
 export const metadata = {
   description: packageJson.description,

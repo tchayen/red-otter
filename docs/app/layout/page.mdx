@@ -7,9 +7,25 @@ export const metadata = {
 
 # Layout engine
 
-Layout engine executes 4 pass algorithm:
+The layout algorithm is perhaps the most valuable and unique part of the library and took the most time to develop.
 
-- Pass 1: Traverse tree in level order and generate the reverse queue.
-- Pass 2: Resolve wrapping children. Going bottom-up, level order.
-- Pass 3: Resolve flex sizes and assign positions. Going top-down, level order.
-- Pass 4: Calculate scroll sizes (actual space used by children versus available component size). Going top-down, level order.
+## Overview
+
+Layout engine executes a 4 pass algorithm:
+
+- _Pass 1:_ Traverse tree in level order and generate the reverse queue.
+- _Pass 2:_ Going bottom-up, level order, resolve sizes of elements that base their size on their children.
+- _Pass 3:_ Going top-down, level order, resolve flex sizes by splitting available space between children and assign positions of all elements based on specified flex modifiers.
+- _Pass 4:_ Going top-down, level order, calculate scroll sizes – the actual space used by children versus available component size.
+
+## Quick story
+
+My initial idea was to base it off the Auto Layout system from Figma, but it soon turned out that the CSS flexbox API is more familiar to write. Since there was a similar already successfully developed project by Facebook, [Yoga](https://yogalayout.dev/), I decided to follow the same subset of implemented flexbox features.
+
+I made first implementation in Zig in June 2022. In July I came with with the a 3-pass tree traversal that allows to resolve all flexbox properties without introducing any recursion. I released Red Otter in early 2023. At the time it was missing flex wrap and scrollable containers.
+
+I spent a lot of time thinking how approach interactivity. In October 2023 I settled for retained mode UI rendering and what soon followed was a major rewrite of the layout algorithm that enabled flex wrap and shortened the code. In November I finished the implementation and implemented scrolling, which required rethinking other execution layers of the library.
+
+## Want to learn more?
+
+I wrote a blogpost about implementing similar algorithm – [How to Write a Flexbox Layout Engine](https://tchayen.com/how-to-write-a-flexbox-layout-engine).

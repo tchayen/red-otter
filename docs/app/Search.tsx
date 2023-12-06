@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { twMerge } from "tailwind-merge";
 import FlexSearch from "flexsearch";
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import type { Page, Section } from "./search/route";
 import { H2, outline } from "./tags";
@@ -77,6 +78,101 @@ export function Search() {
     };
   }, []);
 
+  function onChange(event: ChangeEvent<HTMLInputElement>): void {
+    let newValue = event.target.value;
+    setSearch(newValue);
+    newValue = newValue.trim();
+
+    if (newValue === search) {
+      return;
+    }
+    if (newValue.length < 3) {
+      setResults([]);
+      return;
+    }
+    if (!globalThis.sectionIndex) {
+      setResults([]);
+      return;
+    }
+
+    const result = globalThis.sectionIndex.search(newValue, 5, {
+      enrich: true,
+      suggest: true,
+    });
+    const results = new Map<number, Section>();
+
+    result.forEach((item) =>
+      item.result.forEach((id) => results.set(Number(id), idToSection.get(Number(id)))),
+    );
+
+    setResults([...results.values()]);
+  }
+
+  const searchIcon = (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="pointer-events-none absolute right-[9px] top-[9px]"
+    >
+      <path
+        d="M12.2929 13.7071C12.6834 14.0976 13.3166 14.0976 13.7071 13.7071C14.0976 13.3166 14.0976 12.6834 13.7071 12.2929L12.2929 13.7071ZM13.7071 12.2929L8.70711 7.29289L7.29289 8.70711L12.2929 13.7071L13.7071 12.2929Z"
+        fill="#6B7176"
+      />
+      <circle cx="5.5" cy="5.5" r="4.5" stroke="#6B7176" stroke-width="2" />
+    </svg>
+  );
+
+  const triggerButton = (
+    <button
+      className={twMerge(
+        outline,
+        "relative flex h-8 w-full shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark3 px-2 text-sm text-mauvedark10",
+      )}
+    >
+      Search...
+      <SearchKeys />
+    </button>
+  );
+
+  const closeButton = (
+    <button className="flex h-8 w-8 select-none items-center justify-center rounded-full text-3xl text-mauvedark12">
+      ✗
+    </button>
+  );
+
+  const resultsSection = results.map((result) => {
+    return (
+      <a
+        onClick={() => {
+          setOpen(false);
+        }}
+        href={result.url}
+        className={twMerge(
+          outline,
+          "block overflow-hidden rounded-md border border-mauvedark6 p-2 text-mauvedark12 hover:bg-mauvedark3 focus:border-transparent",
+        )}
+      >
+        <div className="flex flex-col items-start gap-1">
+          <span className="font-semibold">
+            <HighlightMatches match={search} value={result.header} />
+          </span>
+          <div className="inline text-sm">
+            <HighlightMatches match={search} value={result.content} />
+          </div>
+        </div>
+      </a>
+    );
+  });
+
+  const placeholder = results.length === 0 && (
+    <div className="block overflow-hidden rounded-md border border-mauvedark6 p-4 text-sm text-mauvedark10">
+      No results. Try changing your query.
+    </div>
+  );
+
   return (
     <Dialog.Root
       open={open}
@@ -84,96 +180,32 @@ export function Search() {
         setSearch("");
         setResults([]);
         setOpen(open);
-        console.log(sectionIndex);
       }}
     >
-      <Dialog.Trigger asChild>
-        <button
-          className={twMerge(
-            outline,
-            "relative flex h-8 w-full shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark3 px-2 text-sm text-mauvedark10",
-          )}
-        >
-          Search...
-          <SearchKeys />
-        </button>
-      </Dialog.Trigger>
+      <Dialog.Trigger asChild>{triggerButton}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 flex justify-center bg-[rgba(0,0,0,0.4)] pt-32">
-          <Dialog.Content className="scrollbar fixed flex max-h-[calc(100dvh-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-8">
-            <H2 className="my-0">Search</H2>
-            <Dialog.Close asChild>
-              <button className="absolute right-4 top-4 flex h-8 w-8 select-none items-center justify-center rounded-full text-3xl text-mauvedark12">
-                ✗
-              </button>
-            </Dialog.Close>
-            <input
-              autoFocus
-              placeholder="Search…"
-              value={search}
-              onChange={(event) => {
-                let newValue = event.target.value;
-                setSearch(newValue);
-                newValue = newValue.trim();
-
-                if (newValue === search) {
-                  return;
-                }
-                if (newValue.length < 3) {
-                  setResults([]);
-                  return;
-                }
-                if (!globalThis.sectionIndex) {
-                  setResults([]);
-                  return;
-                }
-
-                const result = globalThis.sectionIndex.search(newValue, 5, {
-                  enrich: true,
-                  suggest: true,
-                });
-                const results = new Map<number, Section>();
-
-                result.forEach((item) =>
-                  item.result.forEach((id) => results.set(Number(id), idToSection.get(Number(id)))),
-                );
-
-                setResults([...results.values()]);
-              }}
-              className={twMerge(
-                outline,
-                "relative flex h-8 w-full shrink-0 items-center rounded-md bg-mauvedark4 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
-              )}
-            />
+          <Dialog.Content className="scrollbar fixed flex max-h-[calc(100dvh-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-6">
+            <div className="flex justify-between">
+              <H2 className="my-0">Search</H2>
+              <Dialog.Close asChild>{closeButton}</Dialog.Close>
+            </div>
+            <div className="relative">
+              <input
+                autoFocus
+                className={twMerge(
+                  outline,
+                  "relative flex h-8 w-full shrink-0 items-center rounded-md border border-mauvedark5 bg-mauvedark3 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
+                )}
+                placeholder="Search…"
+                onChange={onChange}
+                value={search}
+              />
+              {searchIcon}
+            </div>
             <div className="flex flex-col gap-2">
-              {results.length === 0 && (
-                <div className="block overflow-hidden rounded-md border border-mauvedark6 p-2 text-sm text-mauvedark10">
-                  No results. Try changing your query.
-                </div>
-              )}
-              {results.map((result) => {
-                return (
-                  <a
-                    onClick={() => {
-                      setOpen(false);
-                    }}
-                    href={result.url}
-                    className={twMerge(
-                      outline,
-                      "block overflow-hidden rounded-md border border-mauvedark6 p-2 text-mauvedark12 hover:bg-mauvedark3 focus:border-transparent",
-                    )}
-                  >
-                    <div className="flex flex-col items-start gap-1">
-                      <span className="font-semibold">
-                        <HighlightMatches match={search} value={result.header} />
-                      </span>
-                      <div className="inline text-sm">
-                        <HighlightMatches match={search} value={result.content} />
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
+              {placeholder}
+              {resultsSection}
             </div>
           </Dialog.Content>
         </Dialog.Overlay>
