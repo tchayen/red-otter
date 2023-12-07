@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Search } from "./Search";
 import type { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
+import Image from "next/image";
 
 export function Sidebar() {
   const path = usePathname();
@@ -12,7 +13,7 @@ export function Sidebar() {
   return (
     <>
       <Link href="/" className="outline-none">
-        <img src="/logo.svg" className="h-24 w-24" alt="Red Otter logo" />
+        <Image width={96} height={96} src="/logo.svg" alt="Red Otter logo" />
         <div className="flex items-baseline gap-1">
           <div className="text-2xl font-bold text-white">Red Otter</div>
           <div className="text-xs text-mauvedark10">{packageJson.version}</div>

@@ -148,6 +148,7 @@ export function Search() {
   const resultsSection = results.map((result) => {
     return (
       <a
+        key={result.url}
         onClick={() => {
           setOpen(false);
         }}

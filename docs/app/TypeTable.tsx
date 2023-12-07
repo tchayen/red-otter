@@ -1,6 +1,6 @@
 import types from "./types.json";
 import { Code, H2, P } from "./tags";
-import type { PropsWithChildren } from "react";
+import { Fragment, type PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 import { TypeTooltip } from "./TypeTooltip";
 
@@ -59,7 +59,7 @@ export function TypeTable({ type, children }: TypeTableProps) {
         {Object.values(t.types[type].properties).map((field) => {
           const enumType = types.enums.find((e) => e.name === field.type);
           return (
-            <>
+            <Fragment key={field.name}>
               <Cell>
                 <span>{field.name}</span>
               </Cell>
@@ -76,7 +76,7 @@ export function TypeTable({ type, children }: TypeTableProps) {
               <Cell>
                 <Description>{field.description}</Description>
               </Cell>
-            </>
+            </Fragment>
           );
         })}
       </div>
@@ -123,8 +123,8 @@ function Cell({ children, className }: CellProps) {
 type DescriptionProps = { children: string };
 
 function Description({ children }: DescriptionProps) {
-  const splitOnCode = children
-    .split(/(`.*?`)/)
-    .map((s) => (s.startsWith("`") ? <Code>{s.slice(1, -1)}</Code> : s));
+  const splitOnCode = children.split(/(`.*?`)/).map((s, i) => {
+    return <Fragment key={i}>{s.startsWith("`") ? <Code>{s.slice(1, -1)}</Code> : s}</Fragment>;
+  });
   return <div>{splitOnCode}</div>;
 }

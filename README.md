@@ -46,6 +46,8 @@ Games and 3D applications are different. Very different. It’s ok, even better 
 
 Even though this library does a lot of things, you don't need to use it all. Modern JS bundlers do well with tree shaking so as long as you import only what you need, your bundle size will grow only by the amount of code you actually use.
 
+---
+
 ## Design and structure
 
 Layers:
@@ -54,6 +56,8 @@ Layers:
 - `compose()` - takes tree of nodes after layout and calculates screen-space positions after including scrolling. Runs after user events.
 - `paint()` - takes tree of nodes after compose and prepares commands for the renderer.
 - `Renderer` - given precise commands renderes styled rectangles and text to the screen.
+
+---
 
 ## Styling
 
