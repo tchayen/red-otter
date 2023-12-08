@@ -96,11 +96,11 @@ export function Body({ children }: PropsWithChildren) {
       <Tooltip.Provider>
         {/* <div className="absolute -top-32 h-[300px] w-full bg-gradient-to-b from-tomatodark4 to-mauvedark1"></div> */}
         {topBar}
-        <div className="flex">
-          <div className="scrollbar sticky top-0 hidden h-[100dvh] w-64 flex-col gap-4 overflow-auto p-3 pt-[72px] lg:flex">
+        <div className="flex pt-[49px]">
+          <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 flex-col gap-4 overflow-auto p-3 lg:flex">
             <Sidebar />
           </div>
-          <div className="mx-auto w-full px-4 pb-8 pt-[64px] md:w-[768px]">{children}</div>
+          <div className="mx-auto w-full px-4 pb-8 pt-8 md:w-[768px]">{children}</div>
           <Outline />
         </div>
       </Tooltip.Provider>

@@ -11,15 +11,22 @@ How Red Otter approaches interactivity. Surprisingly complex topic.
 
 ## A longer story
 
+**TODO: rework**
+
 As long as layout is executed only once, there is no need to worry about persistent tree of nodes and other such topics. But as soon as there's any interactivity and the layout might change, there's an important conversation to have there.
 
 There are two main approaches to this problem:
 
 - **Retained mode GUI** - the UI is a persistent tree of nodes that is mutated over time. This is how DOM in web browsers works, and as React and other declarative frameworks demonstrate, it's not impossible to fundamentally change this mutability on a higher level.
 
-- **Immediate mode GUI** - the UI is a set of instructions that are executed every frame. This is how many game engines render their interfaces. The main benefit is extreme expressiveness and direct control over the rendering process. The main drawback is that it's hard to avoid unnecessary work and if for a complex UI the programmer decides to implement some caching, it's non-trivial and might end up being a retained mode UI in a trench coat.
+- **Immediate mode GUI** - the UI is a set of instructions that are executed every frame. This is how many game engines render their interfaces. The main benefit is extreme expressiveness and direct control over the rendering process. The main drawback is that it's hard to avoid unnecessary work and if for a complex UI the programmer decides to implement some caching, it's non-trivial and might end up being a retained mode UI in a trench coat. Complex layouts are often hard if the API
+
+> IM is just an API paradigm. If you prefer it, then you can use it. You suffer no consequences for this. There is no such thing as something an IM can't do but an RM can.
+> [Source](https://x.com/cmuratori/status/1733244416125747629?s=20)
 
 I am absolutely not saying that IMGUI wouldn't work, but due to my background in web development it was easier to wrap my head around recreating something similar to DOM.
+
+[Source](https://github.com/ocornut/imgui/issues/97)
 
 ## EventManager
 
