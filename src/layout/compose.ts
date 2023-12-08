@@ -7,7 +7,8 @@ import { Display } from "./styling";
 import type { Renderer } from "../renderer/Renderer";
 
 /**
- * TODO: description.
+ * Takes tree of nodes processed by `layout()` and calculates current positions based on
+ * accumulated scroll values and calculates parent clipping rectangle.
  */
 export function compose(
   ui: Renderer,

@@ -9,14 +9,16 @@ import { HighlightMatches } from "./HighlightMatches";
 import { withClient } from "./withClient";
 import Link from "next/link";
 
-// TODO: these two are not connected.
-
-declare let sectionIndex: FlexSearch.Document<{
-  content: string;
-  header: string;
-  id: number;
-  url: string;
-}> | null;
+declare global {
+  // It only works with var.
+  // eslint-disable-next-line no-var
+  var sectionIndex: FlexSearch.Document<{
+    content: string;
+    header: string;
+    id: number;
+    url: string;
+  }> | null;
+}
 
 globalThis.sectionIndex = null;
 

@@ -60,7 +60,7 @@ type Enum = {
 const mainDirectory = path.resolve(import.meta.dir + "/../../src");
 
 const result = extractTypeScript([
-  `${mainDirectory}/layout/styling.ts`,
+  `${mainDirectory}/layout`,
   `${mainDirectory}/font`,
   `${mainDirectory}/math`,
 ]);
@@ -194,6 +194,7 @@ export function extractTypeScript(paths: Array<string>) {
     });
 
     // Process exported functions.
+    // TODO: fix JSDoc comments - match them with parameters and don't loose description.
     (
       sourceFile.statements.filter((s) =>
         ts.isFunctionDeclaration(s),

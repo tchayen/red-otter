@@ -451,7 +451,13 @@ function readGlyfTable(
   const position = reader.getPosition();
   reader.setPosition(offset);
 
-  const glyfs = []; // TODO: type this.
+  const glyfs: Array<{
+    numberOfContours: Int16;
+    xMax: Int16;
+    xMin: Int16;
+    yMax: Int16;
+    yMin: Int16;
+  }> = [];
   for (let i = 0; i < loca.offsets.length - 1; i++) {
     const multiplier = indexToLocFormat === 0 ? 2 : 1;
     const locaOffset = loca.offsets[i];
@@ -495,8 +501,12 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
 
   const featureCount = reader.getUint16();
 
-  const featureInfo = []; // TODO: type this.
-  const features = []; // TODO: type this.
+  const featureInfo: Array<{ offset: Uint16; tag: string }> = [];
+  const features: Array<{
+    lookupListIndices: Array<number>;
+    paramsOffset: number;
+    tag: string;
+  }> = [];
   for (let i = 0; i < featureCount; i++) {
     const tag = reader.getString(4);
     const offset = reader.getUint16();
@@ -693,7 +703,6 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                     return parseClassDef(reader);
                   },
                 );
-
                 const classDef2 = reader.runAt(
                   offset +
                     lookupListOffset +
@@ -705,14 +714,12 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                     return parseClassDef(reader);
                   },
                 );
-
                 const classRecords: Array<
                   Array<{
                     value1?: ValueRecord;
                     value2?: ValueRecord;
                   }>
                 > = [];
-
                 for (let k = 0; k < class1Count; k++) {
                   const class1Record: (typeof classRecords)[number] = [];
                   for (let l = 0; l < class2Count; l++) {

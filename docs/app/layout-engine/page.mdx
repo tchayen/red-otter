@@ -1,4 +1,5 @@
 import { packageJson } from "../components/PackageJson";
+import { LayoutApi } from "../components/LayoutApi";
 
 export const metadata = {
   description: packageJson.description,
@@ -51,6 +52,8 @@ My initial idea was to base it off the Auto Layout system from Figma, but it soo
 I made first implementation in Zig in June 2022. In July I came with with the a 3-pass tree traversal that allows to resolve all flexbox properties without introducing any recursion. I released Red Otter in early 2023. At the time it was missing flex wrap and scrollable containers.
 
 I spent a lot of time thinking how approach interactivity. In October 2023 I settled for retained mode UI rendering and what soon followed was a major rewrite of the layout algorithm that enabled flex wrap and shortened the code. In November I finished the implementation and implemented scrolling, which required rethinking other execution layers of the library.
+
+<LayoutApi />
 
 ## Want to learn more?
 
