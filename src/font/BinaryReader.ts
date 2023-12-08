@@ -6,6 +6,9 @@ export type Int32 = number;
 export type FWord = Int16;
 export type Fixed = number;
 
+/**
+ * A module for reading binary data. Keeps track of the current position, assuming sequential reads.
+ */
 export class BinaryReader {
   private readonly view: DataView;
   private position = 0;

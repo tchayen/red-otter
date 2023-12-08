@@ -1,13 +1,13 @@
-import { packageJson } from "../PackageJson";
+import { packageJson } from "../components/PackageJson";
 
 export const metadata = {
   description: packageJson.description,
   title: "Red Otter – API",
 };
 
-# API Reference
+# Styling
 
-Everything to know about the API.
+Everything to know about styling components.
 
 ---
 
@@ -35,6 +35,8 @@ Supported formats are hex (long and short variants – `#f00` and `#ff0000`), RG
 
 RGB and HSV require adding A in the end to support alpha. In HSL it is optional. If color is not recognized, `transparent` is used and warning is logged to the console. For the most up-to-date info check `parseColor()` in the code.
 
+---
+
 <TypeTable type="LayoutProps" />
 
 ---
@@ -44,6 +46,8 @@ RGB and HSV require adding A in the end to support alpha. In HSL it is optional.
 ---
 
 <TypeTable type="TextStyleProps">
+
+In-depth explanation of text rendering is available on the [Text Rendering](/text-rendering) page.
 
 > [!IMPORTANT]
 > The library uses cap size as opposed to line height for calculating bounding

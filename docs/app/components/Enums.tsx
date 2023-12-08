@@ -1,5 +1,5 @@
 import { H2, H4, P } from "./tags";
-import types from "./types.json";
+import types from "../types.json";
 
 export function Enums() {
   return (

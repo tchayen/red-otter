@@ -30,6 +30,7 @@ module.exports = {
     "unicorn",
   ],
   rules: {
+    "@typescript-eslint/array-type": [Rule.Error, { default: "generic" }],
     "@typescript-eslint/consistent-type-exports": Rule.Error,
     "@typescript-eslint/consistent-type-imports": Rule.Error,
     "@typescript-eslint/no-dynamic-delete": Rule.Error,

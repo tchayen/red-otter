@@ -85,7 +85,7 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
     <pre
       className={twMerge(
         jetBrainsMono.className,
-        "hljs codeblock overflow-x-auto p-4 text-sm leading-[19px] subpixel-antialiased",
+        "scrollbar hljs codeblock overflow-x-auto p-4 text-sm leading-[19px] subpixel-antialiased",
       )}
       style={{ fontVariantLigatures: "none" }}
       {...rest}

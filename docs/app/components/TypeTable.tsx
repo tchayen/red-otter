@@ -1,4 +1,4 @@
-import types from "./types.json";
+import types from "../types.json";
 import { Code, H2, P } from "./tags";
 import { Fragment, type PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";

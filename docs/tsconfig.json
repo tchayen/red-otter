@@ -13,7 +13,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "downlevelIteration": true,
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "typeRoots": ["../node_modules/@webgpu/types"]
   },
   "include": [
     "next-env.d.ts",

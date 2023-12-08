@@ -25,7 +25,7 @@ enum DrawingMode {
 
 export class ScrollableRenderer implements Renderer {
   private drawingMode = DrawingMode.None;
-  private drawingIndices: number[] = [];
+  private drawingIndices: Array<number> = [];
 
   private rectangleData: Float32Array = new Float32Array(RECTANGLE_BUFFER_SIZE);
   private rectangleCount = 0;

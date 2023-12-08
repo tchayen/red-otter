@@ -12,10 +12,12 @@ export function generateKerningFunction(ttf: TTF): KerningFunction {
   let firstGlyphClassMapping = new Map<number, number>();
   let secondGlyphClassMapping = new Map<number, number>();
 
-  let classRecords: {
-    value1?: ValueRecord | undefined;
-    value2?: ValueRecord | undefined;
-  }[][] = [];
+  let classRecords: Array<
+    Array<{
+      value1?: ValueRecord | undefined;
+      value2?: ValueRecord | undefined;
+    }>
+  > = [];
 
   const kern = ttf.GPOS?.features.find((f) => f.tag === "kern");
   if (kern) {

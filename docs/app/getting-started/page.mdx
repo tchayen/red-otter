@@ -1,0 +1,168 @@
+# Getting Started
+
+Due to modular and layered architecture, you can start almost anywhere depending on your needs.
+
+**TODO: accordion/details/spoiler component for collapsing this by default.**
+
+**TODO: starter for other renderers (uh first add more of them?).**
+
+```tsx
+const settings = {
+  sampleCount: 4,
+  windowHeight: canvas.clientHeight,
+  windowWidth: canvas.clientWidth,
+};
+
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+const interTTF = await fetch("/Inter.ttf").then((response) => response.arrayBuffer());
+
+const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+const entry = navigator.gpu;
+invariant(entry, "WebGPU is not supported in this browser.");
+
+const context = canvas.getContext("webgpu");
+invariant(context, "WebGPU is not supported in this browser.");
+
+const adapter = await entry.requestAdapter();
+invariant(adapter, "No GPU found on this system.");
+
+const device = await adapter.requestDevice();
+
+context.configure({
+  alphaMode: "opaque",
+  device: device,
+  format: navigator.gpu.getPreferredCanvasFormat(),
+});
+
+const lookups = prepareLookups(
+  [
+    {
+      buffer: interTTF,
+      name: "Inter",
+      ttf: parseTTF(interTTF),
+    },
+  ],
+  {
+    alphabet,
+    fontSize: 150,
+  },
+);
+
+const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
+
+const colorTexture = device.createTexture({
+  format: "bgra8unorm",
+  label: "color",
+  sampleCount: settings.sampleCount,
+  size: { height: canvas.height, width: canvas.width },
+  usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
+});
+const colorTextureView = colorTexture.createView({ label: "color" });
+
+const renderer = new ScrollableRenderer(
+  device,
+  context,
+  colorTextureView,
+  settings,
+  lookups,
+  fontAtlas,
+);
+
+// Our code goes here…
+
+function render() {
+  // …or here!
+
+  const commandEncoder = device.createCommandEncoder();
+  renderer.render(commandEncoder);
+  device.queue.submit([commandEncoder.finish()]);
+  requestAnimationFrame(render);
+}
+
+render();
+```
+
+## First layer: calling renderer directly
+
+First of all, you can abandon all other library features and just use the renderer as a Canvas API replacement (although limited!).
+
+```tsx
+renderer.rectangle(
+  new Vec4(1, 0, 1, 1),
+  new Vec2(50, 50),
+  new Vec2(100, 100),
+  new Vec4(10, 10, 10, 10),
+  new Vec4(0, 0, 0, 0),
+  new Vec4(0, 0, 0, 0),
+  new Vec2(0, 0),
+  new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
+  new Vec4(0, 0, 0, 0),
+);
+```
+
+This will get us a pink rounded rectangle on the screen.
+
+> [!NOTE]
+> You might have noticed that this API is uhm… a bit ugly? What are even those parameters? Well, the thing is, this is the most low-level function there is. It is as 'hot path' as it gets here.
+>
+> Therefore performance takes precedence over ergonomics and most JS engines will deal better with even a large number of arguments rather than with an options object (citation needed).
+
+But usually this is not what might be useful to us. Therefore let's continue to…
+
+## Second layer: using views
+
+This is the place where layout and user events happens.
+
+**TODO: provide event-less View and Text implementations so that if someone only cares about styled layout, they can use it that way.**
+
+```tsx
+const root = new View({
+  style: {
+    height: "100%",
+    width: "100%",
+  },
+});
+
+root.add(
+  new View({
+    style: {
+      backgroundColor: "#333",
+      height: 100,
+      width: 100,
+    },
+  }),
+);
+
+layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+compose(renderer, root);
+paint(renderer, root);
+```
+
+## Third layer: TBD
+
+**TODO: implement this/decide what to do at least.**
+
+```tsx
+function App() {
+  const [count, setCount] = createSignal(0);
+
+  return (
+    <View style={{ height: "100%", width: "100%" }}>
+      <View style={{ backgroundColor: "#333", height: 100, width: 100 }}>
+        <Text
+          style={{
+            fontFamily: "Inter",
+            color: "#fff",
+            fontSize: 16,
+          }}
+        >
+          {count()}
+        </Text>
+      </View>
+    </View>
+  );
+}
+```

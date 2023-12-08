@@ -7,7 +7,7 @@ type RingNode = {
   prev: RingNode;
 };
 
-function earCut(ear: RingNode): Vec2[] {
+function earCut(ear: RingNode): Array<Vec2> {
   const triangles = [];
 
   let next = ear.next;
@@ -36,7 +36,7 @@ function earCut(ear: RingNode): Vec2[] {
 /**
  * Triangulates a polygon. Assumes that polygon is clockwise.
  */
-export function triangulatePolygon(polygon: Vec2[]): Vec2[] {
+export function triangulatePolygon(polygon: Array<Vec2>): Array<Vec2> {
   invariant(polygon.length >= 3, "Polygon must have at least 3 points.");
   const node = createRing(polygon);
   invariant(node, "Failed to triangulate polygon.");
@@ -63,7 +63,7 @@ function removeNode(p: RingNode): void {
   p.prev.next = p.next;
 }
 
-export function createRing(data: Vec2[]): RingNode | null {
+export function createRing(data: Array<Vec2>): RingNode | null {
   let last;
   for (const v of data) {
     last = insertNode(v, last);
@@ -128,7 +128,7 @@ function isEar(ear: RingNode): boolean {
   return true;
 }
 
-function isPointInPolygon(point: Vec2, points: Vec2[]): boolean {
+function isPointInPolygon(point: Vec2, points: Array<Vec2>): boolean {
   let i = 0;
   let j = points.length - 1;
   let oddNodes = false;

@@ -19,6 +19,10 @@ body {
   font-feature-settings: "ss04", "tnum", "ss08";
 }
 
+canvas {
+  border-radius: 8px;
+}
+
 .scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;

@@ -4,7 +4,7 @@ import type { Vec3 } from "./Vec3";
 import { Vec4 } from "./Vec4";
 
 export class Mat4 {
-  constructor(public readonly data: number[]) {}
+  constructor(public readonly data: Array<number>) {}
 
   static identity(): Mat4 {
     // prettier-ignore

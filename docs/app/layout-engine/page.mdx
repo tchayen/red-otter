@@ -1,4 +1,4 @@
-import { packageJson } from "../PackageJson";
+import { packageJson } from "../components/PackageJson";
 
 export const metadata = {
   description: packageJson.description,
@@ -17,6 +17,10 @@ Layout engine executes a 4 pass algorithm:
 - _Pass 2:_ Going bottom-up, level order, resolve sizes of elements that base their size on their children.
 - _Pass 3:_ Going top-down, level order, resolve flex sizes by splitting available space between children and assign positions of all elements based on specified flex modifiers.
 - _Pass 4:_ Going top-down, level order, calculate scroll sizes – the actual space used by children versus available component size.
+
+## What is actually happening?
+
+**TODO: Describe all steps that algorithm is doing in a bit more detail.**
 
 ## Quick story
 

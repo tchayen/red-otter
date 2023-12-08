@@ -1,8 +1,8 @@
 import type { MDXComponents } from "mdx/types";
-import { A, H2, H4, Li, Ol, P, Strong, Ul, Code, H1, H3, Box, Hr } from "./app/tags";
-import { TypeTable } from "./app/TypeTable";
-import { Enums } from "./app/Enums";
-import { CodeBlock } from "./app/CodeBlock";
+import { A, H2, H4, Li, Ol, P, Strong, Ul, Code, H1, H3, Box, Hr } from "./app/components/tags";
+import { TypeTable } from "./app/components/TypeTable";
+import { Enums } from "./app/components/Enums";
+import { CodeBlock } from "./app/components/CodeBlock";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

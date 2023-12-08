@@ -13,7 +13,17 @@ export type Page = {
   url: string;
 };
 
-const searchablePages = ["/api-reference", "/layout", "/renderer", "/roadmap", "/"];
+const searchablePages = [
+  "/getting-started",
+  "/examples",
+  "/roadmap",
+  "/styling",
+  "/text-rendering",
+  "/layout-engine",
+  "/renderer",
+  "/math-library",
+  "/",
+];
 
 export async function GET() {
   const start = performance.now();
@@ -34,6 +44,7 @@ export async function GET() {
         if (currentSection) {
           sections.push(currentSection);
         }
+
         currentSection = {
           content: "",
           header: document(element).text().trim(),

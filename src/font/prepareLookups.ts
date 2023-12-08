@@ -16,11 +16,11 @@ import type { Glyph, Lookups } from "./types";
  * @returns a set of lookups for the font atlas.
  */
 export function prepareLookups(
-  fontFiles: {
+  fontFiles: Array<{
     buffer: ArrayBuffer;
     name: string;
     ttf: TTF;
-  }[],
+  }>,
   options?: {
     alphabet?: string;
     fontSize?: number;
@@ -41,7 +41,7 @@ export function prepareLookups(
     uvs: new Map<string, Vec4>(),
   };
 
-  const sizes: Vec2[] = [];
+  const sizes: Array<Vec2> = [];
   for (const { name, ttf, buffer } of fontFiles) {
     const scale = (1 / ttf.head.unitsPerEm) * atlasFontSize;
     const glyphs = calculateGlyphQuads(ttf, options?.alphabet);
@@ -81,7 +81,7 @@ export function prepareLookups(
 
   let start = 0;
   for (const font of lookups.fonts) {
-    const uvs: Vec4[] = [];
+    const uvs: Array<Vec4> = [];
     const glyphs = [...font.glyphs.values()];
 
     for (let i = 0; i < glyphs.length; i++) {

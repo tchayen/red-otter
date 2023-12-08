@@ -1,7 +1,7 @@
 import { invariant } from "../utils/invariant";
 import { Vec2 } from "./Vec2";
 
-export function triangulateLine(points: Vec2[], thickness: number): Vec2[] {
+export function triangulateLine(points: Array<Vec2>, thickness: number): Array<Vec2> {
   invariant(points.length >= 2, "Line must have at least 2 points.");
   invariant(thickness > 0, "Thickness must be positive.");
 

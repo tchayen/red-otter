@@ -15,8 +15,8 @@ async function initialize() {
   const alphabet =
     "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
   const [interTTF, interBoldTTF] = await Promise.all(
-    ["/Inter.ttf", "/Inter-SemiBold.ttf"].map(async (url) =>
-      fetch(url).then(async (response) => response.arrayBuffer()),
+    ["/Inter.ttf", "/Inter-SemiBold.ttf"].map((url) =>
+      fetch(url).then((response) => response.arrayBuffer()),
     ),
   );
   invariant(interTTF, "Inter.ttf not found.");

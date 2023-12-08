@@ -3,12 +3,12 @@ import { twMerge } from "tailwind-merge";
 import FlexSearch from "flexsearch";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
-import type { Page, Section } from "./search/route";
+import type { Page, Section } from "../search/route";
 import { H2, outline } from "./tags";
 import { HighlightMatches } from "./HighlightMatches";
 import { withClient } from "./withClient";
 
-// TODO: this are not connected.
+// TODO: these two are not connected.
 
 declare let sectionIndex: FlexSearch.Document<{
   content: string;
@@ -88,7 +88,7 @@ export function Search() {
     if (newValue === search) {
       return;
     }
-    if (newValue.length < 3) {
+    if (newValue.length < 2) {
       setResults([]);
       return;
     }

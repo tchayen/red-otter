@@ -35,10 +35,16 @@ export function Code({ children, className }: PropsWithChildren<{ className?: st
 }
 
 export function H1({ children, className }: PropsWithChildren<{ className?: string }>) {
+  const slug = slugify(typeof children === "string" ? children : "");
   return (
-    <h2 className={twMerge("my-2 text-3xl font-semibold text-mauvedark12", className)}>
-      {children}
-    </h2>
+    <h1
+      id={slug}
+      className={twMerge("my-2 scroll-mt-8 text-3xl font-semibold text-mauvedark12", className)}
+    >
+      <a href={`#${slug}`} className={twMerge(outline, underline)}>
+        {children}
+      </a>
+    </h1>
   );
 }
 
@@ -120,7 +126,9 @@ export function A({
 
 export function P({ children, className }: PropsWithChildren<{ className?: string }>) {
   return (
-    <p className={twMerge("my-2 text-base leading-6 text-mauvedark11", className)}>{children}</p>
+    <p className={twMerge("my-2 text-base leading-[26px] text-mauvedark11", className)}>
+      {children}
+    </p>
   );
 }
 
@@ -133,7 +141,7 @@ export function Ol({ children }: PropsWithChildren) {
 }
 
 export function Li({ children }: PropsWithChildren) {
-  return <li className="my-2 leading-6 text-mauvedark11">{children}</li>;
+  return <li className="my-2 leading-[26px] text-mauvedark11">{children}</li>;
 }
 
 export function Strong({ children }: PropsWithChildren) {

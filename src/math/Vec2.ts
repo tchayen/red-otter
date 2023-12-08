@@ -54,7 +54,7 @@ export class Vec2 {
     return this.equalsEpsilon(other, EPSILON);
   }
 
-  data(): number[] {
+  data(): Array<number> {
     return [this.x, this.y];
   }
 

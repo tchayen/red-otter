@@ -7,7 +7,7 @@ import type { Glyph } from "./types";
  * @param alphabet a string of characters to include in the atlas.
  * @returns an array of glyph quads.
  */
-export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Glyph[] {
+export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Array<Glyph> {
   const charCodes = alphabet
     ? // Ensure that the characters are unique.
       [...new Set(alphabet.split("").map((c) => c.charCodeAt(0)))]

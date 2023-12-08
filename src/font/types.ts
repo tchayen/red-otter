@@ -28,11 +28,11 @@ export type Lookups = {
   atlas: {
     fontSize: number;
     height: number;
-    positions: Vec2[];
-    sizes: Vec2[];
+    positions: Array<Vec2>;
+    sizes: Array<Vec2>;
     width: number;
   };
-  fonts: {
+  fonts: Array<{
     ascender: number;
     buffer: ArrayBuffer;
     capHeight: number;
@@ -41,6 +41,6 @@ export type Lookups = {
     name: string;
     ttf: TTF;
     unitsPerEm: number;
-  }[];
+  }>;
   uvs: Map<string, Vec4>;
 };

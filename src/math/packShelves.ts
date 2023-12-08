@@ -3,7 +3,7 @@ import { Vec2 } from "./Vec2";
 
 export type Packing = {
   height: number;
-  positions: Vec2[];
+  positions: Array<Vec2>;
   width: number;
 };
 
@@ -11,7 +11,7 @@ export type Packing = {
  * Takes sizes of rectangles and packs them into a single texture. Width and
  * height will be the next power of two.
  */
-export function packShelves(sizes: Vec2[]): Packing {
+export function packShelves(sizes: Array<Vec2>): Packing {
   let area = 0;
   let maxWidth = 0;
 

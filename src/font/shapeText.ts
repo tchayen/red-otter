@@ -11,8 +11,8 @@ const cache = new LRUCache<string, Shape>(512);
 
 export type Shape = {
   boundingRectangle: { height: number; width: number };
-  positions: Vec2[];
-  sizes: Vec2[];
+  positions: Array<Vec2>;
+  sizes: Array<Vec2>;
 };
 
 /*
@@ -50,8 +50,8 @@ export function shapeText(options: ShapeTextOptions): Shape {
   invariant(font, `Could not find font ${fontName}.`);
 
   // Alocate text.length sized array.
-  const positions: Vec2[] = new Array(text.length);
-  const sizes: Vec2[] = new Array(text.length);
+  const positions: Array<Vec2> = new Array(text.length);
+  const sizes: Array<Vec2> = new Array(text.length);
 
   let positionX = 0;
   let positionY = 0;

@@ -24,20 +24,29 @@ export function Sidebar() {
         <SidebarLink currentPath={path} href="/">
           Home
         </SidebarLink>
-        <SidebarLink currentPath={path} href="/api-reference">
-          API reference
+        <SidebarLink currentPath={path} href="/getting-started">
+          Getting Started
         </SidebarLink>
         <SidebarLink currentPath={path} href="/examples">
           Examples
         </SidebarLink>
-        <SidebarLink currentPath={path} href="/layout">
-          Layout engine
+        <SidebarLink currentPath={path} href="/roadmap">
+          Roadmap
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/styling">
+          Styling
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/text-rendering">
+          Text Rendering
+        </SidebarLink>
+        <SidebarLink currentPath={path} href="/layout-engine">
+          Layout Engine
         </SidebarLink>
         <SidebarLink currentPath={path} href="/renderer">
           Renderer
         </SidebarLink>
-        <SidebarLink currentPath={path} href="/roadmap">
-          Roadmap
+        <SidebarLink currentPath={path} href="/math-library">
+          Math Library
         </SidebarLink>
         <div className="flex gap-4 px-3 py-3">
           <Link

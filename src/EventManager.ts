@@ -9,7 +9,7 @@ import { CROSS_AXIS_SIZE } from "./ui/consts";
 import { invariant } from "./utils/invariant";
 
 export class EventManager {
-  private readonly events: UserEvent[] = [];
+  private readonly events: Array<UserEvent> = [];
 
   constructor() {
     if (!isWindowDefined) {
@@ -107,7 +107,7 @@ function hitTest(node: View, event: UserEvent): boolean {
     node._state.x - totalScrollX,
     node._state.y - totalScrollY,
     clientWidth + (node._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
-    clientHeight + (node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0)
+    clientHeight + (node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
   );
   const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
   const intersection = getIntersection(nodeRectangle, boundary);

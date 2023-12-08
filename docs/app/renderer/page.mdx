@@ -1,4 +1,4 @@
-import { packageJson } from "../PackageJson";
+import { packageJson } from "../components/PackageJson";
 
 export const metadata = {
   description: packageJson.description,
@@ -45,6 +45,6 @@ For each rectangle on the screen, an instance of a full-screen quad is renderere
 
 ## Text rendering
 
-Text uses SDF font rendering to display glyphs from a font atlas.
+Text uses SDF font rendering to display glyphs from a font atlas. See [Text Rendering](/text-rendering) page for more information.
 
 I wrote a blogpost that goes more in depth – [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).

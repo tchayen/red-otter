@@ -33,7 +33,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
       const table = tables[tag];
       invariant(table, `Table ${tag} is missing.`);
       const calculated = calculateChecksum(
-        reader.getDataSlice(table.offset, 4 * Math.ceil(table.length / 4))
+        reader.getDataSlice(table.offset, 4 * Math.ceil(table.length / 4)),
       );
       invariant(calculated === table.checksum, `Checksum for table ${tag} is invalid.`);
     }
@@ -58,7 +58,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
     reader,
     tables["hmtx"].offset,
     ttf.maxp?.numGlyphs,
-    ttf.hhea?.numberOfHMetrics
+    ttf.hhea?.numberOfHMetrics,
   );
 
   invariant(tables["loca"], `loca ${shared}`);
@@ -66,7 +66,7 @@ export function parseTTF(data: ArrayBuffer): TTF {
     reader,
     tables["loca"].offset,
     ttf.maxp?.numGlyphs,
-    ttf.head?.indexToLocFormat
+    ttf.head?.indexToLocFormat,
   );
 
   invariant(tables["glyf"], `glyf ${shared}`);
@@ -164,8 +164,8 @@ function readMaxpTable(reader: BinaryReader, offset: number): MaxpTable {
   invariant(
     versionString,
     `Unsupported maxp table version (expected 0x00005000 or 0x00010000 but found ${version.toString(
-      16
-    )}).`
+      16,
+    )}).`,
   );
   const numGlyphs = reader.getUint16();
 
@@ -189,11 +189,11 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
   invariant(version === 0, "Invalid cmap table version.");
 
   const numTables = reader.getUint16();
-  const encodingRecords: {
+  const encodingRecords: Array<{
     encodingID: Uint16;
     offset: Uint32;
     platformID: Uint16;
-  }[] = [];
+  }> = [];
 
   let selectedOffset: number | null = null;
   for (let i = 0; i < numTables; i++) {
@@ -231,26 +231,26 @@ export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
   const entrySelector = reader.getUint16();
   const rangeShift = reader.getUint16();
 
-  const endCodes: number[] = [];
+  const endCodes: Array<number> = [];
   for (let i = 0; i < segCount; i++) {
     endCodes.push(reader.getUint16());
   }
 
   reader.getUint16(); // reservedPad
 
-  const startCodes: number[] = [];
+  const startCodes: Array<number> = [];
   for (let i = 0; i < segCount; i++) {
     startCodes.push(reader.getUint16());
   }
 
-  const idDeltas: number[] = [];
+  const idDeltas: Array<number> = [];
   for (let i = 0; i < segCount; i++) {
     idDeltas.push(reader.getUint16());
   }
 
   const idRangeOffsetsStart = reader.getPosition();
 
-  const idRangeOffsets: number[] = [];
+  const idRangeOffsets: Array<number> = [];
   for (let i = 0; i < segCount; i++) {
     idRangeOffsets.push(reader.getUint16());
   }
@@ -378,15 +378,15 @@ function readHmtxTable(
   reader: BinaryReader,
   offset: number,
   numGlyphs: number,
-  numOfLongHorMetrics: number
+  numOfLongHorMetrics: number,
 ): HmtxTable {
   const position = reader.getPosition();
   reader.setPosition(offset);
 
-  const hMetrics: {
+  const hMetrics: Array<{
     advanceWidth: Uint16;
     leftSideBearing: Int16;
-  }[] = [];
+  }> = [];
   for (let i = 0; i < numOfLongHorMetrics; i++) {
     hMetrics.push({
       advanceWidth: reader.getUint16(),
@@ -394,7 +394,7 @@ function readHmtxTable(
     });
   }
 
-  const leftSideBearings: number[] = [];
+  const leftSideBearings: Array<number> = [];
   for (let i = 0; i < numGlyphs - numOfLongHorMetrics; i++) {
     leftSideBearings.push(reader.getInt16());
   }
@@ -406,7 +406,7 @@ function readHmtxTable(
 
   invariant(
     hMetrics.length + leftSideBearings.length === numGlyphs,
-    `The number of hMetrics (${hMetrics.length}) plus the number of left side bearings (${leftSideBearings.length}) must equal the number of glyphs (${numGlyphs}).`
+    `The number of hMetrics (${hMetrics.length}) plus the number of left side bearings (${leftSideBearings.length}) must equal the number of glyphs (${numGlyphs}).`,
   );
 
   reader.setPosition(position);
@@ -426,12 +426,12 @@ function readLocaTable(
   reader: BinaryReader,
   offset: number,
   numGlyphs: number,
-  indexToLocFormat: number
+  indexToLocFormat: number,
 ): LocaTable {
   const position = reader.getPosition();
   reader.setPosition(offset);
 
-  const loca: number[] = [];
+  const loca: Array<number> = [];
   for (let i = 0; i < numGlyphs + 1; i++) {
     loca.push(indexToLocFormat === 0 ? reader.getUint16() : reader.getUint32());
   }
@@ -446,12 +446,12 @@ function readGlyfTable(
   reader: BinaryReader,
   offset: number,
   loca: LocaTable,
-  indexToLocFormat: number
+  indexToLocFormat: number,
 ): GlyfTable {
   const position = reader.getPosition();
   reader.setPosition(offset);
 
-  const glyfs = [];
+  const glyfs = []; // TODO: type this.
   for (let i = 0; i < loca.offsets.length - 1; i++) {
     const multiplier = indexToLocFormat === 0 ? 2 : 1;
     const locaOffset = loca.offsets[i];
@@ -495,8 +495,8 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
 
   const featureCount = reader.getUint16();
 
-  const featureInfo = [];
-  const features = [];
+  const featureInfo = []; // TODO: type this.
+  const features = []; // TODO: type this.
   for (let i = 0; i < featureCount; i++) {
     const tag = reader.getString(4);
     const offset = reader.getUint16();
@@ -512,7 +512,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
 
     const paramsOffset = reader.getUint16();
     const lookupIndexCount = reader.getUint16();
-    const lookupListIndices: number[] = [];
+    const lookupListIndices: Array<number> = [];
 
     for (let j = 0; j < lookupIndexCount; j++) {
       lookupListIndices.push(reader.getUint16());
@@ -540,12 +540,12 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
     ExtensionPositioning = 9,
   }
 
-  const lookupTables: number[] = [];
+  const lookupTables: Array<number> = [];
   for (let i = 0; i < lookupCount; i++) {
     lookupTables.push(reader.getUint16());
   }
 
-  const lookups: GPOSLookup[] = [];
+  const lookups: Array<GPOSLookup> = [];
   for (let i = 0; i < lookupCount; i++) {
     const lookupTable = lookupTables[i];
     invariant(lookupTable !== undefined, "Lookup table is undefined.");
@@ -554,7 +554,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
     const lookupType = reader.getUint16();
     const lookupFlag = reader.getUint16();
     const subTableCount = reader.getUint16();
-    const subTableOffsets: number[] = [];
+    const subTableOffsets: Array<number> = [];
     for (let j = 0; j < subTableCount; j++) {
       subTableOffsets.push(reader.getUint16());
     }
@@ -596,16 +596,18 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 const valueFormat1 = reader.getUint16();
                 const valueFormat2 = reader.getUint16();
                 const pairSetCount = reader.getUint16();
-                const pairSetOffsets: number[] = [];
+                const pairSetOffsets: Array<number> = [];
                 for (let i = 0; i < pairSetCount; i++) {
                   pairSetOffsets.push(reader.getUint16());
                 }
 
-                const pairSets: {
-                  secondGlyph: number;
-                  value1?: ValueRecord;
-                  value2?: ValueRecord;
-                }[][] = [];
+                const pairSets: Array<
+                  Array<{
+                    secondGlyph: number;
+                    value1?: ValueRecord;
+                    value2?: ValueRecord;
+                  }>
+                > = [];
                 for (let k = 0; k < pairSetCount; k++) {
                   const pairSetOffset = pairSetOffsets[k];
                   invariant(pairSetOffset !== undefined, "Pair set offset is undefined.");
@@ -615,7 +617,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                       lookupTable +
                       subTableOffset +
                       extensionOffset +
-                      pairSetOffset
+                      pairSetOffset,
                   );
 
                   const pairValueCount = reader.getUint16();
@@ -649,7 +651,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                     const coverageFormat = reader.getUint16();
 
                     return parseCoverage(reader, coverageFormat);
-                  }
+                  },
                 );
 
                 extension = {
@@ -677,7 +679,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                   () => {
                     const coverageFormat = reader.getUint16();
                     return parseCoverage(reader, coverageFormat);
-                  }
+                  },
                 );
 
                 const classDef1 = reader.runAt(
@@ -689,7 +691,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                     classDef1Offset,
                   () => {
                     return parseClassDef(reader);
-                  }
+                  },
                 );
 
                 const classDef2 = reader.runAt(
@@ -701,13 +703,15 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                     classDef2Offset,
                   () => {
                     return parseClassDef(reader);
-                  }
+                  },
                 );
 
-                const classRecords: {
-                  value1?: ValueRecord;
-                  value2?: ValueRecord;
-                }[][] = [];
+                const classRecords: Array<
+                  Array<{
+                    value1?: ValueRecord;
+                    value2?: ValueRecord;
+                  }>
+                > = [];
 
                 for (let k = 0; k < class1Count; k++) {
                   const class1Record: (typeof classRecords)[number] = [];
@@ -741,7 +745,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
                 console.warn("Only Pair Adjustment lookup format 1 and 2 are supported.");
               }
             }
-          }
+          },
         );
 
         lookup.subtables.push({
@@ -804,17 +808,17 @@ export type HeadTable = {
 };
 
 export type CmapTable = {
-  encodingRecords: {
+  encodingRecords: Array<{
     encodingID: Uint16;
     offset: Uint32;
     platformID: Uint16;
-  }[];
-  endCodes: Uint16[];
+  }>;
+  endCodes: Array<Uint16>;
   entrySelector: Uint16;
   format: Uint16;
   glyphIndexMap: Record<number, number>;
-  idDeltas: Int16[];
-  idRangeOffsets: Uint16[];
+  idDeltas: Array<Int16>;
+  idRangeOffsets: Array<Uint16>;
   language: Uint16;
   length: Uint16;
   numTables: Uint16;
@@ -822,7 +826,7 @@ export type CmapTable = {
   searchRange: Uint16;
   segCount: Uint16;
   segCountX2: Uint16;
-  startCodes: Uint16[];
+  startCodes: Array<Uint16>;
   version: Uint16;
 };
 
@@ -853,43 +857,43 @@ export type HheaTable = {
 };
 
 export type HmtxTable = {
-  hMetrics: {
+  hMetrics: Array<{
     advanceWidth: Uint16;
     leftSideBearing: Int16;
-  }[];
-  leftSideBearings: FWord[];
+  }>;
+  leftSideBearings: Array<FWord>;
 };
 
 export type LocaTable = {
-  offsets: number[];
+  offsets: Array<number>;
 };
 
-export type GlyfTable = {
+export type GlyfTable = Array<{
   numberOfContours: Int16;
   xMax: FWord;
   xMin: FWord;
   yMax: FWord;
   yMin: FWord;
-}[];
+}>;
 
 export type GPOSTable = {
-  features: {
-    lookupListIndices: number[];
+  features: Array<{
+    lookupListIndices: Array<number>;
     paramsOffset: number;
     tag: string;
-  }[];
-  lookups: GPOSLookup[];
+  }>;
+  lookups: Array<GPOSLookup>;
 };
 
 export type GPOSLookup = {
   lookupFlag: number;
   lookupType: number;
   markFilteringSet?: number;
-  subtables: {
+  subtables: Array<{
     extension: ExtensionLookupType2Format1 | ExtensionLookupType2Format2;
     extensionLookupType: number;
     posFormat: number;
-  }[];
+  }>;
 };
 
 export type ValueRecord = {
@@ -905,38 +909,42 @@ export type ValueRecord = {
 
 export type ExtensionLookupType2Format1 = {
   coverage: CoverageTableFormat1 | CoverageTableFormat2;
-  pairSets: {
-    secondGlyph: number;
-    value1?: ValueRecord;
-    value2?: ValueRecord;
-  }[][];
+  pairSets: Array<
+    Array<{
+      secondGlyph: number;
+      value1?: ValueRecord;
+      value2?: ValueRecord;
+    }>
+  >;
   posFormat: 1;
   valueFormat1: number;
   valueFormat2: number;
 };
 
 export type ClassDefFormat1 = {
-  classes: number[];
+  classes: Array<number>;
   format: 1;
   startGlyph: number;
 };
 
 export type ClassDefFormat2 = {
   format: 2;
-  ranges: {
+  ranges: Array<{
     class: number;
     endGlyphID: number;
     startGlyphID: number;
-  }[];
+  }>;
 };
 
 export type ExtensionLookupType2Format2 = {
   classDef1: ClassDefFormat1 | ClassDefFormat2;
   classDef2: ClassDefFormat1 | ClassDefFormat2;
-  classRecords: {
-    value1?: ValueRecord;
-    value2?: ValueRecord;
-  }[][];
+  classRecords: Array<
+    Array<{
+      value1?: ValueRecord;
+      value2?: ValueRecord;
+    }>
+  >;
   coverage: CoverageTableFormat1 | CoverageTableFormat2;
   posFormat: 2;
   valueFormat1: number;
@@ -948,16 +956,16 @@ export type ExtensionLookupType2Format2 = {
  */
 export type CoverageTableFormat1 = {
   coverageFormat: 1;
-  glyphArray: number[];
+  glyphArray: Array<number>;
 };
 
 export type CoverageTableFormat2 = {
   coverageFormat: 2;
-  rangeRecords: {
+  rangeRecords: Array<{
     endGlyphID: number;
     startCoverageIndex: number;
     startGlyphID: number;
-  }[];
+  }>;
 };
 
 /**
@@ -1007,7 +1015,7 @@ function getValueRecord(reader: BinaryReader, valueRecord: number): ValueRecord 
 
 function parseCoverage(
   reader: BinaryReader,
-  coverageFormat: number
+  coverageFormat: number,
 ): CoverageTableFormat1 | CoverageTableFormat2 {
   if (coverageFormat === 2) {
     const rangeCount = reader.getUint16();

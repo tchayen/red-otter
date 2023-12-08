@@ -6,5 +6,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  // Inform VSCode that there are multiple ESLint configs.
   "eslint.workingDirectories": [".", "docs"]
 }

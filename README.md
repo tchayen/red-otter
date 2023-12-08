@@ -9,28 +9,28 @@ A flexbox (think CSS or Yoga) layout engine that comes with its own TTF font par
 
 Using JavaScript you can create a fully interactive, browser-like layout that lives inside a `<canvas />`.
 
-### Why is it useful?
-
-It's bold of you to assume I'd make something useful.
-
 ### What problem does it solve?
 
-It is lightweight, zero-dependency solution for building complex UIs in environments where the only external APIs are the one to communicate to GPU the (like WebGPU, DirectX, Vulkan, Metal etc.) and the one to receive user input events.
+It brings a fully working UI system written in plain JavaScript.
 
-In situations where JS is used DOM is usually available so it is not much of help. However, the idea behind the code style of the project is that it is meant to be simple and C-style so that it can easily be translated to many other languages and used in compiled code.
+While it doesn't introduce anything new, all other possible solutions to this problem are either heavy C++ libraries or… entire web browsers. If you need a layout engine, Facebook Yoga is often used but it requires loading either via asm.js or WASM (See [Satori](https://github.com/vercel/satori#runtime-and-wasm) docs).
+
+Usually in situations where one would use JavaScript for presenting UIs, DOM and generally the rest of the browser is available. But sometimes you would rather prefer to have a full control over rendering process, to be able to tie it to the game loop or want to use JS in non-browser environment while supplying it with the 3D graphics platform API.
 
 ### When would I use it?
 
-If you are writing a JavaScript application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular so WebGPU renderer for instance can be replaced with WebGL, canvas or Skia based one if needed.
+If you are writing a JavaScript application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular, with WebGPU, WebGL and Canvas renderers available. You can also write your own.
+
+If you are working on a web browser, operating system, game engine, a game with AAA-grade UI, Red Otter might be very useful.
+
+> [!IMPORTANT]
+> Red Otter is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automatic translations, high-contrast mode etc. Use it only for applications where it is implied that those capabilities are not needed or otherwise would not be available.
 
 ### Why retained mode?
 
 - Immediate mode often involves heavily caching which effectively becomes retained mode under the hood.
 - Declarative expressiveness and ease of use of IMGUI can be for the most part achieved using a declarative API like React (and is some way it boils down to the same thing, oversimplifying it… greatly).
 - Screen readers and other assistive technologies are easier to support with persistent UI trees.
-
-> [!IMPORTANT]
-> Red Otter is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automatic translations, high-contrast mode etc. Use it only for applications where it is implied that those capabilities are not needed or otherwise would not be available.
 
 ---
 
@@ -46,11 +46,21 @@ Games and 3D applications are different. Very different. It’s ok, even better 
 
 Even though this library does a lot of things, you don't need to use it all. Modern JS bundlers do well with tree shaking so as long as you import only what you need, your bundle size will grow only by the amount of code you actually use.
 
+It's entirely up to you which parts to pick. Do you need a TTF parser? Good, we have one. Are you in need of some matrix calculations? We've got you covered. Do you need a full UI renderer for your WebGL game? We have that and all the needed pieces.
+
 ---
 
 ## Design and structure
 
-Layers:
+The library consists of several directories grouping different features.
+
+There's:
+
+- `font` - providing TTF parsing, font atlas generation.
+- `ui` - with `layout()`, `compose()` and `paint()`.
+- `math` - with a math library equipped with `Mat4`, `Vec2`, `Vec3`, `Vec4`.
+
+The pipeline of taking user defined components to the screen has multiple layers, separated based on how often they need to be run:
 
 - `layout()` - takes tree of nodes and calculates screen positions and sizes. Runs only when component tree changes.
 - `compose()` - takes tree of nodes after layout and calculates screen-space positions after including scrolling. Runs after user events.
