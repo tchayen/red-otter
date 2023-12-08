@@ -20,7 +20,29 @@ Layout engine executes a 4 pass algorithm:
 
 ## What is actually happening?
 
-**TODO: Describe all steps that algorithm is doing in a bit more detail.**
+### Pass 1
+
+Internal state of each node is reset (see [LayoutNodeState](/styling#layoutnodestate)).
+
+If element has defined width or height, it is applied. If it is a text node and parent has defined width, the maximum available width of the text is now known.
+
+### Pass 2
+
+If element has undefined size on the main axis (width for row, height for column), it is calculated as a sum of element's paddings, widths and margins of all children. For cross axis it is the maximum value of children sizes (and element's paddings).
+
+The children are divided into rows. If `flexWrap` is not defined it will be a single row. If it is defined, sizes of all children are calculated and rows are split based on them and gap values.
+
+### Pass 3
+
+If element has both left and right offsets (or top and bottom) it is used to set its size.
+
+For each row of children, each child is positioned based on `alignContent`, `alignItems`, `justifyContent` and `alignSelf` properties. Also flex sizes are determined based on `flexGrow`, `flexShrink` and `flexBasis` properties. Min, max sizes and aspect ratio is applied.
+
+Size and position of each element is rounded using `Math.round()` to a full pixel.
+
+### pass 4
+
+Scroll size of each element is calculated, which is the maximum area needed to display all children. Used for scrolling.
 
 ## Quick story
 
