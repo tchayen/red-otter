@@ -1,5 +1,5 @@
 import { Text } from "./layout/Text";
-import type { ScrollableRenderer } from "./renderer/WebGPURenderer";
+import type { WebGPURenderer } from "./renderer/WebGPURenderer";
 import { View } from "./layout/View";
 import type { Lookups } from "./font/types";
 import { layout } from "./layout/layout";
@@ -12,7 +12,7 @@ import { measure } from "./measure";
 
 export let lookups: Lookups;
 
-export function ui(renderer: ScrollableRenderer): View {
+export function ui(renderer: WebGPURenderer): View {
   lookups = renderer.fontLookups;
   invariant(lookups, "Lookups must be set.");
 

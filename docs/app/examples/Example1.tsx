@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { invariant } from "../../../src/utils/invariant";
-import { ScrollableRenderer } from "../../../src/renderer/WebGPURenderer";
+import { WebGPURenderer } from "../../../src/renderer/WebGPURenderer";
 import { prepareLookups } from "../../../src/font/prepareLookups";
 import { renderFontAtlas } from "../../../src/font/renderFontAtlas";
 import { parseTTF } from "../../../src/font/parseTTF";
@@ -64,7 +64,7 @@ async function startExample(canvas: HTMLCanvasElement) {
   });
   const colorTextureView = colorTexture.createView({ label: "color" });
 
-  const renderer = new ScrollableRenderer(
+  const renderer = new WebGPURenderer(
     device,
     context,
     colorTextureView,

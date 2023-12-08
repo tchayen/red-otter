@@ -1,5 +1,5 @@
 import { EventManager } from "./EventManager";
-import { ScrollableRenderer } from "./renderer/WebGPURenderer";
+import { WebGPURenderer } from "./renderer/WebGPURenderer";
 import { isWindowDefined, settings } from "./consts";
 import { paint } from "./layout/paint";
 import { parseTTF } from "./font/parseTTF";
@@ -68,7 +68,7 @@ async function initialize() {
   });
   const colorTextureView = colorTexture.createView({ label: "color" });
 
-  const renderer = new ScrollableRenderer(
+  const renderer = new WebGPURenderer(
     device,
     context,
     colorTextureView,

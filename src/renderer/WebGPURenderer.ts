@@ -23,7 +23,7 @@ enum DrawingMode {
   None,
 }
 
-export class ScrollableRenderer implements Renderer {
+export class WebGPURenderer implements Renderer {
   private drawingMode = DrawingMode.None;
   private drawingIndices: Array<number> = [];
 
