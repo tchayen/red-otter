@@ -134,7 +134,7 @@ export function Search() {
     <button
       className={twMerge(
         outline,
-        "relative flex h-8 w-56 shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark2 px-2 text-sm text-mauvedark10",
+        "relative flex h-8 flex-1 shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark2 px-2 text-sm text-mauvedark10",
       )}
     >
       Search...

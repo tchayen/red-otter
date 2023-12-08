@@ -25,11 +25,55 @@ export function Body({ children }: PropsWithChildren) {
     </Link>
   );
 
+  const mobileNavigation = (
+    <Dialog.Root open={showMobileMenu} onOpenChange={(open) => setShowMobileMenu(open)}>
+      <Dialog.Trigger asChild>
+        <div
+          role="button"
+          className="flex h-8 w-8 select-none items-center justify-center text-3xl text-mauvedark12 lg:hidden"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect x="4" y="8" width="24" height="3" rx="1.5" fill="currentColor" />
+            <rect x="4" y="15" width="24" height="3" rx="1.5" fill="currentColor" />
+            <rect x="4" y="22" width="24" height="3" rx="1.5" fill="currentColor" />
+          </svg>
+        </div>
+      </Dialog.Trigger>
+      <Dialog.Content>
+        <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-4 bg-mauvedark1 p-1 px-2">
+          <div className="flex items-center justify-between self-stretch">
+            {logo}
+            <Dialog.Close asChild>
+              <button
+                className={twMerge(
+                  outline,
+                  "flex h-8 w-8 select-none items-center justify-center rounded-full text-3xl text-mauvedark12",
+                )}
+              >
+                ✗
+              </button>
+            </Dialog.Close>
+          </div>
+          <div className="flex self-stretch">
+            <Search />
+          </div>
+          <Sidebar onClick={() => setShowMobileMenu(false)} />
+        </div>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+
   const topBar = (
     // Height is 49px to add 1px for bottom border.
-    <div className="fixed top-0 z-10 flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 bg-mauvedark1 px-2 pl-1">
+    <div className="fixed top-0 z-10 flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 bg-mauvedark1 pl-1">
       {logo}
-      <div className="hidden gap-2 lg:flex">
+      <div className="hidden w-64 gap-2 px-2 lg:flex">
         <Search />
         <Link
           className={twMerge(outline, "rounded-full p-1")}
@@ -43,44 +87,7 @@ export function Body({ children }: PropsWithChildren) {
           </svg>
         </Link>
       </div>
-      <Dialog.Root open={showMobileMenu} onOpenChange={(open) => setShowMobileMenu(open)}>
-        <Dialog.Trigger asChild>
-          <div
-            role="button"
-            className="flex h-8 w-8 select-none items-center justify-center text-3xl text-mauvedark12 lg:hidden"
-          >
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="4" y="8" width="24" height="3" rx="1.5" fill="currentColor" />
-              <rect x="4" y="15" width="24" height="3" rx="1.5" fill="currentColor" />
-              <rect x="4" y="22" width="24" height="3" rx="1.5" fill="currentColor" />
-            </svg>
-          </div>
-        </Dialog.Trigger>
-        <Dialog.Content>
-          <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-4 bg-mauvedark1 p-1 px-2">
-            <div className="flex items-center justify-between self-stretch">
-              {logo}
-              <Dialog.Close asChild>
-                <button
-                  className={twMerge(
-                    outline,
-                    "flex h-8 w-8 select-none items-center justify-center rounded-full text-3xl text-mauvedark12",
-                  )}
-                >
-                  ✗
-                </button>
-              </Dialog.Close>
-            </div>
-            <Sidebar onClick={() => setShowMobileMenu(false)} />
-          </div>
-        </Dialog.Content>
-      </Dialog.Root>
+      {mobileNavigation}
     </div>
   );
 

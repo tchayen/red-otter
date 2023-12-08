@@ -47,6 +47,9 @@ export function nextPowerOfTwo(value: number): number {
   return Math.pow(2, Math.ceil(Math.log(value) / Math.log(2)));
 }
 
+/**
+ * Returns intersection of two rectangles. If there is no intersection, returns a Vec4(0, 0, 0, 0).
+ */
 export function intersection(a: Vec4, b: Vec4): Vec4 {
   const x = Math.max(a.x, b.x);
   const y = Math.max(a.y, b.y);
@@ -60,6 +63,9 @@ export function intersection(a: Vec4, b: Vec4): Vec4 {
   return new Vec4(x, y, width, height);
 }
 
+/**
+ * Checks if the given point is inside the given rectangle.
+ */
 export function isInside(point: Vec2, rectangle: Vec4): boolean {
   return (
     point.x >= rectangle.x &&
