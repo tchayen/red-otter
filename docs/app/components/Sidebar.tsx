@@ -9,7 +9,7 @@ export function Sidebar({ onClick }: { onClick?: () => void }) {
 
   return (
     <>
-      <div className="flex flex-col gap-2 self-stretch">
+      <div className="flex flex-col gap-1 self-stretch">
         <SidebarLink currentPath={path} onClick={onClick} href="/">
           Home
         </SidebarLink>
@@ -57,8 +57,8 @@ function SidebarLink({
   return (
     <Link
       className={twMerge(
-        "flex h-8 shrink-0 items-center gap-1 rounded-md border border-transparent px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-tomatodark9",
-        isCurrent ? "bg-mauvedark3" : "bg-transparent hover:border-mauvedark5 ",
+        "flex h-8 shrink-0 items-center gap-1 rounded-md border border-transparent px-3 text-sm text-mauvedark10 outline-none focus-visible:ring-2 focus-visible:ring-tomatodark9",
+        isCurrent ? "bg-mauvedark3 text-mauvedark12" : "bg-transparent hover:border-mauvedark5 ",
       )}
       onClick={onClick}
       href={href}
