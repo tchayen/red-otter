@@ -16,7 +16,7 @@ export function Body({ children }: PropsWithChildren) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const logo = (
-    <Link href="/" className="flex items-center gap-2 outline-none">
+    <Link href="/" className={twMerge(outline, "flex items-center gap-2 rounded-md px-1")}>
       <Image width={36} height={36} src="/logo.svg" alt="Red Otter logo" />
       <div className="flex items-baseline gap-1">
         <div className="text-2xl font-semibold text-white">Red Otter</div>
@@ -27,7 +27,7 @@ export function Body({ children }: PropsWithChildren) {
 
   const topBar = (
     // Height is 49px to add 1px for bottom border.
-    <div className="fixed top-0 z-10 flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 bg-mauvedark1 px-2">
+    <div className="fixed top-0 z-10 flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 bg-mauvedark1 px-2 pl-1">
       {logo}
       <div className="hidden gap-2 lg:flex">
         <Search />

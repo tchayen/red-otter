@@ -10,14 +10,16 @@ export const metadata = {
 
 Due to modular and layered architecture, you can start almost anywhere depending on your needs.
 
-**TODO: accordion/details/spoiler component for collapsing this by default.**
+## Setting up the renderer
 
-**TODO: starter for other renderers (uh first add more of them?).**
+Depending on which renderer you use, setup code will differ. There is a bit of boilerplate code that is needed, but the idea was to make it as unopinionated as possible since setup of every app is different and this is not meant to be a framework, but a UI library that co-exists with other parts of the app.
 
-<Tabs.Root>
-  <Tabs.Tab name="WebGPU">123</Tabs.Tab>
-  <Tabs.Tab name="WebGL">456</Tabs.Tab>
-</Tabs.Root>
+<Tabs.Root defaultValue="webgpu">
+  <Tabs.List>
+    <Tabs.Trigger value="webgpu">WebGPU</Tabs.Trigger>
+    <Tabs.Trigger value="webgl">WebGL</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="webgpu">
 
 ```tsx
 const settings = {
@@ -97,6 +99,10 @@ function render() {
 
 render();
 ```
+
+  </Tabs.Content>
+  <Tabs.Content value="webgl">WIP</Tabs.Content>
+</Tabs.Root>
 
 ## First layer: calling renderer directly
 

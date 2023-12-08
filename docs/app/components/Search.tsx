@@ -194,7 +194,10 @@ export function Search() {
       <Dialog.Trigger asChild>{triggerButton}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-10 flex justify-center bg-[rgba(0,0,0,0.4)] pt-32">
-          <Dialog.Content className="scrollbar fixed flex max-h-[calc(100dvh-128px-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-6 outline-none">
+          <Dialog.Content
+            className="scrollbar fixed flex max-h-[calc(100dvh-128px-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-6"
+            tabIndex={-1}
+          >
             <div className="flex justify-between">
               <H2 className="my-0" noLink>
                 Search
@@ -206,7 +209,7 @@ export function Search() {
                 autoFocus
                 className={twMerge(
                   outline,
-                  "relative flex h-8 w-full shrink-0 items-center rounded-md border border-mauvedark5 bg-mauvedark3 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
+                  "relative flex h-8 w-full shrink-0 items-center rounded-md border border-mauvedark5 bg-mauvedark1 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10 focus:border-transparent",
                 )}
                 placeholder="Search…"
                 onChange={onChange}

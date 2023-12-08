@@ -1,19 +1,3 @@
-import type { PropsWithChildren } from "react";
+import { List, Trigger, Root, Content } from "./Tabs.client";
 
-function Root() {
-  return (
-    // <TabsPrimitive.Root>
-    //   <TabsPrimitive.List>
-    //     <TabsPrimitive.Trigger />
-    //   </TabsPrimitive.List>
-    //   <TabsPrimitive.Content />
-    // </TabsPrimitive.Root>
-    null
-  );
-}
-
-function Tab({ children }: PropsWithChildren) {
-  return <>{children}</>;
-}
-
-export const Tabs = { Root, Tab };
+export const Tabs = { Content, List, Root, Trigger };
