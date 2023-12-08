@@ -7,6 +7,7 @@ import { renderFontAtlas } from "../../../src/font/renderFontAtlas";
 import { parseTTF } from "../../../src/font/parseTTF";
 import { Vec4 } from "../../../src/math/Vec4";
 import { Vec2 } from "../../../src/math/Vec2";
+import { BaseEditor } from "../components/BaseEditor";
 
 export function Example1() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -14,7 +15,16 @@ export function Example1() {
     startExample(ref.current);
   }, []);
 
-  return <canvas ref={ref} className="aspect-video w-full bg-black" />;
+  return (
+    <>
+      <canvas ref={ref} className="aspect-video w-full bg-black" />
+      <BaseEditor
+        files={{
+          "/index.ts": { code: "console.log()" },
+        }}
+      />
+    </>
+  );
 }
 
 async function startExample(canvas: HTMLCanvasElement) {
