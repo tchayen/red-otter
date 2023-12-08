@@ -1,3 +1,11 @@
+import { packageJson } from "../components/PackageJson";
+import { Tabs } from "../components/Tabs";
+
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter – Layout",
+};
+
 # Getting Started
 
 Due to modular and layered architecture, you can start almost anywhere depending on your needs.
@@ -5,6 +13,11 @@ Due to modular and layered architecture, you can start almost anywhere depending
 **TODO: accordion/details/spoiler component for collapsing this by default.**
 
 **TODO: starter for other renderers (uh first add more of them?).**
+
+<Tabs.Root>
+  <Tabs.Tab name="WebGPU">123</Tabs.Tab>
+  <Tabs.Tab name="WebGL">456</Tabs.Tab>
+</Tabs.Root>
 
 ```tsx
 const settings = {
