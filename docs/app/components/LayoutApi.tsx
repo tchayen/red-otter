@@ -1,8 +1,7 @@
 import { Fragment } from "react";
 import types from "../types.json";
-import { CodeBlock } from "./CodeBlock";
-import { H2, H3 } from "./tags";
-import { Markdown } from "./Markdown";
+import { H2 } from "./tags";
+import { Function } from "./Function";
 
 export function LayoutApi() {
   return (
@@ -12,15 +11,7 @@ export function LayoutApi() {
         .filter((f) => f.source.startsWith("/layout"))
         .filter((f) => !f.name.includes("Props")) // Those are covered in styling.
         .map((f) => {
-          return (
-            <Fragment key={f.name}>
-              <H3>{f.name}</H3>
-              <Markdown>{f.description}</Markdown>
-              <CodeBlock>
-                <pre className="language-ts">{f.returnType}</pre>
-              </CodeBlock>
-            </Fragment>
-          );
+          return <Function key={f.name} f={f} />;
         })}
     </>
   );

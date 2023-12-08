@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 import types from "../types.json";
-import { CodeBlock } from "./CodeBlock";
 import { Table } from "./Table";
 import { Code, H2, H3 } from "./tags";
 import { Markdown } from "./Markdown";
+import { Function } from "./Function";
 
 export function FontsApi() {
   return (
@@ -12,15 +12,7 @@ export function FontsApi() {
       {Object.values(types.functions)
         .filter((f) => f.source.startsWith("/font"))
         .map((f) => {
-          return (
-            <Fragment key={f.name}>
-              <H3>{f.name}</H3>
-              <Markdown>{f.description}</Markdown>
-              <CodeBlock>
-                <pre className="language-ts">{f.returnType}</pre>
-              </CodeBlock>
-            </Fragment>
-          );
+          return <Function key={f.name} f={f} />;
         })}
       <H2>Classes</H2>
       {Object.values(types.classes)

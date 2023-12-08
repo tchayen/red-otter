@@ -42,8 +42,10 @@ type Functions = Record<
     description: string;
     name: string;
     parameters: Record<string, Field>;
+    returnDescription: string;
     returnType: string;
     source: string;
+    typeSignature: string;
   }
 >;
 
@@ -227,12 +229,27 @@ export function extractTypeScript(paths: Array<string>) {
       });
 
       const name = symbol.escapedName.toString();
+      // Handle JSDoc.
+      const jsDoc = symbol.getJsDocTags();
+      // if (jsDoc.length > 0) {
+      //   console.log(name, JSON.stringify(jsDoc, null, 2));
+      // }
+      // JSDoc description of the return value.
+      const returnTag = jsDoc.find((t) => t.name === "returns");
+      if (returnTag) {
+        console.log(name, returnTag.text);
+      }
+
       functions[name] = {
         description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
         name,
         parameters,
-        returnType: checker.typeToString(checker.getTypeAtLocation(f)),
+        returnDescription: returnTag?.text[0].text ?? "",
+        returnType: checker.typeToString(
+          checker.getTypeOfSymbol(symbol).getCallSignatures().at(0).getReturnType(),
+        ),
         source: sourceString,
+        typeSignature: checker.typeToString(checker.getTypeAtLocation(f)),
       };
     });
 

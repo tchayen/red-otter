@@ -44,7 +44,7 @@ export function MathApi() {
               <H3>{f.name}</H3>
               <Markdown>{f.description}</Markdown>
               <CodeBlock>
-                <pre className="language-ts">{f.returnType}</pre>
+                <pre className="language-ts">{f.typeSignature}</pre>
               </CodeBlock>
             </Fragment>
           );
