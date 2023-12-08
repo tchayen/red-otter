@@ -8,7 +8,8 @@ import { visit } from "unist-util-visit";
  */
 
 /**
- * Type guard for checking if a node is a TextNode
+ * Type guard for checking if a node is a TextNode.
+ *
  * @param {Node} node
  * @returns {node is TextNode}
  */
@@ -17,7 +18,8 @@ function isTextNode(node) {
 }
 
 /**
- * Replaces straight quotes with curly ones in a TextNode
+ * Replaces straight quotes with curly ones in a TextNode.
+ *
  * @param {TextNode} node
  */
 function replaceQuotes(node) {
@@ -25,7 +27,8 @@ function replaceQuotes(node) {
 }
 
 /**
- * Transformer function for the remark plugin
+ * Transformer function for the remark plugin.
+ *
  * @returns {import('unified').Transformer}
  */
 function remarkTypography() {

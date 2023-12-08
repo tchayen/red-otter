@@ -21,14 +21,14 @@ import {
 import { CROSS_AXIS_SIZE } from "../consts";
 
 /**
- * @param tree tree of views to layout.
- * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
- *
  * This function traverses the tree and calculates layout information - `width`, `height`, `x`, `y`
  * of each element - and stores it in `__state.metrics` of each node. Coordinates are in pixels and
  * start point for each element is top left corner of the root element, which is created around the
  * tree passed to this function. What this means in practice is that all coordinates are global and
  * not relative to the parent.
+ *
+ * @param tree tree of views to layout.
+ * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
  */
 export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2): void {
   const traversalQueue = new Queue<View | Text>();

@@ -30,8 +30,6 @@ type ShapeTextOptions = {
   textAlign: TextAlign;
 };
 
-// TODO @tchayen: text alignment.
-
 /**
  * @param options parameters for calculating the shape of the text.
  * @returns a shape object that can be used to render the text.
