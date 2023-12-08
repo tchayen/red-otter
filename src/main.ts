@@ -1,5 +1,5 @@
 import { EventManager } from "./EventManager";
-import { ScrollableRenderer } from "./renderer/ScrollableRenderer";
+import { ScrollableRenderer } from "./renderer/WebGPURenderer";
 import { isWindowDefined, settings } from "./consts";
 import { paint } from "./layout/paint";
 import { parseTTF } from "./font/parseTTF";

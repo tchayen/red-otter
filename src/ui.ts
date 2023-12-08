@@ -1,5 +1,5 @@
 import { Text } from "./layout/Text";
-import type { ScrollableRenderer } from "./renderer/ScrollableRenderer";
+import type { ScrollableRenderer } from "./renderer/WebGPURenderer";
 import { View } from "./layout/View";
 import type { Lookups } from "./font/types";
 import { layout } from "./layout/layout";
