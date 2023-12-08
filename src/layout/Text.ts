@@ -1,13 +1,13 @@
-import { shapeText } from "./font/shapeText";
-import type { Lookups } from "./font/types";
+import { shapeText } from "../font/shapeText";
+import type { Lookups } from "../font/types";
 import type {
   ExactLayoutProps,
   LayoutNodeState,
   LayoutProps,
   TextStyleProps,
   UserEvent,
-} from "./types";
-import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./types";
+} from "./styling";
+import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./styling";
 
 export class Text {
   next: Text | null = null;

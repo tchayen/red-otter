@@ -2,6 +2,7 @@ import hljs from "highlight.js";
 import type { HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 import { jetBrainsMono } from "./tags";
+import * as prettier from "prettier";
 
 export const CHARACTER_LIMIT = 76;
 
@@ -9,7 +10,7 @@ type CodeBlockProps = {
   children?: JSX.Element;
 };
 
-export function CodeBlock({ children }: CodeBlockProps) {
+export async function CodeBlock({ children }: CodeBlockProps) {
   let language = null;
   let code = children.props.children;
 
@@ -38,6 +39,12 @@ export function CodeBlock({ children }: CodeBlockProps) {
         <Pre>{code}</Pre>
       </DivWrapper>
     );
+  }
+
+  try {
+    code = await prettier.format(code, { parser: "babel-ts", printWidth: 48 });
+  } catch {
+    /* empty */
   }
 
   try {
@@ -85,7 +92,7 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
     <pre
       className={twMerge(
         jetBrainsMono.className,
-        "scrollbar hljs codeblock overflow-x-auto p-4 text-sm leading-[19px] subpixel-antialiased",
+        "scrollbar hljs codeblock overflow-x-auto p-4 text-sm leading-[19px]",
       )}
       style={{ fontVariantLigatures: "none" }}
       {...rest}
@@ -101,7 +108,7 @@ type DivWrapperProps = {
 
 function DivWrapper({ children }: DivWrapperProps) {
   return (
-    <div className="relative my-5 overflow-hidden border-x-0 border-y border-mauvedark5 bg-mauvedark2 md:rounded-lg md:border-x">
+    <div className="relative my-5 overflow-hidden rounded-lg border border-mauvedark5 bg-mauvedark2">
       {children}
     </div>
   );

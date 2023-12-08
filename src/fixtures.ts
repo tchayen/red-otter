@@ -1,7 +1,7 @@
-import { Text } from "./Text";
-import { View } from "./View";
+import { Text } from "./layout/Text";
+import { View } from "./layout/View";
 import type { Lookups } from "./font/types";
-import type { LayoutProps, TextStyleProps, ViewStyleProps } from "./types";
+import type { LayoutProps, TextStyleProps, ViewStyleProps } from "./layout/styling";
 import {
   AlignContent,
   AlignItems,
@@ -11,7 +11,7 @@ import {
   JustifyContent,
   Overflow,
   Position,
-} from "./types";
+} from "./layout/styling";
 import { invariant } from "./utils/invariant";
 
 let lookups: Lookups | null = null;

@@ -11,13 +11,13 @@ Using JavaScript you can create a fully interactive, browser-like layout that li
 
 ### What problem does it solve?
 
-It brings a fully working UI system written in plain JavaScript.
+It gives you a fully working UI system written in plain JavaScript.
 
-While it doesn't introduce anything new, all other possible solutions to this problem are either heavy C++ libraries or… entire web browsers. If you need a layout engine, Facebook Yoga is often used but it requires loading either via asm.js or WASM (See [Satori](https://github.com/vercel/satori#runtime-and-wasm) docs).
+While it doesn't introduce anything new, all other possible solutions to this problem are either heavy C++ libraries or… entire web browsers. If you need a layout engine, Facebook Yoga is often used but it requires loading either via asm.js or WASM (See [Satori](https://github.com/vercel/satori#runtime-and-wasm)).
 
 Usually in situations where one would use JavaScript for presenting UIs, DOM and generally the rest of the browser is available. But sometimes you would rather prefer to have a full control over rendering process, to be able to tie it to the game loop or want to use JS in non-browser environment while supplying it with the 3D graphics platform API.
 
-### When would I use it?
+### When would you use it?
 
 If you are writing a JavaScript application and need to render a browser-grade UI somewhere where you don't have or don't want to have a browser DOM, this might be useful. Architecture is layered and modular, with WebGPU, WebGL and Canvas renderers available. You can also write your own.
 
@@ -26,11 +26,13 @@ If you are working on a web browser, operating system, game engine, a game with 
 > [!IMPORTANT]
 > Red Otter is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automatic translations, high-contrast mode etc. Use it only for applications where it is implied that those capabilities are not needed or otherwise would not be available.
 
-### Why retained mode?
+### Why did I build this?
 
-- Immediate mode often involves heavily caching which effectively becomes retained mode under the hood.
-- Declarative expressiveness and ease of use of IMGUI can be for the most part achieved using a declarative API like React (and is some way it boils down to the same thing, oversimplifying it… greatly).
-- Screen readers and other assistive technologies are easier to support with persistent UI trees.
+I always loved recreating things from scratch to learn how they work (see my [blog](https://tchayen.com)). So eventually time came for complex UIs.
+
+This resonates well with the recent trend of creating new software that attemps to solve problems that were deemed too hard to be ever approach again, especially by a small team. Good example is a new web browser [Ladybird](https://ladybird.dev) and a new operating system [Serenity OS](https://serenityos.org/).
+
+And finally, it was just a fun set of problems to work on.
 
 ---
 

@@ -1,6 +1,6 @@
 import type { Vec2 } from "../math/Vec2";
 import type { Vec4 } from "../math/Vec4";
-import type { TextAlign } from "../types";
+import type { TextAlign } from "../layout/styling";
 
 export interface Renderer {
   rectangle(

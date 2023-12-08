@@ -1,5 +1,10 @@
 export const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.4;
 
+export const CROSS_AXIS_SIZE = 10;
+export const SCROLLBAR_COLOR = "#111";
+export const SCROLLBAR_CORNER_COLOR = "#111";
+export const SCROLLBAR_TRACK_COLOR = "#666";
+
 export const isWindowDefined = typeof window !== "undefined";
 
 const windowWidth = isWindowDefined ? window.innerWidth : 1024;

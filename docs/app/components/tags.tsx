@@ -48,7 +48,24 @@ export function H1({ children, className }: PropsWithChildren<{ className?: stri
   );
 }
 
-export function H2({ children, className }: PropsWithChildren<{ className?: string }>) {
+export function H2({
+  children,
+  noLink,
+  className,
+}: PropsWithChildren<{ className?: string; noLink?: boolean }>) {
+  if (noLink) {
+    return (
+      <h2
+        className={twMerge(
+          "mb-2 mt-6 scroll-mt-8 text-2xl font-semibold text-mauvedark12",
+          className,
+        )}
+      >
+        {children}
+      </h2>
+    );
+  }
+
   const slug = slugify(typeof children === "string" ? children : "");
   return (
     <h2
@@ -70,7 +87,7 @@ export function H3({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h3
       id={slug}
-      className={twMerge("mb-2 mt-6 scroll-mt-8 text-lg font-semibold text-mauvedark12", className)}
+      className={twMerge("mb-2 mt-6 scroll-mt-8 text-xl font-semibold text-mauvedark12", className)}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}
@@ -84,10 +101,7 @@ export function H4({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h4
       id={slug}
-      className={twMerge(
-        "mb-2 mt-6 scroll-mt-8 text-base font-semibold text-mauvedark12",
-        className,
-      )}
+      className={twMerge("mb-2 mt-6 scroll-mt-8 text-lg font-semibold text-mauvedark12", className)}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}
@@ -133,7 +147,7 @@ export function P({ children, className }: PropsWithChildren<{ className?: strin
 }
 
 export function Ul({ children }: PropsWithChildren) {
-  return <ul className="mx-8 my-4 list-outside text-base md:mx-0 [&>li>ul]:my-2">{children}</ul>;
+  return <ul className="mx-8 my-4 list-disc text-base md:mx-0 [&>li>ul]:my-2">{children}</ul>;
 }
 
 export function Ol({ children }: PropsWithChildren) {

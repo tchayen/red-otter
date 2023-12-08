@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { invariant } from "../../../src/utils/invariant";
-import { ScrollableRenderer } from "../../../src/ScrollableRenderer";
+import { ScrollableRenderer } from "../../../src/renderer/ScrollableRenderer";
 import { prepareLookups } from "../../../src/font/prepareLookups";
 import { renderFontAtlas } from "../../../src/font/renderFontAtlas";
 import { parseTTF } from "../../../src/font/parseTTF";

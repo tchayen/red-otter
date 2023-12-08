@@ -1,11 +1,10 @@
-import { View } from "./View";
-import { isWindowDefined } from "./consts";
+import { View } from "./layout/View";
+import { CROSS_AXIS_SIZE, isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import { Vec4 } from "./math/Vec4";
 import { intersection as getIntersection, isInside } from "./math/utils";
-import type { UserEvent } from "./types";
-import { Display, Overflow, UserEventType } from "./types";
-import { CROSS_AXIS_SIZE } from "./ui/consts";
+import type { UserEvent } from "./layout/styling";
+import { Display, Overflow, UserEventType } from "./layout/styling";
 import { invariant } from "./utils/invariant";
 
 export class EventManager {

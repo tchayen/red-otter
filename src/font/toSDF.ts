@@ -1,7 +1,7 @@
 // http://cs.brown.edu/people/pfelzens/papers/dt-final.pdf
 
 /**
- * Takes ImageData and returns a new ImageData() with the SDF applied.
+ * Takes `ImageData` and returns a `new ImageData()` with the SDF applied.
  */
 export function toSDF(
   imageData: ImageData,

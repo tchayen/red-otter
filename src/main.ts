@@ -1,13 +1,13 @@
 import { EventManager } from "./EventManager";
-import { ScrollableRenderer } from "./ScrollableRenderer";
+import { ScrollableRenderer } from "./renderer/ScrollableRenderer";
 import { isWindowDefined, settings } from "./consts";
-import { paint } from "./ui/paint";
+import { paint } from "./layout/paint";
 import { parseTTF } from "./font/parseTTF";
 import { prepareLookups } from "./font/prepareLookups";
 import { renderFontAtlas } from "./font/renderFontAtlas";
 import { ui } from "./ui";
 import { invariant } from "./utils/invariant";
-import { compose } from "./ui/compose";
+import { compose } from "./layout/compose";
 
 const eventManager = new EventManager();
 

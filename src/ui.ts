@@ -1,11 +1,11 @@
-import { Text } from "./Text";
-import type { ScrollableRenderer } from "./ScrollableRenderer";
-import { View } from "./View";
+import { Text } from "./layout/Text";
+import type { ScrollableRenderer } from "./renderer/ScrollableRenderer";
+import { View } from "./layout/View";
 import type { Lookups } from "./font/types";
-import { layout } from "./ui/layout";
+import { layout } from "./layout/layout";
 import { Vec2 } from "./math/Vec2";
-import type { TextStyleProps, ViewStyleProps } from "./types";
-import { AlignSelf, FlexDirection, JustifyContent, Overflow } from "./types";
+import type { TextStyleProps, ViewStyleProps } from "./layout/styling";
+import { AlignSelf, FlexDirection, JustifyContent, Overflow } from "./layout/styling";
 import { invariant } from "./utils/invariant";
 import * as fixtures from "./fixtures";
 import { measure } from "./measure";

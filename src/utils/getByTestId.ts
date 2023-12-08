@@ -1,5 +1,5 @@
-import { View } from "../View";
-import type { Text } from "../Text";
+import { View } from "../layout/View";
+import type { Text } from "../layout/Text";
 
 export function getByTestId(root: View, testId: string): View | Text | null {
   let c = root.firstChild;

@@ -63,7 +63,7 @@ function removeNode(p: RingNode): void {
   p.prev.next = p.next;
 }
 
-export function createRing(data: Array<Vec2>): RingNode | null {
+function createRing(data: Array<Vec2>): RingNode | null {
   let last;
   for (const v of data) {
     last = insertNode(v, last);

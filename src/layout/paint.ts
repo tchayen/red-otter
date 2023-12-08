@@ -1,16 +1,16 @@
-import { Text } from "../Text";
-import type { View } from "../View";
+import { Text } from "./Text";
+import type { View } from "./View";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
-import { Display, Overflow, TextAlign, defaultTextStyleProps } from "../types";
+import { Display, Overflow, TextAlign, defaultTextStyleProps } from "./styling";
 import { parseColor } from "../utils/parseColor";
-import type { Renderer } from "./Renderer";
+import type { Renderer } from "../renderer/Renderer";
 import {
   CROSS_AXIS_SIZE,
   SCROLLBAR_COLOR,
   SCROLLBAR_CORNER_COLOR,
   SCROLLBAR_TRACK_COLOR,
-} from "./consts";
+} from "../consts";
 
 // TODO: probably construct an array and sort by z-index.
 export function paint(ui: Renderer, node: View | Text) {

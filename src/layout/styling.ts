@@ -1,6 +1,6 @@
 import type { Text } from "./Text";
 import type { View } from "./View";
-import { Vec2 } from "./math/Vec2";
+import { Vec2 } from "../math/Vec2";
 
 export const enum UserEventType {
   MouseClick,

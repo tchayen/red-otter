@@ -5,10 +5,10 @@ import { prepareLookups } from "../font/prepareLookups";
 import type { TTF } from "../font/parseTTF";
 import { layout } from "./layout";
 import { Vec2 } from "../math/Vec2";
-import type { View } from "../View";
-import type { Text } from "../Text";
+import type { View } from "./View";
+import type { Text } from "./Text";
 import * as fixtures from "../fixtures";
-import { getByTestId } from "./getByTestId";
+import { getByTestId } from "../utils/getByTestId";
 
 // Silence console.debug() output during tests.
 console.debug = () => {};

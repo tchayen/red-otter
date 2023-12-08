@@ -1,9 +1,9 @@
 import { Queue } from "../utils/Queue";
 import type { Vec2 } from "../math/Vec2";
 import type { Lookups } from "../font/types";
-import { View } from "../View";
+import { View } from "./View";
 import { invariant } from "../utils/invariant";
-import { Text } from "../Text";
+import { Text } from "./Text";
 import { shapeText } from "../font/shapeText";
 import {
   AlignContent,
@@ -17,8 +17,8 @@ import {
   Position,
   TextAlign,
   defaultTextStyleProps,
-} from "../types";
-import { CROSS_AXIS_SIZE } from "./consts";
+} from "./styling";
+import { CROSS_AXIS_SIZE } from "../consts";
 
 /**
  * @param tree tree of views to layout.

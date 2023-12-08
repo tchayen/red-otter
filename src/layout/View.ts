@@ -6,14 +6,14 @@ import type {
   ScrollEvent,
   ClickEvent,
   MoveEvent,
-} from "./types";
+} from "./styling";
 import {
   UserEventType,
   normalizeLayoutProps,
   normalizeDecorativeProps,
   Overflow,
   defaultLayoutNodeState,
-} from "./types";
+} from "./styling";
 import type { Text } from "./Text";
 
 type UserEventTuple =

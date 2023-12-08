@@ -1,5 +1,5 @@
 import { View } from "./View";
-import type { ViewStyleProps } from "./types";
+import type { ViewStyleProps } from "./styling";
 
 export class Input extends View {
   constructor(props: {

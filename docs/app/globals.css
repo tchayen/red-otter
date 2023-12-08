@@ -52,14 +52,3 @@ canvas {
 * {
   box-sizing: border-box;
 }
-
-ul {
-  list-style-type: none;
-}
-ul > li {
-  text-indent: -11px;
-  margin-left: 11px;
-}
-ul > li:before {
-  content: "- ";
-}

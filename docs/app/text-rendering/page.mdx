@@ -1,3 +1,11 @@
+import { packageJson } from "../components/PackageJson";
+import { FontsApi } from "../components/FontsApi";
+
+export const metadata = {
+  description: packageJson.description,
+  title: "Red Otter – Layout",
+};
+
 # Text Rendering
 
 Everything about the process of getting text to the user's screen.
@@ -71,4 +79,4 @@ const lookups = prepareLookups(
 const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
 ```
 
-**TODO: add info about all classes and util functions. Maybe autogenerate docs here too?**
+<FontsApi />

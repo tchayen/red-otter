@@ -181,7 +181,7 @@ function readMaxpTable(reader: BinaryReader, offset: number): MaxpTable {
 /**
  *  See: [Microsoft docs](https://docs.microsoft.com/en-us/typography/opentype/spec/cmap).
  */
-export function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
+function readCmapTable(reader: BinaryReader, offset: number): CmapTable {
   const position = reader.getPosition();
   reader.setPosition(offset);
 

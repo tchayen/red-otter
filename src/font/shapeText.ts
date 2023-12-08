@@ -1,5 +1,5 @@
 import { Vec2 } from "../math/Vec2";
-import { TextAlign } from "../types";
+import { TextAlign } from "../layout/styling";
 import { LRUCache } from "../utils/LRUCache";
 import { invariant } from "../utils/invariant";
 import { fontSizeToGap } from "./renderFontAtlas";

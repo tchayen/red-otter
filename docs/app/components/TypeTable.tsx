@@ -1,8 +1,8 @@
 import types from "../types.json";
 import { Code, H2, P } from "./tags";
 import { Fragment, type PropsWithChildren } from "react";
-import { twMerge } from "tailwind-merge";
 import { TypeTooltip } from "./TypeTooltip";
+import { Table } from "./Table";
 
 export type Field = {
   default: string;
@@ -38,48 +38,35 @@ export function TypeTable({ type, children }: TypeTableProps) {
       <H2>{t.types[type].name}</H2>
       <P>{t.types[type].description}</P>
       {children}
-      <div
-        style={{
-          gridTemplateColumns: "min-content min-content min-content auto",
-        }}
-        className="my-4 grid overflow-x-auto rounded-md border border-mauvedark6 bg-mauvedark2"
-      >
-        <Cell className="whitespace-nowrap border-t-0 bg-mauvedark3 font-semibold text-mauvedark12">
-          Name
-        </Cell>
-        <Cell className="whitespace-nowrap border-t-0 bg-mauvedark3 font-semibold text-mauvedark12">
-          Type
-        </Cell>
-        <Cell className="whitespace-nowrap border-t-0 bg-mauvedark3 font-semibold text-mauvedark12">
-          Default value
-        </Cell>
-        <Cell className="whitespace-nowrap border-t-0 bg-mauvedark3 font-semibold text-mauvedark12">
-          Description
-        </Cell>
+      <Table.Root>
+        <Table.HeaderCell>Name</Table.HeaderCell>
+        <Table.HeaderCell>Type</Table.HeaderCell>
+        <Table.HeaderCell>Default value</Table.HeaderCell>
+        <Table.HeaderCell>Description</Table.HeaderCell>
         {Object.values(t.types[type].properties).map((field) => {
           const enumType = types.enums.find((e) => e.name === field.type);
           return (
             <Fragment key={field.name}>
-              <Cell>
+              <Table.Cell>
                 <span>{field.name}</span>
-              </Cell>
-              <Cell className="whitespace-nowrap">
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap">
                 {enumType ? (
                   <TypeTooltip field={field} enumType={enumType} />
                 ) : (
                   replacePercentage(field.type)
                 )}
-              </Cell>
-              <Cell className="whitespace-nowrap">
+              </Table.Cell>
+              <Table.Cell className="whitespace-nowrap">
                 <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
-              </Cell>
-              <Cell>
+              </Table.Cell>
+              <Table.Cell>
                 <Description>{field.description}</Description>
-              </Cell>
+              </Table.Cell>
             </Fragment>
           );
         })}
-      </div>
+      </Table.Root>
     </>
   );
 }
@@ -103,21 +90,6 @@ function shortenDefault(value: string) {
   }
 
   return value;
-}
-
-type CellProps = PropsWithChildren<{ className?: string }>;
-
-function Cell({ children, className }: CellProps) {
-  return (
-    <div
-      className={twMerge(
-        "border-t border-mauvedark6 px-3 py-2 text-sm text-mauvedark11",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
 }
 
 type DescriptionProps = { children: string };

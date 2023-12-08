@@ -1,5 +1,6 @@
 import ts from "typescript";
 import fs from "node:fs";
+import path from "node:path";
 
 type Field = {
   default: string;
@@ -14,94 +15,274 @@ type Types = Record<
     description: string;
     name: string;
     properties: Record<string, Field>;
+    source: string;
   }
 >;
 
-/**
- * Aim of this function is to extract TS types from layout types. The goal is to for example have
- * the Layout type extracted, with each of the field having name, type, default value, optional
- * description. Also enums should be resolved.
- */
-export function extractTypeScript(fileName: string) {
-  const program = ts.createProgram([fileName], {});
-  const sourceFile = program.getSourceFile(fileName);
-  if (sourceFile === undefined) {
-    throw new Error("Source file was not found.");
+type Method = {
+  description: string;
+  name: string;
+  parameters: Record<string, Field>;
+  returnType: string;
+};
+
+type Classes = Record<
+  string,
+  {
+    description: string;
+    methods: Record<string, Method>;
+    name: string;
+    source: string;
   }
+>;
 
-  const checker = program.getTypeChecker();
+type Functions = Record<
+  string,
+  {
+    description: string;
+    name: string;
+    parameters: Record<string, Field>;
+    returnType: string;
+    source: string;
+  }
+>;
 
+type Enum = {
+  description: string;
+  name: string;
+  source: string;
+  values: Array<{
+    description: string;
+    name: string;
+  }>;
+};
+
+const mainDirectory = path.resolve(import.meta.dir + "/../../src");
+
+const result = extractTypeScript([
+  `${mainDirectory}/layout/styling.ts`,
+  `${mainDirectory}/font`,
+  `${mainDirectory}/math`,
+]);
+fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, null, 2));
+
+/**
+ * Extract types, classes, functions and enums from TypeScript files.
+ */
+export function extractTypeScript(paths: Array<string>) {
   const types: Types = {};
+  const classes: Classes = {};
+  const functions: Functions = {};
+  const enums: Array<Enum> = [];
 
-  // Process enums.
-  const enums = (
-    sourceFile.statements.filter((s) => ts.isEnumDeclaration(s)) as Array<ts.EnumDeclaration>
-  ).map((e) => {
-    return {
-      description: ts.displayPartsToString(e.symbol.getDocumentationComment(checker)),
-      name: e.name.escapedText,
-      values: e.members.map((m) => {
+  const files = getListOfFiles(paths);
+
+  for (const fileName of files) {
+    const program = ts.createProgram([fileName], {});
+    const sourceFile = program.getSourceFile(fileName);
+    const sourceString = fileName.replaceAll(mainDirectory, "");
+    if (sourceFile === undefined) {
+      throw new Error("Source file was not found.");
+    }
+
+    const checker = program.getTypeChecker();
+
+    // Process enums.
+    enums.push(
+      ...(
+        sourceFile.statements.filter((s) => ts.isEnumDeclaration(s)) as Array<ts.EnumDeclaration>
+      ).map((e) => {
         return {
-          description: ts.displayPartsToString(m.symbol.getDocumentationComment(checker)),
-          name: m.name.escapedText,
+          description: ts.displayPartsToString(e.symbol.getDocumentationComment(checker)),
+          name: e.name.escapedText.toString(),
+          source: sourceString,
+          values: e.members.map((m) => {
+            return {
+              description: ts.displayPartsToString(m.symbol.getDocumentationComment(checker)),
+              name: m.name.escapedText,
+            };
+          }),
         };
       }),
-    };
-  });
+    );
 
-  // Process types.
-  (
-    sourceFile.statements.filter((s) =>
-      ts.isTypeAliasDeclaration(s),
-    ) as Array<ts.TypeAliasDeclaration>
-  ).forEach((t) => {
-    const symbol: ts.Symbol = (t as any).symbol;
+    // Process types.
+    (
+      sourceFile.statements.filter((s) =>
+        ts.isTypeAliasDeclaration(s),
+      ) as Array<ts.TypeAliasDeclaration>
+    ).forEach((t) => {
+      const symbol: ts.Symbol = (t as any).symbol;
 
-    const properties: Record<string, Field> = {};
-    ts.forEachChild(t.type, (child) => {
-      const symbol: ts.Symbol = (child as any).symbol;
-      if (!symbol) {
-        return;
-      }
+      const properties: Record<string, Field> = {};
+      ts.forEachChild(t.type, (child) => {
+        const symbol: ts.Symbol = (child as any).symbol;
+        if (!symbol) {
+          return;
+        }
+        const name = symbol.escapedName.toString();
+        properties[name] = {
+          default: "",
+          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          name,
+          type: checker.typeToString(checker.getTypeAtLocation(child)),
+        };
+      });
+
       const name = symbol.escapedName.toString();
-      properties[name] = {
-        default: "",
+      types[name] = {
         description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
         name,
-        type: checker.typeToString(checker.getTypeAtLocation(child)),
+        properties,
+        source: sourceString,
       };
     });
 
-    const name = symbol.escapedName.toString();
-    types[name] = {
-      description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-      name,
-      properties,
-    };
-  });
+    //Process classes.
+    (
+      sourceFile.statements.filter((s) => ts.isClassDeclaration(s)) as Array<ts.ClassDeclaration>
+    ).forEach((c) => {
+      const symbol: ts.Symbol = (c as any).symbol;
 
-  // Assign defaults.
-  const objects = sourceFile.statements.filter((s) =>
-    ts.isVariableStatement(s),
-  ) as Array<ts.VariableStatement>;
+      const methods: Record<string, Method> = {};
+      ts.forEachChild(c, (child) => {
+        if (!ts.isMethodDeclaration(child)) {
+          return;
+        }
 
-  objects.forEach((o) => {
-    const name = o.declarationList.declarations[0].name.escapedText;
-    const type = types[name.replace("default", "")];
-    if (!type) {
-      throw new Error(`Type ${name} not found.`);
-    }
+        const symbol: ts.Symbol = (child as any).symbol;
+        if (!symbol) {
+          return;
+        }
 
-    o.declarationList.declarations[0].initializer.properties.forEach((p) => {
-      const name = p.name.escapedText;
-      const value = p.initializer.getText();
+        const name = symbol.escapedName.toString();
+        const parameters: Record<string, Field> = {};
+        ts.forEachChild(child, (child) => {
+          if (!ts.isParameter(child)) {
+            return;
+          }
 
-      type.properties[name] = { ...type.properties[name], default: value };
+          const symbol: ts.Symbol = (child as any).symbol;
+          if (!symbol) {
+            return;
+          }
+
+          const name = symbol.escapedName.toString();
+          parameters[name] = {
+            default: "",
+            description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            name,
+            type: checker.typeToString(checker.getTypeAtLocation(child)),
+          };
+        });
+
+        methods[name] = {
+          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          name,
+          parameters,
+          returnType: checker.typeToString(checker.getTypeAtLocation(child)),
+        };
+      });
+
+      const name = symbol.escapedName.toString();
+      classes[name] = {
+        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+        methods,
+        name,
+        source: sourceString,
+      };
     });
-  });
 
-  return { enums, types };
+    // Process exported functions.
+    (
+      sourceFile.statements.filter((s) =>
+        ts.isFunctionDeclaration(s),
+      ) as Array<ts.FunctionDeclaration>
+    ).forEach((f) => {
+      const symbol: ts.Symbol = (f as any).symbol;
+      // Check if the function is exported
+      if (!f.modifiers || !f.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+        return;
+      }
+
+      const parameters: Record<string, Field> = {};
+      ts.forEachChild(f, (child) => {
+        if (!ts.isParameter(child)) {
+          return;
+        }
+
+        const symbol: ts.Symbol = (child as any).symbol;
+        if (!symbol) {
+          return;
+        }
+
+        const name = symbol.escapedName.toString();
+        parameters[name] = {
+          default: "",
+          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          name,
+          type: checker.typeToString(checker.getTypeAtLocation(child)),
+        };
+      });
+
+      const name = symbol.escapedName.toString();
+      functions[name] = {
+        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+        name,
+        parameters,
+        returnType: checker.typeToString(checker.getTypeAtLocation(f)),
+        source: sourceString,
+      };
+    });
+
+    // Assign defaults.
+    const objects = sourceFile.statements.filter((s) =>
+      ts.isVariableStatement(s),
+    ) as Array<ts.VariableStatement>;
+
+    objects.forEach((o) => {
+      const name = o.declarationList.declarations[0].name.escapedText;
+      const type = types[name.replace("default", "")];
+      if (!type) {
+        console.warn(`Type ${name} not found.`);
+        return;
+      }
+
+      o.declarationList.declarations[0].initializer.properties.forEach((p) => {
+        const name = p.name.escapedText;
+        const value = p.initializer.getText();
+
+        type.properties[name] = { ...type.properties[name], default: value };
+      });
+    });
+  }
+
+  return { classes, enums, functions, types };
 }
 
-const result = extractTypeScript(import.meta.dir + "/../../src/types.ts");
-fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, null, 2));
+/**
+ * Construct a list of files to process given list of paths. Paths can be either files or
+ * directories. Directories can be nested.
+ */
+function getListOfFiles(paths: Array<string>): Array<string> {
+  const files: Array<string> = [];
+
+  function explore(path: string) {
+    try {
+      const stats = fs.statSync(path);
+
+      if (stats.isDirectory()) {
+        fs.readdirSync(path).forEach((child) => {
+          explore(`${path}/${child}`);
+        });
+      } else if (stats.isFile()) {
+        files.push(path);
+      }
+    } catch (error) {
+      console.error(`${path}: ${error.message}`);
+    }
+  }
+
+  paths.forEach((path) => explore(path));
+  return files;
+}
