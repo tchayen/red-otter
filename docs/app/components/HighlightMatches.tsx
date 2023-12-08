@@ -56,12 +56,12 @@ export function HighlightMatches({ match, value }: HighlightMatchesProps) {
       const originalMatch = matches[index];
       return (
         <>
-          {part}
+          {replaceHtml(part)}
           <span className="rounded text-tomatodark10">{originalMatch}</span>
         </>
       );
     }
-    return part;
+    return replaceHtml(part);
   });
 
   return <>{highlightedParts}</>;
@@ -69,4 +69,13 @@ export function HighlightMatches({ match, value }: HighlightMatchesProps) {
 
 function regExpEscape(value: string) {
   return value.replaceAll(/[\s#$()*+,.?[\\\]^{|}-]/g, "\\$&");
+}
+
+function replaceHtml(html: string) {
+  return html
+    .replaceAll("&gt;", ">")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&apos;", "'");
 }

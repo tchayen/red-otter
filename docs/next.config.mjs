@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import addMdx from "@next/mdx";
 import remarkGfm from "remark-gfm";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
+import remarkTypography from "./remarkTypography.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,6 @@ export default addMdx({
   extension: /\.mdx?$/,
   options: {
     rehypePlugins: [rehypeMdxCodeProps],
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkTypography],
   },
 })(nextConfig);
