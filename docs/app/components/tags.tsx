@@ -147,7 +147,9 @@ export function P({ children, className }: PropsWithChildren<{ className?: strin
 }
 
 export function Ul({ children }: PropsWithChildren) {
-  return <ul className="mx-8 my-4 list-disc text-base md:mx-0 [&>li>ul]:my-2">{children}</ul>;
+  return (
+    <ul className="mx-8 my-4 list-disc text-base md:mx-0 md:ml-4 [&>li>ul]:my-2">{children}</ul>
+  );
 }
 
 export function Ol({ children }: PropsWithChildren) {
@@ -213,7 +215,7 @@ export function Box({ children, className }: React.PropsWithChildren<{ className
     >
       {boxType && (
         <>
-          <div className="-mb-2 mt-3 text-xs font-bold">{boxType}</div>
+          <div className="-mb-2 mt-3 text-xs font-semibold">{boxType}</div>
           <span className="absolute -left-4 top-1 select-none text-[48px] font-bold leading-[36px] opacity-[15%]">
             
           </span>

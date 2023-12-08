@@ -7,6 +7,7 @@ import type { Page, Section } from "../search/route";
 import { H2, outline } from "./tags";
 import { HighlightMatches } from "./HighlightMatches";
 import { withClient } from "./withClient";
+import Link from "next/link";
 
 // TODO: these two are not connected.
 
@@ -131,7 +132,7 @@ export function Search() {
     <button
       className={twMerge(
         outline,
-        "relative flex h-8 w-full shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark2 px-2 text-sm text-mauvedark10",
+        "relative flex h-8 w-56 shrink-0 cursor-pointer items-center rounded-md border border-mauvedark5 bg-mauvedark2 px-2 text-sm text-mauvedark10",
       )}
     >
       Search...
@@ -152,7 +153,7 @@ export function Search() {
 
   const resultsSection = results.map((result) => {
     return (
-      <a
+      <Link
         key={result.url}
         onClick={() => {
           setOpen(false);
@@ -171,7 +172,7 @@ export function Search() {
             <HighlightMatches match={search} value={result.content} />
           </div>
         </div>
-      </a>
+      </Link>
     );
   });
 
@@ -192,7 +193,7 @@ export function Search() {
     >
       <Dialog.Trigger asChild>{triggerButton}</Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 flex justify-center bg-[rgba(0,0,0,0.4)] pt-32">
+        <Dialog.Overlay className="fixed inset-0 z-10 flex justify-center bg-[rgba(0,0,0,0.4)] pt-32">
           <Dialog.Content className="scrollbar fixed flex max-h-[calc(100dvh-128px-32px)] w-[600px] max-w-[calc(100dvw-32px)] flex-col gap-3 overflow-hidden overflow-y-auto rounded-md border border-mauvedark5 bg-mauvedark2 p-6 outline-none">
             <div className="flex justify-between">
               <H2 className="my-0" noLink>
@@ -233,7 +234,7 @@ function Key({ children, className }: KeyProps) {
   return (
     <span
       className={twMerge(
-        "box-content flex h-[22px] select-none items-center justify-center rounded bg-mauvedark7 px-1.5 text-xs text-mauvedark12",
+        "box-content flex h-[22px] select-none items-center justify-center rounded bg-mauvedark5 px-1.5 text-xs text-mauvedark12",
         className,
       )}
     >

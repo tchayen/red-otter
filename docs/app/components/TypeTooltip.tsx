@@ -21,7 +21,7 @@ export function TypeTooltip({ field, enumType }: TypeTooltipProps) {
       </Tooltip.Trigger>
       <Tooltip.Content sideOffset={4} className="rounded-md bg-black px-3 py-2">
         <Tooltip.Arrow />
-        <h3 className="text-lg font-bold text-mauvedark12">{enumType.name}</h3>
+        <h3 className="text-lg font-semibold text-mauvedark12">{enumType.name}</h3>
         <span className="text-mauvedark10">{enumType.description}</span>
         <ul className="text-mauvedark10">
           {enumType.values.map((value) => (
