@@ -18,7 +18,7 @@
     "lint": "eslint src",
     "test": "vitest",
     "coverage": "vitest --coverage",
-    "loc": "find . -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
+    "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
   },
   "dependencies": {
     "@petamoriken/float16": "^3.8.4"
@@ -27,9 +27,9 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
-    "@vitest/coverage-istanbul": "^1.0.1",
-    "@vitest/coverage-v8": "^1.0.1",
-    "@vitest/ui": "^1.0.1",
+    "@vitest/coverage-istanbul": "^1.0.3",
+    "@vitest/coverage-v8": "^1.0.3",
+    "@vitest/ui": "^1.0.3",
     "@webgpu/types": "^0.1.40",
     "eslint": "^8.55.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -41,7 +41,8 @@
     "eslint-plugin-unused-imports": "^3.0.0",
     "prettier": "^3.1.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.6",
-    "vitest": "^1.0.1"
+    "vite": "^5.0.7",
+    "vite-plugin-dts": "^3.6.4",
+    "vitest": "^1.0.3"
   }
 }

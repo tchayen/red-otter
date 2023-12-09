@@ -9,6 +9,7 @@ import type {
   MethodType,
   TypeType,
 } from "../app/components/ApiBlocks";
+import "bun-types";
 
 const mainDirectory = path.resolve(import.meta.dir + "/../../src");
 
@@ -17,6 +18,7 @@ const result = extractTypeScript([
   `${mainDirectory}/font`,
   `${mainDirectory}/math`,
 ]);
+
 fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, null, 2));
 
 /**
