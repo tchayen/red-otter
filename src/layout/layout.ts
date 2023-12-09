@@ -133,8 +133,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     const p = e.parent;
-    if (e instanceof Text && fontLookups) {
-      if (p?._state.clientWidth !== undefined) {
+    if (p && e instanceof Text && fontLookups) {
+      if ((p?._state.clientWidth ?? 0) > 0) {
         const maxWidth =
           p._state.clientWidth -
           p._style.paddingLeft -

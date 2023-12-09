@@ -63,9 +63,17 @@ export function shapeText(options: ShapeTextOptions): Shape {
   const padding = (atlasGap * fontSize) / lookups.atlas.fontSize;
 
   let longestLineWidth = 0;
+  // Index of last character of the last full word that was looped over.
+  let lastIndex = 0;
 
-  const mtdt = [];
+  let j = 0;
   for (let i = 0; i < text.length; i++) {
+    // Prevent infinite loops.
+    j += 1;
+    if (j > 1000) {
+      throw new Error(`Infinite loop for text: ${text} with limit ${maxWidth}`);
+    }
+
     const character = text[i]!.charCodeAt(0);
     const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
     const { y, width, height, lsb, rsb } = glyph;
@@ -73,12 +81,6 @@ export function shapeText(options: ShapeTextOptions): Shape {
     if (i > 0 && ENABLE_KERNING) {
       kerning = font.kern(text[i - 1]!.charCodeAt(0), character);
     }
-    mtdt.push({ height, kerning, lsb, rsb, width, y });
-  }
-
-  let indexOfLastCharacterOfLastWord = 0;
-  for (let i = 0; i < text.length; i++) {
-    const { height, kerning, lsb, rsb, width, y } = mtdt[i]!;
     const charWidth = (lsb + kerning + width + rsb) * scale;
 
     if (positionX === 0 && text[i] === " ") {
@@ -97,12 +99,12 @@ export function shapeText(options: ShapeTextOptions): Shape {
     if (positionX > maxWidth) {
       positionX = 0;
       positionY += lineHeight;
-      i = indexOfLastCharacterOfLastWord;
-      indexOfLastCharacterOfLastWord = i + 1;
+      i = lastIndex;
+      lastIndex = i + 1;
     }
 
     if (text[i] !== " " && text[i + 1] === " ") {
-      indexOfLastCharacterOfLastWord = i;
+      lastIndex = i;
     }
   }
 
