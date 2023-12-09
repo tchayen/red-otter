@@ -35,7 +35,8 @@ type ShapeTextOptions = {
  * @returns a shape object that can be used to render the text.
  */
 export function shapeText(options: ShapeTextOptions): Shape {
-  const { lookups, text, fontSize, fontName, lineHeight, maxWidth, textAlign } = options;
+  const { lookups, text, fontSize, fontName, lineHeight, textAlign } = options;
+  const maxWidth = options.maxWidth ?? Number.POSITIVE_INFINITY;
   const cached = cache.get(
     JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlign }),
   );
@@ -54,67 +55,118 @@ export function shapeText(options: ShapeTextOptions): Shape {
   let positionX = 0;
   let positionY = 0;
   const scale = (1 / font.unitsPerEm) * fontSize;
+
+  // Atlas gap is the gap between glyphs in the atlas.
   const atlasGap = fontSizeToGap(lookups.atlas.fontSize);
+
+  // Padding is the additional space around each glyph.
   const padding = (atlasGap * fontSize) / lookups.atlas.fontSize;
 
-  let wordStartIndex = 0;
   let longestLineWidth = 0;
 
+  const mtdt = [];
   for (let i = 0; i < text.length; i++) {
     const character = text[i]!.charCodeAt(0);
     const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
-
     const { y, width, height, lsb, rsb } = glyph;
-
     let kerning = 0;
-    if (ENABLE_KERNING && text[i - 1] && text[i]) {
-      kerning = font.kern(text[i - 1]!.charCodeAt(0), text[i]!.charCodeAt(0));
+    if (i > 0 && ENABLE_KERNING) {
+      kerning = font.kern(text[i - 1]!.charCodeAt(0), character);
+    }
+    mtdt.push({ height, kerning, lsb, rsb, width, y });
+  }
+
+  let indexOfLastCharacterOfLastWord = 0;
+  for (let i = 0; i < text.length; i++) {
+    const { height, kerning, lsb, rsb, width, y } = mtdt[i]!;
+    const charWidth = (lsb + kerning + width + rsb) * scale;
+
+    if (positionX === 0 && text[i] === " ") {
+      continue;
     }
 
-    // TODO: implement this again.
-    // Maybe store and build up length of current word and if it exceeds maxWidth, calculate offset
-    // from start of the word and put whole word the line below
-
-    const nextPosition = new Vec2(
+    positions[i] = new Vec2(
       positionX + (lsb + kerning) * scale - padding,
       positionY + (font.capHeight - y - height) * scale - padding,
     );
-
-    positions[i] = nextPosition;
+    positionX += charWidth;
     sizes[i] = new Vec2(width * scale + padding * 2, height * scale + padding * 2);
-    positionX += (lsb + kerning + width + rsb) * scale;
 
-    if (maxWidth && nextPosition.x + width * scale > maxWidth && text[i] === " ") {
-      // Check backtracking is possible (i.e. the length of the word is less than maxWidth).
-      const wordStart = positions[wordStartIndex];
-      invariant(wordStart, "Word start position is undefined.");
-      const wordLength = positionX - wordStart.x;
-      if (wordLength > maxWidth) {
-        continue;
-      }
-
-      // We exceeded the maxWidth, backtrack. Move i back to the start of the current word.
-      i = wordStartIndex - 1;
-
-      positionY += lineHeight;
+    // If current word ran out of space, move i back to the last character of the last word and
+    // restart positionX.
+    if (positionX > maxWidth) {
       positionX = 0;
-      longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
+      positionY += lineHeight;
+      i = indexOfLastCharacterOfLastWord;
+      indexOfLastCharacterOfLastWord = i + 1;
     }
 
-    if (text[i] === "\n") {
-      positionY += lineHeight;
-      positionX = 0;
-      longestLineWidth = Math.max(longestLineWidth, positions[i + 1]?.x ?? 0);
-    }
-
-    if (text[i] === " " || text[i] === "\n") {
-      // Update the start of the next word.
-      wordStartIndex = i + 1;
+    if (text[i] !== " " && text[i + 1] === " ") {
+      indexOfLastCharacterOfLastWord = i;
     }
   }
 
+  // //////
+  // let currentLineWidth = 0;
+  // let lineStartIndex = 0;
+  // let wordWidth = 0;
+  // let lineBreakRequired = false;
+
+  // for (let i = 0; i < text.length; i++) {
+  //   const character = text[i]!.charCodeAt(0);
+  //   const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
+  //   const { y, width, height, lsb, rsb } = glyph;
+
+  //   let kerning = 0;
+  //   if (i > 0 && ENABLE_KERNING) {
+  //     kerning = font.kern(text[i - 1]!.charCodeAt(0), character);
+  //   }
+
+  //   // Calculate width of the current character (including kerning)
+  //   const charWidth = (lsb + kerning + width + rsb) * scale;
+
+  //   // Accumulate word width
+  //   wordWidth += charWidth;
+
+  //   // Check if the word fits in the current line
+  //   if (maxWidth && currentLineWidth + wordWidth > maxWidth && i > lineStartIndex) {
+  //     lineBreakRequired = true;
+  //   }
+
+  //   // When a space, newline, or end of text is reached, decide if we need to wrap
+  //   if (text[i] === " " || text[i] === "\n" || i === text.length - 1) {
+  //     if (lineBreakRequired) {
+  //       positionY += lineHeight;
+  //       positionX = 0;
+  //       currentLineWidth = 0;
+  //       lineStartIndex = i + 1; // Skip the space for starting index of next line
+  //       wordWidth = charWidth; // Reset wordWidth to current character if it's not a space
+  //       lineBreakRequired = false;
+  //     } else {
+  //       currentLineWidth += wordWidth;
+  //       wordWidth = 0;
+  //     }
+  //   }
+
+  //   // Update character position, taking care not to wrap a space at the end of a line
+  //   if (!(text[i] === " " && lineBreakRequired)) {
+  //     positions[i] = new Vec2(
+  //       positionX + (lsb + kerning) * scale - padding,
+  //       positionY + (font.capHeight - y - height) * scale - padding,
+  //     );
+  //     positionX += charWidth;
+  //   }
+
+  //   // Reset word width at spaces and newlines
+  //   if (text[i] === " " || text[i] === "\n") {
+  //     wordWidth = 0;
+  //   }
+
+  //   sizes[i] = new Vec2(width * scale + padding * 2, height * scale + padding * 2);
+  // }
+
   // Text alignment.
-  if (positions.length > 0) {
+  if (text.length > 0) {
     const leftSpace = maxWidth
       ? maxWidth - longestLineWidth - positions.at(-1)!.x - sizes.at(-1)!.x + padding
       : 0;
