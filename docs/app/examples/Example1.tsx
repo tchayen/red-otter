@@ -1,11 +1,4 @@
 "use client";
-import { invariant } from "../../../src/utils/invariant";
-import { WebGPURenderer } from "../../../src/renderer/WebGPURenderer";
-import { prepareLookups } from "../../../src/font/prepareLookups";
-import { renderFontAtlas } from "../../../src/font/renderFontAtlas";
-import { parseTTF } from "../../../src/font/parseTTF";
-import { Vec4 } from "../../../src/math/Vec4";
-import { Vec2 } from "../../../src/math/Vec2";
 import { BaseEditor } from "../components/BaseEditor";
 
 export function Example1() {
@@ -13,16 +6,7 @@ export function Example1() {
     <>
       <BaseEditor
         files={{
-          "/Vec2.ts": { code: Vec2.toString(), hidden: true },
-          "/Vec4.ts": { code: Vec4.toString(), hidden: true },
-          "/WebGPURenderer.ts": { code: WebGPURenderer.toString(), hidden: true },
-          "/index.ts": {
-            code: starterCode,
-          },
-          "/invariant.ts": { code: invariant.toString(), hidden: true },
-          "/parseTTF.ts": { code: parseTTF.toString(), hidden: true },
-          "/prepareLookups.ts": { code: prepareLookups.toString(), hidden: true },
-          "/renderFontAtlas.ts": { code: renderFontAtlas.toString(), hidden: true },
+          "/index.ts": { code: starterCode },
         }}
       />
     </>
