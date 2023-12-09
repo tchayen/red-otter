@@ -29,7 +29,14 @@ export async function GET() {
   const start = performance.now();
   const baseUrl = "http://localhost:4141";
   const pages = await Promise.all(
-    searchablePages.map((url) => fetch(`${baseUrl}${url}`).then((response) => response.text())),
+    searchablePages.map((url) =>
+      fetch(`${baseUrl}${url}`)
+        .then((response) => response.text())
+        .catch((error) => {
+          console.warn(error);
+          return "";
+        }),
+    ),
   );
 
   const results: Array<Page> = pages.map((page, index) => {
