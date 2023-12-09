@@ -25,9 +25,9 @@ const searchablePages = [
   "/",
 ];
 
-export async function GET() {
+export async function GET(request: Request) {
   const start = performance.now();
-  const baseUrl = "http://localhost:4141";
+  const baseUrl = new URL(request.url).origin;
   const pages = await Promise.all(
     searchablePages.map((url) =>
       fetch(`${baseUrl}${url}`)
