@@ -2,15 +2,15 @@ import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 import types from "../types.json";
 import { Table } from "./Table";
-import { Code, H2, H3, H4, Hr, P } from "./tags";
+import { Code, H2, H3, H4, Hr, P, slugify } from "./tags";
 import { Markdown } from "./Markdown";
 import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
 
-export function Class({ c }: { c: ClassType }) {
+export function Class({ c, id }: { c: ClassType; id: string }) {
   return (
     <>
-      <H3 key={c.name}>{c.name}</H3>
+      <H3 id={`${id}-${slugify(c.name)}`}>{c.name}</H3>
       <Markdown>{c.description}</Markdown>
       <Table.Root columns="min-content auto">
         <Table.HeaderCell>Method</Table.HeaderCell>
@@ -31,10 +31,10 @@ export function Class({ c }: { c: ClassType }) {
   );
 }
 
-export function Function({ f }: { f: FunctionType }) {
+export function Function({ f, id }: { f: FunctionType; id: string }) {
   return (
     <Fragment key={f.name}>
-      <H3>{f.name}</H3>
+      <H3 id={`${id}-${slugify(f.name)}`}>{f.name}</H3>
       <Markdown>{f.description}</Markdown>
       {Object.values(f.parameters).length > 0 && (
         <Table.Root columns="min-content auto">
@@ -64,7 +64,7 @@ export function Function({ f }: { f: FunctionType }) {
           }
         </Table.Root>
       )}
-      <H4>Type declaration</H4>
+      <H4 id={`${id}-type-declaration`}>Type declaration</H4>
       <CodeBlock>
         <pre className="language-ts">{f.typeSignature}</pre>
       </CodeBlock>

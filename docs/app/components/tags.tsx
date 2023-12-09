@@ -33,8 +33,14 @@ export function Code({ children, className }: PropsWithChildren<{ className?: st
   );
 }
 
-export function H1({ children, className }: PropsWithChildren<{ className?: string }>) {
-  const slug = slugify(typeof children === "string" ? children : "");
+export function H1({
+  children,
+  id,
+  className,
+}: PropsWithChildren<{ className?: string; id?: string }>) {
+  const slug =
+    (id ? `${id.replaceAll(".", "-")}-` : "") +
+    slugify(typeof children === "string" ? children : "");
   return (
     <h1
       id={slug}
@@ -50,8 +56,9 @@ export function H1({ children, className }: PropsWithChildren<{ className?: stri
 export function H2({
   children,
   noLink,
+  id,
   className,
-}: PropsWithChildren<{ className?: string; noLink?: boolean }>) {
+}: PropsWithChildren<{ className?: string; id?: string; noLink?: boolean }>) {
   if (noLink) {
     return (
       <h2
@@ -65,7 +72,9 @@ export function H2({
     );
   }
 
-  const slug = slugify(typeof children === "string" ? children : "");
+  const slug =
+    (id ? `${id.replaceAll(".", "-")}-` : "") +
+    slugify(typeof children === "string" ? children : "");
   return (
     <h2
       id={slug}
@@ -81,8 +90,14 @@ export function H2({
   );
 }
 
-export function H3({ children, className }: PropsWithChildren<{ className?: string }>) {
-  const slug = slugify(typeof children === "string" ? children : "");
+export function H3({
+  children,
+  id,
+  className,
+}: PropsWithChildren<{ className?: string; id?: string }>) {
+  const slug =
+    (id ? `${id.replaceAll(".", "-")}-` : "") +
+    slugify(typeof children === "string" ? children : "");
   return (
     <h3
       id={slug}
@@ -98,8 +113,14 @@ export function H3({ children, className }: PropsWithChildren<{ className?: stri
   );
 }
 
-export function H4({ children, className }: PropsWithChildren<{ className?: string }>) {
-  const slug = slugify(typeof children === "string" ? children : "");
+export function H4({
+  children,
+  id,
+  className,
+}: PropsWithChildren<{ className?: string; id?: string }>) {
+  const slug =
+    (id ? `${id.replaceAll(".", "-")}-` : "") +
+    slugify(typeof children === "string" ? children : "");
   return (
     <h4
       id={slug}

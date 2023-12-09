@@ -15,7 +15,8 @@
     "postcss.config.js",
     "tailwind.config.js",
     "next.config.mjs",
-    "remarkTypography.mjs"
+    "remarkTypography.mjs",
+    "remarkUniqueIds.mjs"
   ],
   "exclude": ["node_modules"]
 }
