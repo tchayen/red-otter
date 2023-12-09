@@ -26,7 +26,7 @@ export function Outline() {
         .findIndex((element) => element > 0);
       setActive(Math.max(0, index === -1 ? headers.length - 1 : index - 1));
     }, 150),
-    [],
+    [headers],
   );
 
   useEffect(() => {
@@ -44,9 +44,17 @@ export function Outline() {
         text: header.textContent,
       };
     });
-    console.log(newHeaders);
     setHeaders(newHeaders);
   }, [pathname]);
+
+  // Execute setActive() in a timeout so that:
+  // - User clicks, browser takes user to the link.
+  // - The scroll event above fires and the active link is updated based on scroll (which in the
+  // bottom of the screen might be something else above rather than what user clicked).
+  // - The timeout fires and updates the active link to what user clicked.
+  const onClick = (i: number) => () => {
+    setTimeout(() => setActive(i), 0);
+  };
 
   return (
     <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 flex-col gap-2 overflow-y-scroll p-3 text-sm text-mauvedark10 xl:flex">
@@ -59,7 +67,7 @@ export function Outline() {
               .map((_, i) => (
                 <div key={i} className="w-4" />
               ))}
-            <a href={`#${header.id}`} onClick={() => setActive(i)}>
+            <a href={`#${header.id}`} onClick={onClick(i)}>
               {header.text}
             </a>
           </div>

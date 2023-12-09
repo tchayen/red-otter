@@ -39,7 +39,7 @@ export function H1({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h1
       id={slug}
-      className={twMerge("my-2 scroll-mt-8 text-3xl font-semibold text-mauvedark12", className)}
+      className={twMerge("mb-4 scroll-mt-8 text-3xl font-semibold text-mauvedark12", className)}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}

@@ -22,15 +22,15 @@ export const BaseEditor = withClient(function BaseEditor({ files, customSetup }:
       }}
     >
       <SandpackLayout className="border-slate7 dark:border-slatedark7 my-6 flex h-[1280px] flex-col border-y md:rounded-lg md:border">
+        <SandpackPreview
+          className="border-slate7 dark:border-slatedark7 h-[640px] border-t"
+          showOpenInCodeSandbox
+        />
         <SandpackCodeEditor
           className="h-[640px]"
           showInlineErrors
           showLineNumbers
           style={{ fontVariantLigatures: "none" }}
-        />
-        <SandpackPreview
-          className="border-slate7 dark:border-slatedark7 h-[640px] border-t"
-          showOpenInCodeSandbox
         />
       </SandpackLayout>
     </SandpackProvider>
