@@ -20,7 +20,7 @@ export function Trigger({ children, value }: PropsWithChildren<{ value: string }
       value={value}
       className={twMerge(
         outline,
-        "rounded-md p-3 text-sm text-mauvedark10 data-[state=active]:text-mauvedark12",
+        "rounded-b-none rounded-t-md px-3 py-2 text-sm text-mauvedark10 data-[state=active]:bg-mauvedark2 data-[state=active]:text-mauvedark12",
       )}
     >
       {children}

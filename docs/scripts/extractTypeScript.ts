@@ -1,63 +1,7 @@
 import ts from "typescript";
 import fs from "node:fs";
 import path from "node:path";
-
-type Field = {
-  default: string;
-  description: string;
-  name: string;
-  type: string;
-};
-
-type Types = Record<
-  string,
-  {
-    description: string;
-    name: string;
-    properties: Record<string, Field>;
-    source: string;
-  }
->;
-
-type Method = {
-  description: string;
-  name: string;
-  parameters: Record<string, Field>;
-  returnType: string;
-};
-
-type Classes = Record<
-  string,
-  {
-    description: string;
-    methods: Record<string, Method>;
-    name: string;
-    source: string;
-  }
->;
-
-type Functions = Record<
-  string,
-  {
-    description: string;
-    name: string;
-    parameters: Record<string, Field>;
-    returnDescription: string;
-    returnType: string;
-    source: string;
-    typeSignature: string;
-  }
->;
-
-type Enum = {
-  description: string;
-  name: string;
-  source: string;
-  values: Array<{
-    description: string;
-    name: string;
-  }>;
-};
+import type { ClassType, EnumType, FunctionType, TypeType } from "../app/components/ApiBlocks";
 
 const mainDirectory = path.resolve(import.meta.dir + "/../../src");
 
@@ -72,10 +16,10 @@ fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, 
  * Extract types, classes, functions and enums from TypeScript files.
  */
 export function extractTypeScript(paths: Array<string>) {
-  const types: Types = {};
-  const classes: Classes = {};
-  const functions: Functions = {};
-  const enums: Array<Enum> = [];
+  const types: Record<string, TypeType> = {};
+  const classes: Record<string, ClassType> = {};
+  const functions: Record<string, FunctionType> = {};
+  const enums: Array<EnumType> = [];
 
   const files = getListOfFiles(paths);
 
