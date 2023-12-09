@@ -16,7 +16,11 @@ export function Body({ children }: PropsWithChildren) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const logo = (
-    <Link href="/" className={twMerge(outline, "flex items-center gap-2 rounded-md px-1")}>
+    <Link
+      onClick={() => setShowMobileMenu(false)}
+      href="/"
+      className={twMerge(outline, "flex items-center gap-2 rounded-md px-1")}
+    >
       <Image width={36} height={36} src="/logo.svg" alt="Red Otter logo" />
       <div className="flex items-baseline gap-1">
         <div className="text-2xl font-semibold text-white">Red Otter</div>
@@ -46,8 +50,8 @@ export function Body({ children }: PropsWithChildren) {
         </div>
       </Dialog.Trigger>
       <Dialog.Content>
-        <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-4 bg-mauvedark1 p-1 px-2">
-          <div className="flex items-center justify-between self-stretch">
+        <div className="fixed bottom-0 left-0 right-0 top-0 flex flex-col items-start gap-2 bg-mauvedark1">
+          <div className="flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 px-1">
             {logo}
             <Dialog.Close asChild>
               <button
@@ -60,10 +64,12 @@ export function Body({ children }: PropsWithChildren) {
               </button>
             </Dialog.Close>
           </div>
-          <div className="flex self-stretch">
+          <div className="flex self-stretch px-2">
             <Search />
           </div>
-          <Sidebar onClick={() => setShowMobileMenu(false)} />
+          <div className="w-full px-2">
+            <Sidebar onClick={() => setShowMobileMenu(false)} />
+          </div>
         </div>
       </Dialog.Content>
     </Dialog.Root>
