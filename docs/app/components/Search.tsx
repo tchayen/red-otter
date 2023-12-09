@@ -106,9 +106,14 @@ export function Search() {
     });
     const results = new Map<number, Section>();
 
-    result.forEach((item) =>
-      item.result.forEach((id) => results.set(Number(id), idToSection.get(Number(id)))),
-    );
+    result.forEach((item) => {
+      item.result.forEach((id) => {
+        const section = idToSection.get(Number(id));
+        if (section) {
+          results.set(Number(id), section);
+        }
+      });
+    });
 
     setResults([...results.values()]);
   }

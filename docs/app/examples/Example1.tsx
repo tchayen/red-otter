@@ -12,6 +12,10 @@ import { BaseEditor } from "../components/BaseEditor";
 export function Example1() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
     startExample(ref.current);
   }, []);
 

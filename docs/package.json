@@ -32,6 +32,7 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/flexsearch": "^0.7.6",
+    "@types/lodash": "^4.14.202",
     "@types/mdx": "^2.0.10",
     "@types/react": "18.2.42",
     "autoprefixer": "^10.4.16",

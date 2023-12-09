@@ -1,8 +1,7 @@
 import { Children, cloneElement, isValidElement } from "react";
-import type { ReactNode, PropsWithChildren } from "react";
+import type { ReactNode, PropsWithChildren, AnchorHTMLAttributes } from "react";
 import { JetBrains_Mono } from "next/font/google";
 import { twMerge } from "tailwind-merge";
-import type { LinkProps } from "next/link";
 import Link from "next/link";
 
 export const jetBrainsMono = JetBrains_Mono({
@@ -121,12 +120,12 @@ export function A({
   forceExternal,
   href,
   ...rest
-}: PropsWithChildren<{
-  forceExternal?: boolean;
-  href: string;
-}> &
-  LinkProps) {
-  const isExternal = forceExternal || href.startsWith("http");
+}: AnchorHTMLAttributes<HTMLAnchorElement> & { forceExternal?: boolean }) {
+  const isExternal = forceExternal || href?.startsWith("http");
+
+  if (!href) {
+    return children;
+  }
 
   return (
     <Link
@@ -189,7 +188,7 @@ export function Box({
     if (typeof child === "string") {
       const match = child.match(/\[!(WARNING|IMPORTANT|NOTE)]/);
       if (match) {
-        boxType = match[1]; // Capture the box type
+        boxType = match[1] ?? ""; // Capture the box type
         return child.replace(/\[!(WARNING|IMPORTANT|NOTE)]/, ""); // Remove the pattern
       }
       return child;
@@ -245,12 +244,12 @@ export function Box({
   );
 }
 
-function replaceAnnotatedTag(children: ReactNode, setType: (type: string) => void) {
+function replaceAnnotatedTag(children: ReactNode, setType: (type: string) => void): ReactNode {
   return Children.map(children, (child) => {
     if (typeof child === "string") {
       const match = child.match(/\[!(WARNING|IMPORTANT|NOTE)]/);
       if (match) {
-        setType(match[1]); // Set the box type
+        setType(match[1] ?? ""); // Set the box type
         return child.replace(/\[!(WARNING|IMPORTANT|NOTE)]/, "");
       }
       return child;

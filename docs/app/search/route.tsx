@@ -35,10 +35,10 @@ export async function GET() {
   const results: Array<Page> = pages.map((page, index) => {
     const document = cheerio.load(page);
     document("script, style").remove();
-    const sections = [];
-    let currentSection;
+    const sections: Array<Section> = [];
+    let currentSection: Section | null = null;
 
-    function processElement(element) {
+    function processElement(element: cheerio.Element) {
       const tagName = element.tagName;
       if (tagName && tagName.match(/^h[1-6]$/i)) {
         if (currentSection) {
@@ -58,7 +58,7 @@ export async function GET() {
             " " +
             document(element)
               .html()
-              .toString()
+              ?.toString()
               .replaceAll(/<(?:"[^"]*"["']*|'[^']*'["']*|[^"'>])+>/g, " ")
               .replaceAll(/\s\s+/g, " ")
               .trim();
@@ -72,7 +72,10 @@ export async function GET() {
       }
     }
 
-    processElement(document("main"));
+    const main = document("main").get(0);
+    if (main) {
+      processElement(main);
+    }
 
     if (currentSection) {
       sections.push(currentSection);

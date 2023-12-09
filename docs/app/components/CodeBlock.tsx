@@ -1,17 +1,26 @@
 import hljs from "highlight.js";
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 import { jetBrainsMono } from "./tags";
 import * as prettier from "prettier";
 
 export const CHARACTER_LIMIT = 76;
 
-type CodeBlockProps = {
-  children?: JSX.Element;
-};
+export async function CodeBlock({ children }: PropsWithChildren) {
+  if (!children) {
+    return null;
+  }
 
-export async function CodeBlock({ children }: CodeBlockProps) {
   let language = null;
+
+  if (typeof children !== "object" || !("props" in children)) {
+    return (
+      <DivWrapper>
+        <Pre>{children}</Pre>
+      </DivWrapper>
+    );
+  }
+
   let code = children.props.children;
 
   try {

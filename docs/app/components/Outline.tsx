@@ -23,6 +23,9 @@ export function Outline() {
       const index = headers
         .map((header) => {
           const element = document.getElementById(header.id);
+          if (!element) {
+            return 0;
+          }
           return element.getBoundingClientRect().top - SCROLL_OFFSET;
         })
         .findIndex((element) => element > 0);
@@ -40,10 +43,11 @@ export function Outline() {
 
   useLayoutEffect(() => {
     const newHeaders = [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")].map((header) => {
+      const level = Number.parseInt(header.tagName[1] ?? "", 10);
       return {
         id: header.id,
-        level: Number.parseInt(header.tagName[1], 10),
-        text: header.textContent,
+        level,
+        text: header.textContent ?? "",
       };
     });
     setHeaders(newHeaders);
