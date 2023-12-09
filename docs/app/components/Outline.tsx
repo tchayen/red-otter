@@ -2,6 +2,8 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import _ from "lodash";
 import { twMerge } from "tailwind-merge";
+import Link from "next/link";
+import { outline } from "./tags";
 
 type Header = {
   id: string;
@@ -67,9 +69,9 @@ export function Outline() {
               .map((_, i) => (
                 <div key={i} className="w-4" />
               ))}
-            <a href={`#${header.id}`} onClick={onClick(i)}>
+            <Link href={`#${header.id}`} onClick={onClick(i)} className={outline}>
               {header.text}
-            </a>
+            </Link>
           </div>
         );
       })}

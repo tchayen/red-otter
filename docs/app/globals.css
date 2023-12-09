@@ -23,29 +23,35 @@ canvas {
   border-radius: 8px;
 }
 
-.scrollbar::-webkit-scrollbar {
+.scrollbar::-webkit-scrollbar,
+.cm-scroller::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.scrollbar::-webkit-scrollbar-track {
+.scrollbar::-webkit-scrollbar-track,
+.cm-scroller::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.scrollbar::-webkit-scrollbar-corner {
+.scrollbar::-webkit-scrollbar-corner,
+.cm-scroller::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-.scrollbar::-webkit-scrollbar-thumb {
+.scrollbar::-webkit-scrollbar-thumb,
+.cm-scroller::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
-.scrollbar::-webkit-scrollbar-thumb:hover {
+.scrollbar::-webkit-scrollbar-thumb:hover,
+.cm-scroller::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
 
-.scrollbar::-webkit-scrollbar-thumb:active {
+.scrollbar::-webkit-scrollbar-thumb:active,
+.cm-scroller::-webkit-scrollbar-thumb:active {
   background: var(--scrollbar-thumb-active);
 }
 

@@ -57,7 +57,7 @@ function SidebarLink({
   return (
     <Link
       className={twMerge(
-        "flex h-8 shrink-0 items-center gap-1 rounded-md border border-transparent px-3 text-sm text-mauvedark10 outline-none focus-visible:ring-2 focus-visible:ring-tomatodark9",
+        "flex h-8 shrink-0 items-center gap-1 rounded-md border border-transparent px-3 text-sm text-mauvedark11 outline-none focus-visible:ring-2 focus-visible:ring-tomatodark9",
         isCurrent ? "bg-mauvedark3 text-mauvedark12" : "bg-transparent hover:border-mauvedark5 ",
       )}
       onClick={onClick}

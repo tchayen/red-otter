@@ -7,7 +7,9 @@ import {
   SandpackProvider,
 } from "@codesandbox/sandpack-react";
 import { withClient } from "./withClient";
-import { jetBrainsMono } from "./tags";
+import { jetBrainsMono, outline } from "./tags";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import { twMerge } from "tailwind-merge";
 
 export const BaseEditor = withClient(function BaseEditor({ files, customSetup }: SandpackProps) {
   return (
@@ -21,17 +23,28 @@ export const BaseEditor = withClient(function BaseEditor({ files, customSetup }:
         initMode: "lazy",
       }}
     >
-      <SandpackLayout className="border-slate7 dark:border-slatedark7 my-6 flex h-[1280px] flex-col border-y md:rounded-lg md:border">
-        <SandpackPreview
-          className="border-slate7 dark:border-slatedark7 h-[640px] border-t"
-          showOpenInCodeSandbox
-        />
-        <SandpackCodeEditor
-          className="h-[640px]"
-          showInlineErrors
-          showLineNumbers
-          style={{ fontVariantLigatures: "none" }}
-        />
+      <SandpackLayout className="my-6 flex flex-col !gap-1 !rounded-none !border-transparent !bg-transparent">
+        <SandpackPreview className="!h-[640px] !flex-initial" showOpenInCodeSandbox />
+        <Collapsible.Root className="flex w-full flex-col gap-1">
+          <Collapsible.Trigger asChild>
+            <button
+              className={twMerge(
+                outline,
+                "flex w-full rounded-md border border-mauvedark5 bg-mauvedark2 px-3 py-2 text-sm text-mauvedark11",
+              )}
+            >
+              Show code
+            </button>
+          </Collapsible.Trigger>
+          <Collapsible.Content className="">
+            <SandpackCodeEditor
+              className="h-[640px] w-full overflow-hidden rounded-md border border-mauvedark5 !bg-mauvedark2 antialiased"
+              showInlineErrors
+              showLineNumbers
+              style={{ fontVariantLigatures: "none" }}
+            />
+          </Collapsible.Content>
+        </Collapsible.Root>
       </SandpackLayout>
     </SandpackProvider>
   );
