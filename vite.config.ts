@@ -11,9 +11,6 @@ export default defineConfig({
       name: "RedOtter",
     },
   },
-  plugins: [
-    dts({
-      rollupTypes: true,
-    }),
-  ],
+  // @ts-expect-error dts types were not updated to vite 5.
+  plugins: [dts({ include: "src", rollupTypes: true })],
 });

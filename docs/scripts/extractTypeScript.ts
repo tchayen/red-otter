@@ -9,9 +9,9 @@ import type {
   MethodType,
   TypeType,
 } from "../app/components/ApiBlocks";
-import "bun-types";
+// import "bun-types";
 
-const mainDirectory = path.resolve(import.meta.dir + "/../../src");
+const mainDirectory = path.resolve(path.join(__dirname, "/../../src"));
 
 const result = extractTypeScript([
   `${mainDirectory}/layout`,
@@ -19,7 +19,10 @@ const result = extractTypeScript([
   `${mainDirectory}/math`,
 ]);
 
-fs.writeFileSync(import.meta.dir + "/../app/types.json", JSON.stringify(result, null, 2));
+fs.writeFileSync(
+  path.resolve(path.join(__dirname, "/../app/types.json")),
+  JSON.stringify(result, null, 2),
+);
 
 /**
  * Extract types, classes, functions and enums from TypeScript files.
@@ -44,45 +47,54 @@ export function extractTypeScript(paths: Array<string>) {
 
     // Process enums.
     enums.push(
-      ...(
-        sourceFile.statements.filter((s) => ts.isEnumDeclaration(s)) as Array<ts.EnumDeclaration>
-      ).map((e) => {
-        return {
-          description: ts.displayPartsToString(e.symbol.getDocumentationComment(checker)),
-          name: e.name.escapedText.toString(),
-          source: sourceString,
-          values: e.members.map((m) => {
-            return {
-              description: ts.displayPartsToString(m.symbol.getDocumentationComment(checker)),
-              name: m.name.escapedText,
-            };
-          }),
-        };
-      }),
+      ...(sourceFile.statements.filter(ts.isEnumDeclaration) as Array<ts.EnumDeclaration>).map(
+        (e) => {
+          const symbol = checker.getSymbolAtLocation(e.name);
+          return {
+            description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            name: e.name.escapedText.toString(),
+            source: sourceString,
+            values: e.members.map((m) => {
+              const mSymbol = checker.getSymbolAtLocation(e.name);
+              const name = m.name.getText();
+              return {
+                description: ts.displayPartsToString(mSymbol.getDocumentationComment(checker)),
+                name,
+              };
+            }),
+          };
+        },
+      ),
     );
 
     // Process types.
     (
-      sourceFile.statements.filter((s) =>
-        ts.isTypeAliasDeclaration(s),
-      ) as Array<ts.TypeAliasDeclaration>
+      sourceFile.statements.filter(ts.isTypeAliasDeclaration) as Array<ts.TypeAliasDeclaration>
     ).forEach((t) => {
-      const symbol: ts.Symbol = (t as any).symbol;
+      const symbol: ts.Symbol = checker.getSymbolAtLocation(t.name);
 
       const properties: Record<string, FieldType> = {};
-      ts.forEachChild(t.type, (child) => {
-        const symbol: ts.Symbol = (child as any).symbol;
-        if (!symbol) {
-          return;
-        }
-        const name = symbol.escapedName.toString();
-        properties[name] = {
-          default: "",
-          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-          name,
-          type: checker.typeToString(checker.getTypeAtLocation(child)),
-        };
-      });
+
+      if (ts.isTypeLiteralNode(t.type)) {
+        t.type.members.forEach((m) => {
+          if (!ts.isPropertySignature(m)) {
+            return;
+          }
+
+          const symbol = checker.getSymbolAtLocation(m.name);
+          if (!symbol) {
+            return;
+          }
+
+          const name = symbol.escapedName.toString();
+          properties[name] = {
+            default: "",
+            description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            name,
+            type: checker.typeToString(checker.getTypeAtLocation(m)),
+          };
+        });
+      }
 
       const name = symbol.escapedName.toString();
       types[name] = {
@@ -94,68 +106,66 @@ export function extractTypeScript(paths: Array<string>) {
     });
 
     //Process classes.
-    (
-      sourceFile.statements.filter((s) => ts.isClassDeclaration(s)) as Array<ts.ClassDeclaration>
-    ).forEach((c) => {
-      const symbol: ts.Symbol = (c as any).symbol;
+    (sourceFile.statements.filter(ts.isClassDeclaration) as Array<ts.ClassDeclaration>).forEach(
+      (c) => {
+        const symbol = checker.getSymbolAtLocation(c.name);
 
-      const methods: Record<string, MethodType> = {};
-      ts.forEachChild(c, (child) => {
-        if (!ts.isMethodDeclaration(child)) {
-          return;
-        }
-
-        const symbol: ts.Symbol = (child as any).symbol;
-        if (!symbol) {
-          return;
-        }
-
-        const name = symbol.escapedName.toString();
-        const parameters: Record<string, FieldType> = {};
-        ts.forEachChild(child, (child) => {
-          if (!ts.isParameter(child)) {
+        const methods: Record<string, MethodType> = {};
+        ts.forEachChild(c, (child) => {
+          if (!ts.isMethodDeclaration(child)) {
             return;
           }
 
-          const symbol: ts.Symbol = (child as any).symbol;
+          const symbol = checker.getSymbolAtLocation(child.name);
           if (!symbol) {
             return;
           }
 
           const name = symbol.escapedName.toString();
-          parameters[name] = {
-            default: "",
+          const parameters: Record<string, FieldType> = {};
+          ts.forEachChild(child, (child) => {
+            if (!ts.isParameter(child)) {
+              return;
+            }
+
+            const symbol = checker.getSymbolAtLocation(child.name);
+            if (!symbol) {
+              return;
+            }
+
+            const name = symbol.escapedName.toString();
+            parameters[name] = {
+              default: "",
+              description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+              name,
+              type: checker.typeToString(checker.getTypeAtLocation(child)),
+            };
+          });
+
+          methods[name] = {
             description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
             name,
-            type: checker.typeToString(checker.getTypeAtLocation(child)),
+            parameters,
+            returnType: checker.typeToString(checker.getTypeAtLocation(child)),
           };
         });
 
-        methods[name] = {
+        const name = symbol.escapedName.toString();
+        classes[name] = {
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          methods,
           name,
-          parameters,
-          returnType: checker.typeToString(checker.getTypeAtLocation(child)),
+          source: sourceString,
         };
-      });
-
-      const name = symbol.escapedName.toString();
-      classes[name] = {
-        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-        methods,
-        name,
-        source: sourceString,
-      };
-    });
+      },
+    );
 
     // Process exported functions.
     // TODO: fix JSDoc comments - match them with parameters and don't loose description.
     (
-      sourceFile.statements.filter((s) =>
-        ts.isFunctionDeclaration(s),
-      ) as Array<ts.FunctionDeclaration>
+      sourceFile.statements.filter(ts.isFunctionDeclaration) as Array<ts.FunctionDeclaration>
     ).forEach((f) => {
-      const symbol: ts.Symbol = (f as any).symbol;
+      const symbol = checker.getSymbolAtLocation(f.name);
       // Check if the function is exported
       if (!f.modifiers || !f.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
         return;
@@ -167,7 +177,7 @@ export function extractTypeScript(paths: Array<string>) {
           return;
         }
 
-        const symbol: ts.Symbol = (child as any).symbol;
+        const symbol = checker.getSymbolAtLocation(child.name);
         if (!symbol) {
           return;
         }
@@ -201,24 +211,30 @@ export function extractTypeScript(paths: Array<string>) {
     });
 
     // Assign defaults.
-    const objects = sourceFile.statements.filter((s) =>
-      ts.isVariableStatement(s),
+    const objects = sourceFile.statements.filter(
+      ts.isVariableStatement,
     ) as Array<ts.VariableStatement>;
 
     objects.forEach((o) => {
-      const name = o.declarationList.declarations[0].name.escapedText;
+      const name = o.declarationList.declarations[0].name.getText();
       const type = types[name.replace("default", "")];
       if (!type) {
         console.warn(`Type ${name} not found.`);
         return;
       }
 
-      o.declarationList.declarations[0].initializer.properties.forEach((p) => {
-        const name = p.name.escapedText;
-        const value = p.initializer.getText();
-
-        type.properties[name] = { ...type.properties[name], default: value };
-      });
+      if (
+        o.declarationList.declarations[0].initializer &&
+        ts.isObjectLiteralExpression(o.declarationList.declarations[0].initializer)
+      ) {
+        o.declarationList.declarations[0].initializer.properties.forEach((p) => {
+          if (ts.isPropertyAssignment(p)) {
+            const name = p.name.getText();
+            const value = p.initializer.getText();
+            type.properties[name] = { ...type.properties[name], default: value };
+          }
+        });
+      }
     });
   }
 

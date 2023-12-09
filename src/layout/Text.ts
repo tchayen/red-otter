@@ -1,12 +1,7 @@
 import { shapeText } from "../font/shapeText";
 import type { Lookups } from "../font/types";
-import type {
-  ExactLayoutProps,
-  LayoutNodeState,
-  LayoutProps,
-  TextStyleProps,
-  UserEvent,
-} from "./styling";
+import type { UserEvent } from "./eventTypes";
+import type { ExactLayoutProps, LayoutNodeState, LayoutProps, TextStyleProps } from "./styling";
 import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./styling";
 
 export class Text {
