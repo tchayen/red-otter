@@ -1,7 +1,7 @@
 import { Type } from "../components/ApiBlocks";
 import { Enums } from "../components/Enums";
 import types from "../types.json";
-import { Box, Hr, P } from "../components/tags";
+import { A, Box, Hr, P } from "../components/tags";
 
 export function StylingApi() {
   const layoutProps = types.types.LayoutProps;
@@ -22,9 +22,9 @@ export function StylingApi() {
         <Box overrideType="IMPORTANT">
           <P>
             The library uses cap size as opposed to line height for calculating bounding box of text
-            elements (see [CapSize](https://seek-oss.github.io/capsize/) for more explanation). This
-            results in most noticeable differences in buttons which require more vertical space than
-            in browsers.
+            elements (see <A href="https://seek-oss.github.io/capsize">CapSize</A> for more
+            explanation). This results in most noticeable differences in buttons which require more
+            vertical space than in browsers.
           </P>
         </Box>
       </Type>
