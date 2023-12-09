@@ -178,7 +178,11 @@ export function Hr() {
   return <hr className="my-8 border-t border-mauvedark5" />;
 }
 
-export function Box({ children, className }: React.PropsWithChildren<{ className?: string }>) {
+export function Box({
+  children,
+  overrideType,
+  className,
+}: PropsWithChildren<{ className?: string; overrideType?: string }>) {
   let boxType = "";
 
   const modifiedChildren = Children.map(children, (child) => {
@@ -197,6 +201,10 @@ export function Box({ children, className }: React.PropsWithChildren<{ className
     }
     return child;
   });
+
+  if (overrideType) {
+    boxType = overrideType;
+  }
 
   const styling = "[&>*]:text-mauvedark12 bg-mauvedark3 border-mauvedark5";
   // switch (boxType) {

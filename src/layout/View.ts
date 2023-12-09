@@ -1,14 +1,12 @@
+import type { ClickEvent, MoveEvent, ScrollEvent } from "./eventTypes";
+import { UserEventType } from "./eventTypes";
 import type {
   ExactDecorativeProps,
   ExactLayoutProps,
   ViewStyleProps,
   LayoutNodeState,
-  ScrollEvent,
-  ClickEvent,
-  MoveEvent,
 } from "./styling";
 import {
-  UserEventType,
   normalizeLayoutProps,
   normalizeDecorativeProps,
   Overflow,

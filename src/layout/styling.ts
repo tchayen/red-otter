@@ -2,30 +2,6 @@ import type { Text } from "./Text";
 import type { View } from "./View";
 import { Vec2 } from "../math/Vec2";
 
-export const enum UserEventType {
-  MouseClick,
-  MouseMove,
-  MouseScroll,
-}
-
-export type ClickEvent = {
-  position: Vec2;
-  type: UserEventType.MouseClick;
-};
-
-export type MoveEvent = {
-  position: Vec2;
-  type: UserEventType.MouseMove;
-};
-
-export type ScrollEvent = {
-  delta: Vec2;
-  position: Vec2;
-  type: UserEventType.MouseScroll;
-};
-
-export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
-
 /**
  * Internal state of the node. Might be useful for debugging or hacking around but it is subject
  * to change at any point without notice.
@@ -106,48 +82,78 @@ export const defaultLayoutNodeState = {
 };
 
 /**
- * Corresponds to CSS align-items.
+ * Corresponds to CSS `align-items`. Controls positioning of children on the cross axis.
  */
 export const enum AlignItems {
   Center,
   End,
   Start,
+  /**
+   * Stretches the element to fill the parent's cross axis.
+   */
   Stretch,
 }
 
 /**
- *  Corresponds to CSS align-items.
+ *  Corresponds to CSS `justify-content`. Controls positioning of children on the main axis.
  */
 export const enum JustifyContent {
   Center,
   End,
+  /**
+   * Uses equal gaps between all elements and half of that gap before the first element and after
+   * the last element.
+   */
   SpaceAround,
+  /**
+   * Does not leave any gap before the first element or after the last element.
+   */
   SpaceBetween,
+  /**
+   * Uses equal gaps between all elements and before the first element and after the last element.
+   */
   SpaceEvenly,
   Start,
 }
 
 /**
- * Corresponds to CSS align-content.
+ * Corresponds to CSS `align-content`, which controls positions and sizes of lines in the flex
+ * wrap. Does not have any effect if `FlexWrap` is `NoWrap`.
  */
 export const enum AlignContent {
   Center,
   End,
+  /**
+   * Uses equal gaps between all elements and half of that gap before the first element and after
+   * the last element.
+   */
   SpaceAround,
+  /**
+   * Does not leave any gap before the first element or after the last element.
+   */
   SpaceBetween,
+  /**
+   * Uses equal gaps between all elements and before the first element and after the last element.
+   */
   SpaceEvenly,
   Start,
   Stretch,
 }
 
 /**
- * Corresponds to CSS align-self.
+ * Corresponds to CSS `align-self`.
  */
 export const enum AlignSelf {
+  /**
+   * Does not override the value of parent's `AlignItems`.
+   */
   Auto,
   Center,
   End,
   Start,
+  /**
+   * Stretches the element to fill the parent's cross axis.
+   */
   Stretch,
 }
 
@@ -155,9 +161,21 @@ export const enum AlignSelf {
  * Corresponds to CSS flex-direction.
  */
 export const enum FlexDirection {
+  /**
+   * Main axis is the vertical one.
+   */
   Column,
+  /**
+   * Reverses the order of elements.
+   */
   ColumnReverse,
+  /**
+   * Main axis is the horizontal one.
+   */
   Row,
+  /**
+   * Reverses the order of elements.
+   */
   RowReverse,
 }
 
@@ -165,8 +183,17 @@ export const enum FlexDirection {
  * Corresponds to CSS flex-wrap.
  */
 export const enum FlexWrap {
+  /**
+   * Does not wrap lines, making them potentially overflow the parent.
+   */
   NoWrap,
+  /**
+   * Wraps lines of elements if they exceed available space in the main axis.
+   */
   Wrap,
+  /**
+   * Reverses the order of lines.
+   */
   WrapReverse,
 }
 
@@ -196,7 +223,13 @@ export const enum Overflow {
  * Corresponds to CSS display.
  */
 export const enum Display {
+  /**
+   * Behaves similarly to `flex` in CSS.
+   */
   Flex,
+  /**
+   * Hides element from layout and prevents it from participating in layout calculations.
+   */
   None,
 }
 
@@ -204,7 +237,15 @@ export const enum Display {
  * Corresponds to CSS position.
  */
 export const enum Position {
+  /**
+   * The element will not participate in layout of other elements within the same parent.
+   * Coordinates are relative to the parent (since every node is either absolute or relative).
+   */
   Absolute,
+  /**
+   * The name originates from CSS where it means that the offset modifiers (`top`, `left`, etc.)
+   * will move the element around but it will not influence the layout of other elements.
+   */
   Relative,
 }
 

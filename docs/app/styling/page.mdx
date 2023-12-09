@@ -1,4 +1,5 @@
 import { packageJson } from "../components/PackageJson";
+import { StylingApi } from "../components/StylingApi";
 
 export const metadata = {
   description: packageJson.description,
@@ -37,30 +38,4 @@ RGB and HSV require adding A in the end to support alpha. In HSL it is optional.
 
 ---
 
-<TypeTable type="LayoutProps" />
-
----
-
-<TypeTable type="DecorativeProps" />
-
----
-
-<TypeTable type="TextStyleProps">
-
-In-depth explanation of text rendering is available on the [Text Rendering](/text-rendering) page.
-
-> [!IMPORTANT]
-> The library uses cap size as opposed to line height for calculating bounding
-> box of text elements (see [CapSize](https://seek-oss.github.io/capsize/) for
-> more explanation). This results in most noticeable differences in buttons
-> which require more vertical space than in browsers.
-
-</TypeTable>
-
----
-
-<TypeTable type="LayoutNodeState" />
-
----
-
-<Enums />
+<StylingApi />

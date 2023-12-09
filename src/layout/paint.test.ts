@@ -8,8 +8,8 @@ import * as fixtures from "../fixtures";
 import { compose } from "./compose";
 import { EventManager } from "../EventManager";
 import type { TextAlign } from "./styling";
-import { UserEventType } from "./styling";
 import { getByTestId } from "../utils/getByTestId";
+import { UserEventType } from "./eventTypes";
 
 describe("paint", () => {
   it("handles scroll", () => {

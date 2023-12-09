@@ -1,7 +1,14 @@
 import ts from "typescript";
 import fs from "node:fs";
 import path from "node:path";
-import type { ClassType, EnumType, FunctionType, TypeType } from "../app/components/ApiBlocks";
+import type {
+  ClassType,
+  EnumType,
+  FieldType,
+  FunctionType,
+  MethodType,
+  TypeType,
+} from "../app/components/ApiBlocks";
 
 const mainDirectory = path.resolve(import.meta.dir + "/../../src");
 
@@ -60,7 +67,7 @@ export function extractTypeScript(paths: Array<string>) {
     ).forEach((t) => {
       const symbol: ts.Symbol = (t as any).symbol;
 
-      const properties: Record<string, Field> = {};
+      const properties: Record<string, FieldType> = {};
       ts.forEachChild(t.type, (child) => {
         const symbol: ts.Symbol = (child as any).symbol;
         if (!symbol) {
@@ -90,7 +97,7 @@ export function extractTypeScript(paths: Array<string>) {
     ).forEach((c) => {
       const symbol: ts.Symbol = (c as any).symbol;
 
-      const methods: Record<string, Method> = {};
+      const methods: Record<string, MethodType> = {};
       ts.forEachChild(c, (child) => {
         if (!ts.isMethodDeclaration(child)) {
           return;
@@ -102,7 +109,7 @@ export function extractTypeScript(paths: Array<string>) {
         }
 
         const name = symbol.escapedName.toString();
-        const parameters: Record<string, Field> = {};
+        const parameters: Record<string, FieldType> = {};
         ts.forEachChild(child, (child) => {
           if (!ts.isParameter(child)) {
             return;
@@ -152,7 +159,7 @@ export function extractTypeScript(paths: Array<string>) {
         return;
       }
 
-      const parameters: Record<string, Field> = {};
+      const parameters: Record<string, FieldType> = {};
       ts.forEachChild(f, (child) => {
         if (!ts.isParameter(child)) {
           return;
@@ -173,16 +180,10 @@ export function extractTypeScript(paths: Array<string>) {
       });
 
       const name = symbol.escapedName.toString();
+
       // Handle JSDoc.
       const jsDoc = symbol.getJsDocTags();
-      // if (jsDoc.length > 0) {
-      //   console.log(name, JSON.stringify(jsDoc, null, 2));
-      // }
-      // JSDoc description of the return value.
       const returnTag = jsDoc.find((t) => t.name === "returns");
-      if (returnTag) {
-        console.log(name, returnTag.text);
-      }
 
       functions[name] = {
         description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),

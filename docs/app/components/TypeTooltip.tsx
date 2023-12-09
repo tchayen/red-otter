@@ -1,11 +1,11 @@
 "use client";
 import { Code, slugify } from "./tags";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import type { Enum, Field } from "./TypeTable";
+import type { EnumType, FieldType } from "./ApiBlocks";
 
 type TypeTooltipProps = {
-  enumType: Enum;
-  field: Field;
+  enumType: EnumType;
+  field: FieldType;
 };
 
 export function TypeTooltip({ field, enumType }: TypeTooltipProps) {

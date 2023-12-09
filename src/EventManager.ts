@@ -3,9 +3,10 @@ import { CROSS_AXIS_SIZE, isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import { Vec4 } from "./math/Vec4";
 import { intersection as getIntersection, isInside } from "./math/utils";
-import type { UserEvent } from "./layout/styling";
-import { Display, Overflow, UserEventType } from "./layout/styling";
+import { Display, Overflow } from "./layout/styling";
 import { invariant } from "./utils/invariant";
+import type { UserEvent } from "./layout/eventTypes";
+import { UserEventType } from "./layout/eventTypes";
 
 export class EventManager {
   private readonly events: Array<UserEvent> = [];
