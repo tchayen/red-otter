@@ -39,7 +39,7 @@ export function H1({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h1
       id={slug}
-      className={twMerge("mb-4 scroll-mt-8 text-3xl font-semibold text-mauvedark12", className)}
+      className={twMerge("mb-4 scroll-mt-16 text-3xl font-semibold text-mauvedark12", className)}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}
@@ -57,7 +57,7 @@ export function H2({
     return (
       <h2
         className={twMerge(
-          "mb-2 mt-6 scroll-mt-8 text-2xl font-semibold text-mauvedark12",
+          "mb-2 mt-6 scroll-mt-16 text-2xl font-semibold text-mauvedark12",
           className,
         )}
       >
@@ -71,7 +71,7 @@ export function H2({
     <h2
       id={slug}
       className={twMerge(
-        "mb-2 mt-6 scroll-mt-8 text-2xl font-semibold text-mauvedark12",
+        "mb-2 mt-6 scroll-mt-16 text-2xl font-semibold text-mauvedark12",
         className,
       )}
     >
@@ -87,7 +87,10 @@ export function H3({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h3
       id={slug}
-      className={twMerge("mb-2 mt-6 scroll-mt-8 text-xl font-semibold text-mauvedark12", className)}
+      className={twMerge(
+        "mb-2 mt-6 scroll-mt-16 text-xl font-semibold text-mauvedark12",
+        className,
+      )}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}
@@ -101,7 +104,10 @@ export function H4({ children, className }: PropsWithChildren<{ className?: stri
   return (
     <h4
       id={slug}
-      className={twMerge("mb-2 mt-6 scroll-mt-8 text-lg font-semibold text-mauvedark12", className)}
+      className={twMerge(
+        "mb-2 mt-6 scroll-mt-16 text-lg font-semibold text-mauvedark12",
+        className,
+      )}
     >
       <a href={`#${slug}`} className={twMerge(outline, underline)}>
         {children}

@@ -9,7 +9,7 @@ type Header = {
   text: string;
 };
 
-const SCROLL_OFFSET = 33; // scroll-mt-8 + 1.
+const SCROLL_OFFSET = 64; // scroll-mt-16
 
 export function Outline() {
   const pathname = usePathname();
