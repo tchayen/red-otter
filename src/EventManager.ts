@@ -86,7 +86,8 @@ export class EventManager {
           const event = this.events[j];
           invariant(event, "Event should be defined.");
           if (event.type === type && hitTest(node, event)) {
-            listener(event);
+            const typedListener = listener as (e: typeof event) => void;
+            typedListener(event);
             // Remove event from queue.
             this.events.splice(j, 1);
             j--;
