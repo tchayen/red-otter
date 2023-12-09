@@ -1,7 +1,6 @@
-import { Fragment } from "react";
 import types from "../types.json";
-import { H2 } from "./tags";
-import { Function } from "./ApiBlocks";
+import { H2 } from "../components/tags";
+import { Function } from "../components/ApiBlocks";
 
 export function LayoutApi() {
   return (

@@ -1,7 +1,7 @@
-import { Type } from "./ApiBlocks";
-import { Enums } from "./Enums";
+import { Type } from "../components/ApiBlocks";
+import { Enums } from "../components/Enums";
 import types from "../types.json";
-import { Box, Hr, P } from "./tags";
+import { Box, Hr, P } from "../components/tags";
 
 export function StylingApi() {
   const layoutProps = types.types.LayoutProps;
