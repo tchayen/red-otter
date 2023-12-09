@@ -1,5 +1,3 @@
-// TODO: replace HTML symbols, i.e. &gt; will be now printed like that and it shouldn't.
-
 type HighlightMatchesProps = {
   match: string;
   value: string;

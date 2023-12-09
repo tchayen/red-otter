@@ -26,7 +26,7 @@ const step = (100 - startingOffset) / (colorCount - 1);
 
 const colors = Array.from({ length: colorCount }, (_, i) => {
   const value = Math.round(startingOffset + i * step);
-  return `hsl(220, 100%, ${value}%)`;
+  return `hsl(10, 78%, ${value}%)`;
 });
 
 const rootStyle = {

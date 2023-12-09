@@ -175,7 +175,6 @@ export function extractTypeScript(paths: Array<string>) {
     );
 
     // Process exported functions.
-    // TODO: fix JSDoc comments - match them with parameters and don't loose description.
     (
       sourceFile.statements.filter(ts.isFunctionDeclaration) as Array<ts.FunctionDeclaration>
     ).forEach((f) => {
