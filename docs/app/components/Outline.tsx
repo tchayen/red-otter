@@ -1,5 +1,5 @@
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import _ from "lodash";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
@@ -18,21 +18,18 @@ export function Outline() {
   const [headers, setHeaders] = useState<Array<Header>>([]);
   const [active, setActive] = useState(0);
 
-  const onScroll = useCallback(
-    _.throttle(() => {
-      const index = headers
-        .map((header) => {
-          const element = document.getElementById(header.id);
-          if (!element) {
-            return 0;
-          }
-          return element.getBoundingClientRect().top - SCROLL_OFFSET;
-        })
-        .findIndex((element) => element > 0);
-      setActive(Math.max(0, index === -1 ? headers.length - 1 : index - 1));
-    }, 150),
-    [headers],
-  );
+  const onScroll = _.throttle(() => {
+    const index = headers
+      .map((header) => {
+        const element = document.getElementById(header.id);
+        if (!element) {
+          return 0;
+        }
+        return element.getBoundingClientRect().top - SCROLL_OFFSET;
+      })
+      .findIndex((element) => element > 0);
+    setActive(Math.max(0, index === -1 ? headers.length - 1 : index - 1));
+  }, 150);
 
   useEffect(() => {
     document.addEventListener("scroll", onScroll);
