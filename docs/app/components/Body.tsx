@@ -79,7 +79,7 @@ export function Body({ children }: PropsWithChildren) {
     // Height is 49px to add 1px for bottom border.
     <div className="fixed top-0 z-10 flex h-[49px] w-full items-center justify-between border-b border-mauvedark5 bg-mauvedark1 pl-1">
       {logo}
-      <div className="hidden w-64 gap-2 px-2 lg:flex">
+      <div className="hidden w-64 shrink-0 gap-2 px-2 lg:flex">
         <Search />
         <Link
           className={twMerge(outline, "rounded-full p-1")}
@@ -103,7 +103,7 @@ export function Body({ children }: PropsWithChildren) {
         {/* <div className="absolute -top-32 h-[300px] w-full bg-gradient-to-b from-tomatodark4 to-mauvedark1"></div> */}
         {topBar}
         <div className="flex pt-[49px]">
-          <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 flex-col gap-4 overflow-auto p-3 lg:flex">
+          <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 shrink-0 flex-col gap-4 overflow-auto p-3 lg:flex">
             <Sidebar />
           </div>
           <div className="mx-auto w-full px-4 pb-8 pt-8 md:w-[768px]">{children}</div>
