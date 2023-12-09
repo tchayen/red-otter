@@ -6,9 +6,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: [resolve(__dirname, "src/index.ts")],
+      fileName: (format) => `redotter.${format}.js`,
       formats: ["es"],
       name: "RedOtter",
     },
   },
-  plugins: [dts({ include: "src" })],
+  plugins: [
+    dts({
+      rollupTypes: true,
+    }),
+  ],
 });

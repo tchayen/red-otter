@@ -6,6 +6,9 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "homepage": "https://red-otter.dev",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/tchayen/red-otter"
