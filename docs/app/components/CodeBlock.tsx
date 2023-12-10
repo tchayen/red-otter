@@ -64,9 +64,23 @@ export async function CodeBlock({ children }: PropsWithChildren) {
 
   return (
     <DivWrapper>
+      <div className="pointer-events-none absolute right-0 top-0 select-none p-2 text-xs text-mauvedark10">
+        {prettyPrint(language)}
+      </div>
       <Pre dangerouslySetInnerHTML={{ __html: code }} />
     </DivWrapper>
   );
+}
+
+function prettyPrint(language: string) {
+  switch (language) {
+    case "ts":
+      return "TypeScript";
+    case "js":
+      return "JavaScript";
+    case "tsx":
+      return "TypeScript";
+  }
 }
 
 function wrapComments(code: string) {
