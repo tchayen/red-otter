@@ -22,6 +22,7 @@
     "lint": "eslint src",
     "test": "vitest",
     "coverage": "vitest --coverage",
+    "ci": "bun run lint && bun run tsc && bun run vitest run && bun run build",
     "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
   },
   "dependencies": {

@@ -6,6 +6,8 @@
     "dev": "next",
     "build": "bun scripts/extractTypeScript.ts && next build",
     "start": "next start",
+    "lint": "eslint .",
+    "ci": "bun run lint && bun run tsc && bun run build",
     "build:static": "next build && next out"
   },
   "dependencies": {
