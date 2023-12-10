@@ -1,12 +1,11 @@
 import { View } from "./layout/View";
-import { CROSS_AXIS_SIZE, isWindowDefined } from "./consts";
+import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
-import { Vec4 } from "./math/Vec4";
-import { intersection as getIntersection, isInside } from "./math/utils";
-import { Display, Overflow } from "./layout/styling";
+import { Display } from "./layout/styling";
 import { invariant } from "./utils/invariant";
 import type { UserEvent } from "./layout/eventTypes";
 import { UserEventType } from "./layout/eventTypes";
+import { hitTest } from "./hitTest";
 
 export class EventManager {
   private readonly events: Array<UserEvent> = [];
@@ -35,6 +34,20 @@ export class EventManager {
         this.dispatchEvent({
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseClick,
+        });
+      });
+
+      window.addEventListener("mousedown", (event) => {
+        this.dispatchEvent({
+          position: new Vec2(event.clientX, event.clientY),
+          type: UserEventType.MouseDown,
+        });
+      });
+
+      window.addEventListener("mouseup", (event) => {
+        this.dispatchEvent({
+          position: new Vec2(event.clientX, event.clientY),
+          type: UserEventType.MouseUp,
         });
       });
 
@@ -99,19 +112,4 @@ export class EventManager {
     // Remove all events that were not handled.
     this.events.length = 0;
   }
-}
-
-function hitTest(node: View, event: UserEvent): boolean {
-  const { totalScrollX, totalScrollY, clipStart, clipSize, clientHeight, clientWidth } =
-    node._state;
-  const nodeRectangle = new Vec4(
-    node._state.x - totalScrollX,
-    node._state.y - totalScrollY,
-    clientWidth + (node._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
-    clientHeight + (node._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0),
-  );
-  const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
-  const intersection = getIntersection(nodeRectangle, boundary);
-
-  return isInside(event.position, intersection);
 }

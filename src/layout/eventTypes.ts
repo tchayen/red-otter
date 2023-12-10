@@ -2,6 +2,8 @@ import type { Vec2 } from "../math/Vec2";
 
 export const enum UserEventType {
   MouseClick,
+  MouseDown,
+  MouseUp,
   MouseMove,
   MouseScroll,
 }
@@ -9,6 +11,16 @@ export const enum UserEventType {
 export type ClickEvent = {
   position: Vec2;
   type: UserEventType.MouseClick;
+};
+
+export type MouseDownEvent = {
+  position: Vec2;
+  type: UserEventType.MouseDown;
+};
+
+export type MouseUpEvent = {
+  position: Vec2;
+  type: UserEventType.MouseUp;
 };
 
 export type MoveEvent = {
@@ -22,4 +34,4 @@ export type ScrollEvent = {
   type: UserEventType.MouseScroll;
 };
 
-export type UserEvent = ClickEvent | MoveEvent | ScrollEvent;
+export type UserEvent = ClickEvent | MouseDownEvent | MouseUpEvent | MoveEvent | ScrollEvent;

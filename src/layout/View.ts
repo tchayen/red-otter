@@ -1,4 +1,11 @@
-import type { ClickEvent, MoveEvent, ScrollEvent } from "./eventTypes";
+import { hitTest } from "../hitTest";
+import type {
+  ClickEvent,
+  MouseDownEvent,
+  MouseUpEvent,
+  MoveEvent,
+  ScrollEvent,
+} from "./eventTypes";
 import { UserEventType } from "./eventTypes";
 import type {
   ExactDecorativeProps,
@@ -17,7 +24,9 @@ import type { Text } from "./Text";
 type UserEventTuple =
   | [UserEventType.MouseClick, (event: ClickEvent) => void]
   | [UserEventType.MouseMove, (event: MoveEvent) => void]
-  | [UserEventType.MouseScroll, (event: ScrollEvent) => void];
+  | [UserEventType.MouseScroll, (event: ScrollEvent) => void]
+  | [UserEventType.MouseDown, (event: MouseDownEvent) => void]
+  | [UserEventType.MouseUp, (event: MouseUpEvent) => void];
 
 /**
  * Basic building block of the UI. A node in a tree which is mutated by the layout algorithm.
@@ -39,6 +48,9 @@ export class View {
   _style: ExactDecorativeProps & ExactLayoutProps;
   _eventListeners: Array<UserEventTuple> = [];
 
+  _scrollbarClickPosition: number = -1;
+  _isScrollbarHovered: boolean = false;
+
   constructor(
     public props: {
       onClick?(): void;
@@ -47,6 +59,9 @@ export class View {
     },
   ) {
     this.onScroll = this.onScroll.bind(this);
+    this.onScrollbarDown = this.onScrollbarDown.bind(this);
+    this.onScrollbarUp = this.onScrollbarUp.bind(this);
+    this.onScrollbarDrag = this.onScrollbarDrag.bind(this);
 
     this._style = normalizeDecorativeProps(
       normalizeLayoutProps(props.style ?? {}) as ViewStyleProps,
@@ -56,6 +71,13 @@ export class View {
     }
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
       this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
+    }
+
+    // For mouse-interacting with the scrollbar.
+    if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
+      this._eventListeners.push([UserEventType.MouseDown, this.onScrollbarDown]);
+      this._eventListeners.push([UserEventType.MouseUp, this.onScrollbarUp]);
+      this._eventListeners.push([UserEventType.MouseMove, this.onScrollbarDrag]);
     }
   }
 
@@ -68,6 +90,21 @@ export class View {
       Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
       this._state.scrollHeight - this._state.clientHeight,
     );
+  }
+
+  onScrollbarDown(event: MouseDownEvent) {
+    //
+  }
+
+  onScrollbarUp(event: MouseUpEvent) {
+    //
+  }
+
+  onScrollbarDrag(event: MoveEvent) {
+    //
+    if (hitTest(this, event)) {
+      console.log("it's me");
+    }
   }
 
   // TODO: this could be in some base class.

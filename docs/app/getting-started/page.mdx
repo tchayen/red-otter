@@ -21,6 +21,8 @@ Depending on which renderer you use, setup code will differ. There is a bit of b
   </Tabs.List>
   <Tabs.Content value="webgpu">
 
+There is a bit of setup involved. This is general WebGPU initialization, so if you are doing something similar that boils down to the same thing – it's great, you can skip this part. That is the whole point on not enforcing anything on you.
+
 ```tsx
 const settings = {
   sampleCount: 4,
@@ -101,7 +103,11 @@ render();
 ```
 
   </Tabs.Content>
-  <Tabs.Content value="webgl">WIP</Tabs.Content>
+  <Tabs.Content value="webgl">
+
+_WebGL renderer is not implemented yet._
+
+  </Tabs.Content>
 </Tabs.Root>
 
 ## First layer: calling renderer directly
