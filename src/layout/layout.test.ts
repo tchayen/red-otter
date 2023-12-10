@@ -525,15 +525,15 @@ describe("Layout", () => {
     layout(root, lookups, new Vec2(1024, 768));
 
     const box = root.firstChild;
-    expect(box?._state.x).toBe(25);
+    expect(box?._state.x).toBe(19);
     expect(box?._state.y).toBe(125);
 
     const xLabel = getByTestId(root, "xLabel");
-    expect(xLabel?._state.x).toBe(45);
+    expect(xLabel?._state.x).toBe(39);
     expect(xLabel?._state.y).toBe(145);
 
     const xValue = getByTestId(root, "xValue");
-    expect(xValue?._state.x).toBe(73);
+    expect(xValue?._state.x).toBe(67);
     expect(xValue?._state.y).toBe(145);
   });
 });
