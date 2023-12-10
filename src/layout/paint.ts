@@ -12,7 +12,13 @@ import {
   SCROLLBAR_TRACK_COLOR,
 } from "../consts";
 
-// TODO: probably construct an array and sort by z-index.
+/**
+ * Takes a renderer and a root of a tree and commands the renderer to paint it. Used every frame.
+ *
+ * @param ui renderer instance that will get commands issued to it.
+ * @param node root of the tree to paint.
+ * @returns
+ */
 export function paint(ui: Renderer, node: View | Text) {
   if (node._style.display === Display.None) {
     return;

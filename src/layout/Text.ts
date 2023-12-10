@@ -4,6 +4,9 @@ import type { UserEvent } from "./eventTypes";
 import type { ExactLayoutProps, LayoutNodeState, LayoutProps, TextStyleProps } from "./styling";
 import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./styling";
 
+/**
+ * Basic text node. The only way to create text. It cannot have children.
+ */
 export class Text {
   next: Text | null = null;
   prev: Text | null = null;

@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 import types from "../types.json";
 import { Table } from "./Table";
-import { Code, H2, H3, H4, Hr, P, slugify } from "./tags";
+import { Code, H2, H3, Hr, P, Strong, slugify } from "./tags";
 import { Markdown } from "./Markdown";
 import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
@@ -11,22 +11,25 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
   return (
     <>
       <H3 id={`${id}-${slugify(c.name)}`}>{c.name}</H3>
+      <Source>{c.source}</Source>
       <Markdown>{c.description}</Markdown>
-      <Table.Root columns="min-content auto">
-        <Table.HeaderCell>Method</Table.HeaderCell>
-        <Table.HeaderCell>Type and description</Table.HeaderCell>
-        {Object.values(c.methods).map((m) => {
-          return (
-            <Fragment key={c.name}>
-              <Table.Cell>{m.name}</Table.Cell>
-              <Table.Cell>
-                <Code>{m.returnType}</Code>
-                <div className="mt-1 [&>p]:text-sm">{<Markdown>{m.description}</Markdown>}</div>
-              </Table.Cell>
-            </Fragment>
-          );
-        })}
-      </Table.Root>
+      {Object.values(c.methods).length > 0 && (
+        <Table.Root columns="min-content auto">
+          <Table.HeaderCell>Method</Table.HeaderCell>
+          <Table.HeaderCell>Type and description</Table.HeaderCell>
+          {Object.values(c.methods).map((m) => {
+            return (
+              <Fragment key={c.name}>
+                <Table.Cell>{m.name}</Table.Cell>
+                <Table.Cell>
+                  <Code>{m.returnType}</Code>
+                  <div className="mt-1 [&>p]:text-sm">{<Markdown>{m.description}</Markdown>}</div>
+                </Table.Cell>
+              </Fragment>
+            );
+          })}
+        </Table.Root>
+      )}
     </>
   );
 }
@@ -35,6 +38,7 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
   return (
     <Fragment key={f.name}>
       <H3 id={`${id}-${slugify(f.name)}`}>{f.name}</H3>
+      <Source>{f.source}</Source>
       <Markdown>{f.description}</Markdown>
       {Object.values(f.parameters).length > 0 && (
         <Table.Root columns="min-content auto">
@@ -64,7 +68,9 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
           }
         </Table.Root>
       )}
-      <H4 id={`${id}-type-declaration`}>Type declaration</H4>
+      <P>
+        <Strong>Type declaration</Strong>
+      </P>
       <CodeBlock>
         <pre className="language-ts">{f.typeSignature}</pre>
       </CodeBlock>
@@ -77,6 +83,7 @@ export function Type({ t, children }: PropsWithChildren<{ t: TypeType }>) {
   return (
     <>
       <H2>{t.name}</H2>
+      <Source>{t.source}</Source>
       <P>{t.description}</P>
       {children}
       <Table.Root>
@@ -110,6 +117,10 @@ export function Type({ t, children }: PropsWithChildren<{ t: TypeType }>) {
       </Table.Root>
     </>
   );
+}
+
+function Source({ children }: PropsWithChildren) {
+  return <Code className="text-xs text-mauvedark11">{children}</Code>;
 }
 
 function replacePercentage(value: string) {

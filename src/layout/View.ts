@@ -19,12 +19,19 @@ type UserEventTuple =
   | [UserEventType.MouseMove, (event: MoveEvent) => void]
   | [UserEventType.MouseScroll, (event: ScrollEvent) => void];
 
+/**
+ * Basic building block of the UI. A node in a tree which is mutated by the layout algorithm.
+ */
 export class View {
   next: View | Text | null = null;
   prev: View | Text | null = null;
   firstChild: View | Text | null = null;
   lastChild: View | Text | null = null;
   parent: View | null = null;
+  /**
+   * Internal state of the node. It's public so that you can use it if you need to, but it's ugly
+   * so that you don't forget it might break at any time.
+   */
   _state: LayoutNodeState = { ...defaultLayoutNodeState };
   /**
    * Should always be normalized.
@@ -39,6 +46,8 @@ export class View {
       testID?: string;
     },
   ) {
+    this.onScroll = this.onScroll.bind(this);
+
     this._style = normalizeDecorativeProps(
       normalizeLayoutProps(props.style ?? {}) as ViewStyleProps,
     );
@@ -50,7 +59,7 @@ export class View {
     }
   }
 
-  onScroll = (event: ScrollEvent) => {
+  onScroll(event: ScrollEvent) {
     this._state.scrollX = Math.min(
       Math.max(this._state.scrollX + Math.round(event.delta.x), 0),
       this._state.scrollWidth - this._state.clientWidth,
@@ -59,7 +68,7 @@ export class View {
       Math.max(this._state.scrollY + Math.round(event.delta.y), 0),
       this._state.scrollHeight - this._state.clientHeight,
     );
-  };
+  }
 
   // TODO: this could be in some base class.
   add(node: View | Text): View | Text {

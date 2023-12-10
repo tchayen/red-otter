@@ -762,8 +762,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   }
 
   /*
-   * Fourth tree pass: calculate scroll sizes.
-   * Going top-down, level order.
+   * Fourth tree pass: calculate scroll sizes. It is only possible after sizes and positions are
+   * set. Going top-down, level order.
    */
   for (let i = 0; i < nodesInLevelOrder.length; i++) {
     const e = nodesInLevelOrder[i]!;

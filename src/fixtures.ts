@@ -11,6 +11,7 @@ import {
   JustifyContent,
   Overflow,
   Position,
+  TextAlign,
 } from "./layout/styling";
 import { invariant } from "./utils/invariant";
 
@@ -898,8 +899,8 @@ export function text() {
   text(
     "Some multiline text that will be wrapped when it runs out of space and it also follows the defined line height.",
   );
-  // text("This is right aligned text.", { textAlign: "right" });
-  // text("This is centered.", { textAlign: "center" });
+  text("This is right aligned text.", { textAlign: TextAlign.Right });
+  text("This is centered.", { textAlign: TextAlign.Center });
 
   return root;
 }
@@ -921,7 +922,7 @@ export function formUI() {
     height: 30,
     justifyContent: JustifyContent.Center,
     paddingHorizontal: 10,
-    width: 40,
+    width: 44,
   } as ViewStyleProps;
 
   const textStyle = {
