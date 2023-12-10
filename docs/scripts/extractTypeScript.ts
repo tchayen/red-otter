@@ -14,11 +14,7 @@ import "@total-typescript/ts-reset";
 
 const mainDirectory = path.resolve(path.join(__dirname, "/../../src"));
 
-const result = extractTypeScript([
-  `${mainDirectory}/layout`,
-  `${mainDirectory}/font`,
-  `${mainDirectory}/math`,
-]);
+const result = extractTypeScript([mainDirectory]);
 
 fs.writeFileSync(
   path.resolve(path.join(__dirname, "/../app/types.json")),
@@ -287,11 +283,12 @@ function getListOfFiles(paths: Array<string>): Array<string> {
     try {
       const stats = fs.statSync(path);
 
-      if (stats.isDirectory()) {
+      if (stats.isDirectory() && !path.includes("node_modules")) {
         fs.readdirSync(path).forEach((child) => {
+          console.log(`Reading ${path}/${child}`);
           explore(`${path}/${child}`);
         });
-      } else if (stats.isFile()) {
+      } else if (stats.isFile() && path.endsWith(".ts")) {
         files.push(path);
       }
     } catch (error) {

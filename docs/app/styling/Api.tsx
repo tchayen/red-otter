@@ -3,7 +3,7 @@ import { Enums } from "../components/Enums";
 import types from "../types.json";
 import { A, Box, Hr, P } from "../components/tags";
 
-export function StylingApi() {
+export function Api() {
   const layoutProps = types.types.LayoutProps;
   const decorativeProps = types.types.DecorativeProps;
   const textStyleProps = types.types.TextStyleProps;

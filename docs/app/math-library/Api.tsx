@@ -1,7 +1,7 @@
 import types from "../types.json";
 import { Class, Function } from "../components/ApiBlocks";
 
-export function MathApi() {
+export function Api() {
   return (
     <>
       {Object.values(types.classes)

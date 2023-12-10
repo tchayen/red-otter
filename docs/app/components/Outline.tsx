@@ -64,7 +64,14 @@ export function Outline() {
       <span className="font-semibold text-mauvedark12">On this page</span>
       {headers.map((header, i) => {
         return (
-          <div key={i} className={twMerge("flex", i === active && "text-tomato9")}>
+          <div
+            key={i}
+            className={twMerge(
+              "flex",
+              i === active && "text-tomato9",
+              i !== active && "hover:text-mauvedark11",
+            )}
+          >
             {Array.from({ length: header.level - 1 })
               .fill(undefined)
               .map((_, i) => (
