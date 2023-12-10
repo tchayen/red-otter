@@ -56,7 +56,7 @@ export function extractTypeScript(paths: Array<string>) {
             name: e.name.escapedText.toString(),
             source: sourceString,
             values: e.members.map((m) => {
-              const mSymbol = checker.getSymbolAtLocation(e.name);
+              const mSymbol = checker.getSymbolAtLocation(m.name);
               const name = m.name.getText();
               return {
                 description: ts.displayPartsToString(mSymbol?.getDocumentationComment(checker)),

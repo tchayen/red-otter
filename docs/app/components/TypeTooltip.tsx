@@ -2,6 +2,7 @@
 import { Code, slugify } from "./tags";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import type { EnumType, FieldType } from "./ApiBlocks";
+import { Markdown } from "./Markdown";
 
 type TypeTooltipProps = {
   enumType: EnumType;
@@ -23,14 +24,16 @@ export function TypeTooltip({ field, enumType }: TypeTooltipProps) {
         <Tooltip.Arrow />
         <h3 className="text-lg font-semibold text-mauvedark12">{enumType.name}</h3>
         <span className="text-mauvedark10">{enumType.description}</span>
-        <ul className="text-mauvedark10">
-          {enumType.values.map((value) => (
-            <li key={value.name} className="my-1">
-              <Code>{value.name}</Code>
-              {value.description && <span> – {value.description}</span>}
-            </li>
-          ))}
-        </ul>
+        {enumType.values.map((value) => (
+          <div key={value.name} className="flex items-baseline gap-1">
+            <Code className="[&>*]:text-sm">{value.name}</Code>
+            {value.description && (
+              <div className="[&>*]:text-sm [&>*]:text-mauvedark10">
+                <Markdown>{value.description}</Markdown>
+              </div>
+            )}
+          </div>
+        ))}
       </Tooltip.Content>
     </Tooltip.Root>
   );
