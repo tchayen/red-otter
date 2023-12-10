@@ -1,5 +1,5 @@
-import { View } from "./View";
-import type { ViewStyleProps } from "./styling";
+import { View } from "../layout/View";
+import type { ViewStyleProps } from "../layout/styling";
 
 export class Input extends View {
   constructor(props: {
