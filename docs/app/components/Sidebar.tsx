@@ -13,6 +13,9 @@ export function Sidebar({ onClick }: { onClick?: () => void }) {
         <SidebarLink currentPath={path} onClick={onClick} href="/">
           Home
         </SidebarLink>
+        <SidebarLink currentPath={path} onClick={onClick} href="/blog">
+          Blog
+        </SidebarLink>
         <SidebarLink currentPath={path} onClick={onClick} href="/getting-started">
           Getting Started
         </SidebarLink>
@@ -52,7 +55,7 @@ function SidebarLink({
   children,
 }: PropsWithChildren<{ currentPath: string; href: string; onClick?: () => void }>) {
   const isExternal = href.startsWith("http");
-  const isCurrent = currentPath === href;
+  const isCurrent = getIsCurrent(currentPath, href);
 
   return (
     <Link
@@ -69,4 +72,12 @@ function SidebarLink({
       {isExternal && <span className="ml-0.5">↗</span>}
     </Link>
   );
+}
+
+function getIsCurrent(path: string, href: string) {
+  if (href === "/") {
+    return path === "/";
+  }
+
+  return path.startsWith(href);
 }

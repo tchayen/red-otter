@@ -60,7 +60,7 @@ export function Outline() {
   };
 
   return (
-    <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 flex-col gap-2 overflow-y-scroll p-3 text-sm text-mauvedark10 xl:flex">
+    <div className="scrollbar flex h-full w-full flex-col gap-2 overflow-y-scroll p-3 text-sm text-mauvedark10">
       <span className="font-semibold text-mauvedark12">On this page</span>
       {headers.map((header, i) => {
         return (

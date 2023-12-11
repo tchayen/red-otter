@@ -18,6 +18,9 @@ type UserEventTuple =
   | [UserEventType.MouseDown, (event: MouseDownEvent) => void]
   | [UserEventType.MouseUp, (event: MouseUpEvent) => void];
 
+/**
+ * `BaseView` but with event listeners.
+ */
 export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
   _scrollbarClickPosition: number = -1;

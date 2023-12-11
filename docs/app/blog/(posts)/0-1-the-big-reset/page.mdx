@@ -1,0 +1,65 @@
+<Blogpost title="0.1: the Big reset" date="2023-12-20" author="Tomasz Czajecki" />
+
+After many months of hard work in the shadows, I am proud to present the next big release of Red Otter. It features:
+
+## New fast WebGPU renderer
+
+More about the approach: [Thousands of Styled Rectangles in 120FPS on GPU](https://tchayen.com/thousands-styled-rectangles-in-120fps-on-gpu).
+
+## Layout improvements
+
+Major improvements to the layout engine:
+
+- Missing CSS properties like `flexWrap`, `flexShrink`, `flexGrow`, `flexBasis`, `minWidth`, `minHeight`, `overflow`.
+- Refactored algorithm that shortened the code and packed much more features.
+
+## Text improvements
+
+Kerning, line wrapping, text align.
+
+You can see more about kerning in my recent blogpost: [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).
+
+## Event system
+
+Supports clicks, scrolling, typing.
+
+## Scrolling
+
+Ability to scroll overflowing components. Nested scrolling is not an issue too.
+
+## Tests
+
+Layout tests (hard to believe I got that far without writing proper tests).
+
+```
+↓ src/font/shapeText.test.ts (0) [skipped]
+ ✓ src/font/shapeText.test.ts (1)
+ ↓ src/math/packShelves.test.ts (0) [skipped]
+ ✓ src/math/packShelves.test.ts (1)
+ ↓ src/math/Mat4.test.ts (0) [skipped]
+ ✓ src/math/Mat4.test.ts (4)
+ ↓ src/utils/Tree.test.ts (0) [skipped]
+ ✓ src/utils/Tree.test.ts (4)
+ ✓ src/utils/parseColor.test.ts (14)
+ ✓ src/layout/paint.test.ts (1)
+ ✓ src/utils/Queue.test.ts (7)
+ ✓ src/math/triangulatePolygon.test.ts (1)
+ ✓ src/layout/layout.test.ts (15)
+
+ Test Files  9 passed | 4 skipped (13)
+      Tests  48 passed (48)
+   Start at  00:05:34
+   Duration  724ms
+```
+
+## Component library
+
+Base component library with fully functioning browser-like `Input` component.
+
+## New docs
+
+A new documentation website with multiple pages, functioning search, and a blog (that you are reading now!).
+
+## Better CI and release process
+
+Process improvements like automated releases (expect more frequent changes now).

@@ -35,9 +35,20 @@ export function Code({ children, className }: PropsWithChildren<{ className?: st
 
 export function H1({
   children,
+  noLink,
   id,
   className,
-}: PropsWithChildren<{ className?: string; id?: string }>) {
+}: PropsWithChildren<{ className?: string; id?: string; noLink?: boolean }>) {
+  if (noLink) {
+    return (
+      <h1
+        className={twMerge("mb-4 scroll-mt-16 text-3xl font-semibold text-mauvedark12", className)}
+      >
+        {children}
+      </h1>
+    );
+  }
+
   const slug =
     (id ? `${id.replaceAll(".", "-")}-` : "") +
     slugify(typeof children === "string" ? children : "");
@@ -195,7 +206,7 @@ export function Em({ children }: PropsWithChildren) {
 }
 
 export function Hr() {
-  return <hr className="my-8 border-t border-mauvedark5" />;
+  return <hr className="my-6 border-t border-mauvedark5" />;
 }
 
 export function Box({

@@ -13,6 +13,7 @@ export type Page = {
   url: string;
 };
 
+// TODO release: include blog?
 const searchablePages = [
   "/getting-started",
   "/examples",
@@ -22,6 +23,7 @@ const searchablePages = [
   "/layout-engine",
   "/renderer",
   "/math-library",
+  "/interactivity",
   "/",
 ];
 

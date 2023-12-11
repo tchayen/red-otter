@@ -11,8 +11,10 @@ import { Search } from "./Search";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { outline } from "./tags";
+import { usePathname } from "next/navigation";
 
 export function Body({ children }: PropsWithChildren) {
+  const pathname = usePathname();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const logo = (
@@ -107,7 +109,9 @@ export function Body({ children }: PropsWithChildren) {
             <Sidebar />
           </div>
           <div className="mx-auto w-full px-4 pb-8 pt-8 md:w-[768px]">{children}</div>
-          <Outline />
+          <div className="sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 xl:flex">
+            {!pathname.startsWith("/blog") && <Outline />}
+          </div>
         </div>
       </Tooltip.Provider>
     </>
