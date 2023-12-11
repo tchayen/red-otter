@@ -304,31 +304,3 @@ function complexWindow() {
 function text(value: string, fontSize: number, color: string, fontName: string = "Inter") {
   return new Text(value, { lookups, style: { color, fontName, fontSize } });
 }
-
-function debugPrintTree(tree: View | Text, level: number = 0) {
-  if (!tree) {
-    return "";
-  }
-  console.log(tree);
-
-  const type = tree instanceof Text ? "Text" : "View";
-
-  const { x, y, clientWidth, clientHeight, scrollX, scrollY, scrollWidth, scrollHeight } =
-    tree._state;
-  let info =
-    `- [${
-      tree?.props.testID ?? type
-    }]\n  metrics: (${x}, ${y}, ${clientWidth}, ${clientHeight})\n  scrollOffset: (${scrollX}, ${scrollY})\n  scrollableContentSize: (${scrollWidth}, ${scrollHeight})\n` ??
-    "";
-
-  let c = tree.firstChild;
-  while (c) {
-    info += debugPrintTree(c, level + 1)
-      .split("\n")
-      .map((line) => "  ".repeat(level + 1) + line)
-      .join("\n");
-    c = c.next;
-  }
-
-  return info;
-}

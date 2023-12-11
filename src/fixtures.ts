@@ -40,7 +40,9 @@ const rootStyle = {
 export function flexValue() {
   const root = new View({ style: rootStyle, testID: "flexValue" });
 
-  const row = new View({ style: { flexDirection: FlexDirection.Row, marginLeft: 50, width: 250 } });
+  const row = new View({
+    style: { flexDirection: FlexDirection.Row, marginLeft: 50, width: 250 },
+  });
   root.add(row);
   const row0 = new View({ style: { backgroundColor: colors[1], flex: 0, height: 50 } });
   row.add(row0);
@@ -62,7 +64,9 @@ export function flexValue() {
   column.add(column1);
   const column2 = new View({ style: { backgroundColor: colors[7], flex: 2, width: 50 } });
   column.add(column2);
-  const columnFixed = new View({ style: { backgroundColor: colors[8], height: 50, width: 50 } });
+  const columnFixed = new View({
+    style: { backgroundColor: colors[8], height: 50, width: 50 },
+  });
   column.add(columnFixed);
 
   return root;
@@ -542,7 +546,6 @@ export function flexShrinkAndGrow() {
   return root;
 }
 
-// TODO @tchayen: add borders.
 export function marginsAndPaddingsAndBorders() {
   const root = new View({
     style: {
@@ -565,7 +568,7 @@ export function marginsAndPaddingsAndBorders() {
   const first = new View({
     style: {
       backgroundColor: colors[1],
-      borderColor: colors[2],
+      borderColor: colors[5],
       borderWidth: 4,
       height: 100,
       marginLeft: 10,

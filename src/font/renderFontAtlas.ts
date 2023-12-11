@@ -6,7 +6,7 @@ const DEBUG_SKIP_SDF = false;
 const DEBUG_FONT_ATLAS_SHOW_GLYPH_BACKGROUNDS = false;
 
 /**
- * @param lookups see prepareLookups.ts.
+ * @param lookups see `prepareLookups()`.
  * @param options optional parameters like alphabet or whether SDF should be
  * used to render the atlas.
  * @returns an image bitmap of the font atlas.
@@ -85,6 +85,12 @@ export async function renderFontAtlas(
   return bitmap;
 }
 
+/**
+ * Helper function for placing glyphs in the font atlas.
+ *
+ * @param fontSize
+ * @returns gap size based on the `fontSize`.
+ */
 export function fontSizeToGap(fontSize: number): number {
   return Math.round(fontSize / 6);
 }

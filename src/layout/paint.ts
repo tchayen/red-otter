@@ -1,5 +1,5 @@
 import { Text } from "./Text";
-import type { View } from "./View";
+import type { BaseView } from "./BaseView";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { Display, Overflow, TextAlign, defaultTextStyleProps } from "./styling";
@@ -19,7 +19,7 @@ import {
  * @param node root of the tree to paint.
  * @returns
  */
-export function paint(ui: Renderer, node: View | Text) {
+export function paint(ui: Renderer, node: BaseView | Text) {
   if (node._style.display === Display.None) {
     return;
   }
@@ -38,7 +38,7 @@ export function paint(ui: Renderer, node: View | Text) {
  * be renderered to for this node. They need to be adjusted for the node's position, scroll offset
  * and size.
  */
-function paintNode(ui: Renderer, node: View | Text, clipStart: Vec2, clipSize: Vec2): void {
+function paintNode(ui: Renderer, node: BaseView | Text, clipStart: Vec2, clipSize: Vec2): void {
   const position = new Vec2(node._state.x, node._state.y).subtract(
     new Vec2(node._state.totalScrollX, node._state.totalScrollY),
   );

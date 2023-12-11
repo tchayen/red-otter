@@ -3,6 +3,8 @@ import type { Fixed, FWord, Int16, Uint16, Uint32 } from "./BinaryReader";
 import { BinaryReader } from "./BinaryReader";
 
 /**
+ * Main function for parsing TTF files.
+ *
  * @param data TTF file in binary format.
  * @returns a parsed TTF object.
  */

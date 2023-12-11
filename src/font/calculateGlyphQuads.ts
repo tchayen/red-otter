@@ -3,8 +3,10 @@ import type { TTF } from "./parseTTF";
 import type { Glyph } from "./types";
 
 /**
+ * Calculates glyph information for a given font file and optional alphabet.
+ *
  * @param ttf parsed TTF file (see parseTTF.ts).
- * @param alphabet a string of characters to include in the atlas.
+ * @param alphabet a string of characters to include in the atlas. If not provided, all characters of the font will be included.
  * @returns an array of glyph quads.
  */
 export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Array<Glyph> {

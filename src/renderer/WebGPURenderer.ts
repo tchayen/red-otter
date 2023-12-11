@@ -511,15 +511,15 @@ export class WebGPURenderer implements Renderer {
 
     let shape: Shape;
     try {
-      shape = shapeText({
+      shape = shapeText(
+        this.fontLookups,
         fontName,
         fontSize,
-        lineHeight: options?.lineHeight ?? defaultTextStyleProps.lineHeight,
-        lookups: this.fontLookups,
-        maxWidth: options?.maxWidth,
+        options?.lineHeight ?? defaultTextStyleProps.lineHeight,
         text,
         textAlign,
-      });
+        options?.maxWidth,
+      );
     } catch (error) {
       console.error(
         `Failed while shaping the word "${text.slice(0, 50)}${text.length > 50 ? "…" : ""}".`,

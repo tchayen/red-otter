@@ -1,25 +1,15 @@
 import { hitTest } from "../hitTest";
+import { BaseView } from "./BaseView";
 import type {
   ClickEvent,
-  MouseDownEvent,
-  MouseUpEvent,
   MoveEvent,
   ScrollEvent,
+  MouseDownEvent,
+  MouseUpEvent,
 } from "./eventTypes";
 import { UserEventType } from "./eventTypes";
-import type {
-  ExactDecorativeProps,
-  ExactLayoutProps,
-  ViewStyleProps,
-  LayoutNodeState,
-} from "./styling";
-import {
-  normalizeLayoutProps,
-  normalizeDecorativeProps,
-  Overflow,
-  defaultLayoutNodeState,
-} from "./styling";
-import type { Text } from "./Text";
+import type { ViewStyleProps } from "./styling";
+import { Overflow } from "./styling";
 
 type UserEventTuple =
   | [UserEventType.MouseClick, (event: ClickEvent) => void]
@@ -28,44 +18,19 @@ type UserEventTuple =
   | [UserEventType.MouseDown, (event: MouseDownEvent) => void]
   | [UserEventType.MouseUp, (event: MouseUpEvent) => void];
 
-/**
- * Basic building block of the UI. A node in a tree which is mutated by the layout algorithm.
- */
-export class View {
-  next: View | Text | null = null;
-  prev: View | Text | null = null;
-  firstChild: View | Text | null = null;
-  lastChild: View | Text | null = null;
-  parent: View | null = null;
-  /**
-   * Internal state of the node. It's public so that you can use it if you need to, but it's ugly
-   * so that you don't forget it might break at any time.
-   */
-  _state: LayoutNodeState = { ...defaultLayoutNodeState };
-  /**
-   * Should always be normalized.
-   */
-  _style: ExactDecorativeProps & ExactLayoutProps;
+export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
-
   _scrollbarClickPosition: number = -1;
   _isScrollbarHovered: boolean = false;
 
-  constructor(
-    public props: {
-      onClick?(): void;
-      style?: ViewStyleProps;
-      testID?: string;
-    },
-  ) {
+  constructor(props: { onClick?(): void; style?: ViewStyleProps; testID?: string }) {
+    super(props);
+
     this.onScroll = this.onScroll.bind(this);
     this.onScrollbarDown = this.onScrollbarDown.bind(this);
     this.onScrollbarUp = this.onScrollbarUp.bind(this);
     this.onScrollbarDrag = this.onScrollbarDrag.bind(this);
 
-    this._style = normalizeDecorativeProps(
-      normalizeLayoutProps(props.style ?? {}) as ViewStyleProps,
-    );
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
@@ -105,25 +70,5 @@ export class View {
     if (hitTest(this, event)) {
       console.log("it's me");
     }
-  }
-
-  // TODO: this could be in some base class.
-  add(node: View | Text): View | Text {
-    node.parent = this;
-
-    if (this.firstChild === null) {
-      this.firstChild = node;
-      this.lastChild = node;
-    } else {
-      if (this.lastChild === null) {
-        throw new Error("Last child must be set.");
-      }
-
-      node.prev = this.lastChild;
-      this.lastChild.next = node;
-      this.lastChild = node;
-    }
-
-    return node;
   }
 }

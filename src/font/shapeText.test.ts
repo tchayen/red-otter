@@ -16,13 +16,6 @@ describe("shapeText", () => {
   it("should work", () => {
     expect(true).toBe(true);
 
-    shapeText({
-      fontName: "Inter",
-      fontSize: 15,
-      lineHeight: 20,
-      lookups,
-      text: "Hello, World!",
-      textAlign: TextAlign.Left,
-    });
+    shapeText(lookups, "Inter", 15, 20, "Hello, World!", TextAlign.Left);
   });
 });

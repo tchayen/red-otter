@@ -4,7 +4,9 @@ import { generateGlyphToClassMap } from "./generateGlyphToClassMap";
 import { invariant } from "../utils/invariant";
 
 /**
- * @param ttf parsed TTF file (see parseTTF.ts)
+ * Generates a kerning function used by `shapeText()`.
+ *
+ * @param ttf parsed TTF file (see `parseTTF()`).
  * @returns a function that takes two glyph IDs and returns the kerning value.
  */
 export function generateKerningFunction(ttf: TTF): KerningFunction {

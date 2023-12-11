@@ -6,6 +6,7 @@ import { Code, H2, H3, Hr, P, Strong, slugify } from "./tags";
 import { Markdown } from "./Markdown";
 import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
+import Link from "next/link";
 
 export function Class({ c, id }: { c: ClassType; id: string }) {
   return (
@@ -119,8 +120,19 @@ export function Type({ t, children }: PropsWithChildren<{ t: TypeType }>) {
   );
 }
 
-function Source({ children }: PropsWithChildren) {
-  return <Code className="text-xs text-mauvedark11">{children}</Code>;
+const gitBranch = "big-reset"; // TODO release: change to "main".
+
+function Source({ children }: { children: string }) {
+  return (
+    <Link
+      target="_blank"
+      href={`https://github.com/tchayen/red-otter/tree/${gitBranch}/src${children}`}
+    >
+      <Code className="text-xs text-mauvedark11 decoration-mauvedark10 underline-offset-2 hover:underline">
+        {children}
+      </Code>
+    </Link>
+  );
 }
 
 function replacePercentage(value: string) {

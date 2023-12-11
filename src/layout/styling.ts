@@ -1,5 +1,5 @@
 import type { Text } from "./Text";
-import type { View } from "./View";
+import type { BaseView } from "./BaseView";
 import { Vec2 } from "../math/Vec2";
 
 /**
@@ -10,7 +10,7 @@ export type LayoutNodeState = {
   /**
    * Temporary array used by layout.
    */
-  children: Array<Array<View | Text>>;
+  children: Array<Array<BaseView | Text>>;
   /**
    * Height of the element excluding scrollbar.
    */

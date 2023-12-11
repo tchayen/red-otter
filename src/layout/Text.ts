@@ -27,12 +27,14 @@ export class Text {
       testID?: string;
     },
   ) {
-    const shape = shapeText({
-      ...defaultTextStyleProps,
-      ...props.style,
-      lookups: props.lookups,
-      text: text, // TODO @tchayen: enforce in eslint not repeating value when same as key.
-    });
+    const shape = shapeText(
+      props.lookups,
+      props.style.fontName ?? defaultTextStyleProps.fontName,
+      props.style.fontSize ?? defaultTextStyleProps.fontSize,
+      props.style.lineHeight ?? defaultTextStyleProps.lineHeight,
+      text,
+      props.style.textAlign ?? defaultTextStyleProps.textAlign,
+    );
     const { width, height } = shape.boundingRectangle;
 
     this._style = normalizeLayoutProps(props.style as LayoutProps);

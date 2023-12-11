@@ -15,28 +15,29 @@ export type Shape = {
   sizes: Array<Vec2>;
 };
 
-/*
- * TODO @tchayen:
- * Maybe make lookups, text, fontSize and fontName back into regular arguments and only make
- * options for optional ones?
- */
-type ShapeTextOptions = {
-  fontName: string;
-  fontSize: number;
-  lineHeight: number;
-  lookups: Lookups;
-  maxWidth?: number;
-  text: string;
-  textAlign: TextAlign;
-};
-
 /**
- * @param options parameters for calculating the shape of the text.
+ * The most important function for getting text on the screen. Given a string and font data, finds
+ * the positions and sizes of each character.
+ *
+ * @param lookups metadata of fonts.
+ * @param fontName name of the font.
+ * @param fontSize size of the font in pixels.
+ * @param lineHeight height of a line in pixels.
+ * @param text text to shape.
+ * @param textAlign alignment of the text.
+ * @param maxWidth maximum width of the text. If the text is longer than this, it will be wrapped. Defaults to `Number.POSITIVE_INFINITY`.
  * @returns a shape object that can be used to render the text.
  */
-export function shapeText(options: ShapeTextOptions): Shape {
-  const { lookups, text, fontSize, fontName, lineHeight, textAlign } = options;
-  const maxWidth = options.maxWidth ?? Number.POSITIVE_INFINITY;
+export function shapeText(
+  lookups: Lookups,
+  fontName: string,
+  fontSize: number,
+  lineHeight: number,
+  text: string,
+  textAlign: TextAlign,
+  maxWidth?: number,
+): Shape {
+  maxWidth ??= Number.POSITIVE_INFINITY;
   const cached = cache.get(
     JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlign }),
   );

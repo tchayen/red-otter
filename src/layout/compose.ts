@@ -1,10 +1,10 @@
-import type { Text } from "./Text";
-import type { View } from "./View";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { intersection } from "../math/utils";
 import { Display } from "./styling";
 import type { Renderer } from "../renderer/Renderer";
+import type { BaseView } from "./BaseView";
+import type { Text } from "./Text";
 
 /**
  * Takes tree of nodes processed by `layout()` and calculates current positions based on
@@ -12,7 +12,7 @@ import type { Renderer } from "../renderer/Renderer";
  */
 export function compose(
   ui: Renderer,
-  node: View | Text,
+  node: BaseView | Text,
   clipStart = new Vec2(0, 0),
   clipSize = new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
   scrollOffset = new Vec2(0, 0),

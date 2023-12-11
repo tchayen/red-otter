@@ -17,10 +17,10 @@ export class EventManager {
 
     if (typeof window !== "undefined") {
       window.addEventListener("keydown", (event) => {
-        // TODO: implement key repeating? Maybe use keypress.
+        // TODO release: implement key repeating? Maybe use keypress.
       });
       window.addEventListener("keyup", (event) => {
-        // TODO: implement key repeating? Maybe use keypress.
+        // TODO release: implement key repeating? Maybe use keypress.
       });
 
       window.addEventListener("pointermove", (event) => {

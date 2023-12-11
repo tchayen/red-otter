@@ -1,7 +1,7 @@
 import { Queue } from "../utils/Queue";
 import type { Vec2 } from "../math/Vec2";
 import type { Lookups } from "../font/types";
-import { View } from "./View";
+import { BaseView } from "./BaseView";
 import { invariant } from "../utils/invariant";
 import { Text } from "./Text";
 import { shapeText } from "../font/shapeText";
@@ -30,11 +30,10 @@ import { CROSS_AXIS_SIZE } from "../consts";
  * @param tree tree of views to layout.
  * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
  */
-export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2): void {
-  const traversalQueue = new Queue<View | Text>();
+export function layout(tree: BaseView, fontLookups: Lookups | null, rootSize: Vec2): void {
+  const traversalQueue = new Queue<BaseView | Text>();
 
-  // TODO: inspect what would it take to get rid of root and use tree directly.
-  const root = new View({
+  const root = new BaseView({
     style: {
       height: rootSize.y,
       width: rootSize.x,
@@ -43,7 +42,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
   });
   root.add(tree);
 
-  const nodesInLevelOrder: Array<View | Text> = [root];
+  const nodesInLevelOrder: Array<BaseView | Text> = [root];
 
   /*
    * NOTE:
@@ -143,15 +142,15 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
           p._style.borderRightWidth;
         e._state.textWidthLimit = maxWidth;
 
-        const shape = shapeText({
-          fontName: e._style.fontName,
-          fontSize: e._style.fontSize ?? defaultTextStyleProps.fontSize,
-          lineHeight: e._style.lineHeight ?? defaultTextStyleProps.lineHeight,
-          lookups: fontLookups,
+        const shape = shapeText(
+          fontLookups,
+          e._style.fontName,
+          e._style.fontSize ?? defaultTextStyleProps.fontSize,
+          e._style.lineHeight ?? defaultTextStyleProps.lineHeight,
+          e.text,
+          e._style.textAlign ?? TextAlign.Left,
           maxWidth,
-          text: e.text,
-          textAlign: e._style.textAlign ?? TextAlign.Left,
-        });
+        );
 
         e._state.clientWidth = shape.boundingRectangle.width;
         e._state.clientHeight = shape.boundingRectangle.height;
@@ -269,7 +268,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    const rows: Array<Array<View | Text>> = [[]];
+    const rows: Array<Array<BaseView | Text>> = [[]];
     let main = 0;
     let cross = 0;
     let longestChildSize = 0;
@@ -551,8 +550,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Adjust positions for justify content.
       if (e._style.justifyContent === JustifyContent.Center) {
-        // TODO: availableMain/cross is useful here for skipping own size, but we should ignore
-        // border or padding here (and we don't).
+        // TODO release: availableMain/cross is useful here for skipping own size, but we should
+        // ignore border or padding here (and we don't).
         main += availableMain / 2;
       }
       if (
@@ -570,8 +569,8 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
 
       // Align content.
       if (e._style.alignContent === AlignContent.Center) {
-        // TODO: availableMain/cross is useful here for skipping own size, but we should ignore
-        // border or padding here (and we don't).
+        // TODO release: availableMain/cross is useful here for skipping own size, but we should
+        // ignore border or padding here (and we don't).
         if (i === 0) {
           cross += availableCross / 2;
         }
@@ -626,7 +625,7 @@ export function layout(tree: View, fontLookups: Lookups | null, rootSize: Vec2):
             }
           }
           if (availableMain < 0 && c._style.flexShrink > 0) {
-            // TODO: figure out similar logic as above with splitting remainder.
+            // TODO release: figure out similar logic as above with splitting remainder.
             if (isHorizontal) {
               c._state.clientWidth += (c._style.flexShrink / totalFlexShrink) * availableMain;
             } else {
@@ -821,7 +820,7 @@ function toPercentage(value: string): number {
   return result;
 }
 
-function applyMinMaxAndAspectRatio(e: View | Text): void {
+function applyMinMaxAndAspectRatio(e: BaseView | Text): void {
   let minHeight = 0;
   let minWidth = 0;
   let maxHeight = Number.POSITIVE_INFINITY;

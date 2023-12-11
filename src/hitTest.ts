@@ -1,16 +1,16 @@
-import type { View } from "./layout/View";
+import type { BaseView } from "./layout/BaseView";
 import { CROSS_AXIS_SIZE } from "./consts";
 import { Vec4 } from "./math/Vec4";
 import { intersection as getIntersection, isInside } from "./math/utils";
 import { Overflow } from "./layout/styling";
 import type { UserEvent } from "./layout/eventTypes";
 
-export function hitTest(node: View, event: UserEvent): boolean {
+export function hitTest(node: BaseView, event: UserEvent): boolean {
   const intersection = getScreenVisibleRectangle(node);
   return isInside(event.position, intersection);
 }
 
-export function getScreenVisibleRectangle(node: View) {
+export function getScreenVisibleRectangle(node: BaseView) {
   const { totalScrollX, totalScrollY, clipStart, clipSize, clientHeight, clientWidth } =
     node._state;
   const nodeRectangle = new Vec4(
