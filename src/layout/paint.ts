@@ -1,5 +1,4 @@
 import { Text } from "./Text";
-import type { BaseView } from "./BaseView";
 import { Vec2 } from "../math/Vec2";
 import { Vec4 } from "../math/Vec4";
 import { Display, Overflow, TextAlign, defaultTextStyleProps } from "./styling";
@@ -11,6 +10,8 @@ import {
   SCROLLBAR_CORNER_COLOR,
   SCROLLBAR_TRACK_COLOR,
 } from "../consts";
+import type { Node } from "./Node";
+import { BaseView } from "./BaseView";
 
 /**
  * Takes a renderer and a root of a tree and commands the renderer to paint it. Used every frame.
@@ -19,7 +20,7 @@ import {
  * @param node root of the tree to paint.
  * @returns
  */
-export function paint(ui: Renderer, node: BaseView | Text) {
+export function paint(ui: Renderer, node: Node) {
   if (node._style.display === Display.None) {
     return;
   }
@@ -38,7 +39,7 @@ export function paint(ui: Renderer, node: BaseView | Text) {
  * be renderered to for this node. They need to be adjusted for the node's position, scroll offset
  * and size.
  */
-function paintNode(ui: Renderer, node: BaseView | Text, clipStart: Vec2, clipSize: Vec2): void {
+function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): void {
   const position = new Vec2(node._state.x, node._state.y).subtract(
     new Vec2(node._state.totalScrollX, node._state.totalScrollY),
   );
@@ -57,7 +58,7 @@ function paintNode(ui: Renderer, node: BaseView | Text, clipStart: Vec2, clipSiz
         maxWidth: node._state.textWidthLimit,
       },
     );
-  } else {
+  } else if (node instanceof BaseView) {
     const size = new Vec2(node._state.clientWidth, node._state.clientHeight);
 
     const hasHorizontalScroll = node._style.overflowX === Overflow.Scroll;

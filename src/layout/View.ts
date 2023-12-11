@@ -23,8 +23,9 @@ type UserEventTuple =
  */
 export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
-  _scrollbarClickPosition: number = -1;
-  _isScrollbarHovered: boolean = false;
+
+  private mouseDownPosition: number = -1;
+  private isScrollbarHovered: boolean = false;
 
   constructor(props: { onClick?(): void; style?: ViewStyleProps; testID?: string }) {
     super(props);

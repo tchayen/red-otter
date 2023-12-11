@@ -1,10 +1,10 @@
 import { BaseView } from "../layout/BaseView";
-import type { Text } from "../layout/Text";
+import type { Node } from "../layout/Node";
 
-export function getByTestId(root: BaseView, testId: string): BaseView | Text | null {
+export function getByTestId(root: Node, testId: string): Node | null {
   let c = root.firstChild;
   while (c) {
-    if (c.props.testID === testId) {
+    if (c.testID === testId) {
       return c;
     }
     if (c instanceof BaseView) {

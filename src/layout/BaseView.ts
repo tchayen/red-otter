@@ -1,3 +1,4 @@
+import type { Node } from "./Node";
 import type {
   ExactDecorativeProps,
   ExactLayoutProps,
@@ -5,17 +6,18 @@ import type {
   LayoutNodeState,
 } from "./styling";
 import { normalizeLayoutProps, normalizeDecorativeProps, defaultLayoutNodeState } from "./styling";
-import type { Text } from "./Text";
 
 /**
  * Basic building block of the UI. A node in a tree which is mutated by the layout algorithm.
  */
-export class BaseView {
-  next: BaseView | Text | null = null;
-  prev: BaseView | Text | null = null;
-  firstChild: BaseView | Text | null = null;
-  lastChild: BaseView | Text | null = null;
-  parent: BaseView | null = null;
+export class BaseView implements Node {
+  testID: string | null;
+  next: Node | null = null;
+  prev: Node | null = null;
+  firstChild: Node | null = null;
+  lastChild: Node | null = null;
+  parent: Node | null = null;
+
   /**
    * Internal state of the node. It's public so that you can use it if you need to, but it's ugly
    * so that you don't forget it might break at any time.
@@ -33,12 +35,13 @@ export class BaseView {
       testID?: string;
     },
   ) {
+    this.testID = props.testID ?? null;
     this._style = normalizeDecorativeProps(
       normalizeLayoutProps(props.style ?? {}) as ViewStyleProps,
     );
   }
 
-  add(node: BaseView | Text): BaseView | Text {
+  add(node: Node): Node {
     node.parent = this;
 
     if (this.firstChild === null) {

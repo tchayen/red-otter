@@ -1,6 +1,5 @@
-import type { Text } from "./Text";
-import type { BaseView } from "./BaseView";
 import { Vec2 } from "../math/Vec2";
+import type { Node } from "./Node";
 
 /**
  * Internal state of the node. Might be useful for debugging or hacking around but it is subject
@@ -10,7 +9,7 @@ export type LayoutNodeState = {
   /**
    * Temporary array used by layout.
    */
-  children: Array<Array<BaseView | Text>>;
+  children: Array<Array<Node>>;
   /**
    * Height of the element excluding scrollbar.
    */

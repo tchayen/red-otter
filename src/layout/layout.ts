@@ -19,6 +19,7 @@ import {
   defaultTextStyleProps,
 } from "./styling";
 import { CROSS_AXIS_SIZE } from "../consts";
+import type { Node } from "./Node";
 
 /**
  * This function traverses the tree and calculates layout information - `width`, `height`, `x`, `y`
@@ -30,8 +31,8 @@ import { CROSS_AXIS_SIZE } from "../consts";
  * @param tree tree of views to layout.
  * @param fontLookups used for calculating text shapes for text wrapping. Can be `null` if not needed.
  */
-export function layout(tree: BaseView, fontLookups: Lookups | null, rootSize: Vec2): void {
-  const traversalQueue = new Queue<BaseView | Text>();
+export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2): void {
+  const traversalQueue = new Queue<Node>();
 
   const root = new BaseView({
     style: {
@@ -42,7 +43,7 @@ export function layout(tree: BaseView, fontLookups: Lookups | null, rootSize: Ve
   });
   root.add(tree);
 
-  const nodesInLevelOrder: Array<BaseView | Text> = [root];
+  const nodesInLevelOrder: Array<Node> = [root];
 
   /*
    * NOTE:
@@ -268,7 +269,7 @@ export function layout(tree: BaseView, fontLookups: Lookups | null, rootSize: Ve
       }
     }
 
-    const rows: Array<Array<BaseView | Text>> = [[]];
+    const rows: Array<Array<Node>> = [[]];
     let main = 0;
     let cross = 0;
     let longestChildSize = 0;
@@ -820,7 +821,7 @@ function toPercentage(value: string): number {
   return result;
 }
 
-function applyMinMaxAndAspectRatio(e: BaseView | Text): void {
+function applyMinMaxAndAspectRatio(e: Node): void {
   let minHeight = 0;
   let minWidth = 0;
   let maxHeight = Number.POSITIVE_INFINITY;

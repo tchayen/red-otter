@@ -1,5 +1,6 @@
 import { shapeText } from "../font/shapeText";
 import type { Lookups } from "../font/types";
+import type { Node } from "./Node";
 import type { UserEvent } from "./eventTypes";
 import type { ExactLayoutProps, LayoutNodeState, LayoutProps, TextStyleProps } from "./styling";
 import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./styling";
@@ -7,12 +8,13 @@ import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } f
 /**
  * Basic text node. The only way to create text. It cannot have children.
  */
-export class Text {
-  next: Text | null = null;
-  prev: Text | null = null;
-  firstChild: Text | null = null;
-  lastChild: Text | null = null;
-  parent: Text | null = null;
+export class Text implements Node {
+  testID: string | null;
+  next: Node | null = null;
+  prev: Node | null = null;
+  firstChild: Node | null = null;
+  lastChild: Node | null = null;
+  parent: Node | null = null;
   /**
    * Should always be normalized.
    */
@@ -27,6 +29,7 @@ export class Text {
       testID?: string;
     },
   ) {
+    this.testID = props.testID ?? null;
     const shape = shapeText(
       props.lookups,
       props.style.fontName ?? defaultTextStyleProps.fontName,

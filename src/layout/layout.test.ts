@@ -5,10 +5,9 @@ import { prepareLookups } from "../font/prepareLookups";
 import type { TTF } from "../font/parseTTF";
 import { layout } from "./layout";
 import { Vec2 } from "../math/Vec2";
-import type { BaseView } from "./BaseView";
-import type { Text } from "./Text";
 import * as fixtures from "../fixtures";
 import { getByTestId } from "../utils/getByTestId";
+import type { Node } from "./Node";
 
 // Silence console.debug() output during tests.
 console.debug = () => {};
@@ -76,8 +75,8 @@ describe("Layout", () => {
       [new Vec2(0, 125), new Vec2(120, 125), new Vec2(250, 125)],
     ];
 
-    let c: BaseView | Text | null | undefined = null;
-    let box: BaseView | Text | null | undefined = root.firstChild?.firstChild;
+    let c: Node | null | undefined = null;
+    let box: Node | null | undefined = root.firstChild?.firstChild;
 
     for (let i = 0; i < expectedRowPositions.length; i++) {
       c = box?.firstChild;
@@ -116,8 +115,8 @@ describe("Layout", () => {
     layout(root, lookups, new Vec2(1024, 768));
     layout(root, lookups, new Vec2(1024, 768));
 
-    let c: BaseView | Text | null | undefined = null;
-    let box: BaseView | Text | null | undefined = root.firstChild?.firstChild;
+    let c: Node | null | undefined = null;
+    let box: Node | null | undefined = root.firstChild?.firstChild;
 
     const expectedRowPositions = [
       [new Vec2(92, 0), new Vec2(118, 22)],
@@ -171,8 +170,8 @@ describe("Layout", () => {
       [new Vec2(270, 125), new Vec2(140, 125), new Vec2(0, 125)],
     ];
 
-    let c: BaseView | Text | null | undefined = null;
-    let box: BaseView | Text | null | undefined = root.firstChild?.firstChild;
+    let c: Node | null | undefined = null;
+    let box: Node | null | undefined = root.firstChild?.firstChild;
 
     for (let i = 0; i < expectedRowPositions.length; i++) {
       c = box?.firstChild;
@@ -444,14 +443,14 @@ describe("Layout", () => {
     const maxSizeFirst = maxSize?.firstChild;
     const maxSizeSecond = maxSizeFirst?.next;
 
-    expect(passThrough?.props.testID).toBe("passThrough");
-    expect(inside?.props.testID).toBe("inside");
-    expect(innermost?.props.testID).toBe("innermost");
-    expect(first?.props.testID).toBe("first");
-    expect(minSize?.props.testID).toBe("minSize");
-    expect(maxSize?.props.testID).toBe("maxSize");
-    expect(maxSizeFirst?.props.testID).toBe("maxSizeFirst");
-    expect(maxSizeSecond?.props.testID).toBe("maxSizeSecond");
+    expect(passThrough?.testID).toBe("passThrough");
+    expect(inside?.testID).toBe("inside");
+    expect(innermost?.testID).toBe("innermost");
+    expect(first?.testID).toBe("first");
+    expect(minSize?.testID).toBe("minSize");
+    expect(maxSize?.testID).toBe("maxSize");
+    expect(maxSizeFirst?.testID).toBe("maxSizeFirst");
+    expect(maxSizeSecond?.testID).toBe("maxSizeSecond");
 
     const expectedSizes = [
       new Vec2(120, 150),
