@@ -51,7 +51,7 @@ export async function CodeBlock({ children }: PropsWithChildren) {
   }
 
   try {
-    code = await prettier.format(code, { parser: "babel-ts", printWidth: 48 });
+    code = await prettier.format(code, { parser: "babel-ts", printWidth: 80 });
   } catch {
     /* empty */
   }

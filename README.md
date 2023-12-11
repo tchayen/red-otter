@@ -3,6 +3,8 @@
 > [!WARNING]
 > This project is in early development stage. It's not ready for production use.
 
+## Quick introduction
+
 ### What is it?
 
 A flexbox (think CSS or Yoga) layout engine that comes with its own TTF font parser, text rasterizer, UI renderer, and a declarative UI API (think React).
