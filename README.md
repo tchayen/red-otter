@@ -34,6 +34,14 @@ This resonates well with the recent trend of creating new software that attemps 
 
 And finally, it was just a fun set of problems to work on.
 
+### Why base it off DOM and web APIs?
+
+When creating the whole tech stack from scratch, there are infinitely many possible choices so one could ask why recreate something that already exists and has _problems_.
+
+There are many reasons to not like web technologies – DOM is a very large and arguably bloated API, CSS is complex and unintuitive, JavaScript has a reputation of poorly designed language. A seemingly better choice would be to write it in C, compile to WASM and follow Immediate Mode GUI approach.
+
+I tried to find an example of IMGUI library with styling capabilities on par with what I expect and I didn't manage to. I don't think that there are any fundamental difficulties with that, after all it's just a matter of passing more complex structs or calling more layout-defining functions. But I didn't want to be the first to reach that point and instead I went with approach that I knew would work. The key word here is _reasonable_ – I wanted to first achieve something that will work and only then experiment with new ideas as I have a good starting point. And I think that this is a reasonable approach.
+
 ---
 
 ## Context
