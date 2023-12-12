@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
+    "dev": "cd examples && vite --port 5005",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src",
@@ -29,6 +29,7 @@
     "@petamoriken/float16": "^3.8.4"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
     "@total-typescript/ts-reset": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",

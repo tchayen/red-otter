@@ -1,13 +1,13 @@
-import { EventManager } from "./EventManager";
-import { WebGPURenderer } from "./renderer/WebGPURenderer";
-import { isWindowDefined, settings } from "./consts";
-import { paint } from "./layout/paint";
-import { parseTTF } from "./font/parseTTF";
-import { prepareLookups } from "./font/prepareLookups";
-import { renderFontAtlas } from "./font/renderFontAtlas";
+import { EventManager } from "../src/EventManager";
+import { WebGPURenderer } from "../src/renderer/WebGPURenderer";
+import { isWindowDefined, settings } from "../src/consts";
+import { paint } from "../src/layout/paint";
+import { parseTTF } from "../src/font/parseTTF";
+import { prepareLookups } from "../src/font/prepareLookups";
+import { renderFontAtlas } from "../src/font/renderFontAtlas";
 import { ui } from "./ui";
-import { invariant } from "./utils/invariant";
-import { compose } from "./layout/compose";
+import { invariant } from "../src/utils/invariant";
+import { compose } from "../src/layout/compose";
 
 const eventManager = new EventManager();
 

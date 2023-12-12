@@ -1,16 +1,16 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
+import typescript from "@rollup/plugin-typescript";
 
 export default defineConfig({
   build: {
+    rollupOptions: {
+      plugins: [typescript({ tsconfig: "./tsconfig.json" })],
+    },
     lib: {
-      entry: [resolve(__dirname, "src/index.ts")],
-      fileName: (format) => `redotter.${format}.js`,
+      name: "Red Otter",
       formats: ["es"],
-      name: "RedOtter",
+      entry: resolve(__dirname, "src/index.ts"),
     },
   },
-  // @ts-expect-error dts types were not updated to vite 5.
-  plugins: [dts({ include: "src", rollupTypes: true })],
 });
