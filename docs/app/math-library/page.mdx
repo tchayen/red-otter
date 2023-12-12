@@ -1,10 +1,6 @@
-import { packageJson } from "../components/PackageJson";
 import { Api } from "./Api";
-
-export const metadata = {
-  description: packageJson.description,
-  title: "Red Otter – Layout",
-};
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Math Library");
 
 # Math Library
 

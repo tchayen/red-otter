@@ -102,7 +102,7 @@ export function Body({ children }: PropsWithChildren) {
   return (
     <>
       <Tooltip.Provider>
-        {/* <div className="absolute -top-32 h-[300px] w-full bg-gradient-to-b from-tomatodark4 to-mauvedark1"></div> */}
+        {/* <div className="absolute -top-32 h-[300px] w-full bg-gradient-to-b from-tomatodark3 to-mauvedark1"></div> */}
         {topBar}
         <div className="flex pt-[49px]">
           <div className="scrollbar sticky top-[49px] hidden h-[calc(100dvh-49px)] w-64 shrink-0 flex-col gap-4 overflow-auto p-3 lg:flex">

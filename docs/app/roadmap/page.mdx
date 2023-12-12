@@ -1,9 +1,5 @@
-import { packageJson } from "../components/PackageJson";
-
-export const metadata = {
-  description: packageJson.description,
-  title: "Red Otter – Roadmap",
-};
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Roadmap");
 
 # Roadmap
 

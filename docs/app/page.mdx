@@ -1,9 +1,5 @@
-import { packageJson } from "./components/PackageJson";
 import Readme from "../../README.md";
-
-export const metadata = {
-  description: packageJson.description,
-  title: "Red Otter",
-};
+import { getMetadata } from "./getMetadata";
+export const metadata = getMetadata("Homepage");
 
 <Readme />

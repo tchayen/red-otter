@@ -2,6 +2,9 @@ import Link from "next/link";
 
 // @ts-expect-error MDX posts are not recognized by TS.
 import BigReset from "./(posts)/0-1-the-big-reset/page.mdx";
+import { getMetadata } from "../getMetadata";
+
+export const metadata = getMetadata("Blog");
 
 export default function Page() {
   return (

@@ -2,13 +2,7 @@ import "./globals.css";
 import { Body } from "./components/Body";
 import { mauveDark } from "@radix-ui/colors";
 import { Hr } from "./components/tags";
-import { packageJson } from "./components/PackageJson";
 import "./code-theme.css";
-
-export const metadata = {
-  description: packageJson.description,
-  title: "Red Otter",
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
