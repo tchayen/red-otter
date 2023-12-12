@@ -12,7 +12,7 @@ export const jetBrainsMono = JetBrains_Mono({
 });
 
 export const outline =
-  "rounded-sm focus-visible:ring-tomatodark9 outline-none focus-visible:ring-2";
+  "rounded-sm focus-visible:border-transparent focus-visible:ring-tomatodark9 outline-none focus-visible:ring-2";
 export const underline = "decoration-1 underline-offset-4 decoration-mauvedark8 hover:underline";
 
 export function Code({ children, className }: PropsWithChildren<{ className?: string }>) {

@@ -168,7 +168,7 @@ export function Search() {
         href={result.url}
         className={twMerge(
           outline,
-          "block overflow-hidden rounded-md border border-mauvedark6 px-4 py-3 text-mauvedark12 hover:bg-mauvedark3 focus-visible:border-transparent",
+          "block overflow-hidden rounded-md border border-mauvedark6 px-4 py-3 text-mauvedark12 hover:bg-mauvedark3",
         )}
       >
         <div className="flex flex-col items-start gap-1">
@@ -216,7 +216,7 @@ export function Search() {
                 autoFocus
                 className={twMerge(
                   outline,
-                  "relative flex h-8 w-full shrink-0 items-center rounded-md border border-mauvedark5 bg-mauvedark1 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10 focus-visible:border-transparent",
+                  "relative flex h-8 w-full shrink-0 items-center rounded-md border border-mauvedark5 bg-mauvedark1 px-2 text-sm text-mauvedark12 placeholder:text-mauvedark10",
                 )}
                 placeholder="Search…"
                 onChange={onChange}

@@ -30,7 +30,7 @@ export function Trigger({ children, value }: PropsWithChildren<{ value: string }
 
 export function Content({ children, value }: PropsWithChildren<{ value: string }>) {
   return (
-    <TabsPrimitive.Content value={value} className="py-2" tabIndex={-1}>
+    <TabsPrimitive.Content value={value} className="py-2 outline-none" tabIndex={-1}>
       {children}
     </TabsPrimitive.Content>
   );

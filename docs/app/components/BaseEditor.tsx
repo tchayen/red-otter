@@ -30,7 +30,7 @@ export const BaseEditor = withClient(function BaseEditor({ files, customSetup }:
             <button
               className={twMerge(
                 outline,
-                "flex self-start rounded-md border border-mauvedark5 bg-mauvedark2 px-3 py-2 text-sm text-mauvedark11 focus-visible:border-transparent",
+                "flex self-start rounded-md border border-mauvedark5 bg-mauvedark2 px-3 py-2 text-sm text-mauvedark11",
               )}
             >
               Show code
