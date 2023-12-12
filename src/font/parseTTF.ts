@@ -540,7 +540,7 @@ function readGPOSTable(reader: BinaryReader, offset: number): GPOSTable {
   reader.setPosition(offset + lookupListOffset);
   const lookupCount = reader.getUint16();
 
-  enum LookupType {
+  const enum LookupType {
     SingleAdjustment = 1,
     PairAdjustment = 2,
     CursiveAttachment = 3,

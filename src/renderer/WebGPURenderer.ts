@@ -17,7 +17,7 @@ import { defaultTextStyleProps, type TextAlign } from "../layout/styling";
 const RECTANGLE_BUFFER_SIZE = 16 * 4096;
 const TEXT_BUFFER_SIZE = 16 * 100_000;
 
-enum DrawingMode {
+const enum DrawingMode {
   Rectangles,
   Text,
   None,
