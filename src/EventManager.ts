@@ -7,6 +7,9 @@ import type { UserEvent } from "./layout/eventTypes";
 import { UserEventType } from "./layout/eventTypes";
 import { hitTest } from "./hitTest";
 
+/**
+ * Responsible for dispatching events to the correct views.
+ */
 export class EventManager {
   private readonly events: Array<UserEvent> = [];
 

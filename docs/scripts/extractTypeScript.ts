@@ -52,6 +52,11 @@ export function extractTypeScript(paths: Array<string>) {
             return;
           }
 
+          // Check if the enum is exported.
+          if (!e.modifiers || !e.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+            return;
+          }
+
           return {
             description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
             name: e.name.escapedText.toString(),
@@ -90,6 +95,11 @@ export function extractTypeScript(paths: Array<string>) {
             return;
           }
 
+          // Check if type is exported.
+          if (!t.modifiers || !t.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+            return;
+          }
+
           const name = symbol.escapedName.toString();
           properties[name] = {
             default: "",
@@ -115,6 +125,11 @@ export function extractTypeScript(paths: Array<string>) {
     ).forEach((i) => {
       const symbol = checker.getSymbolAtLocation(i.name);
       if (!symbol) {
+        return;
+      }
+
+      // Check if interface is exported.
+      if (!i.modifiers || !i.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
         return;
       }
 
@@ -196,6 +211,12 @@ export function extractTypeScript(paths: Array<string>) {
         if (!symbol) {
           return;
         }
+
+        // Check if class is exported.
+        if (!c.modifiers || !c.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+          return;
+        }
+
         const methods: Record<string, MethodType> = {};
         ts.forEachChild(c, (child) => {
           if (!ts.isMethodDeclaration(child)) {
