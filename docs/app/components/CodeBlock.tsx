@@ -3,6 +3,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 import { jetBrainsMono } from "./tags";
 import * as prettier from "prettier";
+import { CopyCode } from "./CopyCode";
 
 export const CHARACTER_LIMIT = 76;
 
@@ -64,7 +65,8 @@ export async function CodeBlock({ children }: PropsWithChildren) {
 
   return (
     <DivWrapper>
-      <div className="pointer-events-none absolute right-0 top-0 select-none p-2 text-xs text-mauvedark10">
+      <CopyCode code={children.props.children} />
+      <div className="pointer-events-none select-none pl-2 pt-2 text-xs text-mauvedark10">
         {prettyPrint(language)}
       </div>
       <Pre dangerouslySetInnerHTML={{ __html: code }} />
@@ -115,7 +117,7 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
     <pre
       className={twMerge(
         jetBrainsMono.className,
-        "scrollbar hljs codeblock overflow-x-auto p-4 text-sm leading-[19px]",
+        "scrollbar hljs codeblock overflow-x-auto p-4 pt-2 text-sm leading-[19px]",
       )}
       style={{ fontVariantLigatures: "none" }}
       {...rest}
