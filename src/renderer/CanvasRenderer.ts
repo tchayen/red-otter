@@ -18,7 +18,7 @@ export class CanvasRenderer implements Renderer {
     throw new Error("Method not implemented.");
   }
 
-  render(commandEncoder: GPUCommandEncoder): void {
+  render(context: CanvasRenderingContext2D): void {
     throw new Error("Method not implemented.");
   }
 

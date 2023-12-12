@@ -15,7 +15,7 @@ export interface Renderer {
     clipCorners: Vec4,
   ): void;
 
-  render(commandEncoder: GPUCommandEncoder): void;
+  render(context: CanvasRenderingContext2D | GPUCommandEncoder): void;
 
   text(
     text: string,

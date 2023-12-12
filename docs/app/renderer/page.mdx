@@ -1,4 +1,5 @@
 import { packageJson } from "../components/PackageJson";
+import { Api } from "./Api";
 
 export const metadata = {
   description: packageJson.description,
@@ -43,6 +44,9 @@ export interface Renderer {
 
 For each rectangle on the screen, an instance of a full-screen quad is renderered, which is then assigned to proper positions based on data stored in storage buffer. Fragment shader uses SDF to calculate border radius.
 
+## API
+
+<Api />
 ## Text rendering
 
 Text uses SDF font rendering to display glyphs from a font atlas. See [Text Rendering](/text-rendering) page for more information.

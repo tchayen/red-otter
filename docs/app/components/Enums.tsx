@@ -1,4 +1,4 @@
-import { H2, H4, P } from "./tags";
+import { H2, H3, P } from "./tags";
 import types from "../types.json";
 import { Table } from "./Table";
 import { Fragment } from "react";
@@ -14,7 +14,7 @@ export function Enums() {
         .map((e) => {
           return (
             <>
-              <H4>{e.name}</H4>
+              <H3>{e.name}</H3>
               <Markdown>{e.description}</Markdown>
               <Table.Root columns="min-content auto">
                 <Table.HeaderCell>Value</Table.HeaderCell>

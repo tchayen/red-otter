@@ -6,11 +6,11 @@ import type {
   EnumType,
   FieldType,
   FunctionType,
+  InterfaceType,
   MethodType,
   TypeType,
 } from "../app/components/ApiBlocks";
 import "@total-typescript/ts-reset";
-// import "bun-types";
 
 const mainDirectory = path.resolve(path.join(__dirname, "/../../src"));
 
@@ -26,6 +26,7 @@ fs.writeFileSync(
  */
 export function extractTypeScript(paths: Array<string>) {
   const types: Record<string, TypeType> = {};
+  const interfaces: Record<string, InterfaceType> = {};
   const classes: Record<string, ClassType> = {};
   const functions: Record<string, FunctionType> = {};
   const enums: Array<EnumType> = [];
@@ -78,7 +79,6 @@ export function extractTypeScript(paths: Array<string>) {
       }
 
       const properties: Record<string, FieldType> = {};
-
       if (ts.isTypeLiteralNode(t.type)) {
         t.type.members.forEach((m) => {
           if (!ts.isPropertySignature(m)) {
@@ -103,6 +103,82 @@ export function extractTypeScript(paths: Array<string>) {
       const name = symbol.escapedName.toString();
       types[name] = {
         description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+        name,
+        properties,
+        source: sourceString,
+      };
+    });
+
+    // Process interfaces.
+    (
+      sourceFile.statements.filter(ts.isInterfaceDeclaration) as Array<ts.InterfaceDeclaration>
+    ).forEach((i) => {
+      const symbol = checker.getSymbolAtLocation(i.name);
+      if (!symbol) {
+        return;
+      }
+
+      const properties: Record<string, FieldType> = {};
+      i.members.forEach((m) => {
+        if (!ts.isPropertySignature(m)) {
+          return;
+        }
+
+        const symbol = checker.getSymbolAtLocation(m.name);
+        if (!symbol) {
+          return;
+        }
+
+        const name = symbol.escapedName.toString();
+        properties[name] = {
+          default: "",
+          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          name,
+          type: checker.typeToString(checker.getTypeAtLocation(m)),
+        };
+      });
+
+      // Process methods.
+      const methods: Record<string, MethodType> = {};
+      i.members.forEach((m) => {
+        if (!ts.isMethodSignature(m)) {
+          return;
+        }
+
+        const symbol = checker.getSymbolAtLocation(m.name);
+        if (!symbol) {
+          return;
+        }
+
+        const name = symbol.escapedName.toString();
+        const parameters: Record<string, FieldType> = {};
+        m.parameters.forEach((p) => {
+          const symbol = checker.getSymbolAtLocation(p.name);
+          if (!symbol) {
+            return;
+          }
+
+          const name = symbol.escapedName.toString();
+          parameters[name] = {
+            default: "",
+            description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            name,
+            type: checker.typeToString(checker.getTypeAtLocation(p)),
+          };
+        });
+
+        methods[name] = {
+          description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          name,
+          parameters,
+          returnType: checker.typeToString(checker.getTypeAtLocation(m)),
+        };
+      });
+
+      const name = symbol.escapedName.toString();
+      interfaces[name] = {
+        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+        methods,
         name,
         properties,
         source: sourceString,
@@ -160,9 +236,14 @@ export function extractTypeScript(paths: Array<string>) {
           };
         });
 
+        const ext = c.heritageClauses
+          ?.find((h) => h.token === ts.SyntaxKind.ExtendsKeyword)
+          ?.getText()
+          .replace("extends ", "");
         const name = symbol.escapedName.toString();
         classes[name] = {
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+          extends: ext,
           methods,
           name,
           source: sourceString,
@@ -269,7 +350,7 @@ export function extractTypeScript(paths: Array<string>) {
     });
   }
 
-  return { classes, enums, functions, types };
+  return { classes, enums, functions, interfaces, types };
 }
 
 /**

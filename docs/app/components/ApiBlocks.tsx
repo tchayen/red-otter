@@ -2,16 +2,41 @@ import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 import types from "../types.json";
 import { Table } from "./Table";
-import { Code, H2, H3, Hr, P, Strong, slugify } from "./tags";
+import { Code, H3, Hr, P, Strong, slugify } from "./tags";
 import { Markdown } from "./Markdown";
 import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
 import Link from "next/link";
 
+function Header({
+  label,
+  id,
+  type,
+  suffix,
+}: {
+  id: string;
+  label: string;
+  suffix?: string;
+  type: string;
+}) {
+  return (
+    <div className="flex items-baseline gap-1">
+      <span className="italic text-mauvedark10">{type}</span>
+      <H3 id={`${id}-${slugify(label)}`}>{label}</H3>
+      <span className="italic text-mauvedark10">{suffix}</span>
+    </div>
+  );
+}
+
 export function Class({ c, id }: { c: ClassType; id: string }) {
   return (
     <>
-      <H3 id={`${id}-${slugify(c.name)}`}>{c.name}</H3>
+      <Header
+        label={c.name}
+        id={id}
+        type="class"
+        suffix={c.extends ? `extends ${c.extends}` : undefined}
+      />
       <Source>{c.source}</Source>
       <Markdown>{c.description}</Markdown>
       {Object.values(c.methods).length > 0 && (
@@ -38,7 +63,7 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
 export function Function({ f, id }: { f: FunctionType; id: string }) {
   return (
     <Fragment key={f.name}>
-      <H3 id={`${id}-${slugify(f.name)}`}>{f.name}</H3>
+      <Header label={f.name} id={id} type="function" />
       <Source>{f.source}</Source>
       <Markdown>{f.description}</Markdown>
       {Object.values(f.parameters).length > 0 && (
@@ -80,10 +105,10 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
   );
 }
 
-export function Type({ t, children }: PropsWithChildren<{ t: TypeType }>) {
+export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: TypeType }>) {
   return (
     <>
-      <H2>{t.name}</H2>
+      <Header label={t.name} id={id} type="type" />
       <Source>{t.source}</Source>
       <P>{t.description}</P>
       {children}
@@ -116,6 +141,69 @@ export function Type({ t, children }: PropsWithChildren<{ t: TypeType }>) {
           );
         })}
       </Table.Root>
+    </>
+  );
+}
+
+export function Interface({
+  i,
+  id,
+  children,
+}: PropsWithChildren<{ i: InterfaceType; id: string }>) {
+  return (
+    <>
+      <Header label={i.name} id={id} type="interface" />
+      <Source>{i.source}</Source>
+      <P>{i.description}</P>
+      {children}
+      {Object.values(i.properties).length > 0 && (
+        <Table.Root>
+          <Table.HeaderCell>Name</Table.HeaderCell>
+          <Table.HeaderCell>Type</Table.HeaderCell>
+          <Table.HeaderCell>Default value</Table.HeaderCell>
+          <Table.HeaderCell>Description</Table.HeaderCell>
+          {Object.values(i.properties).map((field) => {
+            const enumType = types.enums.find((e) => e.name === field.type);
+            return (
+              <Fragment key={field.name}>
+                <Table.Cell>
+                  <span>{field.name}</span>
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap">
+                  {enumType ? (
+                    <TypeTooltip field={field} enumType={enumType} />
+                  ) : (
+                    replacePercentage(field.type)
+                  )}
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap">
+                  <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
+                </Table.Cell>
+                <Table.Cell>
+                  <Description>{field.description}</Description>
+                </Table.Cell>
+              </Fragment>
+            );
+          })}
+        </Table.Root>
+      )}
+      {Object.values(i.methods).length > 0 && (
+        <Table.Root columns="min-content auto">
+          <Table.HeaderCell>Method</Table.HeaderCell>
+          <Table.HeaderCell>Type and description</Table.HeaderCell>
+          {Object.values(i.methods).map((m) => {
+            return (
+              <Fragment key={i.name}>
+                <Table.Cell>{m.name}</Table.Cell>
+                <Table.Cell>
+                  <Code>{m.returnType}</Code>
+                  <div className="mt-1 [&>p]:text-sm">{<Markdown>{m.description}</Markdown>}</div>
+                </Table.Cell>
+              </Fragment>
+            );
+          })}
+        </Table.Root>
+      )}
     </>
   );
 }
@@ -179,6 +267,14 @@ export type TypeType = {
   source: string;
 };
 
+export type InterfaceType = {
+  description: string;
+  methods: Record<string, MethodType>;
+  name: string;
+  properties: Record<string, FieldType>;
+  source: string;
+};
+
 export type FunctionType = {
   description: string;
   name: string;
@@ -198,6 +294,7 @@ export type MethodType = {
 
 export type ClassType = {
   description: string;
+  extends?: string;
   methods: Record<string, MethodType>;
   name: string;
   source: string;

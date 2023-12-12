@@ -10,11 +10,11 @@ export function Api() {
   const layoutNodeState = types.types.LayoutNodeState;
   return (
     <>
-      <Type t={layoutProps} />
+      <Type id="" t={layoutProps} />
       <Hr />
-      <Type t={decorativeProps} />
+      <Type id="" t={decorativeProps} />
       <Hr />
-      <Type t={textStyleProps}>
+      <Type id="" t={textStyleProps}>
         <P>
           In-depth explanation of text rendering is available on the [Text
           Rendering](/text-rendering) page.
@@ -29,7 +29,7 @@ export function Api() {
         </Box>
       </Type>
       <Hr />
-      <Type t={layoutNodeState} />
+      <Type id="" t={layoutNodeState} />
       <Hr />
       <Enums />
     </>
