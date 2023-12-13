@@ -76,7 +76,7 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
                 <Table.Cell>{p.name}</Table.Cell>
                 <Table.Cell>
                   <Code>{p.type}</Code>
-                  <div className="mt-1 [&>p]:text-sm">{<Markdown>{p.description}</Markdown>}</div>
+                  <Description>{p.description}</Description>
                 </Table.Cell>
               </Fragment>
             );
@@ -86,9 +86,7 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
               <Table.Cell className="italic">returns</Table.Cell>
               <Table.Cell>
                 <Code>{f.returnType}</Code>
-                <div className="mt-1 [&>p]:text-sm">
-                  <Markdown>{f.returnDescription}</Markdown>
-                </div>
+                <Description>{f.returnDescription}</Description>
               </Table.Cell>
             </>
           }
@@ -106,17 +104,18 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
 }
 
 export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: TypeType }>) {
+  const hasDefaultValues = Object.values(t.properties).some((p) => !!p.default);
+
   return (
     <>
       <Header label={t.name} id={id} type="type" />
       <Source>{t.source}</Source>
       <P>{t.description}</P>
       {children}
-      <Table.Root>
+      <Table.Root columns={hasDefaultValues ? "min-content min-content auto" : "min-content auto"}>
         <Table.HeaderCell>Name</Table.HeaderCell>
-        <Table.HeaderCell>Type</Table.HeaderCell>
-        <Table.HeaderCell>Default value</Table.HeaderCell>
-        <Table.HeaderCell>Description</Table.HeaderCell>
+        {hasDefaultValues && <Table.HeaderCell>Default value</Table.HeaderCell>}
+        <Table.HeaderCell>Type and description</Table.HeaderCell>
         {Object.values(t.properties).map((field) => {
           const enumType = types.enums.find((e) => e.name === field.type);
           return (
@@ -124,17 +123,17 @@ export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: Typ
               <Table.Cell>
                 <span>{field.name}</span>
               </Table.Cell>
-              <Table.Cell className="whitespace-nowrap">
+              {hasDefaultValues && (
+                <Table.Cell className="whitespace-nowrap">
+                  <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
+                </Table.Cell>
+              )}
+              <Table.Cell>
                 {enumType ? (
                   <TypeTooltip field={field} enumType={enumType} />
                 ) : (
                   replacePercentage(field.type)
                 )}
-              </Table.Cell>
-              <Table.Cell className="whitespace-nowrap">
-                <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
-              </Table.Cell>
-              <Table.Cell>
                 <Description>{field.description}</Description>
               </Table.Cell>
             </Fragment>
@@ -145,11 +144,16 @@ export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: Typ
   );
 }
 
+function Description({ children }: { children: string }) {
+  return <div className="mt-1 [&>p]:my-0 [&>p]:text-sm">{<Markdown>{children}</Markdown>}</div>;
+}
+
 export function Interface({
   i,
   id,
   children,
 }: PropsWithChildren<{ i: InterfaceType; id: string }>) {
+  const hasDefaultValues = Object.values(i.properties).some((p) => !!p.default);
   return (
     <>
       <Header label={i.name} id={id} type="interface" />
@@ -157,11 +161,12 @@ export function Interface({
       <P>{i.description}</P>
       {children}
       {Object.values(i.properties).length > 0 && (
-        <Table.Root>
+        <Table.Root
+          columns={hasDefaultValues ? "min-content min-content auto" : "min-content auto"}
+        >
           <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Type</Table.HeaderCell>
-          <Table.HeaderCell>Default value</Table.HeaderCell>
-          <Table.HeaderCell>Description</Table.HeaderCell>
+          {hasDefaultValues && <Table.HeaderCell>Default value</Table.HeaderCell>}
+          <Table.HeaderCell>Type and description</Table.HeaderCell>
           {Object.values(i.properties).map((field) => {
             const enumType = types.enums.find((e) => e.name === field.type);
             return (
@@ -169,18 +174,18 @@ export function Interface({
                 <Table.Cell>
                   <span>{field.name}</span>
                 </Table.Cell>
-                <Table.Cell className="whitespace-nowrap">
+                {hasDefaultValues && (
+                  <Table.Cell className="whitespace-nowrap">
+                    <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
+                  </Table.Cell>
+                )}
+                <Table.Cell>
                   {enumType ? (
                     <TypeTooltip field={field} enumType={enumType} />
                   ) : (
                     replacePercentage(field.type)
                   )}
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap">
-                  <Code className="text-[13px]">{shortenDefault(field.default)}</Code>
-                </Table.Cell>
-                <Table.Cell>
-                  <Description>{field.description}</Description>
+                  <Description>{i.description}</Description>
                 </Table.Cell>
               </Fragment>
             );
@@ -197,7 +202,7 @@ export function Interface({
                 <Table.Cell>{m.name}</Table.Cell>
                 <Table.Cell>
                   <Code>{m.returnType}</Code>
-                  <div className="mt-1 [&>p]:text-sm">{<Markdown>{m.description}</Markdown>}</div>
+                  <Description>{m.description}</Description>
                 </Table.Cell>
               </Fragment>
             );
@@ -242,15 +247,6 @@ function shortenDefault(value: string) {
   }
 
   return value;
-}
-
-type DescriptionProps = { children: string };
-
-function Description({ children }: DescriptionProps) {
-  const splitOnCode = children.split(/(`.*?`)/).map((s, i) => {
-    return <Fragment key={i}>{s.startsWith("`") ? <Code>{s.slice(1, -1)}</Code> : s}</Fragment>;
-  });
-  return <div>{splitOnCode}</div>;
 }
 
 export type FieldType = {

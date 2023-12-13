@@ -16,6 +16,6 @@
     "target": "es2022",
     "typeRoots": ["./node_modules/@webgpu/types"]
   },
-  "include": ["src", "examples", ".eslintrc.cjs"],
+  "include": ["src", "examples", ".eslintrc.cjs", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules"]
 }

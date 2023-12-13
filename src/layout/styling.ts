@@ -475,7 +475,7 @@ export type TextStyleProps = {
   lineHeight?: number;
   textAlign?: TextAlign;
   textTransform?: TextTransform;
-  whitespace: Whitespace;
+  whitespace?: Whitespace;
 };
 
 export type ViewStyleProps = LayoutProps & DecorativeProps;

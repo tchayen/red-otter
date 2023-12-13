@@ -138,29 +138,33 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
 
     const p = e.parent;
     if (p && e instanceof Text && fontLookups) {
+      let maxWidth = Number.POSITIVE_INFINITY;
+
       if ((p?._state.clientWidth ?? 0) > 0) {
-        const maxWidth =
+        maxWidth =
           p._state.clientWidth -
           p._style.paddingLeft -
           p._style.paddingRight -
           p._style.borderLeftWidth -
           p._style.borderRightWidth;
         e._state.textWidthLimit = maxWidth;
-
-        const shape = shapeText(
-          fontLookups,
-          e._style.fontName,
-          e._style.fontSize ?? defaultTextStyleProps.fontSize,
-          e._style.lineHeight ?? defaultTextStyleProps.lineHeight,
-          e.text,
-          e._style.textAlign ?? TextAlign.Left,
-          maxWidth,
-          e._style.whitespace === Whitespace.NoWrap,
-        );
-
-        e._state.clientWidth = shape.boundingRectangle.width;
-        e._state.clientHeight = shape.boundingRectangle.height;
       }
+
+      const shape = shapeText(
+        fontLookups,
+        e._style.fontName,
+        e._style.fontSize ?? defaultTextStyleProps.fontSize,
+        e._style.lineHeight ?? defaultTextStyleProps.lineHeight,
+        e.text,
+        e._style.textAlign ?? TextAlign.Left,
+        maxWidth,
+        (e._style.whitespace ?? Whitespace.Normal) === Whitespace.Normal,
+      );
+
+      e._style.width = shape.boundingRectangle.width;
+      e._style.height = shape.boundingRectangle.height;
+      e._state.clientWidth = shape.boundingRectangle.width;
+      e._state.clientHeight = shape.boundingRectangle.height;
     }
 
     if (e._style.overflowX === Overflow.Scroll) {
@@ -263,9 +267,6 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
-    // For Overflow.Auto, figure out if size of children exceed available space.
-    // TODO
-
     // The size that was first calculated is size of the tallest child of all plus paddings. So
     // here we reset the size and build it again, for all rows.
     if (isWrap) {
@@ -345,6 +346,10 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       rows.at(-1)?.push(c);
       c = c.next;
     }
+
+    // TODO
+    // Figure out scroll size here. If scrollbar is added then recalculate rows.
+
     e._state.children = rows;
 
     // The last row.
