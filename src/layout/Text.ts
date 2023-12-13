@@ -1,6 +1,5 @@
 import type { Lookups } from "../font/types";
 import type { Node } from "./Node";
-import type { UserEvent } from "./eventTypes";
 import type { ExactLayoutProps, LayoutNodeState, LayoutProps, TextStyleProps } from "./styling";
 import { defaultLayoutNodeState, normalizeLayoutProps } from "./styling";
 
@@ -31,6 +30,4 @@ export class Text implements Node {
     this.testID = props.testID ?? null;
     this._style = normalizeLayoutProps(props.style as LayoutProps);
   }
-
-  handleEvent(event: UserEvent): void {}
 }

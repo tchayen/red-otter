@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Fragment } from "react";
 import types from "../types.json";
 import { Table } from "./Table";
-import { Code, H3, Hr, P, Strong, slugify } from "./tags";
+import { Code, H3, H4, P, Strong, slugify } from "./tags";
 import { Markdown } from "./Markdown";
 import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
@@ -13,16 +13,21 @@ function Header({
   id,
   type,
   suffix,
+  Component,
 }: {
+  Component?: React.ComponentType;
   id: string;
   label: string;
   suffix?: string;
   type: string;
 }) {
+  const HeaderComponent = Component ?? H3;
   return (
     <div className="flex items-baseline gap-1">
       <span className="italic text-mauvedark10">{type}</span>
-      <H3 id={`${id}-${slugify(label)}`}>{label}</H3>
+      <HeaderComponent id={`${id}-${slugify(label)}`} className="my-0 text-xl">
+        {label}
+      </HeaderComponent>
       <span className="italic text-mauvedark10">{suffix}</span>
     </div>
   );
@@ -39,32 +44,27 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
       />
       <Source>{c.source}</Source>
       <Markdown>{c.description}</Markdown>
-      {Object.values(c.methods).length > 0 && (
-        <Table.Root columns="min-content auto">
-          <Table.HeaderCell>Method</Table.HeaderCell>
-          <Table.HeaderCell>Type and description</Table.HeaderCell>
+      {(Object.values(c.methods).length > 0 || c.constructor) && (
+        <div className="mt-4 flex flex-col">
           {Object.values(c.methods).map((m) => {
-            return (
-              <Fragment key={c.name}>
-                <Table.Cell>{m.name}</Table.Cell>
-                <Table.Cell>
-                  <Code>{m.returnType}</Code>
-                  <Description>{m.description}</Description>
-                </Table.Cell>
-              </Fragment>
-            );
+            return <Function key={m.name} f={m} id={id} label="method" />;
           })}
-        </Table.Root>
+        </div>
       )}
     </>
   );
 }
 
-export function Function({ f, id }: { f: FunctionType; id: string }) {
+export function Function({ f, label, id }: { f: FunctionType; id: string; label?: string }) {
   return (
     <Fragment key={f.name}>
-      <Header label={f.name} id={id} type="function" />
-      <Source>{f.source}</Source>
+      <Header
+        label={f.name}
+        id={id}
+        type={label ?? "function"}
+        Component={label === "method" ? H4 : H3}
+      />
+      {f.source && <Source>{f.source}</Source>}
       <Markdown>{f.description}</Markdown>
       {Object.values(f.parameters).length > 0 && (
         <Table.Root columns="min-content auto">
@@ -98,7 +98,6 @@ export function Function({ f, id }: { f: FunctionType; id: string }) {
       <CodeBlock>
         <pre className="language-ts">{f.typeSignature}</pre>
       </CodeBlock>
-      <Hr />
     </Fragment>
   );
 }
@@ -205,7 +204,7 @@ export function Interface({
               <Fragment key={i.name}>
                 <Table.Cell>{m.name}</Table.Cell>
                 <Table.Cell>
-                  <Code>{m.returnType}</Code>
+                  <Code>{m.typeSignature}</Code>
                   <Description>{m.description}</Description>
                 </Table.Cell>
               </Fragment>
@@ -269,7 +268,7 @@ export type TypeType = {
 
 export type InterfaceType = {
   description: string;
-  methods: Record<string, MethodType>;
+  methods: Record<string, FunctionType>;
   name: string;
   properties: Record<string, FieldType>;
   source: string;
@@ -281,21 +280,15 @@ export type FunctionType = {
   parameters: Record<string, FieldType>;
   returnDescription: string;
   returnType: string;
-  source: string;
+  source?: string;
   typeSignature: string;
 };
 
-export type MethodType = {
-  description: string;
-  name: string;
-  parameters: Record<string, FieldType>;
-  returnType: string;
-};
-
 export type ClassType = {
+  constructor: FunctionType | null;
   description: string;
   extends?: string;
-  methods: Record<string, MethodType>;
+  methods: Record<string, FunctionType>;
   name: string;
   source: string;
 };

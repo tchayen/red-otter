@@ -7,7 +7,6 @@ import type {
   FieldType,
   FunctionType,
   InterfaceType,
-  MethodType,
   TypeType,
 } from "../app/components/ApiBlocks";
 import "@total-typescript/ts-reset";
@@ -154,7 +153,7 @@ export function extractTypeScript(paths: Array<string>) {
       });
 
       // Process methods.
-      const methods: Record<string, MethodType> = {};
+      const methods: Record<string, FunctionType> = {};
       i.members.forEach((m) => {
         if (!ts.isMethodSignature(m)) {
           return;
@@ -182,11 +181,14 @@ export function extractTypeScript(paths: Array<string>) {
           };
         });
 
+        const { returnTag, returnTypeString } = processJSDoc(checker, symbol);
         methods[name] = {
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
           name,
           parameters,
-          returnType: checker.typeToString(checker.getTypeAtLocation(m)),
+          returnDescription: returnTag?.text?.at(0)?.text ?? "",
+          returnType: returnTypeString,
+          typeSignature: checker.typeToString(checker.getTypeAtLocation(m)),
         };
       });
 
@@ -217,7 +219,9 @@ export function extractTypeScript(paths: Array<string>) {
           return;
         }
 
-        const methods: Record<string, MethodType> = {};
+        const name = symbol.escapedName.toString();
+
+        const methods: Record<string, FunctionType> = {};
         ts.forEachChild(c, (child) => {
           if (!ts.isMethodDeclaration(child)) {
             return;
@@ -249,20 +253,55 @@ export function extractTypeScript(paths: Array<string>) {
             };
           });
 
+          const { returnTag, returnTypeString } = processJSDoc(checker, symbol);
           methods[name] = {
             description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
             name,
             parameters,
-            returnType: checker.typeToString(checker.getTypeAtLocation(child)),
+            returnDescription: returnTag?.text?.at(0)?.text ?? "",
+            returnType: returnTypeString,
+            typeSignature: checker.typeToString(checker.getTypeAtLocation(child)),
           };
         });
+
+        let constructor: FunctionType | null = null;
+
+        // Add constructor to methods.
+        const constructorDeclaration = c.members.find(ts.isConstructorDeclaration);
+        if (constructorDeclaration) {
+          const parameters: Record<string, FieldType> = {};
+          constructorDeclaration.parameters.forEach((p) => {
+            const symbol = checker.getSymbolAtLocation(p.name);
+            if (!symbol) {
+              return;
+            }
+
+            const name = symbol.escapedName.toString();
+            parameters[name] = {
+              default: "",
+              description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+              name,
+              type: checker.typeToString(checker.getTypeAtLocation(p)),
+            };
+          });
+
+          const { returnTag, returnTypeString } = processJSDoc(checker, symbol);
+          constructor = {
+            description: "",
+            name: "constructor",
+            parameters,
+            returnDescription: returnTag?.text?.at(0)?.text ?? "",
+            returnType: returnTypeString,
+            typeSignature: checker.typeToString(checker.getTypeAtLocation(constructorDeclaration)),
+          };
+        }
 
         const ext = c.heritageClauses
           ?.find((h) => h.token === ts.SyntaxKind.ExtendsKeyword)
           ?.getText()
           .replace("extends ", "");
-        const name = symbol.escapedName.toString();
         classes[name] = {
+          constructor,
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
           extends: ext,
           methods,
@@ -312,15 +351,7 @@ export function extractTypeScript(paths: Array<string>) {
 
       const name = symbol.escapedName.toString();
 
-      // Handle JSDoc.
-      const jsDoc = symbol.getJsDocTags();
-      const returnTag = jsDoc.find((t) => t.name === "returns");
-      const returnType = checker
-        .getTypeOfSymbol(symbol)
-        ?.getCallSignatures()
-        ?.at(0)
-        ?.getReturnType();
-      const returnTypeString = returnType ? checker.typeToString(returnType) : "";
+      const { returnTag, returnTypeString } = processJSDoc(checker, symbol);
       functions[name] = {
         description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
         name,
@@ -400,4 +431,12 @@ function getListOfFiles(paths: Array<string>): Array<string> {
 
   paths.forEach((path) => explore(path));
   return files;
+}
+
+function processJSDoc(checker: ts.TypeChecker, symbol: ts.Symbol) {
+  const jsDoc = symbol.getJsDocTags();
+  const returnType = checker.getTypeOfSymbol(symbol)?.getCallSignatures()?.at(0)?.getReturnType();
+  const returnTag = jsDoc.find((t) => t.name === "returns");
+  const returnTypeString = returnType ? checker.typeToString(returnType) : "";
+  return { returnTag, returnTypeString };
 }
