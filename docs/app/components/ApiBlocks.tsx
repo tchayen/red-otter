@@ -49,7 +49,7 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
                 <Table.Cell>{m.name}</Table.Cell>
                 <Table.Cell>
                   <Code>{m.returnType}</Code>
-                  <div className="mt-1 [&>p]:text-sm">{<Markdown>{m.description}</Markdown>}</div>
+                  <Description>{m.description}</Description>
                 </Table.Cell>
               </Fragment>
             );
@@ -145,6 +145,10 @@ export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: Typ
 }
 
 function Description({ children }: { children: string }) {
+  if (!children) {
+    return null;
+  }
+
   return <div className="mt-1 [&>p]:my-0 [&>p]:text-sm">{<Markdown>{children}</Markdown>}</div>;
 }
 
