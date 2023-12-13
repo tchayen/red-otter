@@ -206,7 +206,7 @@ export function Em({ children }: PropsWithChildren) {
 }
 
 export function Hr() {
-  return <hr className="my-6 border-t border-mauvedark5" />;
+  return <hr className="my-4 border-t border-mauvedark5" />;
 }
 
 export function Box({

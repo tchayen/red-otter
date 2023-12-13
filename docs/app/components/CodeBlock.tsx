@@ -7,7 +7,10 @@ import { CopyCode } from "./CopyCode";
 
 export const CHARACTER_LIMIT = 76;
 
-export async function CodeBlock({ children }: PropsWithChildren) {
+export async function CodeBlock({
+  className,
+  children,
+}: PropsWithChildren<{ className?: string }>) {
   if (!children) {
     return null;
   }
@@ -64,7 +67,7 @@ export async function CodeBlock({ children }: PropsWithChildren) {
   }
 
   return (
-    <DivWrapper>
+    <DivWrapper className={className}>
       <CopyCode code={children.props.children} />
       <div className="pointer-events-none select-none pl-2 pt-2 text-xs text-mauvedark10">
         {prettyPrint(language)}
@@ -127,13 +130,14 @@ function Pre({ children, ...rest }: HTMLAttributes<HTMLPreElement>) {
   );
 }
 
-type DivWrapperProps = {
-  children: React.ReactNode;
-};
-
-function DivWrapper({ children }: DivWrapperProps) {
+function DivWrapper({ className, children }: PropsWithChildren<{ className?: string }>) {
   return (
-    <div className="relative my-5 overflow-hidden rounded-lg border border-mauvedark5 bg-mauvedark2">
+    <div
+      className={twMerge(
+        "relative my-5 overflow-hidden rounded-lg border border-mauvedark5 bg-mauvedark2",
+        className,
+      )}
+    >
       {children}
     </div>
   );

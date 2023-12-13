@@ -20,7 +20,7 @@ function Root({ children, columns }: PropsWithChildren<{ columns?: string }>) {
   return (
     <div
       style={{ gridTemplateColumns: columns ?? "min-content min-content min-content auto" }}
-      className="scrollbar my-4 grid overflow-x-auto rounded-md border border-mauvedark6 bg-mauvedark2"
+      className="scrollbar grid overflow-x-auto rounded-md border border-mauvedark6 bg-mauvedark2"
     >
       {children}
     </div>

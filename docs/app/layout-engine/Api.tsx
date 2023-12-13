@@ -1,9 +1,9 @@
 import types from "../types.json";
-import { Class, Function, Interface } from "../components/ApiBlocks";
+import { ApiBlock, Class, Function, Interface } from "../components/ApiBlocks";
 
 export function Api() {
   return (
-    <>
+    <ApiBlock>
       {Object.values(types.interfaces)
         .filter((i) => i.source.startsWith("/layout"))
         .filter((i) => !i.name.includes("Props")) // Those are covered in styling.
@@ -21,6 +21,6 @@ export function Api() {
         .map((c, index) => {
           return <Class key={c.name} c={c} id={String(index + 1)} />;
         })}
-    </>
+    </ApiBlock>
   );
 }

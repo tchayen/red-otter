@@ -8,6 +8,10 @@ import { CodeBlock } from "./CodeBlock";
 import { TypeTooltip } from "./TypeTooltip";
 import Link from "next/link";
 
+export function ApiBlock({ children }: PropsWithChildren) {
+  return <div className="flex flex-col gap-4 [&>*>p]:my-0">{children}</div>;
+}
+
 function Header({
   label,
   id,
@@ -35,7 +39,7 @@ function Header({
 
 export function Class({ c, id }: { c: ClassType; id: string }) {
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <Header
         label={c.name}
         id={id}
@@ -45,19 +49,19 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
       <Source>{c.source}</Source>
       <Markdown>{c.description}</Markdown>
       {(Object.values(c.methods).length > 0 || c.constructor) && (
-        <div className="mt-4 flex flex-col">
+        <div className="flex flex-col gap-4">
           {Object.values(c.methods).map((m) => {
             return <Function key={m.name} f={m} id={id} label="method" />;
           })}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
 export function Function({ f, label, id }: { f: FunctionType; id: string; label?: string }) {
   return (
-    <Fragment key={f.name}>
+    <div className="flex flex-col gap-2">
       <Header
         label={f.name}
         id={id}
@@ -95,10 +99,10 @@ export function Function({ f, label, id }: { f: FunctionType; id: string; label?
       <P>
         <Strong>Type declaration</Strong>
       </P>
-      <CodeBlock>
+      <CodeBlock className="my-0">
         <pre className="language-ts">{f.typeSignature}</pre>
       </CodeBlock>
-    </Fragment>
+    </div>
   );
 }
 
@@ -106,7 +110,7 @@ export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: Typ
   const hasDefaultValues = Object.values(t.properties).some((p) => !!p.default);
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <Header label={t.name} id={id} type="type" />
       <Source>{t.source}</Source>
       <P>{t.description}</P>
@@ -139,16 +143,8 @@ export function Type({ t, id, children }: PropsWithChildren<{ id: string; t: Typ
           );
         })}
       </Table.Root>
-    </>
+    </div>
   );
-}
-
-function Description({ children }: { children: string }) {
-  if (!children) {
-    return null;
-  }
-
-  return <div className="mt-1 [&>p]:my-0 [&>p]:text-sm">{<Markdown>{children}</Markdown>}</div>;
 }
 
 export function Interface({
@@ -158,7 +154,7 @@ export function Interface({
 }: PropsWithChildren<{ i: InterfaceType; id: string }>) {
   const hasDefaultValues = Object.values(i.properties).some((p) => !!p.default);
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <Header label={i.name} id={id} type="interface" />
       <Source>{i.source}</Source>
       <P>{i.description}</P>
@@ -212,11 +208,19 @@ export function Interface({
           })}
         </Table.Root>
       )}
-    </>
+    </div>
   );
 }
 
 const gitBranch = "big-reset"; // TODO release: change to "main".
+
+function Description({ children }: { children: string }) {
+  if (!children) {
+    return null;
+  }
+
+  return <div className="mt-1 [&>p]:my-0 [&>p]:text-sm">{<Markdown>{children}</Markdown>}</div>;
+}
 
 function Source({ children }: { children: string }) {
   return (

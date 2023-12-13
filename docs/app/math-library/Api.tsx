@@ -1,10 +1,10 @@
 import types from "../types.json";
-import { Class, Function } from "../components/ApiBlocks";
+import { ApiBlock, Class, Function } from "../components/ApiBlocks";
 import { Hr } from "../components/tags";
 
 export function Api() {
   return (
-    <>
+    <ApiBlock>
       {Object.values(types.classes)
         .filter((c) => c.source.startsWith("/math"))
         .map((c, i) => {
@@ -25,6 +25,6 @@ export function Api() {
             </>
           );
         })}
-    </>
+    </ApiBlock>
   );
 }

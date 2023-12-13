@@ -1,4 +1,4 @@
-import { Type } from "../components/ApiBlocks";
+import { ApiBlock, Type } from "../components/ApiBlocks";
 import { Enums } from "../components/Enums";
 import types from "../types.json";
 import { A, Box, Hr, P } from "../components/tags";
@@ -8,8 +8,9 @@ export function Api() {
   const decorativeProps = types.types.DecorativeProps;
   const textStyleProps = types.types.TextStyleProps;
   const layoutNodeState = types.types.LayoutNodeState;
+
   return (
-    <>
+    <ApiBlock>
       <Type id="" t={layoutProps} />
       <Hr />
       <Type id="" t={decorativeProps} />
@@ -32,6 +33,6 @@ export function Api() {
       <Type id="" t={layoutNodeState} />
       <Hr />
       <Enums />
-    </>
+    </ApiBlock>
   );
 }
