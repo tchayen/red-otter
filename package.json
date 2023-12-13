@@ -38,6 +38,7 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
     "@total-typescript/ts-reset": "^0.5.1",
+    "@types/node": "^20.10.4",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
     "@vitest/coverage-istanbul": "^1.0.3",
