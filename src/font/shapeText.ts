@@ -36,8 +36,13 @@ export function shapeText(
   text: string,
   textAlign: TextAlign,
   maxWidth?: number,
+  noWrap?: boolean,
 ): Shape {
+  if (noWrap) {
+    maxWidth = Number.POSITIVE_INFINITY;
+  }
   maxWidth ??= Number.POSITIVE_INFINITY;
+
   const cached = cache.get(
     JSON.stringify({ fontName, fontSize, lineHeight, maxWidth, text, textAlign }),
   );
@@ -108,65 +113,6 @@ export function shapeText(
       lastIndex = i;
     }
   }
-
-  // //////
-  // let currentLineWidth = 0;
-  // let lineStartIndex = 0;
-  // let wordWidth = 0;
-  // let lineBreakRequired = false;
-
-  // for (let i = 0; i < text.length; i++) {
-  //   const character = text[i]!.charCodeAt(0);
-  //   const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
-  //   const { y, width, height, lsb, rsb } = glyph;
-
-  //   let kerning = 0;
-  //   if (i > 0 && ENABLE_KERNING) {
-  //     kerning = font.kern(text[i - 1]!.charCodeAt(0), character);
-  //   }
-
-  //   // Calculate width of the current character (including kerning)
-  //   const charWidth = (lsb + kerning + width + rsb) * scale;
-
-  //   // Accumulate word width
-  //   wordWidth += charWidth;
-
-  //   // Check if the word fits in the current line
-  //   if (maxWidth && currentLineWidth + wordWidth > maxWidth && i > lineStartIndex) {
-  //     lineBreakRequired = true;
-  //   }
-
-  //   // When a space, newline, or end of text is reached, decide if we need to wrap
-  //   if (text[i] === " " || text[i] === "\n" || i === text.length - 1) {
-  //     if (lineBreakRequired) {
-  //       positionY += lineHeight;
-  //       positionX = 0;
-  //       currentLineWidth = 0;
-  //       lineStartIndex = i + 1; // Skip the space for starting index of next line
-  //       wordWidth = charWidth; // Reset wordWidth to current character if it's not a space
-  //       lineBreakRequired = false;
-  //     } else {
-  //       currentLineWidth += wordWidth;
-  //       wordWidth = 0;
-  //     }
-  //   }
-
-  //   // Update character position, taking care not to wrap a space at the end of a line
-  //   if (!(text[i] === " " && lineBreakRequired)) {
-  //     positions[i] = new Vec2(
-  //       positionX + (lsb + kerning) * scale - padding,
-  //       positionY + (font.capHeight - y - height) * scale - padding,
-  //     );
-  //     positionX += charWidth;
-  //   }
-
-  //   // Reset word width at spaces and newlines
-  //   if (text[i] === " " || text[i] === "\n") {
-  //     wordWidth = 0;
-  //   }
-
-  //   sizes[i] = new Vec2(width * scale + padding * 2, height * scale + padding * 2);
-  // }
 
   // Text alignment.
   if (text.length > 0) {

@@ -16,6 +16,7 @@ import {
   Overflow,
   Position,
   TextAlign,
+  Whitespace,
   defaultTextStyleProps,
 } from "./styling";
 import { CROSS_AXIS_SIZE } from "../consts";
@@ -75,6 +76,8 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.scrollHeight = 0;
     e._state.scrollX = 0;
     e._state.scrollY = 0;
+    e._state.hasHorizontalScrollbar = false;
+    e._state.hasVerticalScrollbar = false;
 
     // If element has defined width or height, set it.
     if (typeof e._style.width === "number") {
@@ -152,11 +155,20 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           e.text,
           e._style.textAlign ?? TextAlign.Left,
           maxWidth,
+          e._style.whitespace === Whitespace.NoWrap,
         );
 
         e._state.clientWidth = shape.boundingRectangle.width;
         e._state.clientHeight = shape.boundingRectangle.height;
       }
+    }
+
+    if (e._style.overflowX === Overflow.Scroll) {
+      e._state.hasHorizontalScrollbar = true;
+    }
+
+    if (e._style.overflowY === Overflow.Scroll) {
+      e._state.hasVerticalScrollbar = true;
     }
   }
 
@@ -251,9 +263,12 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
+    // For Overflow.Auto, figure out if size of children exceed available space.
+    // TODO
+
+    // The size that was first calculated is size of the tallest child of all plus paddings. So
+    // here we reset the size and build it again, for all rows.
     if (isWrap) {
-      // The size that was first calculated is size of the tallest child of all plus paddings. So
-      // here we reset the size and build it again, for all rows.
       if (isHorizontal && e._style.height === undefined) {
         e._state.clientHeight =
           e._style.paddingTop +
@@ -270,6 +285,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       }
     }
 
+    // Prepare rows.
     const rows: Array<Array<Node>> = [[]];
     let main = 0;
     let cross = 0;

@@ -6,5 +6,6 @@ export default defineConfig({
       provider: "istanbul",
       reporter: ["lcov"],
     },
+    include: ["src/**/*.test.ts"],
   },
 });

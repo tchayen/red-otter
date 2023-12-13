@@ -16,6 +16,7 @@ export type {
   Position,
   TextTransform,
   TextAlign,
+  Whitespace,
 } from "./layout/styling";
 
 export { BinaryReader } from "./font/BinaryReader";

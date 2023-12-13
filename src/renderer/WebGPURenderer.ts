@@ -503,6 +503,7 @@ export class WebGPURenderer implements Renderer {
     options?: {
       lineHeight?: number;
       maxWidth?: number;
+      noWrap?: boolean;
     },
   ): void {
     if (this.drawingMode !== DrawingMode.Text) {
@@ -519,6 +520,7 @@ export class WebGPURenderer implements Renderer {
         text,
         textAlign,
         options?.maxWidth,
+        options?.noWrap,
       );
     } catch (error) {
       console.error(

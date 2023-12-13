@@ -1,3 +1,4 @@
+import type { Vec2 } from "..";
 import { hitTest } from "../hitTest";
 import { BaseView } from "./BaseView";
 import type {
@@ -24,29 +25,29 @@ type UserEventTuple =
 export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
 
-  private mouseDownPosition: number = -1;
+  private mouseDownPosition: Vec2 | null = null;
   private isScrollbarHovered: boolean = false;
 
   constructor(props: { onClick?(): void; style?: ViewStyleProps; testID?: string }) {
     super(props);
 
     this.onScroll = this.onScroll.bind(this);
-    this.onScrollbarDown = this.onScrollbarDown.bind(this);
-    this.onScrollbarUp = this.onScrollbarUp.bind(this);
-    this.onScrollbarDrag = this.onScrollbarDrag.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
 
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
-    if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
-      this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
-    }
 
     // For mouse-interacting with the scrollbar.
+    // TODO: this is done when creating the node but scrollbar can be added later (like with
+    // Overflow.Auto). What then?
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
-      this._eventListeners.push([UserEventType.MouseDown, this.onScrollbarDown]);
-      this._eventListeners.push([UserEventType.MouseUp, this.onScrollbarUp]);
-      this._eventListeners.push([UserEventType.MouseMove, this.onScrollbarDrag]);
+      this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
+      this._eventListeners.push([UserEventType.MouseDown, this.onMouseDown]);
+      this._eventListeners.push([UserEventType.MouseUp, this.onMouseUp]);
+      this._eventListeners.push([UserEventType.MouseMove, this.onMouseMove]);
     }
   }
 
@@ -61,18 +62,18 @@ export class View extends BaseView {
     );
   }
 
-  onScrollbarDown(event: MouseDownEvent) {
+  onMouseDown(event: MouseDownEvent) {
+    this.mouseDownPosition = event.position;
+  }
+
+  onMouseUp(event: MouseUpEvent) {
     //
   }
 
-  onScrollbarUp(event: MouseUpEvent) {
-    //
-  }
-
-  onScrollbarDrag(event: MoveEvent) {
+  onMouseMove(event: MoveEvent) {
     //
     if (hitTest(this, event)) {
-      console.log("it's me");
+      console.log(this.testID, "it's me");
     }
   }
 }

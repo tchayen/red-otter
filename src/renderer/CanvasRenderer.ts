@@ -31,7 +31,7 @@ export class CanvasRenderer implements Renderer {
     textAlignment: TextAlign,
     clipStart: Vec2,
     clipSize: Vec2,
-    options?: { lineHeight?: number | undefined; maxWidth?: number | undefined } | undefined,
+    options?: { lineHeight?: number; maxWidth?: number; noWrap?: boolean } | undefined,
   ): void {
     throw new Error("Method not implemented.");
   }

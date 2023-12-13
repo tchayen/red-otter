@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import interTTF from "../../public/interTTF.json"; // This is a 1.8MB JSON file (95kB gzipped).
+import interTTF from "../../assets/interTTF.json"; // This is a 1.8MB JSON file (95kB gzipped).
 import { prepareLookups } from "../font/prepareLookups";
 import type { TTF } from "../font/parseTTF";
 import { layout } from "./layout";

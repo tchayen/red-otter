@@ -1,9 +1,8 @@
-import { shapeText } from "../font/shapeText";
 import type { Lookups } from "../font/types";
 import type { Node } from "./Node";
 import type { UserEvent } from "./eventTypes";
 import type { ExactLayoutProps, LayoutNodeState, LayoutProps, TextStyleProps } from "./styling";
-import { defaultLayoutNodeState, defaultTextStyleProps, normalizeLayoutProps } from "./styling";
+import { defaultLayoutNodeState, normalizeLayoutProps } from "./styling";
 
 /**
  * Basic text node. The only way to create text. It cannot have children.
@@ -30,19 +29,7 @@ export class Text implements Node {
     },
   ) {
     this.testID = props.testID ?? null;
-    const shape = shapeText(
-      props.lookups,
-      props.style.fontName ?? defaultTextStyleProps.fontName,
-      props.style.fontSize ?? defaultTextStyleProps.fontSize,
-      props.style.lineHeight ?? defaultTextStyleProps.lineHeight,
-      text,
-      props.style.textAlign ?? defaultTextStyleProps.textAlign,
-    );
-    const { width, height } = shape.boundingRectangle;
-
     this._style = normalizeLayoutProps(props.style as LayoutProps);
-    this._style.width = width;
-    this._style.height = height;
   }
 
   handleEvent(event: UserEvent): void {}

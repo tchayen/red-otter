@@ -27,6 +27,14 @@ export type LayoutNodeState = {
    */
   clipStart: Vec2;
   /**
+   *
+   */
+  hasHorizontalScrollbar: boolean;
+  /**
+   *
+   */
+  hasVerticalScrollbar: boolean;
+  /**
    * Height of the element including (potential) scrollbar and scrollable content.
    */
   scrollHeight: number;
@@ -43,7 +51,7 @@ export type LayoutNodeState = {
    */
   scrollY: number;
   /**
-   * Is it still needed?
+   * Read by `paint()`, written by `layout()`.
    */
   textWidthLimit?: number;
   /**
@@ -70,6 +78,8 @@ export const defaultLayoutNodeState = {
   clientWidth: 0,
   clipSize: new Vec2(0, 0),
   clipStart: new Vec2(0, 0),
+  hasHorizontalScrollbar: false,
+  hasVerticalScrollbar: false,
   scrollHeight: 0,
   scrollWidth: 0,
   scrollX: 0,
@@ -446,6 +456,11 @@ export const enum TextAlign {
   Right,
 }
 
+export const enum Whitespace {
+  Normal,
+  NoWrap,
+}
+
 /**
  * Controls how text is rendered. Note that due to a custom text renderer, there might be some
  * differences in how text is rendered compared to a browser.
@@ -460,6 +475,7 @@ export type TextStyleProps = {
   lineHeight?: number;
   textAlign?: TextAlign;
   textTransform?: TextTransform;
+  whitespace: Whitespace;
 };
 
 export type ViewStyleProps = LayoutProps & DecorativeProps;
@@ -530,6 +546,7 @@ export const defaultTextStyleProps: Required<TextStyleProps> = {
   lineHeight: 20,
   textAlign: TextAlign.Left,
   textTransform: TextTransform.None,
+  whitespace: Whitespace.Normal,
 };
 
 export function normalizeLayoutProps<T extends LayoutProps, S extends ExactLayoutProps>(

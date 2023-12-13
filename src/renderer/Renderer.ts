@@ -26,6 +26,6 @@ export interface Renderer {
     textAlignment: TextAlign,
     clipStart: Vec2,
     clipSize: Vec2,
-    options?: { lineHeight?: number; maxWidth?: number },
+    options?: { lineHeight?: number; maxWidth?: number; noWrap?: boolean },
   ): void;
 }
