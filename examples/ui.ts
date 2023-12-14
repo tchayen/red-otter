@@ -92,6 +92,14 @@ function exampleGrid() {
   column1.add(text("alignItems and alignSelf"));
   column1.add(fixtures.alignItemsAndSelf());
 
+  column1.add(
+    new View({
+      onMouseEnter: () => console.log("enter"),
+      onMouseLeave: () => console.log("leave"),
+      style: { backgroundColor: "#ff0000", height: 200, width: 200 },
+    }),
+  );
+
   const column2 = new View({ style: columnStyle });
   examples.add(column2);
 

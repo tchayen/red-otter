@@ -27,7 +27,13 @@ export class View extends BaseView {
   isHorizontalScrollbarHovered: boolean = false;
   isVerticalScrollbarHovered: boolean = false;
 
-  constructor(props: { onClick?(): void; style?: ViewStyleProps; testID?: string }) {
+  constructor(props: {
+    onClick?(): void;
+    onMouseEnter?(): void;
+    onMouseLeave?(): void;
+    style?: ViewStyleProps;
+    testID?: string;
+  }) {
     super(props);
 
     this.onScroll = this.onScroll.bind(this);
@@ -39,6 +45,14 @@ export class View extends BaseView {
 
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
+    }
+
+    if (props.onMouseEnter) {
+      this._eventListeners.push([UserEventType.MouseEnter, props.onMouseEnter]);
+    }
+
+    if (props.onMouseLeave) {
+      this._eventListeners.push([UserEventType.MouseLeave, props.onMouseLeave]);
     }
 
     // For mouse-interacting with the scrollbar.
