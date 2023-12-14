@@ -25,6 +25,10 @@ If you are writing a JavaScript application and need to render a browser-grade U
 
 If you are working on a web browser, operating system, game engine, a game with AAA-grade UI, Red Otter might be very useful.
 
+### Intrusive thoughts
+
+Every browser is essentially a different platform. There are differences in how basic HTML elements are implemented, there are literally thousands small quirks in behavior coming from decades of legacy code that needs to be supported. If you ever worked on a long-lived web application, you for sure have encountered a lot of code written just to achieve the same behavior on IE, Safari and the rest. What if… you could ditch the platform and become the platform?
+
 > [!IMPORTANT]
 > Red Otter is not meant to be used for creating websites. By rendering your own UI and text you prevent users from using screen readers, automatic translations, high-contrast mode etc. Use it only for applications where it is implied that those capabilities are not needed or otherwise would not be available.
 

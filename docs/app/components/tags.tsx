@@ -301,7 +301,9 @@ export function slugify(value: string) {
       .toLocaleLowerCase()
       // Change diacritics to their base character.
       .normalize("NFD")
-      // Remove all non-alphanumeric characters.
+      .replaceAll(".", "-")
+      .replaceAll(",", "-")
+      // Remove all non-alphanumeric and dash characters.
       .replaceAll(/[^\d A-Za-z-]/g, "")
       // In case the text had leading or trailing spaces after removal.
       .trim()

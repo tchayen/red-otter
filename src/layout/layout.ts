@@ -161,8 +161,6 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
         (e._style.whitespace ?? Whitespace.Normal) === Whitespace.Normal,
       );
 
-      e._style.width = shape.boundingRectangle.width;
-      e._style.height = shape.boundingRectangle.height;
       e._state.clientWidth = shape.boundingRectangle.width;
       e._state.clientHeight = shape.boundingRectangle.height;
     }
@@ -349,6 +347,8 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
 
     // TODO
     // Figure out scroll size here. If scrollbar is added then recalculate rows.
+    // But it seems like there's something going on later; i.e. scrollheight is too large if that
+    // is calculated here.
 
     e._state.children = rows;
 

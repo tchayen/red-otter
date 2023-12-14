@@ -7,28 +7,41 @@ After many months of hard work in the shadows, I am proud to present the next bi
 
 ## New fast WebGPU renderer
 
+I found a new way how to split rectangle and text drawing, resulting in faster, specialized shaders while utilizing new WebGPU instancing API to not lose on draw calls.
+
 More about the approach: [Thousands of Styled Rectangles in 120FPS on GPU](https://tchayen.com/thousands-styled-rectangles-in-120fps-on-gpu).
 
 ## Layout improvements
 
-Major improvements to the layout engine:
+Major improvements to the layout engine. I basically rewrote a bing chunk of it.
 
-- Missing CSS properties like `flexWrap`, `flexShrink`, `flexGrow`, `flexBasis`, `minWidth`, `minHeight`, `overflow`.
+What's new:
+
+- `flexWrap` support.
+- `flexShrink` and `flexGrow`.
+- `flexBasis` – alternative to `width` and `height` with some gotchas.
+- `minWidth` and `minHeight`.
+- `aspectRatio` – modelled after Yoga counterpart.
+- `overflow` – which required way more changes outside of the layout algorithm to make scrolling happen.
 - Refactored algorithm that shortened the code and packed much more features.
 
 ## Text improvements
 
-Kerning, line wrapping, text align.
+**Line wrapping** – that was a thing that made the previous version extremely incomplete (or inconvenient) for creating real life UIs. Now it's here.
 
-You can see more about kerning in my recent blogpost: [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).
+**Kerning** – now the text looks and reads much better.
+
+**Text alignment** – not strictly crucial nowadays with flexbox properties but still nice to have.
+
+You can read more about the rendering method and kerning in my recent blogpost: [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).
 
 ## Event system
 
-Supports clicks, scrolling, typing.
+Supports clicks, scrolling, typing. The model is simplified in comparison to DOM and doesn't handle bubbling, it's just the top-most component that receives the event.
 
 ## Scrolling
 
-Ability to scroll overflowing components. Nested scrolling is not an issue too.
+Ability to scroll overflowing components. Nested scrolling works too.
 
 ## Tests
 
@@ -59,12 +72,22 @@ It's definitely nowhere near a finished effort but it's a start.
 
 ## Component library
 
-Base component library with fully functioning browser-like `Input` component.
+Base component library comes with this release. The main highlight being a fully functioning browser-like `Input` component.
 
 ## New docs
 
-A new documentation website with multiple pages, functioning search, and a blog (that you are reading now!).
+As you have noticed by now, this release is paired with a new website version. This is a complete rewrite from scratch.
+
+Previous version was just a single HTML file mostly generated with a bunch of scripts glued together. It worked fine and I am happy that I did the right call of not overengineering it. However, I have also reached limits how long it can reasonably be, so it was time to make more pages, introduce search and a blog. Which is all what you see now.
 
 ## Better CI and release process
 
-Process improvements like automated releases (expect more frequent changes now).
+The previous release process was working fine, but was very manual and intimidating. That's a big part of why I was put off and created everything from scratch. Now I am using automated NPM releases, continue to utilize conventional commits and I am hopeful it will generally be a more pleasant process now.
+
+## That's all
+
+Keep in mind that it is my fun side project and I am not forcing not expecting anyone to use it for anything, especially web development. It is not the right tool for that and would have very negative impact on accessibility – use of screen readers, high contrast mode, automatic language translations and other assistive technologies that come with the browser.
+
+_However, it is potentially a great tool for building highly visual apps and games and that's where I expect it to thrive._
+
+I hope you will enjoy this release. It brings major new capabilities and I am excited to see what people will be able to build with it. Feel free to [reach out to me on X](https://x.com/tchayen) if you have any questions or observations.
