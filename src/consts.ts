@@ -4,6 +4,7 @@ export const CROSS_AXIS_SIZE = 10;
 export const SCROLLBAR_COLOR = "#111";
 export const SCROLLBAR_CORNER_COLOR = "#111";
 export const SCROLLBAR_TRACK_COLOR = "#666";
+export const SCROLLBAR_TRACK_HOVER_COLOR = "#777";
 
 export const isWindowDefined = typeof window !== "undefined";
 

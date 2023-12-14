@@ -9,9 +9,11 @@ import {
   SCROLLBAR_COLOR,
   SCROLLBAR_CORNER_COLOR,
   SCROLLBAR_TRACK_COLOR,
+  SCROLLBAR_TRACK_HOVER_COLOR,
 } from "../consts";
 import type { Node } from "./Node";
 import { BaseView } from "./BaseView";
+import { View } from "./View";
 
 /**
  * Takes a renderer and a root of a tree and commands the renderer to paint it. Used every frame.
@@ -85,80 +87,90 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       new Vec4(0, 0, 0, 0),
     );
 
-    const scrollbarRadius = CROSS_AXIS_SIZE / 2;
-    // Scrollbar.
-    if (node._state.hasVerticalScrollbar && node._state.hasHorizontalScrollbar) {
-      ui.rectangle(
-        parseColor(SCROLLBAR_CORNER_COLOR),
-        position.add(new Vec2(size.x, size.y)),
-        new Vec2(CROSS_AXIS_SIZE, CROSS_AXIS_SIZE),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        clipStart,
-        clipSize,
-        new Vec4(0, 0, 0, 0),
-      );
-    }
-    if (node._state.hasVerticalScrollbar) {
-      const scrollbarSize = size.y;
+    if (node instanceof View) {
+      const scrollbarRadius = CROSS_AXIS_SIZE / 2;
+      // Scrollbar.
+      if (node._state.hasVerticalScrollbar && node._state.hasHorizontalScrollbar) {
+        ui.rectangle(
+          parseColor(SCROLLBAR_CORNER_COLOR),
+          position.add(new Vec2(size.x, size.y)),
+          new Vec2(CROSS_AXIS_SIZE, CROSS_AXIS_SIZE),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          clipStart,
+          clipSize,
+          new Vec4(0, 0, 0, 0),
+        );
+      }
+      if (node._state.hasVerticalScrollbar) {
+        const scrollbarSize = size.y;
+        const scrollbarTrackColor = node.isVerticalScrollbarHovered
+          ? SCROLLBAR_TRACK_HOVER_COLOR
+          : SCROLLBAR_TRACK_COLOR;
 
-      ui.rectangle(
-        parseColor(SCROLLBAR_COLOR),
-        position.add(new Vec2(size.x, 0)),
-        new Vec2(CROSS_AXIS_SIZE, scrollbarSize),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        clipStart,
-        clipSize,
-        new Vec4(0, 0, 0, 0),
-      );
+        ui.rectangle(
+          parseColor(SCROLLBAR_COLOR),
+          position.add(new Vec2(size.x, 0)),
+          new Vec2(CROSS_AXIS_SIZE, scrollbarSize),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          clipStart,
+          clipSize,
+          new Vec4(0, 0, 0, 0),
+        );
 
-      const scrollTrackSize = (node._state.clientHeight / node._state.scrollHeight) * scrollbarSize;
-      const scrollTrackPosition = (node._state.scrollY / node._state.scrollHeight) * scrollbarSize;
+        const scrollTrackSize =
+          (node._state.clientHeight / node._state.scrollHeight) * scrollbarSize;
+        const scrollTrackPosition =
+          (node._state.scrollY / node._state.scrollHeight) * scrollbarSize;
 
-      ui.rectangle(
-        parseColor(SCROLLBAR_TRACK_COLOR),
-        position.add(new Vec2(size.x, scrollTrackPosition)),
-        new Vec2(CROSS_AXIS_SIZE, scrollTrackSize),
-        new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        clipStart,
-        clipSize,
-        new Vec4(0, 0, 0, 0),
-      );
-    }
-    if (node._state.hasHorizontalScrollbar) {
-      const scrollbarSize = size.x;
+        ui.rectangle(
+          parseColor(scrollbarTrackColor),
+          position.add(new Vec2(size.x, scrollTrackPosition)),
+          new Vec2(CROSS_AXIS_SIZE, scrollTrackSize),
+          new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          clipStart,
+          clipSize,
+          new Vec4(0, 0, 0, 0),
+        );
+      }
+      if (node._state.hasHorizontalScrollbar) {
+        const scrollbarSize = size.x;
+        const scrollbarTrackColor = node.isHorizontalScrollbarHovered
+          ? SCROLLBAR_TRACK_HOVER_COLOR
+          : SCROLLBAR_TRACK_COLOR;
 
-      ui.rectangle(
-        parseColor(SCROLLBAR_COLOR),
-        position.add(new Vec2(0, size.y)),
-        new Vec2(scrollbarSize, CROSS_AXIS_SIZE),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        clipStart,
-        clipSize,
-        new Vec4(0, 0, 0, 0),
-      );
+        ui.rectangle(
+          parseColor(SCROLLBAR_COLOR),
+          position.add(new Vec2(0, size.y)),
+          new Vec2(scrollbarSize, CROSS_AXIS_SIZE),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          clipStart,
+          clipSize,
+          new Vec4(0, 0, 0, 0),
+        );
 
-      const scrollTrackSize = (node._state.clientWidth / node._state.scrollWidth) * scrollbarSize;
-      const scrollTrackPosition = (node._state.scrollX / node._state.scrollWidth) * scrollbarSize;
+        const scrollTrackSize = (node._state.clientWidth / node._state.scrollWidth) * scrollbarSize;
+        const scrollTrackPosition = (node._state.scrollX / node._state.scrollWidth) * scrollbarSize;
 
-      ui.rectangle(
-        parseColor(SCROLLBAR_TRACK_COLOR),
-        position.add(new Vec2(scrollTrackPosition, size.y)),
-        new Vec2(scrollTrackSize, CROSS_AXIS_SIZE),
-        new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
-        new Vec4(0, 0, 0, 0),
-        new Vec4(0, 0, 0, 0),
-        clipStart,
-        clipSize,
-        new Vec4(0, 0, 0, 0),
-      );
+        ui.rectangle(
+          parseColor(scrollbarTrackColor),
+          position.add(new Vec2(scrollTrackPosition, size.y)),
+          new Vec2(scrollTrackSize, CROSS_AXIS_SIZE),
+          new Vec4(scrollbarRadius, scrollbarRadius, scrollbarRadius, scrollbarRadius),
+          new Vec4(0, 0, 0, 0),
+          new Vec4(0, 0, 0, 0),
+          clipStart,
+          clipSize,
+          new Vec4(0, 0, 0, 0),
+        );
+      }
     }
   }
 }

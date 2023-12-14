@@ -26,7 +26,9 @@ export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
 
   private mouseDownPosition: Vec2 | null = null;
-  private isScrollbarHovered: boolean = false;
+  private mousePosition: Vec2 | null = null;
+  isHorizontalScrollbarHovered: boolean = false;
+  isVerticalScrollbarHovered: boolean = false;
 
   constructor(props: { onClick?(): void; style?: ViewStyleProps; testID?: string }) {
     super(props);
@@ -67,12 +69,18 @@ export class View extends BaseView {
   }
 
   onMouseUp(event: MouseUpEvent) {
-    //
+    this.mouseDownPosition = null;
   }
 
   onMouseMove(event: MoveEvent) {
-    //
     if (hitTest(this, event)) {
+      if (this._state.hasHorizontalScrollbar) {
+        this.isHorizontalScrollbarHovered = event.position.y >= this._state.clientHeight;
+      }
+
+      if (this._state.hasVerticalScrollbar) {
+        this.isVerticalScrollbarHovered = event.position.x >= this._state.clientWidth;
+      }
       console.log(this.testID, "it's me");
     }
   }

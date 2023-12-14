@@ -137,10 +137,8 @@ But usually this is not what might be useful to us. Therefore let's continue toâ
 
 This is the place where layout and user events happens.
 
-**TODO release: provide event-less View and Text implementations so that if someone only cares about styled layout, they can use it that way.**
-
 ```tsx
-const root = new View({
+const root = new BaseView({
   style: {
     height: "100%",
     width: "100%",
@@ -148,7 +146,7 @@ const root = new View({
 });
 
 root.add(
-  new View({
+  new BaseView({
     style: {
       backgroundColor: "#333",
       height: 100,
@@ -158,13 +156,21 @@ root.add(
 );
 
 layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+```
+
+## Third layer: make it interactive
+
+```tsx
+// Replace BaseView with View.
+
+// And in your game loop add this:
 compose(renderer, root);
 paint(renderer, root);
 ```
 
-## Third layer: TBD
+## Fourth layer: TBD
 
-**TODO release: implement this/decide what to do at least.**
+In future maybe I will go again in the JSX direction. Maybe with a mini-framework in direction of SolidJS? Who knows.
 
 ```tsx
 function App() {
