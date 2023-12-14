@@ -75,6 +75,8 @@ export class EventManager {
     const stack: Array<View> = [root];
     const reverse = [];
 
+    // This is a bit dead code. Since all events are attempted everywhere, DFS order does not
+    // matter anymore.
     while (stack.length > 0) {
       const node = stack.pop();
       invariant(node, "Node should be defined.");
@@ -99,20 +101,31 @@ export class EventManager {
       invariant(node, "Node should be defined.");
       for (const [type, listener] of node._eventListeners) {
         for (let j = 0; j < this.events.length; j++) {
+          // Dispatch mouse enter and leave events.
+          if (this.events[j]?.type === UserEventType.MouseMove) {
+            const previous = node._isMouseOver;
+
+            if (type === UserEventType.MouseEnter && !previous && hitTest(node, this.events[j]!)) {
+              node._isMouseOver = true;
+              listener(this.events[j]!);
+            }
+            if (type === UserEventType.MouseLeave && previous && !hitTest(node, this.events[j]!)) {
+              node._isMouseOver = false;
+              listener(this.events[j]!);
+            }
+          }
+
           const event = this.events[j];
           invariant(event, "Event should be defined.");
           if (event.type === type && hitTest(node, event)) {
             const typedListener = listener as (e: typeof event) => void;
             typedListener(event);
-            // Remove event from queue.
-            this.events.splice(j, 1);
-            j--;
           }
         }
       }
     }
 
-    // Remove all events that were not handled.
+    // Clean the events queue.
     this.events.length = 0;
   }
 }

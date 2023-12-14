@@ -6,26 +6,13 @@ export const enum UserEventType {
   MouseUp,
   MouseMove,
   MouseScroll,
+  MouseEnter,
+  MouseLeave,
 }
 
-export type ClickEvent = {
+export type MouseEvent = {
   position: Vec2;
-  type: UserEventType.MouseClick;
-};
-
-export type MouseDownEvent = {
-  position: Vec2;
-  type: UserEventType.MouseDown;
-};
-
-export type MouseUpEvent = {
-  position: Vec2;
-  type: UserEventType.MouseUp;
-};
-
-export type MoveEvent = {
-  position: Vec2;
-  type: UserEventType.MouseMove;
+  type: Omit<UserEventType, UserEventType.MouseScroll>;
 };
 
 export type ScrollEvent = {
@@ -34,4 +21,4 @@ export type ScrollEvent = {
   type: UserEventType.MouseScroll;
 };
 
-export type UserEvent = ClickEvent | MouseDownEvent | MouseUpEvent | MoveEvent | ScrollEvent;
+export type UserEvent = MouseEvent | ScrollEvent;

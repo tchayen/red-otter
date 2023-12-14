@@ -37,10 +37,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
   const traversalQueue = new Queue<Node>();
 
   const root = new BaseView({
-    style: {
-      height: rootSize.y,
-      width: rootSize.x,
-    },
+    style: { height: rootSize.y, width: rootSize.x },
     testID: "layout#root",
   });
   root.add(tree);
@@ -97,14 +94,14 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     if (typeof e._style.width === "string") {
       let definedWidth = undefined;
       let accumulatedMultiplier = 1;
-      let _p = e.parent;
-      while (definedWidth === undefined && _p) {
-        if (typeof _p._style.width === "string") {
-          accumulatedMultiplier *= toPercentage(_p._style.width);
-        } else if (typeof _p._style.width === "number") {
-          definedWidth = _p._style.width;
+      let p = e.parent;
+      while (definedWidth === undefined && p) {
+        if (typeof p._style.width === "string") {
+          accumulatedMultiplier *= toPercentage(p._style.width);
+        } else if (typeof p._style.width === "number") {
+          definedWidth = p._style.width;
         }
-        _p = _p.parent;
+        p = p.parent;
       }
 
       e._state.clientWidth =
@@ -113,14 +110,14 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     if (typeof e._style.height === "string") {
       let definedHeight = undefined;
       let accumulatedMultiplier = 1;
-      let _p = e.parent;
-      while (definedHeight === undefined && _p) {
-        if (typeof _p._style.height === "string") {
-          accumulatedMultiplier *= toPercentage(_p._style.height);
-        } else if (typeof _p._style.height === "number") {
-          definedHeight = _p._style.height;
+      let p = e.parent;
+      while (definedHeight === undefined && p) {
+        if (typeof p._style.height === "string") {
+          accumulatedMultiplier *= toPercentage(p._style.height);
+        } else if (typeof p._style.height === "number") {
+          definedHeight = p._style.height;
         }
-        _p = _p.parent;
+        p = p.parent;
       }
 
       e._state.clientHeight =
