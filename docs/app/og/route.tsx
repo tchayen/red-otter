@@ -5,14 +5,10 @@ import type { NextRequest } from "next/server";
 const interSemiBold = fetch(new URL("../../public/Inter-SemiBold.otf", import.meta.url)).then(
   (res) => res.arrayBuffer(),
 );
-const interRegular = fetch(new URL("../../public/Inter-Regular.otf", import.meta.url)).then((res) =>
-  res.arrayBuffer(),
-);
 
 export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
-  const interRegularData = await interRegular;
   const interSemiBoldData = await interSemiBold;
 
   const { searchParams } = new URL(request.url);
@@ -220,7 +216,7 @@ export async function GET(request: NextRequest) {
               color: "#7c7a85",
               display: "flex",
               fontSize: 48,
-              fontWeight: 400,
+              fontWeight: 600,
             }}
           >
             {format(new Date(publishedTime!), "MMMM d, yyyy")}
@@ -230,12 +226,6 @@ export async function GET(request: NextRequest) {
     ),
     {
       fonts: [
-        {
-          data: interRegularData,
-          name: "Inter",
-          style: "normal",
-          weight: 400,
-        },
         {
           data: interSemiBoldData,
           name: "Inter",
