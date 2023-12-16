@@ -205,8 +205,8 @@ export function Em({ children }: PropsWithChildren) {
   return <strong className="font-normal italic">{children}</strong>;
 }
 
-export function Hr() {
-  return <hr className="my-4 border-t border-mauvedark5" />;
+export function Hr({ className }: { className?: string }) {
+  return <hr className={twMerge("my-8 border-t border-mauvedark5", className)} />;
 }
 
 export function Box({

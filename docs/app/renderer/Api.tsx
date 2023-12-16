@@ -10,7 +10,7 @@ export function Api() {
         .map((f, index) => {
           return (
             <>
-              <Hr />
+              <Hr className="my-4" />
               <Function key={f.name} f={f} id={String(index + 1)} />
             </>
           );
@@ -20,7 +20,7 @@ export function Api() {
         .map((i, index) => {
           return (
             <>
-              <Hr />
+              <Hr className="my-4" />
               <Interface key={i.name} i={i} id={String(index + 1)} />
             </>
           );
@@ -30,7 +30,7 @@ export function Api() {
         .map((c, index) => {
           return (
             <>
-              <Hr />
+              <Hr className="my-4" />
               <Class key={c.name} c={c} id={String(index + 1)} />
             </>
           );

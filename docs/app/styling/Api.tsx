@@ -12,9 +12,9 @@ export function Api() {
   return (
     <ApiBlock>
       <Type id="" t={layoutProps} />
-      <Hr />
+      <Hr className="my-4" />
       <Type id="" t={decorativeProps} />
-      <Hr />
+      <Hr className="my-4" />
       <Type id="" t={textStyleProps}>
         <P>
           In-depth explanation of text rendering is available on the [Text
@@ -29,9 +29,9 @@ export function Api() {
           </P>
         </Box>
       </Type>
-      <Hr />
+      <Hr className="my-4" />
       <Type id="" t={layoutNodeState} />
-      <Hr />
+      <Hr className="my-4" />
       <Enums />
     </ApiBlock>
   );
