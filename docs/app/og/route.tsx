@@ -2,14 +2,12 @@ import { format } from "date-fns";
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 
-const interSemiBold = fetch(new URL("../../public/Inter-SemiBold.otf", import.meta.url)).then(
-  (res) => res.arrayBuffer(),
-);
+const interSemiBold = fetch(new URL("../../public/Inter-SemiBold.otf", import.meta.url));
 
 export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
-  const interSemiBoldData = await interSemiBold;
+  const interSemiBoldData = await interSemiBold.then((res) => res.arrayBuffer());
 
   const { searchParams } = new URL(request.url);
 

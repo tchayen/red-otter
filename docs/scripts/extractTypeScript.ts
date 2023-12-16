@@ -159,6 +159,11 @@ export function extractTypeScript(paths: Array<string>) {
           return;
         }
 
+        // Check if method is not private.
+        if (m.modifiers?.some((m) => m.kind === ts.SyntaxKind.PrivateKeyword)) {
+          return;
+        }
+
         const symbol = checker.getSymbolAtLocation(m.name);
         if (!symbol) {
           return;
@@ -229,6 +234,11 @@ export function extractTypeScript(paths: Array<string>) {
 
           const symbol = checker.getSymbolAtLocation(child.name);
           if (!symbol) {
+            return;
+          }
+
+          // Check if method is not private.
+          if (child.modifiers?.some((m) => m.kind === ts.SyntaxKind.PrivateKeyword)) {
             return;
           }
 
