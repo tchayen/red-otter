@@ -4,7 +4,7 @@
   "description": "Fancy Next.js app",
   "scripts": {
     "dev": "next",
-    "build": "bun scripts/extractTypeScript.ts && next build",
+    "build": "cd .. && bun run build && cd docs && bun scripts/extractTypeScript.ts && next build",
     "start": "next start",
     "lint": "eslint .",
     "ci": "bun run lint && bun run tsc && bun run build",
