@@ -1,4 +1,3 @@
-"use client";
 import { BaseEditor } from "../components/BaseEditor";
 
 export function Example1() {
@@ -7,35 +6,35 @@ export function Example1() {
       <BaseEditor
         files={{
           "/index.ts": { code: starterCode },
+          "/red-otter.js": { code: "" },
         }}
       />
     </>
   );
 }
 
-const starterCode = `import { WebGPURenderer } from "./WebGPURenderer";
-import { prepareLookups } from "./prepareLookups";
-import { renderFontAtlas } from "./renderFontAtlas";
-import { parseTTF } from "./parseTTF";
-import { Vec4 } from "./Vec4";
-import { Vec2 } from "./Vec2";
-import { invariant } from "./invariant";
+const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./red-otter";
+
+document.body.style.margin = 0;
 
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 
+const WIDTH = canvas.parentElement.clientWidth;
+const HEIGHT = canvas.parentElement.clientHeight;
+
 const settings = {
   sampleCount: 4,
-  windowHeight: canvas.clientHeight,
-  windowWidth: canvas.clientWidth,
+  windowHeight: HEIGHT,
+  windowWidth: WIDTH,
 };
 
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
 canvas.style = "width: 100%; height: 100%;";
 
 async function run() {
-  const interTTF = await fetch("/Inter.ttf").then((response) => response.arrayBuffer());
+  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
 
   const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

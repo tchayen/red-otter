@@ -19,10 +19,13 @@ export type {
   Whitespace,
 } from "./layout/styling";
 
+export { invariant } from "./utils/invariant";
+
 export { BinaryReader } from "./font/BinaryReader";
 export { toSDF } from "./font/toSDF";
 export { parseTTF } from "./font/parseTTF";
 export { shapeText } from "./font/shapeText";
+export { prepareLookups } from "./font/prepareLookups";
 export { renderFontAtlas, fontSizeToGap } from "./font/renderFontAtlas";
 export { generateGlyphToClassMap } from "./font/generateGlyphToClassMap";
 export { generateKerningFunction } from "./font/generateKerningFunction";
