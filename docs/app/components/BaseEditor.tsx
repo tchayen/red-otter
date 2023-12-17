@@ -18,39 +18,18 @@ export async function BaseEditor(props: SandpackProps) {
       }}
       files={{
         ...props.files,
-        "/dist/index.d.ts": { code: await types, hidden: true },
+        "/dist/index.d.ts": {
+          code: `/// <reference types="node_modules/@webgpu/types" />\n${await types}`,
+          hidden: true,
+        },
         "/dist/index.js": { code: await source, hidden: true },
         "sandbox.config.json": {
           code: sandboxConfig,
-          hidden: true,
-        },
-        "tsconfig.json": {
-          code: tsconfig,
           hidden: true,
         },
       }}
     />
   );
 }
-
-const tsconfig = `{
-  "compilerOptions": {
-    "allowJs": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "incremental": true,
-    "isolatedModules": true,
-    "lib": ["es2022", "dom", "dom.iterable"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noEmit": true,
-    "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "es2022",
-    "typeRoots": ["./node_modules/@webgpu/types"]
-  }
-}`;
 
 const sandboxConfig = `{"infiniteLoopProtection":false,"hardReloadOnChange":false,"view":"browser"}`;

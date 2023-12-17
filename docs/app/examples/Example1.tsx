@@ -13,7 +13,7 @@ export function Example1() {
   );
 }
 
-const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./dist";
+const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./dist/index";
 
 document.body.style.margin = "0";
 
