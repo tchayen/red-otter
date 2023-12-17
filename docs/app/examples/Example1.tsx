@@ -34,7 +34,7 @@ const settings = {
 
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-canvas.setProperty("style", "width: 100%; height: 100%;");
+canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {
   const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
