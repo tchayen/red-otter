@@ -49,8 +49,8 @@ export class View extends BaseView {
     super(props);
 
     this.onScroll = this.onScroll.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
+    this.handleMouseDownScrollStart = this.handleMouseDownScrollStart.bind(this);
+    this.handleMouseMoveScrollHovering = this.handleMouseMoveScrollHovering.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
 
@@ -59,8 +59,8 @@ export class View extends BaseView {
     // Overflow.Auto). What then?
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
       this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
-      this._eventListeners.push([UserEventType.MouseDown, this.onMouseDown]);
-      this._eventListeners.push([UserEventType.MouseMove, this.onMouseMove]);
+      this._eventListeners.push([UserEventType.MouseDown, this.handleMouseDownScrollStart]);
+      this._eventListeners.push([UserEventType.MouseMove, this.handleMouseMoveScrollHovering]);
       this._eventListeners.push([UserEventType.MouseEnter, this.onMouseEnter]);
       this._eventListeners.push([UserEventType.MouseLeave, this.onMouseLeave]);
     }
@@ -95,13 +95,13 @@ export class View extends BaseView {
     // No-op but important to keep this._isMouseOver up to date.
   }
 
-  private onMouseDown(_: MouseEvent) {
+  private handleMouseDownScrollStart(_: MouseEvent) {
     if (this._isHorizontalScrollbarHovered || this._isVerticalScrollbarHovered) {
       this._isBeingScrolled = true;
     }
   }
 
-  private onMouseMove(event: MouseEvent) {
+  private handleMouseMoveScrollHovering(event: MouseEvent) {
     if (this._isBeingScrolled) {
       return;
     }

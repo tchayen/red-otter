@@ -8,6 +8,8 @@ export const enum UserEventType {
   MouseScroll,
   MouseEnter,
   MouseLeave,
+  KeyDown,
+  KeyUp,
 }
 
 export type MouseEvent = {
@@ -25,4 +27,17 @@ export type ScrollEvent = {
   type: UserEventType.MouseScroll;
 };
 
-export type UserEvent = MouseEvent | ScrollEvent;
+export type KeyboardEvent = {
+  bubbles: boolean;
+  capturable: boolean;
+  key: string;
+  modifiers: {
+    alt: boolean;
+    ctrl: boolean;
+    meta: boolean;
+    shift: boolean;
+  };
+  type: UserEventType.KeyDown | UserEventType.KeyUp;
+};
+
+export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent;

@@ -14,6 +14,7 @@ import {
   TextAlign,
 } from "./layout/styling";
 import { invariant } from "./utils/invariant";
+import { Input } from "./widgets/Input";
 
 let lookups: Lookups | null = null;
 
@@ -1022,6 +1023,21 @@ export function interactiveButton() {
   button.add(
     new Text("Accept", { lookups, style: { color: "#000", fontName: "InterBold", fontSize: 15 } }),
   );
+
+  const input = new Input({
+    onKeyDown: (event) => {
+      //
+    },
+    placeholder: "Type here...",
+    style: {
+      backgroundColor: "#eee",
+      borderRadius: 6,
+      height: 28,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 16,
+    },
+  });
+  root.add(input);
 
   return root;
 }
