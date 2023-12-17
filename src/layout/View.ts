@@ -96,7 +96,6 @@ export class View extends BaseView {
   }
 
   private onMouseDown(_: MouseEvent) {
-    console.log("aa");
     if (this._isHorizontalScrollbarHovered || this._isVerticalScrollbarHovered) {
       this._isBeingScrolled = true;
     }

@@ -73,8 +73,8 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     e._state.scrollHeight = 0;
     e._state.scrollX = 0;
     e._state.scrollY = 0;
-    e._state.hasHorizontalScrollbar = false;
-    e._state.hasVerticalScrollbar = false;
+    e._state.hasHorizontalScrollbar = e._style.overflowX === Overflow.Scroll;
+    e._state.hasVerticalScrollbar = e._style.overflowY === Overflow.Scroll;
 
     // If element has defined width or height, set it.
     if (typeof e._style.width === "number") {
@@ -160,14 +160,6 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
 
       e._state.clientWidth = shape.boundingRectangle.width;
       e._state.clientHeight = shape.boundingRectangle.height;
-    }
-
-    if (e._style.overflowX === Overflow.Scroll) {
-      e._state.hasHorizontalScrollbar = true;
-    }
-
-    if (e._style.overflowY === Overflow.Scroll) {
-      e._state.hasVerticalScrollbar = true;
     }
   }
 
@@ -346,6 +338,9 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     // Figure out scroll size here. If scrollbar is added then recalculate rows.
     // But it seems like there's something going on later; i.e. scrollheight is too large if that
     // is calculated here.
+    {
+      //
+    }
 
     e._state.children = rows;
 
@@ -372,13 +367,6 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     if (e._style.flex < 0) {
       console.warn(`Found flex value ${e._style.flex} lower than 0. Resetting to 0.`);
       e._style.flex = 0;
-    }
-
-    if (e._style.overflowX === Overflow.Scroll) {
-      e._state.clientHeight -= CROSS_AXIS_SIZE;
-    }
-    if (e._style.overflowY === Overflow.Scroll) {
-      e._state.clientWidth -= CROSS_AXIS_SIZE;
     }
 
     const parentWidth = p?._state.clientWidth ?? 0;
@@ -446,6 +434,14 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           e._state.clientHeight -
           e._style.bottom;
       }
+    }
+
+    // Keep in mind scrollbars.
+    if (e._state.hasHorizontalScrollbar) {
+      e._state.clientHeight -= CROSS_AXIS_SIZE;
+    }
+    if (e._state.hasVerticalScrollbar) {
+      e._state.clientWidth -= CROSS_AXIS_SIZE;
     }
 
     if (e._style.flexWrap === FlexWrap.WrapReverse) {
@@ -530,14 +526,14 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
         }
       }
 
-      if (e._style.overflowX === Overflow.Scroll && e._state.scrollWidth > e._state.clientWidth) {
+      if (e._state.hasHorizontalScrollbar && e._state.scrollWidth > e._state.clientWidth) {
         if (isHorizontal) {
           availableMain -= CROSS_AXIS_SIZE;
         } else {
           availableCross -= CROSS_AXIS_SIZE;
         }
       }
-      if (e._style.overflowY === Overflow.Scroll && e._state.scrollHeight > e._state.clientHeight) {
+      if (e._state.hasVerticalScrollbar && e._state.scrollHeight > e._state.clientHeight) {
         if (isVertical) {
           availableMain -= CROSS_AXIS_SIZE;
         } else {
@@ -788,18 +784,18 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     const e = nodesInLevelOrder[i]!;
     invariant(e, "Empty queue.");
 
-    const hasHorizontalScroll = e._style.overflowX === Overflow.Scroll;
-    const hasVerticalScroll = e._style.overflowY === Overflow.Scroll;
-
-    if (hasHorizontalScroll || hasVerticalScroll) {
+    if (
+      e._style.overflowX === Overflow.Auto ||
+      e._style.overflowX === Overflow.Scroll ||
+      e._style.overflowY === Overflow.Auto ||
+      e._style.overflowY === Overflow.Scroll
+    ) {
       let farthestX = 0;
       let farthestY = 0;
       let c = e.firstChild;
       while (c) {
-        const potentialHorizontalScroll =
-          c._style.overflowX === Overflow.Scroll ? CROSS_AXIS_SIZE : 0;
-        const potentialVerticalScroll =
-          c._style.overflowY === Overflow.Scroll ? CROSS_AXIS_SIZE : 0;
+        const potentialHorizontalScroll = c._state.hasHorizontalScrollbar ? CROSS_AXIS_SIZE : 0;
+        const potentialVerticalScroll = c._state.hasVerticalScrollbar ? CROSS_AXIS_SIZE : 0;
         farthestX = Math.max(
           farthestX,
           c._state.x +
@@ -826,6 +822,13 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
 
       e._state.scrollWidth = Math.max(farthestX, e._state.clientWidth);
       e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
+
+      if (e._style.overflowX === Overflow.Auto && e._state.scrollWidth > e._state.clientWidth) {
+        e._state.hasHorizontalScrollbar = true;
+      }
+      if (e._style.overflowY === Overflow.Auto && e._state.scrollHeight > e._state.clientHeight) {
+        e._state.hasVerticalScrollbar = true;
+      }
     } else {
       e._state.scrollWidth = e._state.clientWidth;
       e._state.scrollHeight = e._state.clientHeight;
