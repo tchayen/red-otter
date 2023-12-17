@@ -20,8 +20,11 @@ document.body.style.margin = 0;
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 
-const WIDTH = canvas.parentElement.clientWidth;
-const HEIGHT = canvas.parentElement.clientHeight;
+const parent = canvas.parentElement;
+invariant(parent, "No parent element found.");
+const WIDTH = parent.clientWidth;
+const HEIGHT = parent.clientHeight;
+
 
 const settings = {
   sampleCount: 4,
@@ -31,7 +34,7 @@ const settings = {
 
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-canvas.style = "width: 100%; height: 100%;";
+canvas.setProperty("style", "width: 100%; height: 100%;");
 
 async function run() {
   const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());

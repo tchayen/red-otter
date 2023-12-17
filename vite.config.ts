@@ -12,6 +12,12 @@ export default defineConfig({
     },
     outDir: ".sandpack-files",
   },
-  // @ts-expect-error dts types were not updated to vite 5.
-  plugins: [dts({ include: "src", outDir: ".sandpack-files" })],
+  plugins: [
+    // @ts-expect-error dts types were not updated to vite 5.
+    dts({
+      // include: "src",
+      rollupTypes: true,
+      strictOutput: true,
+    }),
+  ],
 });
