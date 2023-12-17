@@ -13,9 +13,9 @@ export function Example1() {
   );
 }
 
-const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./red-otter";
+const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./dist";
 
-document.body.style.margin = 0;
+document.body.style.margin = "0";
 
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
