@@ -15,8 +15,8 @@ export async function BaseEditor(props: SandpackProps) {
         ...props.files,
         "index.d.ts": { code: await types, hidden: true },
         "red-otter.js": { code: await source, hidden: true },
-        "sandpack.config.json": {
-          code: `{ "infiniteLoopProtection": false, "hardReloadOnChange": false, "view": "browser" }`,
+        "sandbox.config.json": {
+          code: `{"infiniteLoopProtection":false,"hardReloadOnChange":false,"view":"browser"}`,
           hidden: true,
         },
       }}
