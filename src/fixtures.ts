@@ -1009,7 +1009,7 @@ export function interactiveButton() {
 
   const button = new View({
     onClick: () => {
-      window.alert("Clicked!");
+      console.log("Clicked!");
     },
     style: {
       backgroundColor: "#2870BD",

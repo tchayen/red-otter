@@ -97,7 +97,7 @@ The pipeline of taking user defined components to the screen has multiple layers
 
 As a rule of thumb, styling most closely resembles React Native which in turn resembles CSS.
 
---
+---
 
 ## Build process
 
