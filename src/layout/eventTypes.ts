@@ -11,11 +11,15 @@ export const enum UserEventType {
 }
 
 export type MouseEvent = {
+  bubbles: boolean;
+  capturable: boolean;
   position: Vec2;
   type: Omit<UserEventType, UserEventType.MouseScroll>;
 };
 
 export type ScrollEvent = {
+  bubbles: boolean;
+  capturable: boolean;
   delta: Vec2;
   position: Vec2;
   type: UserEventType.MouseScroll;

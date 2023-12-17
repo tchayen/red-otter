@@ -1,5 +1,6 @@
-import { type Vec2 } from "..";
-import { hitTest } from "../hitTest";
+import { intersection, Vec4, type Vec2, isInside } from "..";
+import { CROSS_AXIS_SIZE } from "../consts";
+import { getScreenVisibleRectangle } from "../hitTest";
 import { BaseView } from "./BaseView";
 import type { MouseEvent, ScrollEvent } from "./eventTypes";
 import { UserEventType } from "./eventTypes";
@@ -21,11 +22,21 @@ type UserEventTuple =
 export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
 
-  _isMouseOver: boolean = false;
-  private mouseDownPosition: Vec2 | null = null;
-  private mousePosition: Vec2 | null = null;
+  /**
+   * Controlled by `EventManager`. Needed for dispatching mouseEnter and mouseLeave events.
+   */
+  _isMouseOver = false;
+  /**
+   * Accessed by `paint()`.
+   */
   isHorizontalScrollbarHovered: boolean = false;
+  /**
+   * Accessed by `paint()`.
+   */
   isVerticalScrollbarHovered: boolean = false;
+
+  private isMouseDown = false;
+  private lastPosition: Vec2 | null = null;
 
   constructor(props: {
     onClick?(): void;
@@ -78,38 +89,83 @@ export class View extends BaseView {
     );
   }
 
-  private onMouseEnter(event: MouseEvent) {
+  private onMouseEnter(_: MouseEvent) {
     console.log(`Mouse entered ${this.testID}`);
   }
 
-  private onMouseLeave(event: MouseEvent) {
+  private onMouseLeave(_: MouseEvent) {
     console.log(`Mouse left ${this.testID}`);
-    this.isHorizontalScrollbarHovered = false;
-    this.isVerticalScrollbarHovered = false;
   }
 
-  private onMouseDown(event: MouseEvent) {
-    this.mouseDownPosition = event.position;
-  }
-
-  private onMouseUp(event: MouseEvent) {
-    this.mouseDownPosition = null;
-  }
-
-  private onMouseMove(event: MouseEvent) {
-    if (!this._isMouseOver) {
-      return;
+  private onMouseDown(_: MouseEvent) {
+    console.log("aa");
+    if (this.isHorizontalScrollbarHovered || this.isVerticalScrollbarHovered) {
+      this.isMouseDown = true;
     }
+  }
 
-    if (hitTest(this, event)) {
+  private onMouseUp(_: MouseEvent) {
+    this.isMouseDown = false;
+  }
+
+  // TODO: don't abruply stop scrolling when mouse leaves the scrollbar but is still pressed.
+  private onMouseMove(event: MouseEvent) {
+    if (this.isMouseDown) {
+      console.log("down");
+      // Scroll.
+      const deltaX = this.lastPosition ? event.position.x - this.lastPosition.x : 0;
+      const deltaY = this.lastPosition ? event.position.y - this.lastPosition.y : 0;
+
+      // 1 pixel of scrollbar is how many pixels of content?
+      const ratioX = this._state.scrollWidth / this._state.clientWidth;
+      const ratioY = this._state.scrollHeight / this._state.clientHeight;
+
+      if (this.isHorizontalScrollbarHovered) {
+        this._state.scrollX = Math.min(
+          Math.max(this._state.scrollX + Math.round(deltaX * ratioX), 0),
+          this._state.scrollWidth - this._state.clientWidth,
+        );
+      }
+
+      if (this.isVerticalScrollbarHovered) {
+        this._state.scrollY = Math.min(
+          Math.max(this._state.scrollY + Math.round(deltaY * ratioY), 0),
+          this._state.scrollHeight - this._state.clientHeight,
+        );
+      }
+      this.lastPosition = event.position;
+    } else if (this._isMouseOver) {
+      // Screen space rectangle of the node's visible area, including scrollbars.
+      const rectangle = getScreenVisibleRectangle(this);
+
       if (this._state.hasHorizontalScrollbar) {
-        this.isHorizontalScrollbarHovered = event.position.y >= this._state.clientHeight;
+        const horizontalScrollbar = intersection(
+          rectangle,
+          new Vec4(
+            rectangle.x,
+            rectangle.y + this._state.clientHeight,
+            this._state.clientWidth,
+            CROSS_AXIS_SIZE,
+          ),
+        );
+        this.isHorizontalScrollbarHovered = isInside(event.position, horizontalScrollbar);
       }
 
       if (this._state.hasVerticalScrollbar) {
-        this.isVerticalScrollbarHovered = event.position.x >= this._state.clientWidth;
+        const verticalScrollbar = intersection(
+          rectangle,
+          new Vec4(
+            rectangle.x + this._state.clientWidth,
+            rectangle.y,
+            CROSS_AXIS_SIZE,
+            this._state.clientHeight,
+          ),
+        );
+        this.isVerticalScrollbarHovered = isInside(event.position, verticalScrollbar);
       }
-      // console.log(this.testID, "it's me");
+    } else {
+      this.isHorizontalScrollbarHovered = false;
+      this.isVerticalScrollbarHovered = false;
     }
   }
 }

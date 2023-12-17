@@ -887,7 +887,7 @@ export function zIndex() {
 }
 
 export function text() {
-  const root = new View({ style: { ...rootStyle, backgroundColor: "#222" } });
+  const root = new View({ style: { ...rootStyle } });
 
   function text(value: string, style?: Partial<TextStyleProps>) {
     invariant(lookups, "Lookups must be set.");

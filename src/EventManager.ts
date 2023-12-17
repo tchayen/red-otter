@@ -28,6 +28,8 @@ export class EventManager {
 
       window.addEventListener("pointermove", (event) => {
         this.dispatchEvent({
+          bubbles: true,
+          capturable: false,
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseMove,
         });
@@ -35,6 +37,8 @@ export class EventManager {
 
       window.addEventListener("pointerup", (event) => {
         this.dispatchEvent({
+          bubbles: true,
+          capturable: true,
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseClick,
         });
@@ -42,6 +46,8 @@ export class EventManager {
 
       window.addEventListener("mousedown", (event) => {
         this.dispatchEvent({
+          bubbles: true,
+          capturable: true,
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseDown,
         });
@@ -49,6 +55,8 @@ export class EventManager {
 
       window.addEventListener("mouseup", (event) => {
         this.dispatchEvent({
+          bubbles: true,
+          capturable: true,
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseUp,
         });
@@ -56,6 +64,8 @@ export class EventManager {
 
       window.addEventListener("wheel", (event) => {
         this.dispatchEvent({
+          bubbles: false,
+          capturable: true,
           delta: new Vec2(event.deltaX, event.deltaY),
           position: new Vec2(event.clientX, event.clientY),
           type: UserEventType.MouseScroll,
@@ -94,9 +104,12 @@ export class EventManager {
       }
     }
 
+    // Dispatch mouse enter and leave events before other events because they are not consumed or
+    // bubbled.
     for (let i = reverse.length - 1; i >= 0; i--) {
       const node = reverse[i];
       invariant(node, "Node should be defined.");
+
       for (const [type, listener] of node._eventListeners) {
         for (let j = 0; j < this.events.length; j++) {
           const event = this.events[j];
@@ -105,15 +118,6 @@ export class EventManager {
           // Dispatch mouse enter and leave events.
           if (event.type === UserEventType.MouseMove) {
             const previous = node._isMouseOver;
-
-            // if (node.testID !== "D-overflow" || type !== UserEventType.MouseEnter) {
-            //   continue;
-            // }
-
-            // console.log(!previous, hitTest(node, event));
-
-            // TODO: mouse leave does not get called for the built-in method that handles scrolling
-            // but works for external ones.
 
             if (type === UserEventType.MouseEnter && !previous && hitTest(node, event)) {
               node._isMouseOver = true;
@@ -124,14 +128,46 @@ export class EventManager {
               listener(event);
             }
           }
+        }
+      }
+    }
+
+    for (let i = reverse.length - 1; i >= 0; i--) {
+      const node = reverse[i];
+      invariant(node, "Node should be defined.");
+
+      for (const [type, listener] of node._eventListeners) {
+        for (let j = 0; j < this.events.length; j++) {
+          const event = this.events[j];
+          invariant(event, "Event should be defined.");
 
           if (event.type === type && hitTest(node, event)) {
             const typedListener = listener as (e: typeof event) => void;
             typedListener(event);
 
-            // Remove event from queue.
-            this.events.splice(j, 1);
-            j--;
+            // Bubble up the event.
+            if (event.bubbles) {
+              let parent = node.parent;
+              while (parent) {
+                if (!(parent instanceof View)) {
+                  break;
+                }
+
+                for (const listener of parent._eventListeners) {
+                  if (listener[0] === type) {
+                    const typedListener = listener[1] as (e: typeof event) => void;
+                    typedListener(event);
+                  }
+                }
+                parent = parent.parent;
+              }
+            }
+
+            if (event.capturable) {
+              // Remove event from queue.
+              this.events.splice(j, 1);
+              j--;
+            }
           }
         }
       }
