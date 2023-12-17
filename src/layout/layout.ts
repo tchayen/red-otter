@@ -824,9 +824,11 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       e._state.scrollHeight = Math.max(farthestY, e._state.clientHeight);
 
       if (e._style.overflowX === Overflow.Auto && e._state.scrollWidth > e._state.clientWidth) {
+        e._state.clientHeight -= CROSS_AXIS_SIZE;
         e._state.hasHorizontalScrollbar = true;
       }
       if (e._style.overflowY === Overflow.Auto && e._state.scrollHeight > e._state.clientHeight) {
+        e._state.clientWidth -= CROSS_AXIS_SIZE;
         e._state.hasVerticalScrollbar = true;
       }
     } else {
