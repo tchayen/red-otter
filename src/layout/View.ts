@@ -3,7 +3,7 @@ import { getScreenVisibleRectangle } from "../hitTest";
 import { Vec4 } from "../math/Vec4";
 import { intersection, isInside } from "../math/utils";
 import { BaseView } from "./BaseView";
-import type { MouseEvent, ScrollEvent } from "./eventTypes";
+import type { KeyboardEvent, MouseEvent, ScrollEvent } from "./eventTypes";
 import { UserEventType } from "./eventTypes";
 import type { ViewStyleProps } from "./styling";
 import { Overflow } from "./styling";
@@ -13,9 +13,12 @@ type UserEventTuple =
   | [UserEventType.MouseMove, (event: MouseEvent) => void]
   | [UserEventType.MouseEnter, (event: MouseEvent) => void]
   | [UserEventType.MouseLeave, (event: MouseEvent) => void]
-  | [UserEventType.MouseScroll, (event: ScrollEvent) => void]
   | [UserEventType.MouseDown, (event: MouseEvent) => void]
-  | [UserEventType.MouseUp, (event: MouseEvent) => void];
+  | [UserEventType.MouseUp, (event: MouseEvent) => void]
+  | [UserEventType.Scroll, (event: ScrollEvent) => void]
+  | [UserEventType.KeyDown, (event: KeyboardEvent) => void]
+  | [UserEventType.KeyUp, (event: KeyboardEvent) => void]
+  | [UserEventType.KeyPress, (event: KeyboardEvent) => void];
 
 /**
  * `BaseView` but with event listeners.
@@ -39,13 +42,15 @@ export class View extends BaseView {
    */
   _isBeingScrolled = false;
 
-  constructor(props: {
-    onClick?(): void;
-    onMouseEnter?(): void;
-    onMouseLeave?(): void;
-    style?: ViewStyleProps;
-    testID?: string;
-  }) {
+  constructor(
+    readonly props: {
+      onClick?(): void;
+      onMouseEnter?(): void;
+      onMouseLeave?(): void;
+      style?: ViewStyleProps;
+      testID?: string;
+    },
+  ) {
     super(props);
 
     this.onScroll = this.onScroll.bind(this);
@@ -58,11 +63,13 @@ export class View extends BaseView {
     // TODO: this is done when creating the node but scrollbar can be added later (like with
     // Overflow.Auto). What then?
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
-      this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
-      this._eventListeners.push([UserEventType.MouseDown, this.handleMouseDownScrollStart]);
-      this._eventListeners.push([UserEventType.MouseMove, this.handleMouseMoveScrollHovering]);
-      this._eventListeners.push([UserEventType.MouseEnter, this.onMouseEnter]);
-      this._eventListeners.push([UserEventType.MouseLeave, this.onMouseLeave]);
+      this._eventListeners.push(
+        [UserEventType.Scroll, this.onScroll],
+        [UserEventType.MouseDown, this.handleMouseDownScrollStart],
+        [UserEventType.MouseMove, this.handleMouseMoveScrollHovering],
+        [UserEventType.MouseEnter, this.onMouseEnter],
+        [UserEventType.MouseLeave, this.onMouseLeave],
+      );
     }
 
     if (props.onClick) {

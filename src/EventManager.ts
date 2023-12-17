@@ -3,9 +3,10 @@ import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import { Display } from "./layout/styling";
 import { invariant } from "./utils/invariant";
-import type { MouseEvent, UserEvent } from "./layout/eventTypes";
-import { UserEventType } from "./layout/eventTypes";
+import { UserEventType, isMouseEvent } from "./layout/eventTypes";
 import { hitTest } from "./hitTest";
+import type { MouseEvent, UserEvent } from "./layout/eventTypes";
+import { Input } from "./widgets/Input";
 
 /**
  * Responsible for dispatching events to the correct views.
@@ -20,10 +21,51 @@ export class EventManager {
 
     if (typeof window !== "undefined") {
       window.addEventListener("keydown", (event) => {
-        // TODO release: implement key repeating? Maybe use keypress.
+        this.dispatchEvent({
+          bubbles: false,
+          capturable: true,
+          character: event.key,
+          code: event.keyCode,
+          modifiers: {
+            alt: event.altKey,
+            control: event.ctrlKey,
+            meta: event.metaKey,
+            shift: event.shiftKey,
+          },
+          type: UserEventType.KeyDown,
+        });
       });
+
       window.addEventListener("keyup", (event) => {
-        // TODO release: implement key repeating? Maybe use keypress.
+        this.dispatchEvent({
+          bubbles: false,
+          capturable: true,
+          character: event.key,
+          code: event.keyCode,
+          modifiers: {
+            alt: event.altKey,
+            control: event.ctrlKey,
+            meta: event.metaKey,
+            shift: event.shiftKey,
+          },
+          type: UserEventType.KeyUp,
+        });
+      });
+
+      window.addEventListener("keypress", (event) => {
+        this.dispatchEvent({
+          bubbles: false,
+          capturable: true,
+          character: event.key,
+          code: event.keyCode,
+          modifiers: {
+            alt: event.altKey,
+            control: event.ctrlKey,
+            meta: event.metaKey,
+            shift: event.shiftKey,
+          },
+          type: UserEventType.KeyPress,
+        });
       });
 
       window.addEventListener("pointermove", (event) => {
@@ -68,7 +110,7 @@ export class EventManager {
           capturable: true,
           delta: new Vec2(event.deltaX, event.deltaY),
           position: new Vec2(event.clientX, event.clientY),
-          type: UserEventType.MouseScroll,
+          type: UserEventType.Scroll,
         });
       });
     }
@@ -111,7 +153,7 @@ export class EventManager {
       this.events
         .filter((event) => event.type === UserEventType.MouseMove)
         .forEach((event) => {
-          this.onMouseMove(currentlyScrolled, event);
+          this.onMouseMove(currentlyScrolled, event as MouseEvent);
         });
 
       const mouseUp = this.events.find((event) => event.type === UserEventType.MouseUp);
@@ -139,11 +181,11 @@ export class EventManager {
 
             if (type === UserEventType.MouseEnter && !previous && hitTest(node, event)) {
               node._isMouseOver = true;
-              listener(event);
+              listener(event as MouseEvent);
             }
             if (type === UserEventType.MouseLeave && previous && !hitTest(node, event)) {
               node._isMouseOver = false;
-              listener(event);
+              listener(event as MouseEvent);
             }
           }
         }
@@ -156,10 +198,16 @@ export class EventManager {
 
       for (const [type, listener] of node._eventListeners) {
         for (let j = 0; j < this.events.length; j++) {
+          if (j < 0) {
+            continue;
+          }
           const event = this.events[j];
           invariant(event, "Event should be defined.");
+          if (event.type !== type) {
+            continue;
+          }
 
-          if (event.type === type && hitTest(node, event)) {
+          if (isMouseEvent(event) && hitTest(node, event)) {
             const typedListener = listener as (e: typeof event) => void;
             typedListener(event);
 
@@ -180,6 +228,17 @@ export class EventManager {
                 parent = parent.parent;
               }
             }
+
+            if (event.capturable) {
+              // Remove event from queue.
+              this.events.splice(j, 1);
+              j--;
+            }
+          }
+
+          if (node instanceof Input && node.isFocused) {
+            const typedListener = listener as (e: typeof event) => void;
+            typedListener(event);
 
             if (event.capturable) {
               // Remove event from queue.

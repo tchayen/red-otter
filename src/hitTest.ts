@@ -2,12 +2,12 @@ import type { BaseView } from "./layout/BaseView";
 import { CROSS_AXIS_SIZE } from "./consts";
 import { Vec4 } from "./math/Vec4";
 import { intersection as getIntersection, isInside } from "./math/utils";
-import type { UserEvent } from "./layout/eventTypes";
+import type { MouseEvent } from "./layout/eventTypes";
 
 /**
  * @returns whether event happened within the node's visible rectangle, including scrollbars.
  */
-export function hitTest(node: BaseView, event: UserEvent): boolean {
+export function hitTest(node: BaseView, event: MouseEvent): boolean {
   const intersection = getScreenVisibleRectangle(node);
   return isInside(event.position, intersection);
 }

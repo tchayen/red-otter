@@ -29,7 +29,7 @@ export class BaseView implements Node {
   _style: ExactDecorativeProps & ExactLayoutProps;
 
   constructor(
-    public props: {
+    readonly props: {
       onClick?(): void;
       style?: ViewStyleProps;
       testID?: string;

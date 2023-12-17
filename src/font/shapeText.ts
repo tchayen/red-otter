@@ -26,6 +26,7 @@ export type Shape = {
  * @param text text to shape.
  * @param textAlign alignment of the text.
  * @param maxWidth maximum width of the text. If the text is longer than this, it will be wrapped. Defaults to `Number.POSITIVE_INFINITY`.
+ * @param noWrap if true, the text will not be wrapped.
  * @returns a shape object that can be used to render the text.
  */
 export function shapeText(

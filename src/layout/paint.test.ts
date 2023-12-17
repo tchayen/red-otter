@@ -26,7 +26,7 @@ describe("paint", () => {
       eventManager.dispatchEvent({
         delta: delta,
         position: where,
-        type: UserEventType.MouseScroll,
+        type: UserEventType.Scroll,
       });
 
       eventManager.deliverEvents(root);

@@ -27,8 +27,8 @@ export function ui(renderer: WebGPURenderer): View {
     testID: "root",
   });
 
-  // root.add(fixtures.displayAndOverflow());
-  root.add(exampleGrid());
+  root.add(fixtures.interactiveButton());
+  // root.add(exampleGrid());
   // root.add(fixtures.displayAndOverflow());
   // root.add(complexWindow());
 

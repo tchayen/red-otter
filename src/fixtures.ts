@@ -998,7 +998,8 @@ export function interactiveButton() {
     style: {
       alignItems: AlignItems.Center,
       backgroundColor: "#000",
-      gap: 20,
+      flexDirection: FlexDirection.RowReverse,
+      gap: 12,
       height: 300,
       justifyContent: JustifyContent.Center,
       overflow: Overflow.Hidden,
@@ -1011,8 +1012,10 @@ export function interactiveButton() {
       window.alert("Clicked!");
     },
     style: {
-      backgroundColor: "#fff",
+      backgroundColor: "#2870BD",
+      borderColor: "#0090FF",
       borderRadius: 6,
+      borderTopWidth: 1,
       height: 28,
       justifyContent: JustifyContent.Center,
       paddingHorizontal: 16,
@@ -1021,20 +1024,26 @@ export function interactiveButton() {
   });
   root.add(button);
   button.add(
-    new Text("Accept", { lookups, style: { color: "#000", fontName: "InterBold", fontSize: 15 } }),
+    new Text("Label", {
+      lookups,
+      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 15 },
+    }),
   );
 
   const input = new Input({
+    lookups,
     onKeyDown: (event) => {
       //
     },
     placeholder: "Type here...",
     style: {
-      backgroundColor: "#eee",
+      backgroundColor: "#111111",
+      borderColor: "#313131",
       borderRadius: 6,
+      borderWidth: 1,
       height: 28,
       justifyContent: JustifyContent.Center,
-      paddingHorizontal: 16,
+      paddingHorizontal: 8,
     },
   });
   root.add(input);

@@ -21,7 +21,7 @@ export class Text implements Node {
 
   constructor(
     public text: string,
-    public props: {
+    readonly props: {
       lookups: Lookups;
       style: TextStyleProps;
       testID?: string;
