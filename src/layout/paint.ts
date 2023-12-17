@@ -105,7 +105,7 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       }
       if (node._state.hasVerticalScrollbar) {
         const scrollbarSize = size.y;
-        const scrollbarTrackColor = node.isVerticalScrollbarHovered
+        const scrollbarTrackColor = node._isVerticalScrollbarHovered
           ? SCROLLBAR_TRACK_HOVER_COLOR
           : SCROLLBAR_TRACK_COLOR;
 
@@ -140,7 +140,7 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       }
       if (node._state.hasHorizontalScrollbar) {
         const scrollbarSize = size.x;
-        const scrollbarTrackColor = node.isHorizontalScrollbarHovered
+        const scrollbarTrackColor = node._isHorizontalScrollbarHovered
           ? SCROLLBAR_TRACK_HOVER_COLOR
           : SCROLLBAR_TRACK_COLOR;
 

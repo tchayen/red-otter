@@ -3,7 +3,7 @@ import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import { Display } from "./layout/styling";
 import { invariant } from "./utils/invariant";
-import type { UserEvent } from "./layout/eventTypes";
+import type { MouseEvent, UserEvent } from "./layout/eventTypes";
 import { UserEventType } from "./layout/eventTypes";
 import { hitTest } from "./hitTest";
 
@@ -77,11 +77,11 @@ export class EventManager {
     document.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
-  public dispatchEvent(event: UserEvent): void {
+  dispatchEvent(event: UserEvent): void {
     this.events.push(event);
   }
 
-  public deliverEvents(root: View): void {
+  deliverEvents(root: View): void {
     const stack: Array<View> = [root];
     const reverse = [];
 
@@ -101,6 +101,24 @@ export class EventManager {
           stack.push(c);
         }
         c = c.next;
+      }
+    }
+
+    // Handle dragging scrollbar, potentially outside of the view (so it doesn't abruptly stop when
+    // user goes one pixel too far).
+    const currentlyScrolled = reverse.find((node) => node._isBeingScrolled);
+    if (currentlyScrolled) {
+      this.events
+        .filter((event) => event.type === UserEventType.MouseMove)
+        .forEach((event) => {
+          this.onMouseMove(currentlyScrolled, event);
+        });
+
+      const mouseUp = this.events.find((event) => event.type === UserEventType.MouseUp);
+      if (mouseUp) {
+        currentlyScrolled._isBeingScrolled = false;
+        currentlyScrolled._isHorizontalScrollbarHovered = false;
+        currentlyScrolled._isVerticalScrollbarHovered = false;
       }
     }
 
@@ -175,5 +193,30 @@ export class EventManager {
 
     // Remove all events that were not handled.
     this.events.length = 0;
+  }
+
+  private lastPosition: Vec2 | null = null;
+  private onMouseMove(node: View, event: MouseEvent): void {
+    const deltaX = this.lastPosition ? event.position.x - this.lastPosition.x : 0;
+    const deltaY = this.lastPosition ? event.position.y - this.lastPosition.y : 0;
+
+    // 1 pixel of scrollbar is how many pixels of content?
+    const ratioX = node._state.scrollWidth / node._state.clientWidth;
+    const ratioY = node._state.scrollHeight / node._state.clientHeight;
+
+    if (node._isHorizontalScrollbarHovered) {
+      node._state.scrollX = Math.min(
+        Math.max(node._state.scrollX + Math.round(deltaX * ratioX), 0),
+        node._state.scrollWidth - node._state.clientWidth,
+      );
+    }
+
+    if (node._isVerticalScrollbarHovered) {
+      node._state.scrollY = Math.min(
+        Math.max(node._state.scrollY + Math.round(deltaY * ratioY), 0),
+        node._state.scrollHeight - node._state.clientHeight,
+      );
+    }
+    this.lastPosition = event.position;
   }
 }

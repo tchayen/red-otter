@@ -1,6 +1,7 @@
-import { intersection, Vec4, type Vec2, isInside } from "..";
 import { CROSS_AXIS_SIZE } from "../consts";
 import { getScreenVisibleRectangle } from "../hitTest";
+import { Vec4 } from "../math/Vec4";
+import { intersection, isInside } from "../math/utils";
 import { BaseView } from "./BaseView";
 import type { MouseEvent, ScrollEvent } from "./eventTypes";
 import { UserEventType } from "./eventTypes";
@@ -21,7 +22,6 @@ type UserEventTuple =
  */
 export class View extends BaseView {
   _eventListeners: Array<UserEventTuple> = [];
-
   /**
    * Controlled by `EventManager`. Needed for dispatching mouseEnter and mouseLeave events.
    */
@@ -29,14 +29,15 @@ export class View extends BaseView {
   /**
    * Accessed by `paint()`.
    */
-  isHorizontalScrollbarHovered: boolean = false;
+  _isHorizontalScrollbarHovered: boolean = false;
   /**
    * Accessed by `paint()`.
    */
-  isVerticalScrollbarHovered: boolean = false;
-
-  private isMouseDown = false;
-  private lastPosition: Vec2 | null = null;
+  _isVerticalScrollbarHovered: boolean = false;
+  /**
+   * Accessed by `EventManager`.
+   */
+  _isBeingScrolled = false;
 
   constructor(props: {
     onClick?(): void;
@@ -49,7 +50,6 @@ export class View extends BaseView {
 
     this.onScroll = this.onScroll.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -64,7 +64,6 @@ export class View extends BaseView {
     if (this._style.overflowX === Overflow.Scroll || this._style.overflowY === Overflow.Scroll) {
       this._eventListeners.push([UserEventType.MouseScroll, this.onScroll]);
       this._eventListeners.push([UserEventType.MouseDown, this.onMouseDown]);
-      this._eventListeners.push([UserEventType.MouseUp, this.onMouseUp]);
       this._eventListeners.push([UserEventType.MouseMove, this.onMouseMove]);
       this._eventListeners.push([UserEventType.MouseEnter, this.onMouseEnter]);
       this._eventListeners.push([UserEventType.MouseLeave, this.onMouseLeave]);
@@ -90,51 +89,26 @@ export class View extends BaseView {
   }
 
   private onMouseEnter(_: MouseEvent) {
-    console.log(`Mouse entered ${this.testID}`);
+    // No-op but important to keep this._isMouseOver up to date.
   }
 
   private onMouseLeave(_: MouseEvent) {
-    console.log(`Mouse left ${this.testID}`);
+    // No-op but important to keep this._isMouseOver up to date.
   }
 
   private onMouseDown(_: MouseEvent) {
     console.log("aa");
-    if (this.isHorizontalScrollbarHovered || this.isVerticalScrollbarHovered) {
-      this.isMouseDown = true;
+    if (this._isHorizontalScrollbarHovered || this._isVerticalScrollbarHovered) {
+      this._isBeingScrolled = true;
     }
   }
 
-  private onMouseUp(_: MouseEvent) {
-    this.isMouseDown = false;
-  }
-
-  // TODO: don't abruply stop scrolling when mouse leaves the scrollbar but is still pressed.
   private onMouseMove(event: MouseEvent) {
-    if (this.isMouseDown) {
-      console.log("down");
-      // Scroll.
-      const deltaX = this.lastPosition ? event.position.x - this.lastPosition.x : 0;
-      const deltaY = this.lastPosition ? event.position.y - this.lastPosition.y : 0;
+    if (this._isBeingScrolled) {
+      return;
+    }
 
-      // 1 pixel of scrollbar is how many pixels of content?
-      const ratioX = this._state.scrollWidth / this._state.clientWidth;
-      const ratioY = this._state.scrollHeight / this._state.clientHeight;
-
-      if (this.isHorizontalScrollbarHovered) {
-        this._state.scrollX = Math.min(
-          Math.max(this._state.scrollX + Math.round(deltaX * ratioX), 0),
-          this._state.scrollWidth - this._state.clientWidth,
-        );
-      }
-
-      if (this.isVerticalScrollbarHovered) {
-        this._state.scrollY = Math.min(
-          Math.max(this._state.scrollY + Math.round(deltaY * ratioY), 0),
-          this._state.scrollHeight - this._state.clientHeight,
-        );
-      }
-      this.lastPosition = event.position;
-    } else if (this._isMouseOver) {
+    if (this._isMouseOver) {
       // Screen space rectangle of the node's visible area, including scrollbars.
       const rectangle = getScreenVisibleRectangle(this);
 
@@ -148,9 +122,8 @@ export class View extends BaseView {
             CROSS_AXIS_SIZE,
           ),
         );
-        this.isHorizontalScrollbarHovered = isInside(event.position, horizontalScrollbar);
+        this._isHorizontalScrollbarHovered = isInside(event.position, horizontalScrollbar);
       }
-
       if (this._state.hasVerticalScrollbar) {
         const verticalScrollbar = intersection(
           rectangle,
@@ -161,11 +134,11 @@ export class View extends BaseView {
             this._state.clientHeight,
           ),
         );
-        this.isVerticalScrollbarHovered = isInside(event.position, verticalScrollbar);
+        this._isVerticalScrollbarHovered = isInside(event.position, verticalScrollbar);
       }
     } else {
-      this.isHorizontalScrollbarHovered = false;
-      this.isVerticalScrollbarHovered = false;
+      this._isHorizontalScrollbarHovered = false;
+      this._isVerticalScrollbarHovered = false;
     }
   }
 }
