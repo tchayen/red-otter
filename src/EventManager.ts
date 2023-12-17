@@ -106,6 +106,12 @@ export class EventManager {
           if (event.type === UserEventType.MouseMove) {
             const previous = node._isMouseOver;
 
+            // if (node.testID !== "D-overflow" || type !== UserEventType.MouseEnter) {
+            //   continue;
+            // }
+
+            // console.log(!previous, hitTest(node, event));
+
             // TODO: mouse leave does not get called for the built-in method that handles scrolling
             // but works for external ones.
 

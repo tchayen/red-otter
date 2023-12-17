@@ -47,14 +47,6 @@ export class View extends BaseView {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
 
-    if (props.onMouseEnter) {
-      this._eventListeners.push([UserEventType.MouseEnter, props.onMouseEnter]);
-    }
-
-    if (props.onMouseLeave) {
-      this._eventListeners.push([UserEventType.MouseLeave, props.onMouseLeave]);
-    }
-
     // For mouse-interacting with the scrollbar.
     // TODO: this is done when creating the node but scrollbar can be added later (like with
     // Overflow.Auto). What then?
@@ -63,7 +55,15 @@ export class View extends BaseView {
       this._eventListeners.push([UserEventType.MouseDown, this.onMouseDown]);
       this._eventListeners.push([UserEventType.MouseUp, this.onMouseUp]);
       this._eventListeners.push([UserEventType.MouseMove, this.onMouseMove]);
+      this._eventListeners.push([UserEventType.MouseEnter, this.onMouseEnter]);
       this._eventListeners.push([UserEventType.MouseLeave, this.onMouseLeave]);
+    }
+    if (props.onMouseEnter) {
+      this._eventListeners.push([UserEventType.MouseEnter, props.onMouseEnter]);
+    }
+
+    if (props.onMouseLeave) {
+      this._eventListeners.push([UserEventType.MouseLeave, props.onMouseLeave]);
     }
   }
 
@@ -97,6 +97,10 @@ export class View extends BaseView {
   }
 
   private onMouseMove(event: MouseEvent) {
+    if (!this._isMouseOver) {
+      return;
+    }
+
     if (hitTest(this, event)) {
       if (this._state.hasHorizontalScrollbar) {
         this.isHorizontalScrollbarHovered = event.position.y >= this._state.clientHeight;

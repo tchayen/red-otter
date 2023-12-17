@@ -54,10 +54,12 @@ export async function CodeBlock({
     );
   }
 
-  try {
-    code = await prettier.format(code, { parser: "babel-ts", printWidth: 80 });
-  } catch {
-    /* empty */
+  if (language === "ts" || language === "tsx") {
+    try {
+      code = await prettier.format(code, { parser: "babel-ts", printWidth: 80 });
+    } catch {
+      /* empty */
+    }
   }
 
   try {

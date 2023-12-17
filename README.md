@@ -3,6 +3,14 @@
 > [!WARNING]
 > This project is in early development stage. It's not ready for production use.
 
+## Installation
+
+Install `red-otter` with a package manager of your choice. For example with NPM:
+
+```bash
+npm i red-otter
+```
+
 ## Quick introduction
 
 ### What is it?

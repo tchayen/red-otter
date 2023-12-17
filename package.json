@@ -23,14 +23,15 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "cd examples && vite --port 5005",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint src",
-    "test": "vitest",
-    "coverage": "vitest --coverage",
     "ci": "bun run lint && bun run tsc && bun run vitest run && bun run build",
-    "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l"
+    "coverage": "vitest --coverage",
+    "dev": "cd examples && vite --port 5005",
+    "build": "bun run tsc -p tsconfig.build.json",
+    "lint": "eslint src",
+    "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l",
+    "prepare-sandpack": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@petamoriken/float16": "^3.8.4"

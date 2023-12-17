@@ -5,3 +5,4 @@ coverage/
 dist/
 *.tsbuildinfo
 .rollup.cache/
+.sandpack-files/
