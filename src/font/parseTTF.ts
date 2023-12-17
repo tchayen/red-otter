@@ -12,7 +12,10 @@ export function parseTTF(data: ArrayBuffer): TTF {
   const ttf: Partial<TTF> = {};
 
   const reader = new BinaryReader(data);
-  reader.getUint32(); // scalar type
+  const header = reader.getUint32(); // scalar type
+
+  invariant(header === 0x00_01_00_00, "Invalid TTF header.");
+
   const numTables = reader.getUint16();
   reader.getUint16(); // searchRange
   reader.getUint16(); // entrySelector

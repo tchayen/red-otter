@@ -96,3 +96,11 @@ The pipeline of taking user defined components to the screen has multiple layers
 ## Styling
 
 As a rule of thumb, styling most closely resembles React Native which in turn resembles CSS.
+
+--
+
+## Build process
+
+The library is not bundled, just compiled with `tsc`. The reason is that the source code is 'fluffy' and it should always be bundled, tree-shaken and minified by the consumer to avoid shipping unused code.
+
+Sandpack examples use a bundled version generated via Vite's `build` command which uses rollup.
