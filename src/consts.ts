@@ -12,7 +12,9 @@ const windowWidth = isWindowDefined ? window.innerWidth : 1024;
 const windowHeight = isWindowDefined ? window.innerHeight : 768;
 
 export const settings = {
+  rectangleBufferSize: 16 * 4096,
   sampleCount: 4,
+  textBufferSize: 16 * 100_000,
   windowHeight,
   windowWidth,
 };

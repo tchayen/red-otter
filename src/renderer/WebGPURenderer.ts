@@ -9,14 +9,6 @@ import { createTextureFromImageBitmap } from "../utils/createTextureFromBitmap";
 import type { Renderer } from "./Renderer";
 import { defaultTextStyleProps, type TextAlign } from "../layout/styling";
 
-/*
- * First number is the size of Rectangle struct (with padding).
- * Second is in this case maximum number of allowed elements (can easily go into
- * high thousands).
- */
-const RECTANGLE_BUFFER_SIZE = 16 * 4096;
-const TEXT_BUFFER_SIZE = 16 * 100_000;
-
 const enum DrawingMode {
   Rectangles,
   Text,
@@ -27,10 +19,10 @@ export class WebGPURenderer implements Renderer {
   private drawingMode = DrawingMode.None;
   private drawingIndices: Array<number> = [];
 
-  private rectangleData: Float32Array = new Float32Array(RECTANGLE_BUFFER_SIZE);
+  private rectangleData: Float32Array;
   private rectangleCount = 0;
 
-  private glyphData: Float32Array = new Float32Array(TEXT_BUFFER_SIZE);
+  private glyphData: Float32Array;
   private glyphCount = 0;
 
   private readonly vertexBuffer: GPUBuffer;
@@ -55,6 +47,9 @@ export class WebGPURenderer implements Renderer {
     public readonly fontLookups: Lookups,
     fontAtlasTexture: ImageBitmap,
   ) {
+    this.rectangleData = new Float32Array(settings.rectangleBufferSize);
+    this.glyphData = new Float32Array(settings.textBufferSize);
+
     const rectangleShader = /* wgsl */ `
       struct VertexInput {
         @location(0) position: vec2f,
@@ -255,13 +250,13 @@ export class WebGPURenderer implements Renderer {
 
     this.rectangleBuffer = device.createBuffer({
       label: "rectangle",
-      size: RECTANGLE_BUFFER_SIZE * Float32Array.BYTES_PER_ELEMENT,
+      size: this.settings.rectangleBufferSize * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     this.textBuffer = device.createBuffer({
       label: "text",
-      size: TEXT_BUFFER_SIZE * Float32Array.BYTES_PER_ELEMENT,
+      size: this.settings.textBufferSize * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
@@ -642,7 +637,7 @@ export class WebGPURenderer implements Renderer {
 
     this.drawingMode = DrawingMode.None;
 
-    this.rectangleData = new Float32Array(RECTANGLE_BUFFER_SIZE);
-    this.glyphData = new Float32Array(TEXT_BUFFER_SIZE);
+    this.rectangleData = new Float32Array(this.settings.rectangleBufferSize);
+    this.glyphData = new Float32Array(this.settings.textBufferSize);
   }
 }

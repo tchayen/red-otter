@@ -54,10 +54,6 @@ export class View extends BaseView {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
 
-    if (props.onClick) {
-      this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
-    }
-
     // For mouse-interacting with the scrollbar.
     // TODO: this is done when creating the node but scrollbar can be added later (like with
     // Overflow.Auto). What then?
@@ -68,10 +64,13 @@ export class View extends BaseView {
       this._eventListeners.push([UserEventType.MouseEnter, this.onMouseEnter]);
       this._eventListeners.push([UserEventType.MouseLeave, this.onMouseLeave]);
     }
+
+    if (props.onClick) {
+      this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
+    }
     if (props.onMouseEnter) {
       this._eventListeners.push([UserEventType.MouseEnter, props.onMouseEnter]);
     }
-
     if (props.onMouseLeave) {
       this._eventListeners.push([UserEventType.MouseLeave, props.onMouseLeave]);
     }
