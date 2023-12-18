@@ -3,7 +3,9 @@ export const metadata = getMetadata("0.1: the Big Reset", undefined, "2023-12-20
 
 <Blogpost title="0.1: the Big Reset" date="2023-12-20" author="Tomasz Czajecki" />
 
-After many months of hard work in the shadows, I am proud to present the next big release of Red Otter. It features:
+After many months of hard work in the shadows, I am proud to present the next big release of Red Otter. Somehow the previous release process and everything involved felt intimidating to me so I started experimenting on the side and the scope of my changes kept growing and growing until I decided that I will just rewrite most of the library.
+
+What you see here is the result of a multi-month effort, done, as usual, after hours and in the free time so it took ten times longer than it could have if I focused only on it, but such is life.
 
 ## New fast WebGPU renderer
 
@@ -37,7 +39,7 @@ You can read more about the rendering method and kerning in my recent blogpost: 
 
 ## Event system
 
-Supports clicks, scrolling, typing. The model is simplified in comparison to DOM and doesn't handle bubbling, it's just the top-most component that receives the event.
+Supports clicks, scrolling, typing. The model is simplified in comparison to DOM. Events are dispatched in reverse order of the component tree so that the topmost component can handle them first. I have yet to figure out all edge cases so I am not documenting them yet.
 
 ## Scrolling
 
@@ -79,6 +81,10 @@ Previous version was just a single HTML file mostly generated with a bunch of sc
 ## Better CI and release process
 
 The previous release process was working fine, but was very manual and intimidating. That's a big part of why I was put off and created everything from scratch. Now I am using automated NPM releases, continue to utilize conventional commits and I am hopeful it will generally be a more pleasant process now.
+
+## JSX is temporarily gone
+
+It was a nice trick to utilize JSX for declaring the UI, but since there's still a lot to figure out about interactivity and related APIs, I decided to leave it out for now and revisit it later when all other pieces are in place.
 
 ## That's all
 
