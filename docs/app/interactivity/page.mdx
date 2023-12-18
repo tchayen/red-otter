@@ -11,15 +11,14 @@ The recent version of Red Otter includes new systems for handling user inputs. T
 Example of a simple app loop that reads events:
 
 ```ts
+import { EventManager, WebGPURenderer, View, compose, paint } from "red-otter";
+
 const eventManager = new EventManager();
-const root = new View({
-  style: { height: "100%", width: "100%" },
-});
+const renderer = new WebGPURenderer(/* ... */);
+const root = new View(/* ... */);
 
 function render() {
-  const commandEncoder = device.createCommandEncoder();
-
-  // Deliver events.
+  // Deliver events to views.
   eventManager.deliverEvents(root);
 
   // Update scroll offsets etc. in response to events.
@@ -29,6 +28,7 @@ function render() {
   paint(renderer, root);
 
   // Prepare rendering instructions and dispatch them to the GPU.
+  const commandEncoder = device.createCommandEncoder();
   renderer.render(commandEncoder);
   device.queue.submit([commandEncoder.finish()]);
 

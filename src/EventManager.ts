@@ -119,10 +119,17 @@ export class EventManager {
     document.addEventListener("contextmenu", (event) => event.preventDefault());
   }
 
+  /**
+   * Adds an event to the queue.
+   */
   dispatchEvent(event: UserEvent): void {
     this.events.push(event);
   }
 
+  /**
+   * Processes all events in the queue, leaving it empty, by visiting all views in the given root
+   * tree and offering them to the views in the reverse DFS order.
+   */
   deliverEvents(root: View): void {
     const stack: Array<View> = [root];
     const reverse = [];
