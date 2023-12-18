@@ -15,6 +15,7 @@ import {
 } from "./layout/styling";
 import { invariant } from "./utils/invariant";
 import { Input } from "./widgets/Input";
+import { Button } from "./widgets/Button";
 
 let lookups: Lookups | null = null;
 
@@ -1007,7 +1008,7 @@ export function interactiveButton() {
     },
   });
 
-  const button = new View({
+  const button = new Button({
     onClick: () => {
       console.log("Clicked!");
     },
@@ -1017,16 +1018,17 @@ export function interactiveButton() {
       borderRadius: 6,
       borderTopWidth: 1,
       height: 28,
-      justifyContent: JustifyContent.Center,
-      paddingHorizontal: 16,
+      paddingHorizontal: 12,
+      // justifyContent: JustifyContent.Center,
+      paddingTop: 7,
     },
     testID: "button",
   });
   root.add(button);
   button.add(
-    new Text("Label", {
+    new Text("Confirm", {
       lookups,
-      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 15 },
+      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 14 },
     }),
   );
 
@@ -1041,10 +1043,11 @@ export function interactiveButton() {
       borderColor: "#313131",
       borderRadius: 6,
       borderWidth: 1,
-      height: 28,
+      height: 40,
       justifyContent: JustifyContent.Center,
-      paddingHorizontal: 8,
+      paddingHorizontal: 0,
     },
+    testID: "input",
   });
   root.add(input);
 

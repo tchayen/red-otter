@@ -65,3 +65,7 @@ export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent;
 export function isMouseEvent(event: UserEvent): event is MouseEvent {
   return "position" in event;
 }
+
+export function isKeyboardEvent(event: UserEvent): event is KeyboardEvent {
+  return "character" in event;
+}

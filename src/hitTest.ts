@@ -3,6 +3,7 @@ import { CROSS_AXIS_SIZE } from "./consts";
 import { Vec4 } from "./math/Vec4";
 import { intersection as getIntersection, isInside } from "./math/utils";
 import type { MouseEvent } from "./layout/eventTypes";
+import { Vec2 } from "./math/Vec2";
 
 /**
  * @returns whether event happened within the node's visible rectangle, including scrollbars.
@@ -27,4 +28,9 @@ export function getScreenVisibleRectangle(node: BaseView) {
   const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
   const intersection = getIntersection(nodeRectangle, boundary);
   return intersection;
+}
+
+export function pointToNodeSpace(node: BaseView, point: Vec2): Vec2 {
+  const { totalScrollX, totalScrollY } = node._state;
+  return new Vec2(point.x + totalScrollX, point.y + totalScrollY);
 }

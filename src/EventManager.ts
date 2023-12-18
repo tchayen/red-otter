@@ -3,7 +3,7 @@ import { isWindowDefined } from "./consts";
 import { Vec2 } from "./math/Vec2";
 import { Display } from "./layout/styling";
 import { invariant } from "./utils/invariant";
-import { UserEventType, isMouseEvent } from "./layout/eventTypes";
+import { UserEventType, isKeyboardEvent, isMouseEvent } from "./layout/eventTypes";
 import { hitTest } from "./hitTest";
 import type { MouseEvent, UserEvent } from "./layout/eventTypes";
 import { Input } from "./widgets/Input";
@@ -236,7 +236,7 @@ export class EventManager {
             }
           }
 
-          if (node instanceof Input && node.isFocused) {
+          if (isKeyboardEvent(event) && node instanceof Input && node.isFocused) {
             const typedListener = listener as (e: typeof event) => void;
             typedListener(event);
 
