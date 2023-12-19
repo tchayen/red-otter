@@ -1,5 +1,9 @@
 # Contributing
 
-Not yet. Library is in the early stage of development and I want for the time being control all aspects of the progress.
+It's still early stage and there are some fundamental decisions to be made in which I probably don't expect much external input.
 
-Any typo corrections or small adjustments are very welcome, but please do not develop any bigger features!
+However, the surface of the library is expanding so there's a lot of things to optimize and improve. See potential to make some function faster? Feel free to open an issue or even a PR.
+
+See some bigger problem that can't be solved easily without trade-offs? Please open an issue.
+
+See a bug? Please open an issue, I really appreciate it.

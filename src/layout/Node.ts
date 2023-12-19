@@ -5,6 +5,9 @@ import type { ExactLayoutProps, LayoutNodeState } from "./styling";
  * its children, siblings, and parent.
  */
 export interface Node {
+  /**
+   * State!
+   */
   _state: LayoutNodeState;
   _style: ExactLayoutProps;
 

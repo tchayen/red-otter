@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Fancy Next.js app",
   "scripts": {
-    "dev": "next",
+    "dev": "next --port 4141",
     "build": "bun run prepare-sandpack && bun scripts/extractTypeScript.ts && next build",
     "prepare-sandpack": "cd .. && bun i && bun run prepare-sandpack && cd docs",
     "start": "next start",

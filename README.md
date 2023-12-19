@@ -104,3 +104,17 @@ As a rule of thumb, styling most closely resembles React Native which in turn re
 The library is not bundled, just compiled with `tsc`. The reason is that the source code is 'fluffy' and it should always be bundled, tree-shaken and minified by the consumer to avoid shipping unused code.
 
 Sandpack examples use a bundled version generated via Vite's `build` command which uses rollup.
+
+### Running locally
+
+Library examples (visit `http://localhost:5005`):
+
+```bash
+bun run dev
+```
+
+Docs (visit `http://localhost:4141`):
+
+```bash
+cd docs && bun run dev
+```
