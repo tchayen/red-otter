@@ -31,6 +31,9 @@ export class Input extends View {
 
   isMouseDown: boolean = false;
   offset: Vec2 | null = null;
+  /**
+   * Start and end coordinates.
+   */
   mouseDrag: Vec4 | null = null;
   textShape: Shape | null = null;
 
@@ -114,9 +117,9 @@ export class Input extends View {
 
   private onKeyDown(event: KeyboardEvent) {
     // https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event#:~:text=Since%20Firefox%2065,by%20an%20IME)%3A
-    // if (event.isComposing || event.keyCode === 229) {
-    //   return;
-    // }
+    if (event.code === 229) {
+      return;
+    }
 
     if (this.isFocused) {
       const { cursor, mark, value } = updateSelection(this.value, this.cursor, this.mark, event);
@@ -144,7 +147,7 @@ export class Input extends View {
     this.mouseDrag = new Vec4(
       event.position.x,
       event.position.y,
-      event.position.x,
+      event.position.x, // TODO: uhm what? I guess store previous position and use here?
       event.position.y,
     );
   }
