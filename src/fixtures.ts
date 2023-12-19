@@ -998,11 +998,13 @@ export function interactiveButton() {
   const root = new View({
     style: {
       alignItems: AlignItems.Center,
-      backgroundColor: "#000",
+      backgroundColor: "#111",
       flexDirection: FlexDirection.RowReverse,
       gap: 12,
       height: 300,
       justifyContent: JustifyContent.Center,
+      margin: 85,
+      marginLeft: 1000,
       overflow: Overflow.Hidden,
       width: 300,
     },
@@ -1014,21 +1016,26 @@ export function interactiveButton() {
     },
     style: {
       backgroundColor: "#2870BD",
-      borderColor: "#0090FF",
-      borderRadius: 6,
-      borderTopWidth: 1,
-      height: 28,
+      height: 40,
+      justifyContent: JustifyContent.Center,
       paddingHorizontal: 12,
-      // justifyContent: JustifyContent.Center,
-      paddingTop: 7,
     },
+    // style: {
+    //   backgroundColor: "#2870BD",
+    //   borderColor: "#0090FF",
+    //   borderRadius: 6,
+    //   borderTopWidth: 1,
+    //   height: 28,
+    //   paddingHorizontal: 12,
+    //   paddingTop: 7,
+    // },
     testID: "button",
   });
   root.add(button);
   button.add(
     new Text("Confirm", {
       lookups,
-      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 14 },
+      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 18 },
     }),
   );
 
@@ -1039,15 +1046,23 @@ export function interactiveButton() {
     },
     placeholder: "Type here...",
     style: {
-      backgroundColor: "#111111",
-      borderColor: "#313131",
-      borderRadius: 6,
-      borderWidth: 1,
+      backgroundColor: "#333",
       height: 40,
       justifyContent: JustifyContent.Center,
       paddingHorizontal: 0,
     },
+    // style: {
+    //   backgroundColor: "#111111",
+    //   borderColor: "#313131",
+    //   borderRadius: 6,
+    //   borderWidth: 1,
+    //   height: 40,
+    //   justifyContent: JustifyContent.Center,
+    //   paddingHorizontal: 0,
+    // },
     testID: "input",
+
+    value: "Hello world!",
   });
   root.add(input);
 

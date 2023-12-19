@@ -48,6 +48,30 @@ export function Class({ c, id }: { c: ClassType; id: string }) {
       />
       <Source>{c.source}</Source>
       <Markdown>{c.description}</Markdown>
+      {Object.values(c.fields).length > 0 && (
+        <Table.Root columns={"min-content auto"}>
+          <Table.HeaderCell>Field</Table.HeaderCell>
+          <Table.HeaderCell>Type and description</Table.HeaderCell>
+          {Object.values(c.fields).map((field) => {
+            const enumType = types.enums.find((e) => e.name === field.type);
+            return (
+              <Fragment key={field.name}>
+                <Table.Cell>
+                  <span>{field.name}</span>
+                </Table.Cell>
+                <Table.Cell>
+                  {enumType ? (
+                    <TypeTooltip field={field} enumType={enumType} />
+                  ) : (
+                    replacePercentage(field.type)
+                  )}
+                  <Description>{field.description}</Description>
+                </Table.Cell>
+              </Fragment>
+            );
+          })}
+        </Table.Root>
+      )}
       {(Object.values(c.methods).length > 0 || c.constructor) && (
         <div className="flex flex-col gap-4">
           {Object.values(c.methods).map((m) => {
@@ -163,7 +187,7 @@ export function Interface({
         <Table.Root
           columns={hasDefaultValues ? "min-content min-content auto" : "min-content auto"}
         >
-          <Table.HeaderCell>Name</Table.HeaderCell>
+          <Table.HeaderCell>Field</Table.HeaderCell>
           {hasDefaultValues && <Table.HeaderCell>Default value</Table.HeaderCell>}
           <Table.HeaderCell>Type and description</Table.HeaderCell>
           {Object.values(i.properties).map((field) => {
@@ -184,7 +208,7 @@ export function Interface({
                   ) : (
                     replacePercentage(field.type)
                   )}
-                  <Description>{i.description}</Description>
+                  <Description>{field.description}</Description>
                 </Table.Cell>
               </Fragment>
             );
@@ -230,6 +254,7 @@ function Source({ children }: { children: string }) {
     >
       <Code className="text-xs text-mauvedark11 decoration-mauvedark10 underline-offset-2 hover:underline">
         {children}
+        <span style={{ fontFamily: "Inter" }}> ↗</span>
       </Code>
     </Link>
   );
@@ -292,6 +317,7 @@ export type ClassType = {
   constructor: FunctionType | null;
   description: string;
   extends?: string;
+  fields: Record<string, FieldType>;
   methods: Record<string, FunctionType>;
   name: string;
   source: string;

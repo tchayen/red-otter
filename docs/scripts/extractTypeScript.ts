@@ -82,6 +82,11 @@ export function extractTypeScript(paths: Array<string>) {
         return;
       }
 
+      // Check if type is exported.
+      if (!t.modifiers || !t.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
+        return;
+      }
+
       const properties: Record<string, FieldType> = {};
       if (ts.isTypeLiteralNode(t.type)) {
         t.type.members.forEach((m) => {
@@ -91,11 +96,6 @@ export function extractTypeScript(paths: Array<string>) {
 
           const symbol = checker.getSymbolAtLocation(m.name);
           if (!symbol) {
-            return;
-          }
-
-          // Check if type is exported.
-          if (!t.modifiers || !t.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)) {
             return;
           }
 
@@ -226,6 +226,26 @@ export function extractTypeScript(paths: Array<string>) {
 
         const name = symbol.escapedName.toString();
 
+        const fields: Record<string, FieldType> = {};
+        ts.forEachChild(c, (child) => {
+          if (!ts.isPropertyDeclaration(child)) {
+            return;
+          }
+
+          const symbol = checker.getSymbolAtLocation(child.name);
+          if (!symbol) {
+            return;
+          }
+
+          const name = symbol.escapedName.toString();
+          fields[name] = {
+            default: "",
+            description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            name,
+            type: checker.typeToString(checker.getTypeAtLocation(child)),
+          };
+        });
+
         const methods: Record<string, FunctionType> = {};
         ts.forEachChild(c, (child) => {
           if (!ts.isMethodDeclaration(child)) {
@@ -314,6 +334,7 @@ export function extractTypeScript(paths: Array<string>) {
           constructor,
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
           extends: ext,
+          fields,
           methods,
           name,
           source: sourceString,

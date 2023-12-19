@@ -1,5 +1,5 @@
 import { Vec4 } from "../math/Vec4";
-import type { Vec2 } from "../math/Vec2";
+import { Vec2 } from "../math/Vec2";
 import type { Shape } from "../font/shapeText";
 import { shapeText } from "../font/shapeText";
 import type { Lookups } from "../font/types";
@@ -29,7 +29,6 @@ export class Input extends View {
 
   isFocused: boolean = true;
 
-  isMouseDown: boolean = false;
   offset: Vec2 | null = null;
   /**
    * Start and end coordinates.
@@ -49,7 +48,7 @@ export class Input extends View {
       value?: string;
     },
   ) {
-    super({ ...props, style: { width: 200, ...props.style } });
+    super({ ...props, style: { width: 160, ...props.style } });
 
     // Blinking cursor.
     setInterval(() => {
@@ -113,6 +112,11 @@ export class Input extends View {
       [UserEventType.MouseUp, this.onMouseUpForDragging],
       [UserEventType.MouseMove, this.onMouseMoveForDragging],
     );
+
+    if (props.value) {
+      this.value = props.value;
+      this.update();
+    }
   }
 
   private onKeyDown(event: KeyboardEvent) {
@@ -141,13 +145,13 @@ export class Input extends View {
   }
 
   private onMouseDownForDragging(event: MouseEvent) {
-    console.log("onMouseDownForDragging", this.testID, event);
+    event.position = pointToNodeSpace(this, event.position);
+    // console.log("onMouseDownForDragging", this.testID, event);
 
-    this.isMouseDown = true;
     this.mouseDrag = new Vec4(
       event.position.x,
       event.position.y,
-      event.position.x, // TODO: uhm what? I guess store previous position and use here?
+      event.position.x,
       event.position.y,
     );
   }
@@ -155,21 +159,87 @@ export class Input extends View {
   private onMouseUpForDragging(event: MouseEvent) {
     console.log("onMouseUpForDragging", this.testID, event);
 
-    this.isMouseDown = false;
     this.mouseDrag = null;
   }
 
   private onMouseMoveForDragging(event: MouseEvent) {
+    event.position = pointToNodeSpace(this, event.position);
+
+    if (this.mouseDrag) {
+      this.mouseDrag =
+        this.mouseDrag.x < 0
+          ? new Vec4(event.position.x, event.position.y, this.mouseDrag.z, this.mouseDrag.w)
+          : new Vec4(this.mouseDrag.x, this.mouseDrag.y, event.position.x, event.position.y);
+    }
+
     this.offset = pointToNodeSpace(this, event.position);
 
     if (this.mouseDrag && this.textShape) {
       const goingLeft = this.mouseDrag.x > this.mouseDrag.z;
-      const rectangleX = Math.min(this.mouseDrag.x, this.mouseDrag.z) - 0; //previous?
+      const rectangleX = Math.min(this.mouseDrag.x, this.mouseDrag.z);
       const rectangleWidth = Math.abs(this.mouseDrag.x - this.mouseDrag.z);
 
+      // TODO: fix claculating X and width in the input coord space.
+
+      // TODO: calculate proper cursor and mark.
       for (let i = 0; i < this.textShape.positions.length; i++) {
         // Calculate if mouse click occured > half width of this letter and update cursor and mark.
+
+        const positionX =
+          -this.offset.x +
+          (i === this.textShape.positions.length
+            ? this.textShape.positions[i - 1]!.x + this.textShape.sizes[i - 1]!.x
+            : this.textShape.positions[i]!.x);
+        const size =
+          (i === this.textShape.positions.length ? new Vec2(0, 0) : this.textShape.sizes[i]) ??
+          new Vec2(0, 0);
+
+        if (rectangleX > positionX - size.x / 2) {
+          if (goingLeft) {
+            this.cursor = i;
+          } else {
+            this.mark = i;
+          }
+        }
+
+        if (rectangleX + rectangleWidth >= positionX - size.x / 2) {
+          if (goingLeft) {
+            this.mark = i;
+          } else {
+            this.cursor = i;
+          }
+        }
       }
+      console.log(this.cursor, this.mark);
+    }
+
+    // Using cursor and mark, update selection and cursor (graphical) position and sizes.
+    if (this.textShape) {
+      const text = this.firstChild;
+      invariant(text instanceof Text, "First child should be text.");
+
+      const selection = text.next;
+      invariant(selection instanceof View, "Second child should be selection.");
+
+      const cursor = selection.next;
+      invariant(cursor instanceof View, "Third child should be cursor.");
+
+      const start = Math.min(this.cursor, this.mark);
+      const end = Math.max(this.cursor, this.mark);
+      const maxIndex = this.textShape.positions.length - 1;
+
+      // The x position of the start of the selection.
+      const selectionStartX =
+        (this.textShape.positions[Math.min(start, maxIndex)]?.x ?? 0) +
+        (start === this.textShape.positions.length ? this.textShape.sizes[maxIndex]?.x ?? 0 : 0);
+
+      const mostRightX =
+        (this.textShape.positions[Math.min(end, maxIndex)]?.x ?? 0) +
+        (end === this.textShape.positions.length ? this.textShape.sizes[maxIndex]?.x ?? 0 : 0);
+      selection._state.x = selectionStartX;
+      selection._state.clientWidth = mostRightX - selectionStartX;
+
+      console.log("selection", selectionStartX, mostRightX);
     }
   }
 
@@ -194,8 +264,6 @@ export class Input extends View {
     const cursor = selection.next;
     invariant(cursor instanceof View, "Third child should be cursor.");
 
-    selection._state.clientWidth = this.textShape.boundingRectangle.width;
-
     if (this.value.length > 0) {
       text._style.color = textColor;
       text._style.left = this.offset?.x ?? 0;
@@ -209,18 +277,5 @@ export class Input extends View {
 
       cursor._style.backgroundColor = "transparent";
     }
-
-    const start = Math.min(this.cursor, this.mark);
-    const end = Math.max(this.cursor, this.mark);
-    const maxIndex = this.textShape.positions.length - 1;
-
-    // The x position of the start of the selection.
-    const selectionStartX =
-      (this.textShape.positions[Math.min(start, maxIndex)]?.x ?? 0) +
-      (start === this.textShape.positions.length ? this.textShape.sizes[maxIndex]?.x ?? 0 : 0);
-
-    const mostRightX =
-      (this.textShape.positions[Math.min(end, maxIndex)]?.x ?? 0) +
-      (end === this.textShape.positions.length ? this.textShape.sizes[maxIndex]?.x ?? 0 : 0);
   }
 }
