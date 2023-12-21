@@ -448,37 +448,39 @@ export class WebGPURenderer implements Renderer {
       this.drawingIndices.push(this.rectangleCount, this.glyphCount);
     }
 
+    const scale = window.devicePixelRatio;
+
     const struct = 32;
     this.rectangleData[this.rectangleCount * struct + 0] = color.x;
     this.rectangleData[this.rectangleCount * struct + 1] = color.y;
     this.rectangleData[this.rectangleCount * struct + 2] = color.z;
     this.rectangleData[this.rectangleCount * struct + 3] = color.w;
-    this.rectangleData[this.rectangleCount * struct + 4] = position.x;
-    this.rectangleData[this.rectangleCount * struct + 5] = position.y;
-    this.rectangleData[this.rectangleCount * struct + 6] = size.x;
-    this.rectangleData[this.rectangleCount * struct + 7] = size.y;
-    this.rectangleData[this.rectangleCount * struct + 8] = corners.x;
-    this.rectangleData[this.rectangleCount * struct + 9] = corners.y;
-    this.rectangleData[this.rectangleCount * struct + 10] = corners.z;
-    this.rectangleData[this.rectangleCount * struct + 11] = corners.w;
-    this.rectangleData[this.rectangleCount * struct + 12] = borderWidth.x;
-    this.rectangleData[this.rectangleCount * struct + 13] = borderWidth.y;
-    this.rectangleData[this.rectangleCount * struct + 14] = borderWidth.z;
-    this.rectangleData[this.rectangleCount * struct + 15] = borderWidth.w;
+    this.rectangleData[this.rectangleCount * struct + 4] = position.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 5] = position.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 6] = size.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 7] = size.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 8] = corners.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 9] = corners.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 10] = corners.z * scale;
+    this.rectangleData[this.rectangleCount * struct + 11] = corners.w * scale;
+    this.rectangleData[this.rectangleCount * struct + 12] = borderWidth.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 13] = borderWidth.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 14] = borderWidth.z * scale;
+    this.rectangleData[this.rectangleCount * struct + 15] = borderWidth.w * scale;
     this.rectangleData[this.rectangleCount * struct + 16] = borderColor.x;
     this.rectangleData[this.rectangleCount * struct + 17] = borderColor.y;
     this.rectangleData[this.rectangleCount * struct + 18] = borderColor.z;
     this.rectangleData[this.rectangleCount * struct + 19] = borderColor.w;
-    this.rectangleData[this.rectangleCount * struct + 20] = clipStart.x;
-    this.rectangleData[this.rectangleCount * struct + 21] = clipStart.y;
-    this.rectangleData[this.rectangleCount * struct + 22] = clipSize.x;
-    this.rectangleData[this.rectangleCount * struct + 23] = clipSize.y;
-    this.rectangleData[this.rectangleCount * struct + 24] = clipCorners.x;
-    this.rectangleData[this.rectangleCount * struct + 25] = clipCorners.y;
-    this.rectangleData[this.rectangleCount * struct + 26] = clipCorners.z;
-    this.rectangleData[this.rectangleCount * struct + 27] = clipCorners.w;
-    this.rectangleData[this.rectangleCount * struct + 28] = this.settings.windowWidth;
-    this.rectangleData[this.rectangleCount * struct + 29] = this.settings.windowHeight;
+    this.rectangleData[this.rectangleCount * struct + 20] = clipStart.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 21] = clipStart.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 22] = clipSize.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 23] = clipSize.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 24] = clipCorners.x * scale;
+    this.rectangleData[this.rectangleCount * struct + 25] = clipCorners.y * scale;
+    this.rectangleData[this.rectangleCount * struct + 26] = clipCorners.z * scale;
+    this.rectangleData[this.rectangleCount * struct + 27] = clipCorners.w * scale;
+    this.rectangleData[this.rectangleCount * struct + 28] = this.settings.windowWidth * scale;
+    this.rectangleData[this.rectangleCount * struct + 29] = this.settings.windowHeight * scale;
     this.rectangleData[this.rectangleCount * struct + 30] = 0;
     this.rectangleData[this.rectangleCount * struct + 31] = 0;
 
@@ -545,27 +547,29 @@ export class WebGPURenderer implements Renderer {
         this.fontLookups.uvs.get(`${fontName}-${"□".charCodeAt(0)}`)!;
       invariant(uv, "UV does not exist.");
 
+      const scale = window.devicePixelRatio;
+
       const struct = 20;
-      this.glyphData[this.glyphCount * struct + 0] = shapePosition.x;
-      this.glyphData[this.glyphCount * struct + 1] = shapePosition.y;
+      this.glyphData[this.glyphCount * struct + 0] = shapePosition.x * scale;
+      this.glyphData[this.glyphCount * struct + 1] = shapePosition.y * scale;
       this.glyphData[this.glyphCount * struct + 2] = 0;
-      this.glyphData[this.glyphCount * struct + 3] = fontSize;
+      this.glyphData[this.glyphCount * struct + 3] = fontSize * scale;
       this.glyphData[this.glyphCount * struct + 4] = color.x;
       this.glyphData[this.glyphCount * struct + 5] = color.y;
       this.glyphData[this.glyphCount * struct + 6] = color.z;
       this.glyphData[this.glyphCount * struct + 7] = color.w;
-      this.glyphData[this.glyphCount * struct + 8] = size.x;
-      this.glyphData[this.glyphCount * struct + 9] = size.y;
+      this.glyphData[this.glyphCount * struct + 8] = size.x * scale;
+      this.glyphData[this.glyphCount * struct + 9] = size.y * scale;
       this.glyphData[this.glyphCount * struct + 10] = uv.x;
       this.glyphData[this.glyphCount * struct + 11] = uv.y;
       this.glyphData[this.glyphCount * struct + 12] = uv.z;
       this.glyphData[this.glyphCount * struct + 13] = uv.w;
-      this.glyphData[this.glyphCount * struct + 14] = clipStart.x;
-      this.glyphData[this.glyphCount * struct + 15] = clipStart.y;
-      this.glyphData[this.glyphCount * struct + 16] = clipSize.x;
-      this.glyphData[this.glyphCount * struct + 17] = clipSize.y;
-      this.glyphData[this.glyphCount * struct + 18] = this.settings.windowWidth;
-      this.glyphData[this.glyphCount * struct + 19] = this.settings.windowHeight;
+      this.glyphData[this.glyphCount * struct + 14] = clipStart.x * scale;
+      this.glyphData[this.glyphCount * struct + 15] = clipStart.y * scale;
+      this.glyphData[this.glyphCount * struct + 16] = clipSize.x * scale;
+      this.glyphData[this.glyphCount * struct + 17] = clipSize.y * scale;
+      this.glyphData[this.glyphCount * struct + 18] = this.settings.windowWidth * scale;
+      this.glyphData[this.glyphCount * struct + 19] = this.settings.windowHeight * scale;
 
       this.glyphCount += 1;
     }
