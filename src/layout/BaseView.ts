@@ -59,4 +59,31 @@ export class BaseView implements Node {
 
     return node;
   }
+
+  remove(node: Node): void {
+    // Check if node is a child of this node.
+    if (node.parent !== this) {
+      console.warn("Node is not a child of this node.");
+    }
+
+    if (node.prev !== null) {
+      node.prev.next = node.next;
+    }
+
+    if (node.next !== null) {
+      node.next.prev = node.prev;
+    }
+
+    if (this.firstChild === node) {
+      this.firstChild = node.next;
+    }
+
+    if (this.lastChild === node) {
+      this.lastChild = node.prev;
+    }
+
+    node.prev = null;
+    node.next = null;
+    node.parent = null;
+  }
 }

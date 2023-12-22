@@ -27,7 +27,7 @@ const colorCount = 10;
 const startingOffset = 20;
 const step = (100 - startingOffset) / (colorCount - 1);
 
-const colors = Array.from({ length: colorCount }, (_, i) => {
+const orange = Array.from({ length: colorCount }, (_, i) => {
   const value = Math.round(startingOffset + i * step);
   return `hsl(10, 78%, ${value}%)`;
 });
@@ -46,13 +46,13 @@ export function flexValue() {
     style: { flexDirection: FlexDirection.Row, marginLeft: 50, width: 250 },
   });
   root.add(row);
-  const row0 = new View({ style: { backgroundColor: colors[1], flex: 0, height: 50 } });
+  const row0 = new View({ style: { backgroundColor: orange[1], flex: 0, height: 50 } });
   row.add(row0);
-  const row1 = new View({ style: { backgroundColor: colors[2], flex: 1, height: 50 } });
+  const row1 = new View({ style: { backgroundColor: orange[2], flex: 1, height: 50 } });
   row.add(row1);
-  const row2 = new View({ style: { backgroundColor: colors[3], flex: 2, height: 50 } });
+  const row2 = new View({ style: { backgroundColor: orange[3], flex: 2, height: 50 } });
   row.add(row2);
-  const rowFixed = new View({ style: { backgroundColor: colors[4], height: 50, width: 50 } });
+  const rowFixed = new View({ style: { backgroundColor: orange[4], height: 50, width: 50 } });
   row.add(rowFixed);
 
   const column = new View({
@@ -60,14 +60,14 @@ export function flexValue() {
     testID: "column",
   });
   root.add(column);
-  const column0 = new View({ style: { backgroundColor: colors[5], flex: 0, width: 50 } });
+  const column0 = new View({ style: { backgroundColor: orange[5], flex: 0, width: 50 } });
   column.add(column0);
-  const column1 = new View({ style: { backgroundColor: colors[6], flex: 1, width: 50 } });
+  const column1 = new View({ style: { backgroundColor: orange[6], flex: 1, width: 50 } });
   column.add(column1);
-  const column2 = new View({ style: { backgroundColor: colors[7], flex: 2, width: 50 } });
+  const column2 = new View({ style: { backgroundColor: orange[7], flex: 2, width: 50 } });
   column.add(column2);
   const columnFixed = new View({
-    style: { backgroundColor: colors[8], height: 50, width: 50 },
+    style: { backgroundColor: orange[8], height: 50, width: 50 },
   });
   column.add(columnFixed);
 
@@ -88,19 +88,19 @@ export function flexRowAndColumn() {
 
   function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -135,19 +135,19 @@ export function flexRowAndColumn() {
 
   function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -196,12 +196,12 @@ export function alignItemsAndSelf() {
     all?: Partial<LayoutProps>,
   ) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: crossAxisValue,
       width: mainAxisValue,
     } as ViewStyleProps;
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: crossAxisValue,
       width: mainAxisValue,
     } as ViewStyleProps;
@@ -246,12 +246,12 @@ export function alignItemsAndSelf() {
     all?: Partial<LayoutProps>,
   ) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: mainAxisValue,
       width: crossAxisValue,
     } as ViewStyleProps;
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: mainAxisValue,
       width: crossAxisValue,
     } as ViewStyleProps;
@@ -298,19 +298,19 @@ export function flexDirectionReverse() {
 
   function generateFlexRow(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -345,19 +345,19 @@ export function flexDirectionReverse() {
 
   function generateFlexColumn(attribute: LayoutProps["justifyContent"]) {
     const firstStyle = {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: 25,
       width: 30,
     } as ViewStyleProps;
 
     const secondStyle = {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 25,
       width: 40,
     } as ViewStyleProps;
 
     const thirdStyle = {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: 25,
       width: 50,
     } as ViewStyleProps;
@@ -399,7 +399,7 @@ export function flexWrapRow() {
   const row = new View({
     style: {
       alignItems: AlignItems.Center,
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       columnGap: 5,
       flexDirection: FlexDirection.Row,
       flexWrap: FlexWrap.Wrap,
@@ -411,11 +411,11 @@ export function flexWrapRow() {
     testID: "row-wrap",
   });
   root.add(row);
-  row.add(box(colors[1], 60, 25));
-  row.add(box(colors[2], 40, 33));
-  row.add(box(colors[3], 70, 25, { marginLeft: 11 }));
-  row.add(box(colors[4], 90, 41, { marginLeft: 8 }));
-  row.add(box(colors[5], 210, 19));
+  row.add(box(orange[1], 60, 25));
+  row.add(box(orange[2], 40, 33));
+  row.add(box(orange[3], 70, 25, { marginLeft: 11 }));
+  row.add(box(orange[4], 90, 41, { marginLeft: 8 }));
+  row.add(box(orange[5], 210, 19));
 
   return root;
 }
@@ -442,7 +442,7 @@ export function flexWrapColumn() {
   const column = new View({
     style: {
       alignItems: AlignItems.End,
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       columnGap: 10,
       flexDirection: FlexDirection.Column,
       flexWrap: FlexWrap.WrapReverse,
@@ -453,11 +453,11 @@ export function flexWrapColumn() {
     testID: "column-wrap",
   });
   root.add(column);
-  column.add(box(colors[1]!, 25, 60));
-  column.add(box(colors[2]!, 33, 40));
-  column.add(box(colors[3]!, 25, 70, { marginTop: 11 }));
-  column.add(box(colors[4]!, 41, 90, { marginTop: 8 }));
-  column.add(box(colors[5]!, 19, 210));
+  column.add(box(orange[1]!, 25, 60));
+  column.add(box(orange[2]!, 33, 40));
+  column.add(box(orange[3]!, 25, 70, { marginTop: 11 }));
+  column.add(box(orange[4]!, 41, 90, { marginTop: 8 }));
+  column.add(box(orange[5]!, 19, 210));
 
   return root;
 }
@@ -489,11 +489,11 @@ export function alignContent() {
       testID: "alignContent",
     });
     root.add(c);
-    c.add(box(colors[3], 40, 20));
-    c.add(box(colors[4], 40, 20));
-    c.add(box(colors[3], 40, 20));
-    c.add(box(colors[4], 40, 20));
-    c.add(box(colors[3], 40, 20));
+    c.add(box(orange[3], 40, 20));
+    c.add(box(orange[4], 40, 20));
+    c.add(box(orange[3], 40, 20));
+    c.add(box(orange[4], 40, 20));
+    c.add(box(orange[3], 40, 20));
   }
 
   function box(
@@ -505,14 +505,14 @@ export function alignContent() {
     return new View({ style: { backgroundColor, height, width, ...style } });
   }
 
-  container(colors[0], AlignContent.Start);
-  container(colors[1], AlignContent.Center);
-  container(colors[0], AlignContent.End);
-  container(colors[1], AlignContent.SpaceBetween);
+  container(orange[0], AlignContent.Start);
+  container(orange[1], AlignContent.Center);
+  container(orange[0], AlignContent.End);
+  container(orange[1], AlignContent.SpaceBetween);
 
-  container(colors[1], AlignContent.SpaceAround);
-  container(colors[0], AlignContent.SpaceEvenly);
-  container(colors[1], AlignContent.Stretch);
+  container(orange[1], AlignContent.SpaceAround);
+  container(orange[0], AlignContent.SpaceEvenly);
+  container(orange[1], AlignContent.Stretch);
 
   return root;
 }
@@ -535,15 +535,15 @@ export function flexShrinkAndGrow() {
 
   const first = row();
   root.add(first);
-  first.add(box(colors[0], 120, 100, { flexShrink: 0 }));
-  first.add(box(colors[1], 120, 100, { flexShrink: 1 }));
-  first.add(box(colors[2], 120, 100, { flexShrink: 0 }));
+  first.add(box(orange[0], 120, 100, { flexShrink: 0 }));
+  first.add(box(orange[1], 120, 100, { flexShrink: 1 }));
+  first.add(box(orange[2], 120, 100, { flexShrink: 0 }));
 
   const second = row();
   root.add(second);
-  second.add(box(colors[3], 60, 100));
-  second.add(box(colors[4], 120, 100, { flexGrow: 1 }));
-  second.add(box(colors[5], 20, 100, { flexBasis: 60 }));
+  second.add(box(orange[3], 60, 100));
+  second.add(box(orange[4], 120, 100, { flexGrow: 1 }));
+  second.add(box(orange[5], 20, 100, { flexBasis: 60 }));
 
   return root;
 }
@@ -560,7 +560,7 @@ export function marginsAndPaddingsAndBorders() {
 
   const box = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       flexDirection: FlexDirection.Row,
       padding: 10,
     },
@@ -569,8 +569,8 @@ export function marginsAndPaddingsAndBorders() {
 
   const first = new View({
     style: {
-      backgroundColor: colors[1],
-      borderColor: colors[5],
+      backgroundColor: orange[1],
+      borderColor: orange[5],
       borderWidth: 4,
       height: 100,
       marginLeft: 10,
@@ -583,7 +583,7 @@ export function marginsAndPaddingsAndBorders() {
 
   const inFirst = new View({
     style: {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: 50,
       marginTop: 10,
       width: 50,
@@ -593,7 +593,7 @@ export function marginsAndPaddingsAndBorders() {
 
   const second = new View({
     style: {
-      backgroundColor: colors[4],
+      backgroundColor: orange[4],
       height: 50,
       marginLeft: 30,
       marginRight: 40,
@@ -617,7 +617,7 @@ export function offsets() {
 
   const topLeft = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       height: 50,
       left: 30,
       top: 30,
@@ -628,7 +628,7 @@ export function offsets() {
 
   const bottomRight = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       bottom: 30,
       height: 50,
       right: -60,
@@ -639,7 +639,7 @@ export function offsets() {
 
   const stretched = new View({
     style: {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 50,
       left: 50,
       right: 50,
@@ -649,7 +649,7 @@ export function offsets() {
 
   const bottom = new View({
     style: {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       bottom: 30,
       height: 50,
       width: 50,
@@ -659,7 +659,7 @@ export function offsets() {
 
   const box = new View({
     style: {
-      backgroundColor: colors[4],
+      backgroundColor: orange[4],
       flexDirection: FlexDirection.Row,
       height: 100,
       width: 120,
@@ -669,7 +669,7 @@ export function offsets() {
 
   const small = new View({
     style: {
-      backgroundColor: colors[5],
+      backgroundColor: orange[5],
       height: 50,
       width: 50,
     },
@@ -677,7 +677,7 @@ export function offsets() {
   box.add(small);
   const small2 = new View({
     style: {
-      backgroundColor: colors[6],
+      backgroundColor: orange[6],
       height: 50,
       width: 50,
     },
@@ -686,7 +686,7 @@ export function offsets() {
 
   const absolute1 = new View({
     style: {
-      backgroundColor: colors[7],
+      backgroundColor: orange[7],
       bottom: 40,
       position: Position.Absolute,
       right: 0,
@@ -698,7 +698,7 @@ export function offsets() {
 
   const absolute2 = new View({
     style: {
-      backgroundColor: colors[8],
+      backgroundColor: orange[8],
       bottom: 30,
       height: 50,
       left: 10,
@@ -715,13 +715,13 @@ export function percentageAndMinMaxSizes() {
   const root = new View({ style: rootStyle });
 
   const passThrough = new View({
-    style: { backgroundColor: colors[0] },
+    style: { backgroundColor: orange[0] },
     testID: "passThrough",
   });
   root.add(passThrough);
   const inside = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       flexDirection: FlexDirection.Row,
       height: "50%",
     },
@@ -730,7 +730,7 @@ export function percentageAndMinMaxSizes() {
   passThrough.add(inside);
   const innermost = new View({
     style: {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       flexDirection: FlexDirection.Row,
       height: "100%",
     },
@@ -740,7 +740,7 @@ export function percentageAndMinMaxSizes() {
 
   const first = new View({
     style: {
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       height: "50%",
       width: 40,
     },
@@ -749,7 +749,7 @@ export function percentageAndMinMaxSizes() {
   innermost.add(first);
   const second = new View({
     style: {
-      backgroundColor: colors[4],
+      backgroundColor: orange[4],
       height: "50%",
       width: 40,
     },
@@ -757,7 +757,7 @@ export function percentageAndMinMaxSizes() {
   innermost.add(second);
   const third = new View({
     style: {
-      backgroundColor: colors[5],
+      backgroundColor: orange[5],
       height: "50%",
       width: 40,
     },
@@ -766,7 +766,7 @@ export function percentageAndMinMaxSizes() {
 
   const minSize = new View({
     style: {
-      backgroundColor: colors[6],
+      backgroundColor: orange[6],
       minHeight: 30,
       minWidth: 30,
     },
@@ -775,7 +775,7 @@ export function percentageAndMinMaxSizes() {
   root.add(minSize);
   const maxSize = new View({
     style: {
-      backgroundColor: colors[7],
+      backgroundColor: orange[7],
       flexDirection: FlexDirection.Row,
       maxHeight: 40,
       maxWidth: 40,
@@ -786,7 +786,7 @@ export function percentageAndMinMaxSizes() {
 
   const maxSizeFirst = new View({
     style: {
-      backgroundColor: colors[8],
+      backgroundColor: orange[8],
       flex: 1,
       height: 50,
       width: 50,
@@ -796,7 +796,7 @@ export function percentageAndMinMaxSizes() {
   maxSize.add(maxSizeFirst);
   const maxSizeSecond = new View({
     style: {
-      backgroundColor: colors[9],
+      backgroundColor: orange[9],
       height: 50,
       width: 50,
     },
@@ -818,7 +818,7 @@ export function displayAndOverflow() {
 
   const overflow = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       height: 300,
       overflow: Overflow.Scroll,
       width: "100%",
@@ -828,7 +828,7 @@ export function displayAndOverflow() {
 
   const tooTall = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       borderRadius: 20,
       overflow: Overflow.Scroll,
       width: 180,
@@ -839,7 +839,7 @@ export function displayAndOverflow() {
   for (let i = 0; i < 6; i++) {
     tooTall.add(
       new View({
-        style: { backgroundColor: colors[i + 2], height: 60, width: 180 - i * 20 },
+        style: { backgroundColor: orange[i + 2], height: 60, width: 180 - i * 20 },
         testID: `D-${i}`,
       }),
     );
@@ -855,7 +855,7 @@ export function zIndex() {
 
   const left = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       height: 50,
       width: 100,
       zIndex: 1,
@@ -865,7 +865,7 @@ export function zIndex() {
 
   const leftChild = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       height: 100,
       left: 20,
       top: 20,
@@ -877,7 +877,7 @@ export function zIndex() {
 
   const right = new View({
     style: {
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 100,
       width: 100,
       zIndex: 2,
@@ -1003,23 +1003,12 @@ export function interactiveButton() {
       gap: 12,
       height: 300,
       justifyContent: JustifyContent.Center,
-      margin: 85,
-      marginLeft: 1000,
       overflow: Overflow.Hidden,
       width: 300,
     },
   });
 
   const button = new Button({
-    onClick: () => {
-      console.log("Clicked!");
-    },
-    style: {
-      backgroundColor: "#2870BD",
-      height: 40,
-      justifyContent: JustifyContent.Center,
-      paddingHorizontal: 12,
-    },
     // style: {
     //   backgroundColor: "#2870BD",
     //   borderColor: "#0090FF",
@@ -1029,15 +1018,22 @@ export function interactiveButton() {
     //   paddingHorizontal: 12,
     //   paddingTop: 7,
     // },
+    label: "Confirm",
+
+    lookups,
+
+    onClick: () => {
+      console.log("Clicked!");
+    },
+    style: {
+      backgroundColor: "#2870BD",
+      height: 40,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 12,
+    },
     testID: "button",
   });
   root.add(button);
-  button.add(
-    new Text("Confirm", {
-      lookups,
-      style: { color: "#FFFFFF", fontName: "InterBold", fontSize: 18 },
-    }),
-  );
 
   const input = new Input({
     lookups,
@@ -1061,7 +1057,6 @@ export function interactiveButton() {
     //   justifyContent: JustifyContent.Center,
     //   paddingHorizontal: 0,
     // },
-    testID: "input",
     value: "Hello worldabcdefghijklmnop",
   });
   root.add(input);
@@ -1081,7 +1076,7 @@ export function tryingToBreakThings() {
 
   const row = new View({
     style: {
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       flexDirection: FlexDirection.Row,
       height: 100,
       width: "100%",
@@ -1091,7 +1086,7 @@ export function tryingToBreakThings() {
 
   const first = new View({
     style: {
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       flex: 1,
       height: 50,
       maxWidth: 50,
@@ -1108,7 +1103,7 @@ export function aspectRatio() {
   const first = new View({
     style: {
       aspectRatio: 16 / 9,
-      backgroundColor: colors[0],
+      backgroundColor: orange[0],
       width: 60,
     },
   });
@@ -1116,7 +1111,7 @@ export function aspectRatio() {
   const second = new View({
     style: {
       aspectRatio: 16 / 9,
-      backgroundColor: colors[1],
+      backgroundColor: orange[1],
       minWidth: 72,
       width: 40,
     },
@@ -1125,7 +1120,7 @@ export function aspectRatio() {
   const third = new View({
     style: {
       aspectRatio: 16 / 9,
-      backgroundColor: colors[2],
+      backgroundColor: orange[2],
       height: 60,
       width: 60,
     },
@@ -1134,7 +1129,7 @@ export function aspectRatio() {
   const fourth = new View({
     style: {
       aspectRatio: 16 / 9,
-      backgroundColor: colors[3],
+      backgroundColor: orange[3],
       minHeight: 72,
     },
   });
@@ -1142,20 +1137,12 @@ export function aspectRatio() {
   const fifth = new View({
     style: {
       aspectRatio: 16 / 9,
-      backgroundColor: colors[4],
+      backgroundColor: orange[4],
       minHeight: 72,
       minWidth: 144,
     },
   });
   root.add(fifth);
-
-  return root;
-}
-
-export function gamePicker() {
-  invariant(lookups, "Lookups must be set.");
-
-  const root = new View({ style: rootStyle });
 
   return root;
 }

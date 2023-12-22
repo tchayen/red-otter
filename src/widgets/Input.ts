@@ -21,7 +21,7 @@ const cursorColor = "rgb(40, 112, 189)";
 const blinkIntervalMs = 500;
 const typingStoppedTimeoutMs = 1000;
 
-const fontSize = 24;
+const fontSize = 14;
 
 export class Input extends View {
   value = "";

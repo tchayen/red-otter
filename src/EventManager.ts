@@ -190,9 +190,6 @@ export class EventManager {
               node._isMouseOver = true;
               listener(event as MouseEvent);
             }
-            if (type === UserEventType.MouseLeave) {
-              console.log("mouse leave here");
-            }
             if (type === UserEventType.MouseLeave && previous && !hitTest(node, event)) {
               node._isMouseOver = false;
               console.log("mouse left!");
