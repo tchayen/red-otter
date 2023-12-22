@@ -90,10 +90,6 @@ export function shapeText(
     }
     const charWidth = (lsb + kerning + width + rsb) * scale;
 
-    if (positionX === 0 && text[i] === " ") {
-      continue;
-    }
-
     positions[i] = new Vec2(
       positionX + (lsb + kerning) * scale - padding,
       positionY + (font.capHeight - y - height) * scale - padding,
@@ -104,6 +100,7 @@ export function shapeText(
     // If current word ran out of space, move i back to the last character of the last word and
     // restart positionX.
     if (positionX > maxWidth) {
+      console.log(positionX, maxWidth, text[i], noWrap);
       positionX = 0;
       positionY += lineHeight;
       i = lastIndex;
@@ -128,7 +125,9 @@ export function shapeText(
             ? leftSpace
             : 0;
       for (let i = 0; i < positions.length; i++) {
-        positions[i] = new Vec2(positions[i]!.x + offset, positions[i]!.y);
+        const position = positions[i];
+        invariant(position, `Could not find position.${text} ${i} ${JSON.stringify(positions)}`);
+        positions[i] = new Vec2(position.x + offset, position.y);
       }
     }
   }

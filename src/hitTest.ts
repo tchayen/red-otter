@@ -32,5 +32,5 @@ export function getScreenVisibleRectangle(node: BaseView) {
 
 export function pointToNodeSpace(node: BaseView, point: Vec2): Vec2 {
   const { totalScrollX, totalScrollY } = node._state;
-  return new Vec2(point.x + totalScrollX, point.y + totalScrollY);
+  return new Vec2(point.x + totalScrollX - node._state.x, point.y + totalScrollY - node._state.y);
 }

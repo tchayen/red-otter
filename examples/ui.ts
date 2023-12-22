@@ -20,6 +20,7 @@ export function ui(renderer: WebGPURenderer): View {
 
   const root = new View({
     style: {
+      backgroundColor: "#212121",
       height: "100%",
       overflow: Overflow.Scroll,
       width: "100%",

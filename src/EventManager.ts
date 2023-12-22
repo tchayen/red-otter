@@ -190,8 +190,12 @@ export class EventManager {
               node._isMouseOver = true;
               listener(event as MouseEvent);
             }
+            if (type === UserEventType.MouseLeave) {
+              console.log("mouse leave here");
+            }
             if (type === UserEventType.MouseLeave && previous && !hitTest(node, event)) {
               node._isMouseOver = false;
+              console.log("mouse left!");
               listener(event as MouseEvent);
             }
           }
@@ -267,8 +271,8 @@ export class EventManager {
     const deltaY = this.lastPosition ? event.position.y - this.lastPosition.y : 0;
 
     // 1 pixel of scrollbar is how many pixels of content?
-    const ratioX = node._state.scrollWidth / node._state.clientWidth;
-    const ratioY = node._state.scrollHeight / node._state.clientHeight;
+    const ratioX = (node._state.scrollWidth / node._state.clientWidth) * window.devicePixelRatio;
+    const ratioY = (node._state.scrollHeight / node._state.clientHeight) * window.devicePixelRatio;
 
     if (node._isHorizontalScrollbarHovered) {
       node._state.scrollX = Math.min(

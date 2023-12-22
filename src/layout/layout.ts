@@ -155,7 +155,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
         e.text,
         e._style.textAlign ?? TextAlign.Left,
         maxWidth,
-        (e._style.whitespace ?? Whitespace.Normal) === Whitespace.Normal,
+        (e._style.whitespace ?? Whitespace.NoWrap) === Whitespace.NoWrap,
       );
 
       e._state.clientWidth = shape.boundingRectangle.width;

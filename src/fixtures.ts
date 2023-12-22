@@ -1050,6 +1050,7 @@ export function interactiveButton() {
       height: 40,
       justifyContent: JustifyContent.Center,
       paddingHorizontal: 0,
+      paddingLeft: 10,
     },
     // style: {
     //   backgroundColor: "#111111",
@@ -1061,8 +1062,7 @@ export function interactiveButton() {
     //   paddingHorizontal: 0,
     // },
     testID: "input",
-
-    value: "Hello world!",
+    value: "Hello worldabcdefghijklmnop",
   });
   root.add(input);
 
