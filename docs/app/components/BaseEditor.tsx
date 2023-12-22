@@ -20,9 +20,8 @@ export async function BaseEditor(props: SandpackProps) {
         ...props.files,
         "/dist/index.d.ts": {
           code: `/// <reference types="node_modules/@webgpu/types" />\n${await types}`,
-          hidden: true,
         },
-        "/dist/index.js": { code: await source, hidden: true },
+        "/dist/index.js": { code: await source },
         "sandbox.config.json": { code: sandboxConfig, hidden: true },
       }}
     />

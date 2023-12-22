@@ -7,6 +7,7 @@ export type {
   TextStyleProps,
   LayoutNodeState,
   AlignItems,
+  AlignSelf,
   JustifyContent,
   AlignContent,
   FlexDirection,
@@ -51,3 +52,5 @@ export {
   isInside,
 } from "./math/utils";
 export { triangulatePolygon } from "./math/triangulatePolygon";
+export { Button } from "./widgets/Button";
+export { Input } from "./widgets/Input";

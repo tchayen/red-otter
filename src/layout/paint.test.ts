@@ -24,6 +24,8 @@ describe("paint", () => {
 
     function scroll(delta: Vec2, where: Vec2) {
       eventManager.dispatchEvent({
+        bubbles: false,
+        capturable: true,
         delta: delta,
         position: where,
         type: UserEventType.Scroll,
