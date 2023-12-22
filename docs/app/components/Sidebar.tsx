@@ -34,14 +34,14 @@ export function Sidebar({ onClick }: { onClick?: () => void }) {
         <SidebarLink currentPath={path} onClick={onClick} href="/layout-engine">
           Layout Engine
         </SidebarLink>
+        <SidebarLink currentPath={path} onClick={onClick} href="/interactivity">
+          Interactivity
+        </SidebarLink>
         <SidebarLink currentPath={path} onClick={onClick} href="/renderer">
           Renderer
         </SidebarLink>
         <SidebarLink currentPath={path} onClick={onClick} href="/math-library">
           Math Library
-        </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/interactivity">
-          Interactivity
         </SidebarLink>
       </div>
     </>

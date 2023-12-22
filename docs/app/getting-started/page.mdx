@@ -6,6 +6,14 @@ export const metadata = getMetadata("Getting Started");
 
 Due to modular and layered architecture, you can start almost anywhere depending on your needs.
 
+However, the library is still in early stages and there are many rough edges. If you feel brave enough to try it out now, please let me know of any problems in the [GitHub issues](https://github.com/tchayen/red-otter).
+
+As mentioned in the README, first install the library with package manager of your choice:
+
+```bash
+npm i red-otter
+```
+
 ## Setting up the renderer
 
 Depending on which renderer you use, setup code will differ. There is a bit of boilerplate code that is needed, but the idea was to make it as unopinionated as possible since setup of every app is different and this is not meant to be a framework, but a UI library that co-exists with other parts of the app.
@@ -101,7 +109,7 @@ render();
   </Tabs.Content>
   <Tabs.Content value="webgl">
 
-_WebGL renderer is not implemented yet._
+_WebGL example coming in future._
 
   </Tabs.Content>
 </Tabs.Root>
@@ -160,6 +168,8 @@ layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
 
 ## Third layer: make it interactive
 
+Until now we only have a static content, which, while maybe useful for things like OG images or some static parts that need automatic layout, is not a full UI. What is missing is user interaction.
+
 ```tsx
 // Replace BaseView with View.
 
@@ -168,28 +178,23 @@ compose(renderer, root);
 paint(renderer, root);
 ```
 
-## Fourth layer: TBD
+### Add event listeners
 
-In future maybe I will go again in the JSX direction. Maybe with a mini-framework in direction of SolidJS? Who knows.
+Each view accepts `onClick` event listener, but there are more types that can be added in a `constructor()` if you extend the `View` class.
 
 ```tsx
-function App() {
-  const [count, setCount] = createSignal(0);
+export class Input extends View {
+  constructor() {
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this._eventListeners.push([UserEventType.KeyDown, this.onKeyDown]);
+  }
 
-  return (
-    <View style={{ height: "100%", width: "100%" }}>
-      <View style={{ backgroundColor: "#333", height: 100, width: 100 }}>
-        <Text
-          style={{
-            fontFamily: "Inter",
-            color: "#fff",
-            fontSize: 16,
-          }}
-        >
-          {count()}
-        </Text>
-      </View>
-    </View>
-  );
+  private onKeyDown(event: KeyboardEvent) {
+    // ...
+  }
 }
 ```
+
+## Summary
+
+This hopefully gives some overview of how the library works.
