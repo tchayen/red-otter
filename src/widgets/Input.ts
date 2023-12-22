@@ -114,7 +114,7 @@ export class Input extends View {
     this.onMouseDownForDragging = this.onMouseDownForDragging.bind(this);
     this.onMouseUpForDragging = this.onMouseUpForDragging.bind(this);
     this.onMouseMoveForDragging = this.onMouseMoveForDragging.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseEnterNOOP = this.onMouseEnterNOOP.bind(this);
 
     this._eventListeners.push(
       [UserEventType.KeyDown, this.onKeyDown],
@@ -122,7 +122,7 @@ export class Input extends View {
       [UserEventType.MouseDown, this.onMouseDownForDragging],
       [UserEventType.MouseUp, this.onMouseUpForDragging],
       [UserEventType.MouseMove, this.onMouseMoveForDragging],
-      [UserEventType.MouseEnter, this.onMouseEnter],
+      [UserEventType.MouseEnter, this.onMouseEnterNOOP],
       [UserEventType.MouseLeave, this.onMouseUpForDragging],
     );
 
@@ -132,7 +132,7 @@ export class Input extends View {
     }
   }
 
-  private onMouseEnter(_: MouseEvent) {
+  private onMouseEnterNOOP(_: MouseEvent) {
     // No-op but important to keep this._isMouseOver up to date. Otherwise a state variable won't
     // be updated. This should be fixed by views getting a default onMouseEnter and onMouseLeave
     // events.
