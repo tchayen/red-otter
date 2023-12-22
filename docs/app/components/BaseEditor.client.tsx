@@ -48,9 +48,9 @@ export const BaseEditorClient = withClient(function BaseEditor({
                 <path
                   d="M2 5L7 10L12 5"
                   stroke="#6B7176"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>

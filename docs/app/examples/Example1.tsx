@@ -6,7 +6,6 @@ export function Example1() {
       <BaseEditor
         files={{
           "/index.ts": { code: starterCode },
-          "/red-otter.js": { code: "" },
         }}
       />
     </>
@@ -30,10 +29,12 @@ const settings = {
   sampleCount: 4,
   windowHeight: HEIGHT,
   windowWidth: WIDTH,
+  rectangleBufferSize: 16 * 4096,
+  textBufferSize: 16 * 100_000,
 };
 
-canvas.width = WIDTH;
-canvas.height = HEIGHT;
+canvas.width = WIDTH * window.devicePixelRatio;
+canvas.height = HEIGHT * window.devicePixelRatio;
 canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {

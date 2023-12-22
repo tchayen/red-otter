@@ -47,6 +47,9 @@ export class WebGPURenderer implements Renderer {
     public readonly fontLookups: Lookups,
     fontAtlasTexture: ImageBitmap,
   ) {
+    invariant(settings.rectangleBufferSize > 0, "Rectangle buffer size must be greater than 0.");
+    invariant(settings.textBufferSize > 0, "Text buffer size must be greater than 0.");
+
     this.rectangleData = new Float32Array(settings.rectangleBufferSize);
     this.glyphData = new Float32Array(settings.textBufferSize);
 

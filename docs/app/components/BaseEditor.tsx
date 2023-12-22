@@ -23,10 +23,7 @@ export async function BaseEditor(props: SandpackProps) {
           hidden: true,
         },
         "/dist/index.js": { code: await source, hidden: true },
-        "sandbox.config.json": {
-          code: sandboxConfig,
-          hidden: true,
-        },
+        "sandbox.config.json": { code: sandboxConfig, hidden: true },
       }}
     />
   );
