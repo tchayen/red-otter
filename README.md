@@ -19,6 +19,12 @@ A flexbox (think CSS or Yoga) layout engine that comes with its own TTF font par
 
 Using JavaScript you can create a fully interactive, browser-like layout that lives inside a `<canvas />`.
 
+### Describe it to me if I am…
+
+**…a web/mobile developer** – it's like a mini Flutter. A sort of a framework for rendering UIs which fully recreates the whole stack on top of the graphics API.
+
+**…a game/platform developer** – it's like Dear ImGui which implements full flexbox layout but written in JavaScript (for fun and horror).
+
 ### What problem does it solve?
 
 It gives you a fully working UI system written in plain JavaScript.
@@ -80,16 +86,19 @@ The library consists of several directories grouping different features.
 
 There's:
 
-- `font` - providing TTF parsing, font atlas generation.
-- `ui` - with `layout()`, `compose()` and `paint()`.
-- `math` - with a math library equipped with `Mat4`, `Vec2`, `Vec3`, `Vec4`.
+- `/font` – providing TTF parsing, font atlas generation.
+- `/layout` – the layout algorithm and other important functions.
+- `/math` – with a math library equipped with `Mat4`, `Vec2`, `Vec3`, `Vec4`.
+- `/renderer` – all renderers included with the library.
+- `/utils` – a classic bag of a bit of everything.
+- `/widgets` – a set of built-in UI widgets. Notably a (hopefully decent) `Input` implementation.
 
 The pipeline of taking user defined components to the screen has multiple layers, separated based on how often they need to be run:
 
-- `layout()` - takes tree of nodes and calculates screen positions and sizes. Runs only when component tree changes.
-- `compose()` - takes tree of nodes after layout and calculates screen-space positions after including scrolling. Runs after user events.
-- `paint()` - takes tree of nodes after compose and prepares commands for the renderer.
-- `Renderer` - given precise commands renderes styled rectangles and text to the screen.
+- `layout()` – takes tree of nodes and calculates screen positions and sizes. Runs only when component tree changes.
+- `compose()` – takes tree of nodes after layout and calculates screen-space positions after including scrolling. Runs after user events.
+- `paint()` – takes tree of nodes after compose and prepares commands for the renderer.
+- `Renderer#render()` – given precise commands renderes styled rectangles and text to the screen.
 
 ---
 
