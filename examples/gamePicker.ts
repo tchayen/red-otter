@@ -9,7 +9,7 @@ import { colors } from "../src/widgets/colors";
 import { Input } from "../src/widgets/Input";
 import { Button } from "../src/widgets/Button";
 import type { Node } from "../src/layout/Node";
-import { lookups, text } from "./ui";
+import { lookups } from "./ui";
 
 export function gamePicker(parent: Node) {
   invariant(lookups, "Lookups must be set.");
@@ -139,13 +139,28 @@ export function gamePicker(parent: Node) {
 
       switch (columns[i]) {
         case "mode":
-          cell.add(text(item as string, 14, "#B4B4B4"));
+          cell.add(
+            new Text(item as string, {
+              lookups,
+              style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+            }),
+          );
           break;
         case "name":
-          cell.add(text(item as string, 14, "#B4B4B4"));
+          cell.add(
+            new Text(item as string, {
+              lookups,
+              style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+            }),
+          );
           break;
         case "password":
-          cell.add(text(item ? "Yes" : "No", 14, "#B4B4B4"));
+          cell.add(
+            new Text(item ? "Yes" : "No", {
+              lookups,
+              style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+            }),
+          );
           break;
         case "players":
           if (
@@ -154,7 +169,12 @@ export function gamePicker(parent: Node) {
             "current" in item &&
             "limit" in item
           ) {
-            cell.add(text(`${item.current}/${item.limit}`, 14, "#B4B4B4"));
+            cell.add(
+              new Text(`${item.current}/${item.limit}`, {
+                lookups,
+                style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+              }),
+            );
           }
           break;
       }

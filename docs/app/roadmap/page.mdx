@@ -5,46 +5,19 @@ export const metadata = getMetadata("Roadmap");
 
 Things that would be nice to have, roughly sorted by priority:
 
-### WebGL renderer
-
-WebGL is here to stay and while WebGPU adoption is climbing ([Web3DSurvey](https://web3dsurvey.com/webgpu) reports 56.9% at the time of writing this), current lack of mobile support and Safari implementation make keeping WebGL renderer a must-have.
-
-### Canvas renderer
-
-Although I don't expect it to become popular, providing a Canvas renderer is a nice showcase of lib's flexibility.
-
-### Focus and keyboard navigation
-
-Although full accessibility and screen reader support will remain impossible for a long time, one important aspect of a11y can be implemented already.
-
-### Rendering shapes
-
-Following how I approach the overall design of this library, I want to strike the most reasonable balance between implementation complexity and versatility of the API. I am currently thinking that supporting a mini SVG `<path>` renderer will be sufficiently useful to cover this for a while.
-
-### Benchmarks
-
-It's nice to speak of theoretical benefits, but real numbers backing them up are even better.
-
-### Position `fixed` and `sticky`
-
-Doesn't seem to be particularly hard to implement, but also isn't a high priority.
-
-### Animations
-
-Sooner or later I will need to provide support for animating the UI. There are lots of inspirations to draw from, but finding a solution that fits best the library and goes well together with how rendering is designed might prove to be a challenge.
-
-### Custom shaders for views
-
-Reported in [#12](https://github.com/tchayen/red-otter/issues/12). So far Red Otter is just trying to immitate the browser's UI capabilities, but finally a real differentiating factor might be ability to specify custom fragment shaders that manipulate the `View`s.
-
-### New styling options
-
-**Opacity** – clearly a must-have.
-
-**Gradients** – important to match browsers.
-
-**Outlines** – very useful for hovers and other keyboard-navigation related features.
-
-### OTF file support
-
-So far only TTF files are supported. Is there even any difference between the two? Yes, OTF is a newer format and while its fully backwards compatible with TTF, it also supports new complex features. And as you can guess, implementing complex features in the parser is sometimes non-trivial.
+- Lots of small bug fixes that I wish I had done before the release but I ran out of steam.
+- zIndex support.
+- Focus system for inputs and buttons.
+- SDF border radius clipping. Currently it's just rectangle, which means that elements can overflow in the corners.
+- Better line height and text support. Currently it works, mostly, but is far from perfect and even making a simple button might require manual vertical padding adjustment to make it look good.
+- Ability to style scrollbars.
+- Font ligatures support.
+- More styling options: `outline`, `boxShadow`, background gradients.
+- Image rendering.
+- Probably some lifecycle methods for components. `onLayout()` is one that definitely comes to mind.
+- Non-SDF font rendering that supports regular font atlases from rasterized fonts.
+- Rendering vector shapes. Maybe a mini SVG `<path>` renderer?
+- Position `fixed` and `sticky`.
+- Animations.
+- Custom shaders for views.
+- Better OTF file support. Currently the library is only able to parse fonts that follow classic TTF-style declaration of glyphs and their sizes.

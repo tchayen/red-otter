@@ -186,24 +186,17 @@ export class Input extends View {
     }
 
     this.mouseDrag = null;
-
-    const text = this.firstChild;
-    invariant(text instanceof Text, "First child should be text.");
-    const selection = text.next;
-    invariant(selection instanceof View, "Second child should be selection.");
-    const cursor = selection.next;
-    invariant(cursor instanceof View, "Third child should be cursor.");
   }
 
   private onMouseMoveForDragging(event: MouseEvent) {
-    event.position = pointToNodeSpace(this, event.position);
-
     const text = this.firstChild;
     invariant(text instanceof Text, "First child should be text.");
     const selection = text.next;
     invariant(selection instanceof View, "Second child should be selection.");
     const cursor = selection.next;
     invariant(cursor instanceof View, "Third child should be cursor.");
+
+    event.position = pointToNodeSpace(this, event.position);
 
     if (this.mouseDrag) {
       this.mouseDrag =
@@ -237,9 +230,7 @@ export class Input extends View {
     const goingLeft = startPoint.x > endPoint.x;
     const scrollDelta = this.scrollWhenDragStarted - this.horizontalScroll;
     const rectangleX = Math.min(startPoint.x + scrollDelta, endPoint.x);
-    const rectangleY = Math.min(startPoint.y, endPoint.y);
     const rectangleWidth = Math.abs(startPoint.x - endPoint.x) + scrollDelta;
-    const rectangleHeight = Math.abs(startPoint.y - endPoint.y);
 
     const offsetLeft = -this.horizontalScroll + this._style.paddingLeft;
     const atlasGap = fontSizeToGap(this.props.lookups.atlas.fontSize);
@@ -250,7 +241,6 @@ export class Input extends View {
       invariant(character, "Character should exist.");
 
       const positionX = character.x + offsetLeft;
-
       const width = this.textShape.sizes[i]!.x - 2 * fontPadding;
 
       if (rectangleX > positionX - width / 2) {

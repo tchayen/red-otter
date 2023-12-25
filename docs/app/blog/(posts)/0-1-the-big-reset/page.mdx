@@ -3,9 +3,9 @@ export const metadata = getMetadata("0.1: the Big Reset", undefined, "2023-12-20
 
 <Blogpost title="0.1: the Big Reset" date="2023-12-20" author="Tomasz Czajecki" />
 
-After many months of hard work in the shadows, I am proud to present the next big release of Red Otter. Somehow the previous release process and everything involved felt intimidating to me so I started experimenting on the side and the scope of my changes kept growing and growing until I decided that I will just rewrite most of the library.
+After many months of on and off work in the background, I am proud to present the next big release of Red Otter. Somehow the previous release process and everything involved felt intimidating to me so I started experimenting on the side and the scope of my changes kept growing and growing until I decided that I will just rewrite a large chunk of the library.
 
-What you see here is the result of a multi-month effort, done, as usual, after hours and in the free time so it took ten times longer than it could have if I focused only on it, but such is life.
+What you see here is the result of a multi-month effort, done, as usual, after hours and in the free time so it took ten times longer than it could have if I focused only on it, but such is life. Don't expect too much for the time it took, but also I am happy with the results and that I was able to keep it going for so long without giving up (and only slightly burned out).
 
 ## Changes
 
@@ -17,11 +17,11 @@ I found a new way how to split rectangle and text drawing, resulting in faster, 
 
 More about the approach: [Thousands of Styled Rectangles in 120FPS on GPU](https://tchayen.com/thousands-styled-rectangles-in-120fps-on-gpu).
 
+While WebGPU adoption is climbing ([Web3DSurvey](https://web3dsurvey.com/webgpu) reports 56.9% at the time of writing this), current lack of mobile support and Safari implementation make keeping WebGL renderer a must-have. It didn't receive any love in this update (and to be honest I might have broken it in the process) but I will make sure that going forward it will be brought to parity with the WebGPU one.
+
 ### Layout improvements
 
-Major improvements to the layout engine. I basically rewrote a bing chunk of it.
-
-What's new:
+Major improvements to the layout engine. I basically rewrote a bing chunk of it and finally implemented remaining missing flexbox features.
 
 - `flexWrap` support.
 - `flexShrink` and `flexGrow`.
@@ -31,7 +31,13 @@ What's new:
 - `overflow` – which required way more changes outside of the layout algorithm to make scrolling happen.
 - Refactored algorithm that shortened the code and packed much more features.
 
+### Rethinking the font APIs
+
+The previous iteration of font-related APIs didn't feel right to use. I spent some time thinking about it and came up with IMO a better, more function and data-passing oriented API which I first used in my [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file) article.
+
 ### Text improvements
+
+Following the font API changes, I was able add some very needed features to the text rendering:
 
 **Line wrapping** – that was a thing that made the previous version extremely incomplete (or inconvenient) for creating real life UIs. Now it's here.
 
@@ -51,9 +57,7 @@ Ability to scroll overflowing components. Nested scrolling works too.
 
 ### Basic components/widgets
 
-**TODO: finish implementing and see what to write here.**
-
-Base component library comes with this release. The main highlight being a fully functioning browser-like `Input` component.
+Early version of a base component library comes with this release. The main highlight is going to be a fully functioning browser-like `Input` component, but at the moment of release, the lib is still missing a focus system without which it's not possible to have more than one input on the screen at the same time.
 
 ### Tests
 
@@ -90,11 +94,21 @@ The previous release process was working fine, but was very manual and intimidat
 
 ### JSX is temporarily gone
 
-It was a nice trick to utilize JSX for declaring the UI, but since there's still a lot to figure out about interactivity and related APIs, I decided to leave it out for now and revisit it later when all other pieces are in place.
+It was a nice trick to utilize JSX for declaring the UI, but since there's still a lot to figure out about interactivity and related APIs, I decided to leave it out for now and revisit it later when more pieces are in place.
 
 ## What is coming next?
 
+- Lots of small bug fixes that I wish I had done before the release but I ran out of steam.
+- zIndex support.
+- Focus system for inputs and buttons.
+- SDF border radius clipping. Currently it's just rectangle, which means that elements can overflow in the corners.
 - Better line height and text support. Currently it works, mostly, but is far from perfect and even making a simple button might require manual vertical padding adjustment to make it look good.
+- Ability to style scrollbars.
+- Font ligatures support.
+- More styling options: `outline`, `boxShadow`, background gradients.
+- Image rendering.
+- Probably some lifecycle methods for components. `onLayout()` is one that definitely comes to mind.
+- Non-SDF font rendering that supports regular font atlases from rasterized fonts.
 
 ## That's all
 

@@ -1,15 +1,16 @@
 import type { Lookups } from "../font/types";
 import { Text } from "../layout/Text";
 import { View } from "../layout/View";
-import type { ViewStyleProps } from "../layout/styling";
+import type { TextStyleProps, ViewStyleProps } from "../layout/styling";
 
 export class Button extends View {
   constructor(props: {
     label: string;
     lookups: Lookups;
     onClick?(): void;
-    style: ViewStyleProps;
+    style?: ViewStyleProps;
     testID?: string;
+    textStyle?: TextStyleProps;
   }) {
     // Put default styles here.
     const mergedStyle: ViewStyleProps = { backgroundColor: "#ffd000", ...props.style };
@@ -22,6 +23,7 @@ export class Button extends View {
           color: "#FFFFFF",
           fontName: "InterBold",
           fontSize: 14,
+          ...props.textStyle,
         },
       }),
     );

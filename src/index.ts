@@ -1,3 +1,5 @@
+export { EventManager } from "./EventManager";
+
 export { layout } from "./layout/layout";
 export { paint } from "./layout/paint";
 export { compose } from "./layout/compose";
@@ -6,10 +8,11 @@ export { BaseView } from "./layout/BaseView";
 export { View } from "./layout/View";
 export { Text } from "./layout/Text";
 export type {
-  LayoutProps,
   DecorativeProps,
-  TextStyleProps,
   LayoutNodeState,
+  LayoutProps,
+  TextStyleProps,
+  ViewStyleProps,
 } from "./layout/styling";
 export {
   AlignItems,
@@ -58,5 +61,6 @@ export {
   isInside,
 } from "./math/utils";
 export { triangulatePolygon } from "./math/triangulatePolygon";
+
 export { Button } from "./widgets/Button";
 export { Input } from "./widgets/Input";

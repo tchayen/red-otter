@@ -12,25 +12,47 @@ export function ExamplePicker() {
   );
 }
 
-const starterCode = `import {
+const starterCode = /* typescript */ `import {
+  AlignSelf,
+  Button,
+  compose,
+  EventManager,
+  FlexDirection,
+  Input,
   invariant,
-  renderFontAtlas,
-  Vec2,
-  Vec4,
+  JustifyContent,
+  layout,
+  Overflow,
+  paint,
   parseTTF,
   prepareLookups,
+  renderFontAtlas,
+  Text,
   WebGPURenderer,
+  Vec2,
   View,
-  Button,
-  Input,
-  Overflow,
-  JustifyContent,
-  AlignSelf,
 } from "./dist/index";
 import type {
   ViewStyleProps,
   TextStyleProps,
 } from "./dist/index";
+
+const colors = {
+  gray: [
+    "#111111",
+    "#191919",
+    "#222222",
+    "#2A2A2A",
+    "#313131",
+    "#3A3A3A",
+    "#484848",
+    "#606060",
+    "#6E6E6E",
+    "#7B7B7B",
+    "#B4B4B4",
+    "#EEEEEE",
+  ],
+} as const;
 
 document.body.style.margin = "0";
 
@@ -58,7 +80,7 @@ canvas.setAttribute("style", "width: 100%; height: 100%;");
 async function run() {
   const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
 
-  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
 
   const entry = navigator.gpu;
   console.log(invariant);
@@ -94,6 +116,8 @@ async function run() {
   });
   const colorTextureView = colorTexture.createView({ label: "color" });
 
+  const eventManager = new EventManager();
+
   const renderer = new WebGPURenderer(
     device,
     context,
@@ -111,7 +135,7 @@ async function run() {
     } as TextStyleProps;
     const headerStyle = {
       color: colors.gray[11],
-      fontName: "InterBold",
+      fontName: "Inter",
       fontSize: 20,
     } as TextStyleProps;
     const boxStyle = {
@@ -139,6 +163,10 @@ async function run() {
       gap: 12,
       justifyContent: JustifyContent.End,
     } as ViewStyleProps;
+    const buttonText = {
+      fontName: "Inter",
+      fontSize: 14,
+    } as TextStyleProps;
     const secondaryButton = {
       backgroundColor: colors.gray[6],
       borderColor: colors.gray[7],
@@ -229,13 +257,28 @@ async function run() {
 
         switch (columns[i]) {
           case "mode":
-            cell.add(text(item as string, 14, "#B4B4B4"));
+            cell.add(
+              new Text(item as string, {
+                lookups,
+                style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+              }),
+            );
             break;
           case "name":
-            cell.add(text(item as string, 14, "#B4B4B4"));
+            cell.add(
+              new Text(item as string, {
+                lookups,
+                style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+              }),
+            );
             break;
           case "password":
-            cell.add(text(item ? "Yes" : "No", 14, "#B4B4B4"));
+            cell.add(
+              new Text(item ? "Yes" : "No", {
+                lookups,
+                style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+              }),
+            );
             break;
           case "players":
             if (
@@ -244,7 +287,12 @@ async function run() {
               "current" in item &&
               "limit" in item
             ) {
-              cell.add(text(\`\${item.current}/\${item.limit}\`, 14, "#B4B4B4"));
+              cell.add(
+                new Text(\`\${item.current}/$\{item.limit}\`, {
+                  lookups,
+                  style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
+                }),
+              );
             }
             break;
         }
@@ -267,9 +315,10 @@ async function run() {
       onClick: () => {
         root.remove(pickerBox);
         root.add(signInBox);
-        layout(parent, lookups, new Vec2(window.innerWidth, window.innerHeight));
+        layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
       },
       style: secondaryButton,
+      textStyle: buttonText,
     });
     pickerButtonRow.add(pickerCancelButton);
 
@@ -280,6 +329,7 @@ async function run() {
         root.remove(pickerBox);
       },
       style: primaryButton,
+      textStyle: buttonText,
     });
     pickerButtonRow.add(pickerSubmitButton);
 
@@ -316,6 +366,7 @@ async function run() {
         root.remove(signInBox);
       },
       style: secondaryButton,
+      textStyle: buttonText,
     });
     loginButtonRow.add(loginCancelButton);
 
@@ -325,34 +376,36 @@ async function run() {
       onClick: () => {
         root.remove(signInBox);
         root.add(pickerBox);
-        layout(parent, lookups, new Vec2(window.innerWidth, window.innerHeight));
+        layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
       },
       style: primaryButton,
+      textStyle: buttonText,
     });
     loginButtonRow.add(loginSubmitButton);
 
     return root;
   }
 
-  const root = new View({
-    style: {
-      backgroundColor: "#000",
-      height: "100%",
-      overflow: Overflow.Scroll,
-      width: "100%",
-    },
-    testID: "root",
-  });
+  const root = new View({});
 
   root.add(ui());
+
   layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
 
   function render() {
     const commandEncoder = device.createCommandEncoder();
+
+    eventManager.deliverEvents(root);
+
+    compose(renderer, root);
+    paint(renderer, root);
     renderer.render(commandEncoder);
+
     device.queue.submit([commandEncoder.finish()]);
     requestAnimationFrame(render);
   }
+
+  render();
 }
 
 run();

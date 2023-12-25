@@ -1,9 +1,18 @@
 import { getMetadata } from "../getMetadata";
 import { Example1 } from "./Example1";
+import { ExampleText } from "./ExampleText";
 import { ExamplePicker } from "./ExamplePicker";
+
 export const metadata = getMetadata("Examples");
 
 # Examples
 
+## Basic rendering
+
 <Example1 />
+
+## Interactive UIs (WIP)
+
+While text input's early implementation is available, basically only one works at a time on the screen as a focus system is not yet implemented.
+
 <ExamplePicker />
