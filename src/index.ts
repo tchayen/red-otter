@@ -1,11 +1,17 @@
 export { layout } from "./layout/layout";
 export { paint } from "./layout/paint";
 export { compose } from "./layout/compose";
+export type { Node } from "./layout/Node";
+export { BaseView } from "./layout/BaseView";
+export { View } from "./layout/View";
+export { Text } from "./layout/Text";
 export type {
   LayoutProps,
   DecorativeProps,
   TextStyleProps,
   LayoutNodeState,
+} from "./layout/styling";
+export {
   AlignItems,
   AlignSelf,
   JustifyContent,
