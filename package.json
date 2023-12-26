@@ -26,6 +26,7 @@
     "coverage": "vitest --coverage",
     "dev": "cd examples && vite --port 5005",
     "build": "bun run tsc -p tsconfig.build.json",
+    "prepare": "bun run build",
     "lint": "eslint src",
     "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l",
     "prepare-sandpack": "vite build",
