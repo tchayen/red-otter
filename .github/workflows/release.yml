@@ -10,14 +10,16 @@ on:
 jobs:
   check-commit:
     runs-on: ubuntu-latest
-    # Skip if the workflow run for tests, linting etc. is not successful. Without this, the release will be triggered after the previous workflow run even if it failed.
+    # Skip if the workflow run for tests, linting etc. is not successful. Without this, the release
+    # will be triggered after the previous workflow run even if it failed.
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       skip: ${{ steps.commit-message.outputs.skip }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      # Check if the commit message is a release commit. Without this, there will be an infinite loop of releases.
+      # Check if the commit message is a release commit. Without this, there will be an infinite
+      # loop of releases.
       - name: Get commit message
         id: commit-message
         run: |
@@ -38,23 +40,21 @@ jobs:
           # This is needed to generate the changelog from commit messages.
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
-
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
       - name: Install dependencies
-        run: yarn install --immutable
+        run: bun i
         shell: bash
-
       - name: Configure Git
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
       - name: Create release
         run: |
           npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-          yarn release-it --ci
+          bun run release-it --ci
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
