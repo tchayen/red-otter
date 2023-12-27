@@ -159,9 +159,9 @@ async function run() {
       paddingHorizontal: 10,
     } as ViewStyleProps;
     const buttonRow = {
+      alignSelf: AlignSelf.Stretch,
       flexDirection: FlexDirection.Row,
       gap: 12,
-      justifyContent: JustifyContent.End,
     } as ViewStyleProps;
     const buttonText = {
       fontName: "Inter",
@@ -301,9 +301,8 @@ async function run() {
 
     const pickerButtonRow = new View({
       style: {
-        alignSelf: AlignSelf.Stretch,
-        justifyContent: JustifyContent.End,
         ...buttonRow,
+        justifyContent: JustifyContent.End,
         padding: 20,
       },
     });
@@ -356,19 +355,10 @@ async function run() {
     const passwordInput = new Input({ lookups, placeholder: "Password", style: inputStyle });
     passwordGroup.add(passwordInput);
 
-    const loginButtonRow = new View({ style: buttonRow });
-    signInBox.add(loginButtonRow);
-
-    const loginCancelButton = new Button({
-      label: "Cancel",
-      lookups,
-      onClick: () => {
-        root.remove(signInBox);
-      },
-      style: secondaryButton,
-      textStyle: buttonText,
+    const loginButtonRow = new View({
+      style: buttonRow,
     });
-    loginButtonRow.add(loginCancelButton);
+    signInBox.add(loginButtonRow);
 
     const loginSubmitButton = new Button({
       label: "Submit",

@@ -167,7 +167,7 @@ export const enum AlignSelf {
 }
 
 /**
- * Corresponds to CSS flex-direction.
+ * Corresponds to CSS `flex-direction`.
  */
 export const enum FlexDirection {
   /**
@@ -438,7 +438,7 @@ export type DecorativeProps = {
 export type ExactDecorativeProps = Required<Omit<DecorativeProps, "borderRadius">>;
 
 /**
- * Corresponds to CSS text-transform.
+ * Corresponds to CSS `text-transform`.
  */
 export const enum TextTransform {
   None,
@@ -448,7 +448,7 @@ export const enum TextTransform {
 }
 
 /**
- * Corresponds to CSS text-align.
+ * Corresponds to CSS `text-align`.
  */
 export const enum TextAlign {
   Center,
@@ -457,7 +457,13 @@ export const enum TextAlign {
 }
 
 export const enum Whitespace {
+  /**
+   * Text will wrap to the next line if it exceeds the width of the parent (if defined).
+   */
   Normal,
+  /**
+   * Text will never wrap to the next line.
+   */
   NoWrap,
 }
 
