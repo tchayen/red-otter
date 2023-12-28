@@ -13,6 +13,7 @@ import { updateSelection } from "./updateSelection";
 import { updateText } from "./updateText";
 import { pointToNodeSpace } from "../hitTest";
 import { fontSizeToGap } from "../font/renderFontAtlas";
+import type { EventManager } from "../EventManager";
 
 const placeholderColor = "#606060";
 const textColor = "#EEEEEE";
@@ -34,8 +35,6 @@ export class Input extends View {
    * The index of the other end of the selection. If there's no selection, it's the same as cursor.
    */
   mark = 0;
-
-  isFocused = true;
 
   /**
    * Start and end coordinates.
@@ -109,6 +108,7 @@ export class Input extends View {
       }),
     );
 
+    this.onClick = this.onClick.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onMouseDownForDragging = this.onMouseDownForDragging.bind(this);
@@ -117,6 +117,7 @@ export class Input extends View {
     this.onMouseEnterNOOP = this.onMouseEnterNOOP.bind(this);
 
     this._eventListeners.push(
+      [UserEventType.MouseClick, this.onClick],
       [UserEventType.KeyDown, this.onKeyDown],
       [UserEventType.KeyPress, this.onKeyPress],
       [UserEventType.MouseDown, this.onMouseDownForDragging],
@@ -132,6 +133,15 @@ export class Input extends View {
     }
   }
 
+  private onClick(event: MouseEvent, eventManager: EventManager) {
+    eventManager.setFocused(this);
+    this.update();
+  }
+
+  private onBlur() {
+    this.update();
+  }
+
   private onMouseEnterNOOP(_: MouseEvent) {
     // No-op but important to keep this._isMouseOver up to date. Otherwise a state variable won't
     // be updated. This should be fixed by views getting a default onMouseEnter and onMouseLeave
@@ -144,25 +154,21 @@ export class Input extends View {
       return;
     }
 
-    if (this.isFocused) {
-      const { cursor, mark, value } = updateSelection(this.value, this.cursor, this.mark, event);
-      this.value = value;
-      this.previousCursor = this.cursor;
-      this.cursor = cursor;
-      this.mark = mark;
-      this.update();
-    }
+    const { cursor, mark, value } = updateSelection(this.value, this.cursor, this.mark, event);
+    this.value = value;
+    this.previousCursor = this.cursor;
+    this.cursor = cursor;
+    this.mark = mark;
+    this.update();
   }
 
   private onKeyPress(event: KeyboardEvent) {
-    if (this.isFocused) {
-      const { cursor, mark, value } = updateText(this.value, this.cursor, this.mark, event);
-      this.value = value;
-      this.previousCursor = this.cursor;
-      this.cursor = cursor;
-      this.mark = mark;
-      this.update();
-    }
+    const { cursor, mark, value } = updateText(this.value, this.cursor, this.mark, event);
+    this.value = value;
+    this.previousCursor = this.cursor;
+    this.cursor = cursor;
+    this.mark = mark;
+    this.update();
   }
 
   private onMouseDownForDragging(event: MouseEvent) {

@@ -13,6 +13,9 @@ export const enum UserEventType {
   KeyDown,
   KeyUp,
   KeyPress,
+
+  Focus,
+  Blur,
 }
 
 export type MouseEvent = {
@@ -60,7 +63,13 @@ export type KeyboardEvent = {
   type: UserEventType.KeyDown | UserEventType.KeyUp | UserEventType.KeyPress;
 };
 
-export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent;
+export type FocusEvent = {
+  bubbles: boolean;
+  capturable: boolean;
+  type: UserEventType.Focus | UserEventType.Blur;
+};
+
+export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent | FocusEvent;
 
 export function isMouseEvent(event: UserEvent): event is MouseEvent {
   return "position" in event;

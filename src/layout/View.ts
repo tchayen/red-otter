@@ -1,24 +1,27 @@
+import type { EventManager } from "../EventManager";
 import { CROSS_AXIS_SIZE } from "../consts";
 import { getScreenVisibleRectangle } from "../hitTest";
 import { Vec4 } from "../math/Vec4";
 import { intersection, isInside } from "../math/utils";
 import { BaseView } from "./BaseView";
-import type { KeyboardEvent, MouseEvent, ScrollEvent } from "./eventTypes";
+import type { FocusEvent, KeyboardEvent, MouseEvent, ScrollEvent } from "./eventTypes";
 import { UserEventType } from "./eventTypes";
 import type { ViewStyleProps } from "./styling";
 import { Overflow } from "./styling";
 
 type UserEventTuple =
-  | [UserEventType.MouseClick, (event: MouseEvent) => void]
-  | [UserEventType.MouseMove, (event: MouseEvent) => void]
-  | [UserEventType.MouseEnter, (event: MouseEvent) => void]
-  | [UserEventType.MouseLeave, (event: MouseEvent) => void]
-  | [UserEventType.MouseDown, (event: MouseEvent) => void]
-  | [UserEventType.MouseUp, (event: MouseEvent) => void]
-  | [UserEventType.Scroll, (event: ScrollEvent) => void]
-  | [UserEventType.KeyDown, (event: KeyboardEvent) => void]
-  | [UserEventType.KeyUp, (event: KeyboardEvent) => void]
-  | [UserEventType.KeyPress, (event: KeyboardEvent) => void];
+  | [UserEventType.MouseClick, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.MouseMove, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.MouseEnter, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.MouseLeave, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.MouseDown, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.MouseUp, (event: MouseEvent, eventManager: EventManager) => void]
+  | [UserEventType.Scroll, (event: ScrollEvent, eventManager: EventManager) => void]
+  | [UserEventType.KeyDown, (event: KeyboardEvent, eventManager: EventManager) => void]
+  | [UserEventType.KeyUp, (event: KeyboardEvent, eventManager: EventManager) => void]
+  | [UserEventType.KeyPress, (event: KeyboardEvent, eventManager: EventManager) => void]
+  | [UserEventType.Focus, (event: FocusEvent, eventManager: EventManager) => void]
+  | [UserEventType.Blur, (event: FocusEvent, eventManager: EventManager) => void];
 
 /**
  * `BaseView` but with event listeners.

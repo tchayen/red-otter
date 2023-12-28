@@ -14,10 +14,16 @@ import { Input } from "./widgets/Input";
 export class EventManager {
   private readonly events: Array<UserEvent> = [];
 
+  private focused: View | null = null;
+
   constructor() {
     if (!isWindowDefined) {
       return;
     }
+
+    this.setFocused = this.setFocused.bind(this);
+    this.dispatchEvent = this.dispatchEvent.bind(this);
+    this.deliverEvents = this.deliverEvents.bind(this);
 
     if (typeof window !== "undefined") {
       window.addEventListener("keydown", (event) => {
@@ -126,6 +132,22 @@ export class EventManager {
     this.events.push(event);
   }
 
+  setFocused(view: View | null): void {
+    this.focused?._eventListeners.forEach(([type, listener]) => {
+      if (type === UserEventType.Blur) {
+        listener({ bubbles: false, capturable: false, type: UserEventType.Blur }, this);
+      }
+    });
+
+    this.focused = view;
+
+    this.focused?._eventListeners.forEach(([type, listener]) => {
+      if (type === UserEventType.Focus) {
+        listener({ bubbles: false, capturable: false, type: UserEventType.Focus }, this);
+      }
+    });
+  }
+
   /**
    * Processes all events in the queue, leaving it empty, by visiting all views in the given root
    * tree and offering them to the views in the reverse DFS order.
@@ -188,12 +210,12 @@ export class EventManager {
 
             if (type === UserEventType.MouseEnter && !previous && hitTest(node, event)) {
               node._isMouseOver = true;
-              listener(event as MouseEvent);
+              listener(event as MouseEvent, this);
             }
             if (type === UserEventType.MouseLeave && previous && !hitTest(node, event)) {
               node._isMouseOver = false;
               console.log("mouse left!");
-              listener(event as MouseEvent);
+              listener(event as MouseEvent, this);
             }
           }
         }
@@ -216,8 +238,8 @@ export class EventManager {
           }
 
           if (isMouseEvent(event) && hitTest(node, event)) {
-            const typedListener = listener as (e: typeof event) => void;
-            typedListener(event);
+            const typedListener = listener as (e: typeof event, em: EventManager) => void;
+            typedListener(event, this);
 
             // Bubble up the event.
             if (event.bubbles) {
@@ -229,8 +251,11 @@ export class EventManager {
 
                 for (const listener of parent._eventListeners) {
                   if (listener[0] === type) {
-                    const typedListener = listener[1] as (e: typeof event) => void;
-                    typedListener(event);
+                    const typedListener = listener[1] as (
+                      e: typeof event,
+                      em: EventManager,
+                    ) => void;
+                    typedListener(event, this);
                   }
                 }
                 parent = parent.parent;
@@ -244,9 +269,9 @@ export class EventManager {
             }
           }
 
-          if (isKeyboardEvent(event) && node instanceof Input && node.isFocused) {
-            const typedListener = listener as (e: typeof event) => void;
-            typedListener(event);
+          if (isKeyboardEvent(event) && node instanceof Input && node === this.focused) {
+            const typedListener = listener as (e: typeof event, em: EventManager) => void;
+            typedListener(event, this);
 
             if (event.capturable) {
               // Remove event from queue.
