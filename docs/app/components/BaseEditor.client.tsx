@@ -10,11 +10,53 @@ import { withClient } from "./withClient";
 import { jetBrainsMono, outline } from "./tags";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { twMerge } from "tailwind-merge";
+import { useEffect, useRef } from "react";
+
+function toggleScrolling(isPaused: boolean) {
+  const body = document.body;
+  if (isPaused) {
+    body.setAttribute("style", "overflow:hidden");
+  } else {
+    body.setAttribute("style", "");
+  }
+}
 
 export const BaseEditorClient = withClient(function BaseEditor({
   files,
   customSetup,
 }: SandpackProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const onMouseEnter = (event: MouseEvent) => {
+      console.log("Aa");
+      localStorage.setItem("sandpack:editor:active", "true");
+      toggleScrolling(true);
+    };
+
+    const onMouseLeave = (event: MouseEvent) => {
+      console.log("Bb");
+      localStorage.setItem("sandpack:editor:active", "false");
+      toggleScrolling(false);
+    };
+
+    ref.current.addEventListener("mouseenter", onMouseEnter);
+    ref.current.addEventListener("mouseleave", onMouseLeave);
+
+    return () => {
+      if (!ref.current) {
+        return;
+      }
+
+      ref.current.removeEventListener("mouseenter", onMouseEnter);
+      ref.current.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [ref]);
+
   return (
     <SandpackProvider
       files={files}
@@ -27,7 +69,9 @@ export const BaseEditorClient = withClient(function BaseEditor({
       }}
     >
       <SandpackLayout className="my-6 flex flex-col !gap-1 !overflow-visible !rounded-none !border-transparent !bg-transparent">
-        <SandpackPreview className="!h-[640px] !flex-initial" showOpenInCodeSandbox />
+        <div ref={ref}>
+          <SandpackPreview className="!h-[640px] !flex-initial" showOpenInCodeSandbox />
+        </div>
         <Collapsible.Root className="group flex w-full flex-col gap-1">
           <Collapsible.Trigger asChild>
             <button
@@ -57,7 +101,6 @@ export const BaseEditorClient = withClient(function BaseEditor({
           </Collapsible.Trigger>
           <Collapsible.Content>
             <SandpackCodeEditor
-              // TODO: [&_*]:data-[active=true]:!text-mauvedark6 doesn't work
               className="h-[640px] w-full overflow-hidden rounded-md border border-mauvedark5 !bg-mauvedark2 antialiased [&_.sp-tab-button]:px-4 data-[active=true]:[&_.sp-tab-button]:bg-mauvedark3 [&_.sp-tabs-scrollable-container]:!pl-0"
               showInlineErrors
               showLineNumbers
