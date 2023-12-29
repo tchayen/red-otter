@@ -102,13 +102,9 @@ export class View extends BaseView {
 
   private onMouseEnter(_: MouseEvent) {
     // No-op but important to keep this._isMouseOver up to date.
-    console.log("Enter:", this.testID);
   }
 
   private onMouseLeave(_: MouseEvent) {
-    // No-op but important to keep this._isMouseOver up to date.
-    console.log("Leave:", this.testID);
-
     this._scrolling.xHovered = false;
     this._scrolling.yHovered = false;
   }
@@ -142,13 +138,10 @@ export class View extends BaseView {
 
         const clippedScrollbar = intersection(rectangle, scrollbar);
         this._scrolling.xHovered = isInside(event.position, clippedScrollbar);
-        if (this.testID === "D-halfWidth") {
-          console.log("", this._scrolling.xHovered, rectangle, scrollbar);
-        }
       }
       if (this._state.hasVerticalScrollbar) {
         const scrollbar = new Vec4(
-          rectangle.x + this._state.clientWidth,
+          rectangle.x + rectangle.z - CROSS_AXIS_SIZE,
           rectangle.y,
           CROSS_AXIS_SIZE,
           this._state.clientHeight,

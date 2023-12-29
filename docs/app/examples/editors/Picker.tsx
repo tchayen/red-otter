@@ -144,7 +144,8 @@ async function run() {
       borderColor: colors.gray[4],
       borderRadius: 6,
       borderWidth: 1,
-      margin: 100,
+      marginLeft: 70,
+      marginTop: 70,
     } as ViewStyleProps;
     const inputGroupStyle = {
       gap: 6,

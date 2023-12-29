@@ -22,8 +22,8 @@ export function getScreenVisibleRectangle(node: BaseView) {
   const nodeRectangle = new Vec4(
     node._state.x - totalScrollX,
     node._state.y - totalScrollY,
-    clientWidth + (node._state.hasHorizontalScrollbar ? CROSS_AXIS_SIZE : 0),
-    clientHeight + (node._state.hasVerticalScrollbar ? CROSS_AXIS_SIZE : 0),
+    clientWidth + (node._state.hasVerticalScrollbar ? CROSS_AXIS_SIZE : 0),
+    clientHeight + (node._state.hasHorizontalScrollbar ? CROSS_AXIS_SIZE : 0),
   );
   const boundary = new Vec4(clipStart.x, clipStart.y, clipSize.x, clipSize.y);
   const intersection = getIntersection(nodeRectangle, boundary);
