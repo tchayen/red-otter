@@ -133,28 +133,28 @@ export class View extends BaseView {
       const rectangle = getScreenVisibleRectangle(this);
 
       if (this._state.hasHorizontalScrollbar) {
-        const horizontalScrollbar = intersection(
-          rectangle,
-          new Vec4(
-            rectangle.x,
-            rectangle.y + this._state.clientHeight,
-            this._state.clientWidth,
-            CROSS_AXIS_SIZE,
-          ),
+        const scrollbar = new Vec4(
+          rectangle.x,
+          rectangle.y + rectangle.w - CROSS_AXIS_SIZE,
+          this._state.clientWidth,
+          CROSS_AXIS_SIZE,
         );
-        this._scrolling.xHovered = isInside(event.position, horizontalScrollbar);
+
+        const clippedScrollbar = intersection(rectangle, scrollbar);
+        this._scrolling.xHovered = isInside(event.position, clippedScrollbar);
+        if (this.testID === "D-halfWidth") {
+          console.log("", this._scrolling.xHovered, rectangle, scrollbar);
+        }
       }
       if (this._state.hasVerticalScrollbar) {
-        const verticalScrollbar = intersection(
-          rectangle,
-          new Vec4(
-            rectangle.x + this._state.clientWidth,
-            rectangle.y,
-            CROSS_AXIS_SIZE,
-            this._state.clientHeight,
-          ),
+        const scrollbar = new Vec4(
+          rectangle.x + this._state.clientWidth,
+          rectangle.y,
+          CROSS_AXIS_SIZE,
+          this._state.clientHeight,
         );
-        this._scrolling.yHovered = isInside(event.position, verticalScrollbar);
+        const clippedScrollbar = intersection(rectangle, scrollbar);
+        this._scrolling.yHovered = isInside(event.position, clippedScrollbar);
       }
     } else {
       this._scrolling.xHovered = false;

@@ -105,9 +105,10 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       }
       if (node._state.hasVerticalScrollbar) {
         const scrollbarSize = size.y;
-        const scrollbarTrackColor = node._scrolling.yHovered
-          ? SCROLLBAR_TRACK_HOVER_COLOR
-          : SCROLLBAR_TRACK_COLOR;
+        const scrollbarTrackColor =
+          node._scrolling.yHovered || node._scrolling.yActive
+            ? SCROLLBAR_TRACK_HOVER_COLOR
+            : SCROLLBAR_TRACK_COLOR;
 
         ui.rectangle(
           parseColor(SCROLLBAR_COLOR),
@@ -140,9 +141,10 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       }
       if (node._state.hasHorizontalScrollbar) {
         const scrollbarSize = size.x;
-        const scrollbarTrackColor = node._scrolling.xHovered
-          ? SCROLLBAR_TRACK_HOVER_COLOR
-          : SCROLLBAR_TRACK_COLOR;
+        const scrollbarTrackColor =
+          node._scrolling.xHovered || node._scrolling.xActive
+            ? SCROLLBAR_TRACK_HOVER_COLOR
+            : SCROLLBAR_TRACK_COLOR;
 
         ui.rectangle(
           parseColor(SCROLLBAR_COLOR),
