@@ -685,24 +685,23 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
             );
           }
 
-          lineCrossSize -= isHorizontal
-            ? e._style.paddingTop + e._style.paddingBottom
-            : e._style.paddingLeft + e._style.paddingRight;
+          const horizontalPadding = e._style.paddingLeft + e._style.paddingRight;
+          const verticalPadding = e._style.paddingTop + e._style.paddingBottom;
 
           // Apply align items.
           if (c._style.alignSelf === AlignSelf.Auto) {
             if (e._style.alignItems === AlignItems.Center) {
               if (isHorizontal) {
-                c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
+                c._state.y += (lineCrossSize - horizontalPadding - c._state.clientHeight) / 2;
               } else {
-                c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
+                c._state.x += (lineCrossSize - verticalPadding - c._state.clientWidth) / 2;
               }
             }
             if (e._style.alignItems === AlignItems.End) {
               if (isHorizontal) {
-                c._state.y += lineCrossSize - c._state.clientHeight;
+                c._state.y += lineCrossSize - horizontalPadding - c._state.clientHeight;
               } else {
-                c._state.x += lineCrossSize - c._state.clientWidth;
+                c._state.x += lineCrossSize - verticalPadding - c._state.clientWidth;
               }
             }
             if (
@@ -728,16 +727,16 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           }
           if (c._style.alignSelf === AlignSelf.Center) {
             if (isHorizontal) {
-              c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
+              c._state.y += (lineCrossSize - horizontalPadding - c._state.clientHeight) / 2;
             } else {
-              c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
+              c._state.x += (lineCrossSize - verticalPadding - c._state.clientWidth) / 2;
             }
           }
           if (c._style.alignSelf === AlignSelf.End) {
             if (isHorizontal) {
-              c._state.y += lineCrossSize - c._state.clientHeight;
+              c._state.y += lineCrossSize - horizontalPadding - c._state.clientHeight;
             } else {
-              c._state.x += lineCrossSize - c._state.clientWidth;
+              c._state.x += lineCrossSize - verticalPadding - c._state.clientWidth;
             }
           }
           if (
@@ -747,10 +746,10 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           ) {
             if (isHorizontal) {
               c._state.y = resetCross;
-              c._state.clientHeight = lineCrossSize;
+              c._state.clientHeight = lineCrossSize - horizontalPadding;
             } else {
               c._state.x = resetCross;
-              c._state.clientWidth = lineCrossSize;
+              c._state.clientWidth = lineCrossSize - verticalPadding;
             }
           }
         }

@@ -1246,17 +1246,11 @@ export function lobbyPicker() {
   });
   const headerWrapper = new View({
     style: {
+      alignItems: AlignItems.Center,
       alignSelf: AlignSelf.Stretch,
+      flexDirection: FlexDirection.Row,
       gap: 8,
       padding: 20,
-    },
-  });
-  const description = new Text("See available lobbies.", {
-    lookups,
-    style: {
-      color: gray[9],
-      fontName: "Inter",
-      fontSize: 14,
     },
   });
   const search = new Input({
@@ -1269,18 +1263,17 @@ export function lobbyPicker() {
     },
     placeholder: "Search",
     style: {
-      alignSelf: AlignSelf.Stretch,
       backgroundColor: gray[1],
       borderColor: gray[4],
       borderRadius: 6,
       borderWidth: 1,
+      flex: 1,
       height: 28,
       justifyContent: JustifyContent.Center,
       paddingHorizontal: 10,
     },
   });
   headerWrapper.add(pickerHeader);
-  headerWrapper.add(description);
   headerWrapper.add(search);
   pickerBox.add(headerWrapper);
 
