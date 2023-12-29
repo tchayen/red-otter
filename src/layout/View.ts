@@ -1,28 +1,45 @@
-import type { EventManager } from "../EventManager";
 import { CROSS_AXIS_SIZE } from "../consts";
 import { getScreenVisibleRectangle } from "../hitTest";
 import { Vec4 } from "../math/Vec4";
 import { intersection, isInside } from "../math/utils";
 import { BaseView } from "./BaseView";
-import type { FocusEvent, KeyboardEvent, MouseEvent, ScrollEvent } from "./eventTypes";
+import type {
+  BlurHandler,
+  FocusHandler,
+  InputChangeHandler,
+  KeyDownHandler,
+  KeyPressHandler,
+  KeyUpHandler,
+  LayoutHandler,
+  MouseClickHandler,
+  MouseDownHandler,
+  MouseEnterHandler,
+  MouseEvent,
+  MouseLeaveHandler,
+  MouseMoveHandler,
+  MouseUpHandler,
+  ScrollEvent,
+  ScrollHandler,
+} from "./eventTypes";
 import { UserEventType } from "./eventTypes";
 import type { ViewStyleProps } from "./styling";
 import { Overflow } from "./styling";
 
 type UserEventTuple =
-  | [UserEventType.MouseClick, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.MouseMove, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.MouseEnter, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.MouseLeave, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.MouseDown, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.MouseUp, (event: MouseEvent, eventManager: EventManager) => void]
-  | [UserEventType.Scroll, (event: ScrollEvent, eventManager: EventManager) => void]
-  | [UserEventType.KeyDown, (event: KeyboardEvent, eventManager: EventManager) => void]
-  | [UserEventType.KeyUp, (event: KeyboardEvent, eventManager: EventManager) => void]
-  | [UserEventType.KeyPress, (event: KeyboardEvent, eventManager: EventManager) => void]
-  | [UserEventType.Focus, (event: FocusEvent, eventManager: EventManager) => void]
-  | [UserEventType.Blur, (event: FocusEvent, eventManager: EventManager) => void]
-  | [UserEventType.Layout, (eventManager: EventManager) => void];
+  | [UserEventType.MouseClick, MouseClickHandler]
+  | [UserEventType.MouseMove, MouseMoveHandler]
+  | [UserEventType.MouseEnter, MouseEnterHandler]
+  | [UserEventType.MouseLeave, MouseLeaveHandler]
+  | [UserEventType.MouseDown, MouseDownHandler]
+  | [UserEventType.MouseUp, MouseUpHandler]
+  | [UserEventType.Scroll, ScrollHandler]
+  | [UserEventType.KeyDown, KeyDownHandler]
+  | [UserEventType.KeyUp, KeyUpHandler]
+  | [UserEventType.KeyPress, KeyPressHandler]
+  | [UserEventType.Focus, FocusHandler]
+  | [UserEventType.Blur, BlurHandler]
+  | [UserEventType.Layout, LayoutHandler]
+  | [UserEventType.InputChange, InputChangeHandler];
 
 /**
  * `BaseView` but with event listeners.

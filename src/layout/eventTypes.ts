@@ -1,3 +1,4 @@
+import type { EventManager } from "../EventManager";
 import type { Vec2 } from "../math/Vec2";
 
 export const enum UserEventType {
@@ -17,8 +18,25 @@ export const enum UserEventType {
   Focus,
   Blur,
 
+  InputChange,
+
   Layout,
 }
+
+export type MouseClickHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type MouseMoveHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type MouseEnterHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type MouseLeaveHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type MouseDownHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type MouseUpHandler = (event: MouseEvent, eventManager: EventManager) => void;
+export type ScrollHandler = (event: ScrollEvent, eventManager: EventManager) => void;
+export type KeyDownHandler = (event: KeyboardEvent, eventManager: EventManager) => void;
+export type KeyUpHandler = (event: KeyboardEvent, eventManager: EventManager) => void;
+export type KeyPressHandler = (event: KeyboardEvent, eventManager: EventManager) => void;
+export type FocusHandler = (event: FocusEvent, eventManager: EventManager) => void;
+export type BlurHandler = (event: FocusEvent, eventManager: EventManager) => void;
+export type InputChangeHandler = (eventManager: EventManager) => void;
+export type LayoutHandler = (eventManager: EventManager) => void;
 
 export type MouseEvent = {
   bubbles: boolean;
@@ -71,7 +89,13 @@ export type FocusEvent = {
   type: UserEventType.Focus | UserEventType.Blur;
 };
 
-export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent | FocusEvent;
+export type LayoutEvent = {
+  bubbles: boolean;
+  capturable: boolean;
+  type: UserEventType.Layout;
+};
+
+export type UserEvent = MouseEvent | ScrollEvent | KeyboardEvent | FocusEvent | LayoutEvent;
 
 export function isMouseEvent(event: UserEvent): event is MouseEvent {
   return "position" in event;

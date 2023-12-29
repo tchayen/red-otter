@@ -8,6 +8,7 @@ import { renderFontAtlas } from "../src/font/renderFontAtlas";
 import { ui } from "./ui";
 import { invariant } from "../src/utils/invariant";
 import { compose } from "../src/layout/compose";
+import { UserEventType } from "../src/layout/eventTypes";
 
 const eventManager = new EventManager();
 
@@ -78,6 +79,10 @@ async function initialize() {
   );
 
   const root = ui(renderer);
+
+  // Notify nodes that layout is ready.
+  eventManager.dispatchEvent({ bubbles: false, capturable: false, type: UserEventType.Layout });
+  eventManager.deliverEvents(root);
 
   function render(): void {
     invariant(context, "WebGPU is not supported in this browser.");

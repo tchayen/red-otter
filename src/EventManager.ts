@@ -279,6 +279,12 @@ export class EventManager {
               j--;
             }
           }
+
+          if (event.type === UserEventType.Layout) {
+            const typedListener = listener as (em: EventManager) => void;
+            typedListener(this);
+            // Layout events are not capturable or bubbled.
+          }
         }
       }
     }

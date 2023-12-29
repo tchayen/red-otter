@@ -6,7 +6,14 @@ import type { Lookups } from "../font/types";
 import { Text } from "../layout/Text";
 import { View } from "../layout/View";
 import { UserEventType } from "../layout/eventTypes";
-import type { MouseEvent, KeyboardEvent } from "../layout/eventTypes";
+import type {
+  MouseEvent,
+  KeyboardEvent,
+  KeyDownHandler,
+  FocusHandler,
+  InputChangeHandler,
+  BlurHandler,
+} from "../layout/eventTypes";
 import { Whitespace, type ViewStyleProps, Position, TextAlign } from "../layout/styling";
 import { invariant } from "../utils/invariant";
 import { updateSelection } from "./updateSelection";
@@ -48,9 +55,11 @@ export class Input extends View {
   constructor(
     readonly props: {
       lookups: Lookups;
-      onChange?(value: string): void;
+      onBlur?: BlurHandler;
+      onChange?: InputChangeHandler;
       onClick?(): void;
-      onKeyDown?(event: KeyboardEvent): void;
+      onFocus?: FocusHandler;
+      onKeyDown?: KeyDownHandler;
       placeholder?: string;
       style: ViewStyleProps;
       testID?: string;
@@ -115,6 +124,7 @@ export class Input extends View {
     this.onMouseUpForDragging = this.onMouseUpForDragging.bind(this);
     this.onMouseMoveForDragging = this.onMouseMoveForDragging.bind(this);
     this.onMouseEnterNOOP = this.onMouseEnterNOOP.bind(this);
+    this.onLayout = this.onLayout.bind(this);
 
     this._eventListeners.push(
       [UserEventType.MouseClick, this.onClick],
@@ -125,7 +135,21 @@ export class Input extends View {
       [UserEventType.MouseMove, this.onMouseMoveForDragging],
       [UserEventType.MouseEnter, this.onMouseEnterNOOP],
       [UserEventType.MouseLeave, this.onMouseUpForDragging],
+      [UserEventType.Layout, this.onLayout],
     );
+
+    if (props.onBlur) {
+      this._eventListeners.push([UserEventType.Blur, props.onBlur]);
+    }
+    if (props.onChange) {
+      this._eventListeners.push([UserEventType.InputChange, props.onChange]);
+    }
+    if (props.onClick) {
+      this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
+    }
+    if (props.onFocus) {
+      this._eventListeners.push([UserEventType.Focus, props.onFocus]);
+    }
 
     if (props.value) {
       this.value = props.value;
@@ -138,7 +162,8 @@ export class Input extends View {
     this.update();
   }
 
-  private onBlur() {
+  private onLayout() {
+    console.log("hi");
     this.update();
   }
 
@@ -183,7 +208,7 @@ export class Input extends View {
     this.scrollWhenDragStarted = this.horizontalScroll;
   }
 
-  private onMouseUpForDragging(event: MouseEvent) {
+  private onMouseUpForDragging(_: MouseEvent) {
     if (this.mouseDrag && this.mouseDrag.x === this.mouseDrag.z) {
       this.setSelection(
         new Vec2(this.mouseDrag.x, this.mouseDrag.y),

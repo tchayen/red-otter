@@ -1227,8 +1227,28 @@ export function lobbyPicker() {
       fontSize: 14,
     },
   });
+  const search = new Input({
+    lookups,
+    onBlur: () => {
+      console.log("Lost focus");
+    },
+    onFocus: () => {
+      console.log("Focused");
+    },
+    placeholder: "Search",
+    style: {
+      backgroundColor: gray[1],
+      borderColor: gray[4],
+      borderRadius: 6,
+      borderWidth: 1,
+      height: 28,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 10,
+    },
+  });
   headerWrapper.add(pickerHeader);
   headerWrapper.add(description);
+  headerWrapper.add(search);
   pickerBox.add(headerWrapper);
 
   const scrollArea = new View({
