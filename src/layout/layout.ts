@@ -685,6 +685,10 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
             );
           }
 
+          lineCrossSize -= isHorizontal
+            ? e._style.paddingTop + e._style.paddingBottom
+            : e._style.paddingLeft + e._style.paddingRight;
+
           // Apply align items.
           if (c._style.alignSelf === AlignSelf.Auto) {
             if (e._style.alignItems === AlignItems.Center) {

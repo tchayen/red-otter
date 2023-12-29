@@ -37,14 +37,14 @@ describe("paint", () => {
     }
 
     scroll(new Vec2(0, 100), new Vec2(10, 10));
-    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(10);
+    expect(getByTestId(root, "D-halfWidth")?._state.scrollY).toBe(10);
 
     scroll(new Vec2(100, 0), new Vec2(10, 10));
-    expect(getByTestId(root, "D-tooTall")?._state.scrollY).toBe(10);
-    expect(getByTestId(root, "D-tooTall")?._state.scrollX).toBe(10);
+    expect(getByTestId(root, "D-halfWidth")?._state.scrollY).toBe(10);
+    expect(getByTestId(root, "D-halfWidth")?._state.scrollX).toBe(10);
 
     scroll(new Vec2(0, 100), new Vec2(240, 150));
-    expect(getByTestId(root, "D-overflow")?._state.scrollY).toBe(70);
+    expect(getByTestId(root, "D-outer")?._state.scrollY).toBe(70);
   });
 });
 

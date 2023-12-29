@@ -1096,6 +1096,38 @@ export function tryingToBreakThings() {
   return root;
 }
 
+export function paddingInAlignSelf() {
+  const root = new View({
+    style: {
+      backgroundColor: "#000",
+      height: 300,
+      overflow: Overflow.Hidden,
+      width: 300,
+    },
+  });
+
+  const row = new View({
+    style: {
+      backgroundColor: orange[0],
+      height: 100,
+      padding: 10,
+      width: "100%",
+    },
+  });
+  root.add(row);
+
+  const first = new View({
+    style: {
+      alignSelf: AlignSelf.Stretch,
+      backgroundColor: orange[3],
+      height: 50,
+    },
+  });
+  row.add(first);
+
+  return root;
+}
+
 export function aspectRatio() {
   const root = new View({ style: rootStyle });
 
@@ -1237,6 +1269,7 @@ export function lobbyPicker() {
     },
     placeholder: "Search",
     style: {
+      alignSelf: AlignSelf.Stretch,
       backgroundColor: gray[1],
       borderColor: gray[4],
       borderRadius: 6,

@@ -28,7 +28,6 @@ export function ui(renderer: WebGPURenderer): View {
     testID: "root",
   });
 
-  // root.add(gamePicker(root));
   // root.add(exampleGrid());
   root.add(fixtures.lobbyPicker());
   // root.add(fixtures.displayAndOverflow());
@@ -147,6 +146,8 @@ function exampleGrid() {
   column7.add(fixtures.interactiveButton());
   column7.add(text("trying to break things"));
   column7.add(fixtures.tryingToBreakThings());
+  column7.add(text("paddings in alignSelf"));
+  column7.add(fixtures.paddingInAlignSelf());
 
   const tooTall = new View({
     style: {

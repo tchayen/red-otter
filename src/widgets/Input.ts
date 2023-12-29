@@ -14,7 +14,7 @@ import type {
   InputChangeHandler,
   BlurHandler,
 } from "../layout/eventTypes";
-import { Whitespace, type ViewStyleProps, Position, TextAlign } from "../layout/styling";
+import { Whitespace, type ViewStyleProps, Position, TextAlign, AlignSelf } from "../layout/styling";
 import { invariant } from "../utils/invariant";
 import { updateSelection } from "./updateSelection";
 import { updateText } from "./updateText";
@@ -66,7 +66,11 @@ export class Input extends View {
       value?: string;
     },
   ) {
-    super({ ...props, style: { width: 160, ...props.style } });
+    const baseStyle =
+      props.style.alignSelf !== AlignSelf.Stretch && props.style.width === undefined
+        ? { width: 160 }
+        : {};
+    super({ ...props, style: { ...baseStyle, ...props.style } });
 
     // // Blinking cursor.
     // setInterval(() => {
