@@ -12,13 +12,9 @@ export function ExampleScrollbars() {
   );
 }
 
-const starterCode = /* typescript */ `import {
-  AlignSelf,
-  Button,
+const starterCode = `import {
   compose,
   EventManager,
-  FlexDirection,
-  Input,
   invariant,
   JustifyContent,
   layout,
@@ -27,14 +23,9 @@ const starterCode = /* typescript */ `import {
   parseTTF,
   prepareLookups,
   renderFontAtlas,
-  Text,
   WebGPURenderer,
   Vec2,
   View,
-} from "./dist/index";
-import type {
-  ViewStyleProps,
-  TextStyleProps,
 } from "./dist/index";
 
 const colors = {
@@ -54,7 +45,7 @@ const colors = {
   ],
 } as const;
 
-document.body.style.margin = "0";
+document.body.setAttribute("style", "margin: 0; min-height: 100dvh;");
 
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
@@ -63,7 +54,6 @@ const parent = canvas.parentElement;
 invariant(parent, "No parent element found.");
 const WIDTH = parent.clientWidth;
 const HEIGHT = parent.clientHeight;
-
 
 const settings = {
   sampleCount: 4,
@@ -78,8 +68,11 @@ canvas.height = HEIGHT * window.devicePixelRatio;
 canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {
-  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
-  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
+  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then(
+    (response) => response.arrayBuffer()
+  );
+  const alphabet =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
 
   const entry = navigator.gpu;
   console.log(invariant);
@@ -99,10 +92,13 @@ async function run() {
     format: navigator.gpu.getPreferredCanvasFormat(),
   });
 
-  const lookups = prepareLookups([{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }], {
-    alphabet,
-    fontSize: 150,
-  });
+  const lookups = prepareLookups(
+    [{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }],
+    {
+      alphabet,
+      fontSize: 150,
+    }
+  );
 
   const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
 
@@ -123,13 +119,15 @@ async function run() {
     colorTextureView,
     settings,
     lookups,
-    fontAtlas,
+    fontAtlas
   );
 
   const root = new View({
-    backgroundColor: colors.gray[1],
-    height: 300,
-    width: 300,
+    style: {
+      backgroundColor: colors.gray[1],
+      height: 300,
+      width: 300,
+    },
   });
 
   const overflow = new View({
@@ -154,8 +152,12 @@ async function run() {
   for (let i = 0; i < 6; i++) {
     tooTall.add(
       new View({
-        style: { backgroundColor: colors.gray[i + 5], height: 60, width: 180 - i * 20 },
-      }),
+        style: {
+          backgroundColor: colors.gray[i + 5],
+          height: 60,
+          width: 180 - i * 20,
+        },
+      })
     );
   }
 

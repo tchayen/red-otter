@@ -12,7 +12,7 @@ export function ExamplePicker() {
   );
 }
 
-const starterCode = /* typescript */ `import {
+const starterCode = `import {
   AlignSelf,
   Button,
   compose,
@@ -32,10 +32,7 @@ const starterCode = /* typescript */ `import {
   Vec2,
   View,
 } from "./dist/index";
-import type {
-  ViewStyleProps,
-  TextStyleProps,
-} from "./dist/index";
+import type { ViewStyleProps, TextStyleProps } from "./dist/index";
 
 const colors = {
   gray: [
@@ -54,7 +51,7 @@ const colors = {
   ],
 } as const;
 
-document.body.style.margin = "0";
+document.body.setAttribute("style", "margin: 0; min-height: 100dvh;");
 
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
@@ -63,7 +60,6 @@ const parent = canvas.parentElement;
 invariant(parent, "No parent element found.");
 const WIDTH = parent.clientWidth;
 const HEIGHT = parent.clientHeight;
-
 
 const settings = {
   sampleCount: 4,
@@ -78,9 +74,12 @@ canvas.height = HEIGHT * window.devicePixelRatio;
 canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {
-  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
+  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then(
+    (response) => response.arrayBuffer()
+  );
 
-  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
+  const alphabet =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
 
   const entry = navigator.gpu;
   console.log(invariant);
@@ -100,10 +99,13 @@ async function run() {
     format: navigator.gpu.getPreferredCanvasFormat(),
   });
 
-  const lookups = prepareLookups([{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }], {
-    alphabet,
-    fontSize: 150,
-  });
+  const lookups = prepareLookups(
+    [{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }],
+    {
+      alphabet,
+      fontSize: 150,
+    }
+  );
 
   const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
 
@@ -124,7 +126,7 @@ async function run() {
     colorTextureView,
     settings,
     lookups,
-    fontAtlas,
+    fontAtlas
   );
 
   function ui() {
@@ -189,7 +191,10 @@ async function run() {
     const root = new View({ style: { height: "100%", width: "100%" } });
 
     const pickerBox = new View({ style: { ...boxStyle, width: 600 } });
-    const pickerHeader = new Text("Browse games", { lookups, style: { ...headerStyle } });
+    const pickerHeader = new Text("Browse games", {
+      lookups,
+      style: { ...headerStyle },
+    });
     const headerWrapper = new View({
       style: {
         alignSelf: AlignSelf.Stretch,
@@ -223,16 +228,66 @@ async function run() {
     const columns = ["name", "players", "mode", "password"] as const;
 
     const list = [
-      { mode: "FFA", name: "Random map", password: false, players: { current: 3, limit: 8 } },
-      { mode: "FFA", name: "Black forest", password: false, players: { current: 3, limit: 8 } },
-      { mode: "FFA", name: "Arabia", password: false, players: { current: 3, limit: 8 } },
-      { mode: "2v2", name: "Danube River", password: false, players: { current: 2, limit: 4 } },
-      { mode: "2v2v2v2", name: "Alaska", password: false, players: { current: 3, limit: 8 } },
-      { mode: "1v1", name: "Amazon Tunnel", password: true, players: { current: 1, limit: 2 } },
-      { mode: "1v1", name: "Random map", password: false, players: { current: 2, limit: 2 } },
-      { mode: "1v1", name: "Random map", password: false, players: { current: 2, limit: 2 } },
-      { mode: "1v1", name: "Amazon Tunnel", password: true, players: { current: 1, limit: 2 } },
-      { mode: "1v1", name: "Random map", password: false, players: { current: 2, limit: 2 } },
+      {
+        mode: "FFA",
+        name: "Random map",
+        password: false,
+        players: { current: 3, limit: 8 },
+      },
+      {
+        mode: "FFA",
+        name: "Black forest",
+        password: false,
+        players: { current: 3, limit: 8 },
+      },
+      {
+        mode: "FFA",
+        name: "Arabia",
+        password: false,
+        players: { current: 3, limit: 8 },
+      },
+      {
+        mode: "2v2",
+        name: "Danube River",
+        password: false,
+        players: { current: 2, limit: 4 },
+      },
+      {
+        mode: "2v2v2v2",
+        name: "Alaska",
+        password: false,
+        players: { current: 3, limit: 8 },
+      },
+      {
+        mode: "1v1",
+        name: "Amazon Tunnel",
+        password: true,
+        players: { current: 1, limit: 2 },
+      },
+      {
+        mode: "1v1",
+        name: "Random map",
+        password: false,
+        players: { current: 2, limit: 2 },
+      },
+      {
+        mode: "1v1",
+        name: "Random map",
+        password: false,
+        players: { current: 2, limit: 2 },
+      },
+      {
+        mode: "1v1",
+        name: "Amazon Tunnel",
+        password: true,
+        players: { current: 1, limit: 2 },
+      },
+      {
+        mode: "1v1",
+        name: "Random map",
+        password: false,
+        players: { current: 2, limit: 2 },
+      },
     ];
 
     for (let i = 0; i < columns.length; i++) {
@@ -261,7 +316,7 @@ async function run() {
               new Text(item as string, {
                 lookups,
                 style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
-              }),
+              })
             );
             break;
           case "name":
@@ -269,7 +324,7 @@ async function run() {
               new Text(item as string, {
                 lookups,
                 style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
-              }),
+              })
             );
             break;
           case "password":
@@ -277,7 +332,7 @@ async function run() {
               new Text(item ? "Yes" : "No", {
                 lookups,
                 style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
-              }),
+              })
             );
             break;
           case "players":
@@ -291,7 +346,7 @@ async function run() {
                 new Text(\`\${item.current}/$\{item.limit}\`, {
                   lookups,
                   style: { color: "#B4B4B4", fontName: "Inter", fontSize: 14 },
-                }),
+                })
               );
             }
             break;
@@ -332,7 +387,9 @@ async function run() {
     });
     pickerButtonRow.add(pickerSubmitButton);
 
-    const signInBox = new View({ style: { ...boxStyle, gap: 20, padding: 20 } });
+    const signInBox = new View({
+      style: { ...boxStyle, gap: 20, padding: 20 },
+    });
     root.add(signInBox);
     const signInHeader = new Text("Sign in", { lookups, style: headerStyle });
     signInBox.add(signInHeader);
@@ -343,7 +400,11 @@ async function run() {
     const emailLabel = new Text("Email", { lookups, style: labelStyle });
     usernameGroup.add(emailLabel);
 
-    const usernameInput = new Input({ lookups, placeholder: "Username", style: inputStyle });
+    const usernameInput = new Input({
+      lookups,
+      placeholder: "Username",
+      style: inputStyle,
+    });
     usernameGroup.add(usernameInput);
 
     const passwordGroup = new View({ style: inputGroupStyle });
@@ -352,7 +413,11 @@ async function run() {
     const passwordLabel = new Text("Password", { lookups, style: labelStyle });
     passwordGroup.add(passwordLabel);
 
-    const passwordInput = new Input({ lookups, placeholder: "Password", style: inputStyle });
+    const passwordInput = new Input({
+      lookups,
+      placeholder: "Password",
+      style: inputStyle,
+    });
     passwordGroup.add(passwordInput);
 
     const loginButtonRow = new View({
@@ -377,7 +442,6 @@ async function run() {
   }
 
   const root = new View({});
-
   root.add(ui());
 
   layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));

@@ -12,9 +12,17 @@ export function ExampleBasic() {
   );
 }
 
-const starterCode = `import { invariant, renderFontAtlas, Vec2, Vec4, parseTTF, prepareLookups, WebGPURenderer } from "./dist/index";
+const starterCode = `import {
+  invariant,
+  renderFontAtlas,
+  Vec2,
+  Vec4,
+  parseTTF,
+  prepareLookups,
+  WebGPURenderer,
+} from "./dist/index";
 
-document.body.style.margin = "0";
+document.body.setAttribute("style", "margin: 0; min-height: 100dvh;");
 
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
@@ -23,7 +31,6 @@ const parent = canvas.parentElement;
 invariant(parent, "No parent element found.");
 const WIDTH = parent.clientWidth;
 const HEIGHT = parent.clientHeight;
-
 
 const settings = {
   sampleCount: 4,
@@ -38,7 +45,9 @@ canvas.height = HEIGHT * window.devicePixelRatio;
 canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {
-  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
+  const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then(
+    (response) => response.arrayBuffer()
+  );
 
   const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -60,10 +69,13 @@ async function run() {
     format: navigator.gpu.getPreferredCanvasFormat(),
   });
 
-  const lookups = prepareLookups([{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }], {
-    alphabet,
-    fontSize: 150,
-  });
+  const lookups = prepareLookups(
+    [{ buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) }],
+    {
+      alphabet,
+      fontSize: 150,
+    }
+  );
 
   const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
 
@@ -82,7 +94,7 @@ async function run() {
     colorTextureView,
     settings,
     lookups,
-    fontAtlas,
+    fontAtlas
   );
 
   renderer.rectangle(
@@ -94,7 +106,7 @@ async function run() {
     new Vec4(0, 0, 0, 0),
     new Vec2(0, 0),
     new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
-    new Vec4(0, 0, 0, 0),
+    new Vec4(0, 0, 0, 0)
   );
 
   const commandEncoder = device.createCommandEncoder();
