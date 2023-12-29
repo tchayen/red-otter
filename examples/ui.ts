@@ -9,7 +9,6 @@ import { AlignSelf, FlexDirection, JustifyContent, Overflow } from "../src/layou
 import { invariant } from "../src/utils/invariant";
 import * as fixtures from "../src/fixtures";
 import { measure } from "./measure";
-import { gamePicker } from "./gamePicker";
 
 export let lookups: Lookups;
 
@@ -29,8 +28,8 @@ export function ui(renderer: WebGPURenderer): View {
     testID: "root",
   });
 
-  root.add(gamePicker(root));
-  // root.add(exampleGrid());
+  // root.add(gamePicker(root));
+  root.add(exampleGrid());
   // root.add(fixtures.displayAndOverflow());
   // root.add(complexWindow());
 

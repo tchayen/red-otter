@@ -1,6 +1,6 @@
-import { BaseEditor } from "../components/BaseEditor";
+import { BaseEditor } from "../../components/BaseEditor";
 
-export function ExampleText() {
+export function ExampleScrollbars() {
   return (
     <>
       <BaseEditor
@@ -16,6 +16,7 @@ const starterCode = /* typescript */ `import {
   AlignSelf,
   Button,
   compose,
+  EventManager,
   FlexDirection,
   Input,
   invariant,
@@ -78,8 +79,7 @@ canvas.setAttribute("style", "width: 100%; height: 100%;");
 
 async function run() {
   const interTTF = await fetch("https://tchayen.com/assets/Inter.ttf").then((response) => response.arrayBuffer());
-
-  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890/.";
 
   const entry = navigator.gpu;
   console.log(invariant);
@@ -115,6 +115,8 @@ async function run() {
   });
   const colorTextureView = colorTexture.createView({ label: "color" });
 
+  const eventManager = new EventManager();
+
   const renderer = new WebGPURenderer(
     device,
     context,
@@ -125,31 +127,49 @@ async function run() {
   );
 
   const root = new View({
+    backgroundColor: colors.gray[1],
+    height: 300,
+    width: 300,
+  });
+
+  const overflow = new View({
     style: {
-      backgroundColor: "#000",
-      height: "100%",
+      backgroundColor: colors.gray[2],
+      height: 300,
       overflow: Overflow.Scroll,
       width: "100%",
     },
-    testID: "root",
   });
+  root.add(overflow);
 
-  const text = new Text("Hello World", {
-    lookups,
+  const tooTall = new View({
     style: {
-      color: "#fff",
-      fontName: "Inter",
-      fontSize: 24,
+      backgroundColor: colors.gray[3],
+      overflow: Overflow.Scroll,
+      width: 180,
     },
   });
-  root.add(text);
+  overflow.add(tooTall);
+
+  for (let i = 0; i < 6; i++) {
+    tooTall.add(
+      new View({
+        style: { backgroundColor: colors.gray[i + 5], height: 60, width: 180 - i * 20 },
+      }),
+    );
+  }
+
+  layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
 
   function render() {
     const commandEncoder = device.createCommandEncoder();
-    layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+
+    eventManager.deliverEvents(root);
+
     compose(renderer, root);
     paint(renderer, root);
     renderer.render(commandEncoder);
+
     device.queue.submit([commandEncoder.finish()]);
     requestAnimationFrame(render);
   }

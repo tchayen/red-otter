@@ -1,6 +1,6 @@
-import { BaseEditor } from "../components/BaseEditor";
+import { BaseEditor } from "../../components/BaseEditor";
 
-export function Example1() {
+export function ExampleBasic() {
   return (
     <>
       <BaseEditor

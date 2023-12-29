@@ -1,7 +1,7 @@
 import { getMetadata } from "../getMetadata";
-import { Example1 } from "./Example1";
-import { ExampleText } from "./ExampleText";
-import { ExamplePicker } from "./ExamplePicker";
+import { ExampleBasic } from "./editors/Basic";
+import { ExamplePicker } from "./editors/Picker";
+import { ExampleScrollbars } from "./editors/Scrollbars";
 
 export const metadata = getMetadata("Examples");
 
@@ -9,10 +9,14 @@ export const metadata = getMetadata("Examples");
 
 ## Basic rendering
 
-<Example1 />
+<ExampleBasic />
 
 ## Interactive UIs (WIP)
 
 While text input's early implementation is available, basically only one works at a time on the screen as a focus system is not yet implemented.
 
 <ExamplePicker />
+
+## Scrollbars
+
+<ExampleScrollbars />

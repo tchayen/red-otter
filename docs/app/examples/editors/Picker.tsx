@@ -1,4 +1,4 @@
-import { BaseEditor } from "../components/BaseEditor";
+import { BaseEditor } from "../../components/BaseEditor";
 
 export function ExamplePicker() {
   return (
