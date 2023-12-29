@@ -4,43 +4,43 @@ import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-export function Sidebar({ onClick }: { onClick?: () => void }) {
+export function Sidebar() {
   const path = usePathname();
 
   return (
     <>
       <div className="flex flex-col gap-1 self-stretch">
-        <SidebarLink currentPath={path} onClick={onClick} href="/">
+        <SidebarLink currentPath={path} href="/">
           Home
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/blog">
+        <SidebarLink currentPath={path} href="/blog">
           Blog
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/getting-started">
+        <SidebarLink currentPath={path} href="/getting-started">
           Getting Started
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/examples">
+        <SidebarLink currentPath={path} href="/examples">
           Examples
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/roadmap">
+        <SidebarLink currentPath={path} href="/roadmap">
           Roadmap
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/styling">
+        <SidebarLink currentPath={path} href="/styling">
           Styling
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/text-rendering">
+        <SidebarLink currentPath={path} href="/text-rendering">
           Text Rendering
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/layout-engine">
+        <SidebarLink currentPath={path} href="/layout-engine">
           Layout Engine
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/interactivity">
+        <SidebarLink currentPath={path} href="/interactivity">
           Interactivity
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/renderer">
+        <SidebarLink currentPath={path} href="/renderer">
           Renderer
         </SidebarLink>
-        <SidebarLink currentPath={path} onClick={onClick} href="/math-library">
+        <SidebarLink currentPath={path} href="/math-library">
           Math Library
         </SidebarLink>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren, useEffect } from "react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Sidebar } from "./Sidebar";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -16,6 +16,12 @@ import { usePathname } from "next/navigation";
 export function Body({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const closeMenu = () => setShowMobileMenu(false);
+
+  useEffect(() => {
+    closeMenu();
+  }, [pathname]);
 
   const logo = (
     <Link
@@ -70,7 +76,7 @@ export function Body({ children }: PropsWithChildren) {
             <Search />
           </div>
           <div className="w-full px-2">
-            <Sidebar onClick={() => setShowMobileMenu(false)} />
+            <Sidebar />
           </div>
         </div>
       </Dialog.Content>

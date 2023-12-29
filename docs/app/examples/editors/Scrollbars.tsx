@@ -141,7 +141,7 @@ async function run() {
 
   const tooTall = new View({
     style: {
-      backgroundColor: colors.gray[3],
+      backgroundColor: colors.gray[4],
       overflow: Overflow.Scroll,
       width: 180,
     },
@@ -152,7 +152,7 @@ async function run() {
     tooTall.add(
       new View({
         style: {
-          backgroundColor: colors.gray[i + 5],
+          backgroundColor: colors.gray[i + 6],
           height: 60,
           width: 180 - i * 20,
         },
