@@ -133,8 +133,7 @@ export class Input extends View {
     }
   }
 
-  private onClick(event: MouseEvent, eventManager: EventManager) {
-    console.log("click click");
+  private onClick(_: MouseEvent, eventManager: EventManager) {
     eventManager.setFocused(this);
     this.update();
   }

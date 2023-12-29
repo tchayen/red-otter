@@ -16,6 +16,8 @@ export const enum UserEventType {
 
   Focus,
   Blur,
+
+  Layout,
 }
 
 export type MouseEvent = {

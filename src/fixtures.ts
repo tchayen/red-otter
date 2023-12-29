@@ -823,24 +823,23 @@ export function displayAndOverflow() {
       overflow: Overflow.Scroll,
       width: "100%",
     },
-    testID: "D-overflow",
+    testID: "D-outer",
   });
 
   const tooTall = new View({
     style: {
       backgroundColor: orange[1],
-      borderRadius: 20,
       overflow: Overflow.Scroll,
       width: 180,
     },
-    testID: "D-tooTall",
+    testID: "D-halfWidth",
   });
   overflow.add(tooTall);
   for (let i = 0; i < 6; i++) {
     tooTall.add(
       new View({
         style: { backgroundColor: orange[i + 2], height: 60, width: 180 - i * 20 },
-        testID: `D-${i}`,
+        testID: `D-inside-${i}`,
       }),
     );
   }

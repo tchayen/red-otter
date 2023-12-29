@@ -52,7 +52,6 @@ async function run() {
   const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   const entry = navigator.gpu;
-  console.log(invariant);
   invariant(entry, "WebGPU is not supported in this browser.");
 
   const context = canvas.getContext("webgpu");

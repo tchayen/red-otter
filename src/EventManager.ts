@@ -177,7 +177,9 @@ export class EventManager {
 
     // Handle dragging scrollbar, potentially outside of the view (so it doesn't abruptly stop when
     // user goes one pixel too far).
-    const currentlyScrolled = reverse.find((node) => node._isBeingScrolled);
+    const currentlyScrolled = reverse.find(
+      (node) => node._scrolling.xActive || node._scrolling.yActive,
+    );
     if (currentlyScrolled) {
       this.events
         .filter((event) => event.type === UserEventType.MouseMove)
@@ -187,9 +189,8 @@ export class EventManager {
 
       const mouseUp = this.events.find((event) => event.type === UserEventType.MouseUp);
       if (mouseUp) {
-        currentlyScrolled._isBeingScrolled = false;
-        currentlyScrolled._isHorizontalScrollbarHovered = false;
-        currentlyScrolled._isVerticalScrollbarHovered = false;
+        currentlyScrolled._scrolling.xActive = false;
+        currentlyScrolled._scrolling.yActive = false;
       }
     }
 
@@ -214,7 +215,6 @@ export class EventManager {
             }
             if (type === UserEventType.MouseLeave && previous && !hitTest(node, event)) {
               node._isMouseOver = false;
-              console.log("mouse left!");
               listener(event as MouseEvent, this);
             }
           }
@@ -296,14 +296,14 @@ export class EventManager {
     const ratioX = (node._state.scrollWidth / node._state.clientWidth) * window.devicePixelRatio;
     const ratioY = (node._state.scrollHeight / node._state.clientHeight) * window.devicePixelRatio;
 
-    if (node._isHorizontalScrollbarHovered) {
+    if (node._scrolling.xActive) {
       node._state.scrollX = Math.min(
         Math.max(node._state.scrollX + Math.round(deltaX * ratioX), 0),
         node._state.scrollWidth - node._state.clientWidth,
       );
     }
 
-    if (node._isVerticalScrollbarHovered) {
+    if (node._scrolling.yActive) {
       node._state.scrollY = Math.min(
         Math.max(node._state.scrollY + Math.round(deltaY * ratioY), 0),
         node._state.scrollHeight - node._state.clientHeight,

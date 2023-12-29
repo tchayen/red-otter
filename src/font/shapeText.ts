@@ -100,7 +100,6 @@ export function shapeText(
     // If current word ran out of space, move i back to the last character of the last word and
     // restart positionX.
     if (positionX > maxWidth) {
-      console.log(positionX, maxWidth, text[i], noWrap);
       positionX = 0;
       positionY += lineHeight;
       i = lastIndex;

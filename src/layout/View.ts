@@ -21,7 +21,8 @@ type UserEventTuple =
   | [UserEventType.KeyUp, (event: KeyboardEvent, eventManager: EventManager) => void]
   | [UserEventType.KeyPress, (event: KeyboardEvent, eventManager: EventManager) => void]
   | [UserEventType.Focus, (event: FocusEvent, eventManager: EventManager) => void]
-  | [UserEventType.Blur, (event: FocusEvent, eventManager: EventManager) => void];
+  | [UserEventType.Blur, (event: FocusEvent, eventManager: EventManager) => void]
+  | [UserEventType.Layout, (eventManager: EventManager) => void];
 
 /**
  * `BaseView` but with event listeners.
@@ -32,18 +33,13 @@ export class View extends BaseView {
    * Controlled by `EventManager`. Needed for dispatching mouseEnter and mouseLeave events.
    */
   _isMouseOver = false;
-  /**
-   * Accessed by `paint()`.
-   */
-  _isHorizontalScrollbarHovered: boolean = false;
-  /**
-   * Accessed by `paint()`.
-   */
-  _isVerticalScrollbarHovered: boolean = false;
-  /**
-   * Accessed by `EventManager`.
-   */
-  _isBeingScrolled = false;
+
+  _scrolling: {
+    xActive: boolean;
+    xHovered: boolean;
+    yActive: boolean;
+    yHovered: boolean;
+  };
 
   constructor(
     readonly props: {
@@ -55,6 +51,13 @@ export class View extends BaseView {
     },
   ) {
     super(props);
+
+    this._scrolling = {
+      xActive: false,
+      xHovered: false,
+      yActive: false,
+      yHovered: false,
+    };
 
     this.onScroll = this.onScroll.bind(this);
     this.handleMouseDownScrollStart = this.handleMouseDownScrollStart.bind(this);
@@ -99,20 +102,29 @@ export class View extends BaseView {
 
   private onMouseEnter(_: MouseEvent) {
     // No-op but important to keep this._isMouseOver up to date.
+    console.log("Enter:", this.testID);
   }
 
   private onMouseLeave(_: MouseEvent) {
     // No-op but important to keep this._isMouseOver up to date.
+    console.log("Leave:", this.testID);
+
+    this._scrolling.xHovered = false;
+    this._scrolling.yHovered = false;
   }
 
   private handleMouseDownScrollStart(_: MouseEvent) {
-    if (this._isHorizontalScrollbarHovered || this._isVerticalScrollbarHovered) {
-      this._isBeingScrolled = true;
+    if (this._scrolling.xHovered) {
+      this._scrolling.xActive = true;
+    }
+
+    if (this._scrolling.yHovered) {
+      this._scrolling.yActive = true;
     }
   }
 
   private handleMouseMoveScrollHovering(event: MouseEvent) {
-    if (this._isBeingScrolled) {
+    if (this._scrolling.xActive || this._scrolling.yActive) {
       return;
     }
 
@@ -130,7 +142,7 @@ export class View extends BaseView {
             CROSS_AXIS_SIZE,
           ),
         );
-        this._isHorizontalScrollbarHovered = isInside(event.position, horizontalScrollbar);
+        this._scrolling.xHovered = isInside(event.position, horizontalScrollbar);
       }
       if (this._state.hasVerticalScrollbar) {
         const verticalScrollbar = intersection(
@@ -142,11 +154,11 @@ export class View extends BaseView {
             this._state.clientHeight,
           ),
         );
-        this._isVerticalScrollbarHovered = isInside(event.position, verticalScrollbar);
+        this._scrolling.yHovered = isInside(event.position, verticalScrollbar);
       }
     } else {
-      this._isHorizontalScrollbarHovered = false;
-      this._isVerticalScrollbarHovered = false;
+      this._scrolling.xHovered = false;
+      this._scrolling.yHovered = false;
     }
   }
 }

@@ -12,15 +12,6 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 import { twMerge } from "tailwind-merge";
 import { useEffect, useRef } from "react";
 
-function toggleScrolling(isPaused: boolean) {
-  const body = document.body;
-  if (isPaused) {
-    body.setAttribute("style", "overflow:hidden");
-  } else {
-    body.setAttribute("style", "");
-  }
-}
-
 export const BaseEditorClient = withClient(function BaseEditor({
   files,
   customSetup,
@@ -32,28 +23,24 @@ export const BaseEditorClient = withClient(function BaseEditor({
       return;
     }
 
-    const onMouseEnter = (event: MouseEvent) => {
-      console.log("Aa");
+    const div = ref.current;
+
+    const onMouseEnter = () => {
       localStorage.setItem("sandpack:editor:active", "true");
       toggleScrolling(true);
     };
 
-    const onMouseLeave = (event: MouseEvent) => {
-      console.log("Bb");
+    const onMouseLeave = () => {
       localStorage.setItem("sandpack:editor:active", "false");
       toggleScrolling(false);
     };
 
-    ref.current.addEventListener("mouseenter", onMouseEnter);
-    ref.current.addEventListener("mouseleave", onMouseLeave);
+    div.addEventListener("mouseenter", onMouseEnter);
+    div.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
-      if (!ref.current) {
-        return;
-      }
-
-      ref.current.removeEventListener("mouseenter", onMouseEnter);
-      ref.current.removeEventListener("mouseleave", onMouseLeave);
+      div.removeEventListener("mouseenter", onMouseEnter);
+      div.removeEventListener("mouseleave", onMouseLeave);
     };
   }, [ref]);
 
@@ -112,6 +99,15 @@ export const BaseEditorClient = withClient(function BaseEditor({
     </SandpackProvider>
   );
 });
+
+function toggleScrolling(isPaused: boolean) {
+  const body = document.body;
+  if (isPaused) {
+    body.setAttribute("style", "overflow:hidden");
+  } else {
+    body.setAttribute("style", "");
+  }
+}
 
 const githubDark: SandpackTheme = {
   colors: {
