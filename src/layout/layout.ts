@@ -680,8 +680,16 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           // cross size. For multi lines it's not relevant.
           if (e._state.children.length === 1) {
             lineCrossSize = isHorizontal
-              ? e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom
-              : e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight;
+              ? e._state.clientHeight -
+                e._style.paddingTop -
+                e._style.paddingBottom -
+                e._style.borderTopWidth -
+                e._style.borderBottomWidth
+              : e._state.clientWidth -
+                e._style.paddingLeft -
+                e._style.paddingRight -
+                e._style.borderLeftWidth -
+                e._style.borderRightWidth;
           }
 
           // Apply align items.
