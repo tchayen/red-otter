@@ -70,10 +70,10 @@ function paintNode(ui: Renderer, node: Node, clipStart: Vec2, clipSize: Vec2): v
       position,
       size,
       new Vec4(
-        node._style.borderTopLeftRadius,
-        node._style.borderTopRightRadius,
         node._style.borderBottomRightRadius,
         node._style.borderBottomLeftRadius,
+        node._style.borderTopLeftRadius,
+        node._style.borderTopRightRadius,
       ),
       new Vec4(
         node._style.borderBottomWidth,

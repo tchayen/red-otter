@@ -134,7 +134,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
     }
 
     const p = e.parent;
-    if (p && e instanceof Text && fontLookups) {
+    if (fontLookups && p && e instanceof Text) {
       let maxWidth = Number.POSITIVE_INFINITY;
 
       if ((p?._state.clientWidth ?? 0) > 0) {
@@ -334,14 +334,6 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
       c = c.next;
     }
 
-    // TODO
-    // Figure out scroll size here. If scrollbar is added then recalculate rows.
-    // But it seems like there's something going on later; i.e. scrollheight is too large if that
-    // is calculated here.
-    {
-      //
-    }
-
     e._state.children = rows;
 
     // The last row.
@@ -504,6 +496,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           e._style.paddingBottom -
           e._style.borderTopWidth -
           e._style.borderBottomWidth;
+
       if (!isJustifySpace) {
         availableMain -= mainGap * (line.length - 1);
       }
@@ -519,6 +512,7 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           e._style.paddingRight -
           e._style.borderLeftWidth -
           e._style.borderRightWidth;
+
       for (let i = 0; i < maxCrossChildren.length; i++) {
         availableCross -= maxCrossChildren[i]!;
         if (i !== maxCrossChildren.length - 1 && !isContentSpace) {

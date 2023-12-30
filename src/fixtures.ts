@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 import { Text } from "./layout/Text";
 import { View } from "./layout/View";
 import type { Lookups } from "./font/types";
@@ -1457,119 +1458,7 @@ export function lobbyPicker() {
 
 export function monoFontForm() {
   invariant(lookups, "Lookups must be set.");
-
-  const tagStyle = {
-    backgroundColor: "rgba(0, 255, 56, 0.45)",
-    borderRadius: 10,
-    paddingBottom: 6,
-    paddingHorizontal: 8,
-    paddingTop: 4,
-  } as ViewStyleProps;
-
-  const root = new View({
-    style: {},
-  });
-  const greenForm = new View({
-    style: {
-      backgroundColor: "#000",
-      flexDirection: FlexDirection.Row,
-      gap: 12,
-      height: 600,
-      overflow: Overflow.Hidden,
-      padding: 20,
-      width: 600,
-    },
-  });
-  root.add(greenForm);
-
-  const column = new View({
-    style: {
-      gap: 12,
-      width: 265,
-    },
-  });
-  greenForm.add(column);
-
-  const input = new Input({
-    cursorColor: "rgb(0, 255, 26)",
-    lookups,
-    placeholder: "Type here...",
-    selectionColor: "rgba(0, 255, 26, 0.2)",
-    style: {
-      alignSelf: AlignSelf.Stretch,
-      backgroundColor: "#000",
-      borderColor: "#3A3A3A",
-      borderRadius: 2,
-      borderWidth: 2,
-      height: 40,
-      paddingHorizontal: 10,
-    },
-    textStyle: {
-      fontName: "JetBrainsMono",
-      fontSize: 16,
-    },
-  });
-  column.add(input);
-
-  const tagRow = new View({
-    style: {
-      alignSelf: AlignSelf.Stretch,
-      flexDirection: FlexDirection.Row,
-      flexWrap: FlexWrap.Wrap,
-      gap: 8,
-    },
-  });
-  column.add(tagRow);
-
-  function addTag(text: string) {
-    const tag = new View({ style: tagStyle });
-    tag.add(
-      new Text(text, {
-        lookups: lookups!,
-        style: { color: "#fff", fontName: "JetBrainsMono", fontSize: 14 },
-      }),
-    );
-    tagRow.add(tag);
-  }
-  addTag("Tag");
-  addTag("Another");
-  addTag("More");
-  addTag("@@@@");
-  addTag("Different");
-
-  const button = new Button({
-    label: "Submit",
-    lookups,
-    onClick: () => {
-      //
-    },
-    style: {
-      backgroundColor: "rgb(0, 255, 26)",
-      borderRadius: 2,
-      height: 40,
-      paddingHorizontal: 12,
-      paddingTop: 12,
-    },
-    textStyle: {
-      color: "#000",
-      fontName: "JetBrainsMono",
-      fontSize: 18,
-    },
-  });
-  greenForm.add(button);
-
-  const grayForm = new View({
-    style: {
-      backgroundColor: "#000",
-      flexDirection: FlexDirection.Row,
-      gap: 12,
-      height: 600,
-      overflow: Overflow.Hidden,
-      padding: 20,
-      width: 600,
-    },
-  });
-  root.add(grayForm);
+  const root = new View({ style: {} });
 
   const gray = [
     "#111111",
@@ -1586,136 +1475,520 @@ export function monoFontForm() {
     "#EEEEEE",
   ] as const;
 
-  const list = new View({
-    style: {
-      backgroundColor: gray[2],
-      borderColor: gray[5],
-      borderRadius: 8,
-      borderWidth: 1,
-      width: 265,
-    },
-  });
-  grayForm.add(list);
+  {
+    const tagStyle = {
+      backgroundColor: "rgba(0, 255, 56, 0.45)",
+      borderRadius: 10,
+      paddingBottom: 6,
+      paddingHorizontal: 8,
+      paddingTop: 4,
+    } as ViewStyleProps;
+    const greenForm = new View({
+      style: {
+        backgroundColor: "#000",
+        flexDirection: FlexDirection.Row,
+        gap: 12,
+        overflow: Overflow.Hidden,
+        padding: 20,
+      },
+    });
+    root.add(greenForm);
 
-  const listHeader = new View({
-    style: {
-      alignItems: AlignItems.Center,
-      flexDirection: FlexDirection.Row,
-      flexWrap: FlexWrap.Wrap,
-      gap: 8,
-      padding: 8,
-    },
-  });
-  list.add(listHeader);
+    const column = new View({
+      style: {
+        gap: 12,
+        width: 265,
+      },
+    });
+    greenForm.add(column);
 
-  const categoryTextStyle = {
-    color: gray[11],
-    fontName: "Inter",
-    fontSize: 14,
-  } as TextStyleProps;
-  const capsuleStyle = {
-    backgroundColor: gray[5],
-    borderRadius: 9,
-    height: 18,
-    justifyContent: JustifyContent.Center,
-    paddingHorizontal: 6,
-  } as ViewStyleProps;
-  const capsuleTextStyle = {
-    color: gray[11],
-    fontName: "Inter",
-    fontSize: 14,
-  } as TextStyleProps;
+    const input = new Input({
+      cursorColor: "rgb(0, 255, 26)",
+      lookups,
+      placeholder: "Type here...",
+      selectionColor: "rgba(0, 255, 26, 0.2)",
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        backgroundColor: "#000",
+        borderColor: "#3A3A3A",
+        borderRadius: 2,
+        borderWidth: 2,
+        height: 40,
+        paddingHorizontal: 10,
+      },
+      textStyle: {
+        fontName: "JetBrainsMono",
+        fontSize: 16,
+      },
+    });
+    column.add(input);
 
-  for (const [name, value] of [
-    ["All", 37],
-    ["Controls", 2],
-    ["Other", 11],
-    ["Plugins", 8],
-  ] as const) {
-    const categoryControls = new Text(name, { lookups, style: categoryTextStyle });
-    listHeader.add(categoryControls);
-    const capsuleCategory = new View({ style: capsuleStyle });
-    capsuleCategory.add(new Text(value.toString(), { lookups, style: capsuleTextStyle }));
-    listHeader.add(capsuleCategory);
+    const tagRow = new View({
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        flexDirection: FlexDirection.Row,
+        flexWrap: FlexWrap.Wrap,
+        gap: 8,
+      },
+    });
+    column.add(tagRow);
+
+    for (const value of ["Tag", "Another", "More", "@@@@", "Different"]) {
+      const tag = new View({ style: tagStyle });
+      tag.add(
+        new Text(value, {
+          lookups: lookups!,
+          style: { color: "#fff", fontName: "JetBrainsMono", fontSize: 14 },
+        }),
+      );
+      tagRow.add(tag);
+    }
+
+    const row = new View({
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        flexDirection: FlexDirection.Row,
+        gap: 8,
+        paddingBottom: 5,
+      },
+    });
+    column.add(row);
+
+    row.add(
+      new Text("Want to start over?", {
+        lookups,
+        style: {
+          color: "#fff",
+          fontName: "JetBrainsMono",
+          fontSize: 16,
+        },
+      }),
+    );
+    row.add(
+      new Text("Reset", {
+        lookups,
+        style: { color: "#00FF1A", fontName: "JetBrainsMono", fontSize: 16 },
+      }),
+    );
+
+    const button = new Button({
+      label: "Submit",
+      lookups,
+      onClick: () => {
+        //
+      },
+      style: {
+        backgroundColor: "rgb(0, 255, 26)",
+        borderRadius: 2,
+        height: 40,
+        paddingHorizontal: 12,
+        paddingTop: 12,
+      },
+      textStyle: {
+        color: "#000",
+        fontName: "JetBrainsMono",
+        fontSize: 18,
+      },
+    });
+    greenForm.add(button);
   }
 
-  const options = new View({
-    style: {
-      alignSelf: AlignSelf.Stretch,
-      backgroundColor: gray[2],
-      borderBottomWidth: 1,
-      borderColor: gray[5],
-      borderTopWidth: 1,
-      padding: 4,
-    },
-  });
-  list.add(options);
+  {
+    const grayForm = new View({
+      style: {
+        backgroundColor: "#000",
+        flexDirection: FlexDirection.Row,
+        gap: 12,
+        overflow: Overflow.Hidden,
+        padding: 20,
+      },
+    });
+    root.add(grayForm);
 
-  const selected = "Export";
+    const list = new View({
+      style: {
+        backgroundColor: gray[2],
+        borderColor: gray[5],
+        borderRadius: 8,
+        borderWidth: 1,
+        width: 265,
+      },
+    });
+    grayForm.add(list);
 
-  for (const option of ["New file", "Save", "Export", "Exit"]) {
-    const optionRow = new View({
+    const listHeader = new View({
+      style: {
+        alignItems: AlignItems.Center,
+        flexDirection: FlexDirection.Row,
+        flexWrap: FlexWrap.Wrap,
+        gap: 8,
+        padding: 8,
+      },
+    });
+    list.add(listHeader);
+
+    const categoryTextStyle = {
+      color: gray[11],
+      fontName: "Inter",
+      fontSize: 14,
+    } as TextStyleProps;
+    const capsuleStyle = {
+      alignItems: AlignItems.Center,
+      backgroundColor: gray[5],
+      borderRadius: 9,
+      height: 18,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 6,
+    } as ViewStyleProps;
+    const capsuleTextStyle = {
+      color: gray[10],
+      fontName: "Inter",
+      fontSize: 12,
+    } as TextStyleProps;
+
+    for (const [name, value] of [
+      ["All", 37],
+      ["Controls", 2],
+      ["Other", 11],
+      ["Plugins", 8],
+    ] as const) {
+      const wrapper = new View({
+        style: {
+          alignItems: AlignItems.Center,
+          flexDirection: FlexDirection.Row,
+          gap: 4,
+        },
+      });
+      const category = new Text(name, { lookups, style: categoryTextStyle });
+      wrapper.add(category);
+      const capsule = new View({ style: capsuleStyle });
+      capsule.add(new Text(value.toString(), { lookups, style: capsuleTextStyle }));
+      wrapper.add(capsule);
+      listHeader.add(wrapper);
+    }
+
+    const options = new View({
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        backgroundColor: gray[2],
+        borderBottomWidth: 1,
+        borderColor: gray[5],
+        borderTopWidth: 1,
+        padding: 4,
+      },
+    });
+    list.add(options);
+
+    const selected = "Export";
+
+    for (const option of ["New file", "Save", "Export", "Exit"]) {
+      const optionRow = new View({
+        style: {
+          alignItems: AlignItems.Center,
+          alignSelf: AlignSelf.Stretch,
+          backgroundColor: selected === option ? "#2870BD" : "transparent",
+          borderRadius: 4,
+          flexDirection: FlexDirection.Row,
+          height: 32,
+          paddingHorizontal: 8,
+        },
+      });
+      options.add(optionRow);
+      optionRow.add(
+        new Text(option, {
+          lookups,
+          style: {
+            color: selected === option ? "#fff" : gray[11],
+            fontName: "Inter",
+            fontSize: 16,
+          },
+        }),
+      );
+    }
+
+    function addKey(parent: View, value: string) {
+      invariant(lookups, "Lookups must be set.");
+
+      const outer = new View({
+        style: {
+          backgroundColor: gray[5],
+          borderColor: gray[6],
+          borderRadius: 6,
+          borderWidth: 1,
+          height: 24,
+        },
+      });
+      const inner = new View({
+        style: {
+          alignItems: AlignItems.Center,
+          backgroundColor: gray[5],
+          borderBottomWidth: 2,
+          borderColor: gray[3],
+          borderRadius: 4,
+          height: 22,
+          justifyContent: JustifyContent.Center,
+          paddingHorizontal: 6,
+        },
+      });
+      inner.add(
+        new Text(value, {
+          lookups,
+          style: { color: gray[11], fontName: "InterBold", fontSize: 10 },
+        }),
+      );
+      outer.add(inner);
+      parent.add(outer);
+    }
+
+    const keybinds = new View({
       style: {
         alignItems: AlignItems.Center,
         alignSelf: AlignSelf.Stretch,
-        backgroundColor: selected === option ? "#2870BD" : "transparent",
-        borderRadius: 4,
         flexDirection: FlexDirection.Row,
-        height: 32,
-        paddingHorizontal: 8,
+        gap: 8,
+        justifyContent: JustifyContent.SpaceBetween,
+        padding: 8,
       },
     });
-    options.add(optionRow);
-    optionRow.add(new Text(option, { lookups, style: categoryTextStyle }));
-  }
+    list.add(keybinds);
 
-  function addKey(parent: View, value: string) {
-    invariant(lookups, "Lookups must be set.");
-
-    const outer = new View({
-      style: {
-        backgroundColor: gray[5],
-        borderColor: gray[6],
-        borderRadius: 6,
-        borderWidth: 1,
-        height: 24,
-      },
-    });
-    const inner = new View({
+    const left = new View({
       style: {
         alignItems: AlignItems.Center,
-        backgroundColor: gray[5],
-        borderBottomWidth: 2,
-        borderColor: gray[3],
-        borderRadius: 4,
-        height: 22,
-        justifyContent: JustifyContent.Center,
-        paddingHorizontal: 10,
+        flexDirection: FlexDirection.Row,
+        gap: 8,
       },
     });
-    inner.add(
-      new Text(value, { lookups, style: { color: gray[11], fontName: "InterBold", fontSize: 12 } }),
+
+    addKey(left, "W");
+    addKey(left, "S");
+    left.add(
+      new Text("Navigate", {
+        lookups,
+        style: { color: gray[10], fontName: "Inter", fontSize: 14 },
+      }),
     );
-    outer.add(inner);
-    parent.add(outer);
+
+    const right = new View({
+      style: {
+        alignItems: AlignItems.Center,
+        flexDirection: FlexDirection.Row,
+        gap: 8,
+      },
+    });
+    addKey(right, "ENTER");
+    right.add(
+      new Text("Select", { lookups, style: { color: gray[10], fontName: "Inter", fontSize: 14 } }),
+    );
+
+    keybinds.add(left);
+    keybinds.add(right);
   }
 
-  const keybinds = new View({
-    style: {
-      alignItems: AlignItems.Center,
+  {
+    const headerStyle = {
+      color: "#000",
+      fontName: "InterBold",
+      fontSize: 20,
+    } as TextStyleProps;
+    const descriptionStyle = {
+      color: "#888",
+      fontName: "Inter",
+      fontSize: 14,
+    } as TextStyleProps;
+    const buttonRow = {
       alignSelf: AlignSelf.Stretch,
       flexDirection: FlexDirection.Row,
-      gap: 8,
-      padding: 8,
-    },
-  });
-  list.add(keybinds);
+      gap: 12,
+    } as ViewStyleProps;
+    const buttonText = {
+      fontName: "InterBold",
+      fontSize: 14,
+    } as TextStyleProps;
+    const secondaryButton = {
+      backgroundColor: "#CCC",
+      borderBottomWidth: 1,
+      borderColor: "#777",
+      borderRadius: 6,
+      height: 28,
+      paddingHorizontal: 12,
+      paddingTop: 7,
+    } as ViewStyleProps;
+    const primaryButton = {
+      backgroundColor: "#2870BD",
+      borderBottomWidth: 1,
+      borderColor: "#104D87",
+      borderRadius: 6,
+      height: 28,
+      paddingHorizontal: 12,
+      paddingTop: 7,
+    } as ViewStyleProps;
 
-  addKey(keybinds, "W");
-  addKey(keybinds, "S");
-  keybinds.add(new Text("Navigate", { lookups, style: categoryTextStyle }));
-  addKey(keybinds, "Enter");
-  keybinds.add(new Text("Select", { lookups, style: categoryTextStyle }));
+    const background = new View({
+      style: {
+        backgroundColor: "#CCC",
+        padding: 40,
+      },
+    });
+    const pickerBox = new View({ style: { marginLeft: 20, width: 440 } });
+    background.add(pickerBox);
+    const headerWrapper = new View({
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        backgroundColor: "#FFF",
+        borderColor: "#AAA",
+        borderTopLeftRadius: 6,
+        borderTopRightRadius: 6,
+        borderWidth: 1,
+        gap: 8,
+        padding: 12,
+      },
+    });
+    headerWrapper.add(new Text("Members", { lookups, style: { ...headerStyle } }));
+    headerWrapper.add(
+      new Text("Browse through members of your organization.", {
+        lookups,
+        style: descriptionStyle,
+      }),
+    );
+    pickerBox.add(headerWrapper);
+
+    const scrollArea = new View({
+      style: {
+        alignSelf: AlignSelf.Stretch,
+        backgroundColor: "#FFF",
+        borderColor: "#AAA",
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        flexDirection: FlexDirection.Row,
+        height: 155,
+        overflowY: Overflow.Scroll,
+      },
+      testID: "scrollArea",
+    });
+    pickerBox.add(scrollArea);
+
+    const columns = ["email", "role", "joined"] as const;
+    const list = [
+      {
+        email: "john@test.com",
+        joined: "Today",
+        role: "User",
+      },
+      {
+        email: "mary@test.com",
+        joined: "2023/12/10",
+        role: "User",
+      },
+      {
+        email: "philip@test.com",
+        joined: "2023/07/04",
+        role: "User",
+      },
+      {
+        email: "tom@test.com",
+        joined: "2018",
+        role: "Admin",
+      },
+      {
+        email: "_john@test.com",
+        joined: "2014",
+        role: "User",
+      },
+      {
+        email: "test@test.com",
+        joined: "1997",
+        role: "User",
+      },
+    ];
+
+    for (let i = 0; i < columns.length; i++) {
+      const column = new View({
+        style: { flex: 1 },
+      });
+      scrollArea.add(column);
+
+      for (let j = 0; j < list.length; j++) {
+        const item = list[j]![columns[i]!];
+
+        const cell = new View({
+          style: {
+            alignSelf: AlignSelf.Stretch,
+            backgroundColor: j % 2 === 0 ? "#EEE" : "#FFF",
+            height: 28,
+            justifyContent: JustifyContent.Center,
+            paddingHorizontal: 12,
+          },
+        });
+        column.add(cell);
+
+        switch (columns[i]) {
+          case "email":
+            cell.add(
+              new Text(item as string, {
+                lookups,
+                style: { color: "#000", fontName: "Inter", fontSize: 14 },
+              }),
+            );
+            break;
+          case "role":
+            cell.add(
+              new Text(item as string, {
+                lookups,
+                style: { color: "#000", fontName: "Inter", fontSize: 14 },
+              }),
+            );
+            break;
+          case "joined":
+            cell.add(
+              new Text(item as string, {
+                lookups,
+                style: { color: "#000", fontName: "Inter", fontSize: 14 },
+              }),
+            );
+            break;
+        }
+      }
+    }
+
+    const pickerButtonRow = new View({
+      style: {
+        ...buttonRow,
+        backgroundColor: "#FFF",
+        borderBottomLeftRadius: 6,
+        borderBottomRightRadius: 6,
+        borderColor: "#AAA",
+        borderWidth: 1,
+        justifyContent: JustifyContent.End,
+        padding: 12,
+      },
+    });
+    pickerBox.add(pickerButtonRow);
+
+    const pickerCloseButton = new Button({
+      label: "Close",
+      lookups,
+      onClick: () => {
+        //
+      },
+      style: secondaryButton,
+      textStyle: { ...buttonText, color: "#000" },
+    });
+    pickerButtonRow.add(pickerCloseButton);
+
+    const pickerSubmitButton = new Button({
+      label: "Invite",
+      lookups,
+      onClick: () => {
+        //
+      },
+      style: primaryButton,
+      textStyle: buttonText,
+    });
+    pickerButtonRow.add(pickerSubmitButton);
+
+    root.add(background);
+  }
 
   return root;
 }
