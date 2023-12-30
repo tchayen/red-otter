@@ -14,7 +14,7 @@ const eventManager = new EventManager();
 
 async function initialize() {
   const alphabet =
-    "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
+    "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_▶";
   const [interTTF, interBoldTTF, comicNeueTTF, jetBrainsMonoTTF] = await Promise.all(
     ["/Inter.ttf", "/Inter-SemiBold.ttf", "/ComicNeue-Bold.ttf", "JetBrainsMono-Regular.ttf"].map(
       (url) => fetch(url).then((response) => response.arrayBuffer()),

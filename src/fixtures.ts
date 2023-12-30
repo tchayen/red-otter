@@ -1594,14 +1594,35 @@ export function monoFontForm() {
   }
 
   {
+    const categoryTextStyle = {
+      color: gray[11],
+      fontName: "Inter",
+      fontSize: 14,
+    } as TextStyleProps;
+    const capsuleStyle = {
+      alignItems: AlignItems.Center,
+      backgroundColor: gray[5],
+      borderRadius: 9,
+      height: 18,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 6,
+    } as ViewStyleProps;
+    const capsuleTextStyle = {
+      color: gray[10],
+      fontName: "Inter",
+      fontSize: 12,
+    } as TextStyleProps;
+    const optionRowStyle = {
+      alignItems: AlignItems.Center,
+      alignSelf: AlignSelf.Stretch,
+      borderRadius: 4,
+      flexDirection: FlexDirection.Row,
+      height: 28,
+      paddingHorizontal: 8,
+    } as ViewStyleProps;
+
     const grayForm = new View({
-      style: {
-        backgroundColor: "#000",
-        flexDirection: FlexDirection.Row,
-        gap: 12,
-        overflow: Overflow.Hidden,
-        padding: 20,
-      },
+      style: { backgroundColor: gray[1], padding: 40, paddingRight: 200 },
     });
     root.add(grayForm);
 
@@ -1626,25 +1647,6 @@ export function monoFontForm() {
       },
     });
     list.add(listHeader);
-
-    const categoryTextStyle = {
-      color: gray[11],
-      fontName: "Inter",
-      fontSize: 14,
-    } as TextStyleProps;
-    const capsuleStyle = {
-      alignItems: AlignItems.Center,
-      backgroundColor: gray[5],
-      borderRadius: 9,
-      height: 18,
-      justifyContent: JustifyContent.Center,
-      paddingHorizontal: 6,
-    } as ViewStyleProps;
-    const capsuleTextStyle = {
-      color: gray[10],
-      fontName: "Inter",
-      fontSize: 12,
-    } as TextStyleProps;
 
     for (const [name, value] of [
       ["All", 37],
@@ -1680,17 +1682,12 @@ export function monoFontForm() {
     list.add(options);
 
     const selected = "Export";
-
     for (const option of ["New file", "Save", "Export", "Exit"]) {
       const optionRow = new View({
         style: {
-          alignItems: AlignItems.Center,
-          alignSelf: AlignSelf.Stretch,
+          ...optionRowStyle,
           backgroundColor: selected === option ? "#2870BD" : "transparent",
-          borderRadius: 4,
-          flexDirection: FlexDirection.Row,
-          height: 32,
-          paddingHorizontal: 8,
+          justifyContent: JustifyContent.SpaceBetween,
         },
       });
       options.add(optionRow);
@@ -1704,6 +1701,19 @@ export function monoFontForm() {
           },
         }),
       );
+
+      if (option === "Export") {
+        optionRow.add(
+          new Text("▶", {
+            lookups,
+            style: {
+              color: "#fff",
+              fontName: "Inter",
+              fontSize: 10,
+            },
+          }),
+        );
+      }
     }
 
     function addKey(parent: View, value: string) {
@@ -1783,6 +1793,41 @@ export function monoFontForm() {
 
     keybinds.add(left);
     keybinds.add(right);
+
+    const subList = new View({
+      style: {
+        backgroundColor: gray[2],
+        borderColor: gray[5],
+        borderRadius: 8,
+        borderWidth: 1,
+        left: 309,
+        padding: 4,
+        position: Position.Absolute,
+        top: 129,
+      },
+    });
+    grayForm.add(subList);
+
+    for (const option of ["PNG", "SVG", "JSON"]) {
+      const selected = "SVG";
+      const optionRow = new View({
+        style: {
+          ...optionRowStyle,
+          backgroundColor: selected === option ? "#2870BD" : "transparent",
+        },
+      });
+      subList.add(optionRow);
+      optionRow.add(
+        new Text(option, {
+          lookups,
+          style: {
+            color: selected === option ? "#fff" : gray[11],
+            fontName: "Inter",
+            fontSize: 16,
+          },
+        }),
+      );
+    }
   }
 
   {
@@ -1824,12 +1869,7 @@ export function monoFontForm() {
       paddingTop: 7,
     } as ViewStyleProps;
 
-    const background = new View({
-      style: {
-        backgroundColor: "#CCC",
-        padding: 40,
-      },
-    });
+    const background = new View({ style: { backgroundColor: "#CCC", padding: 40 } });
     const pickerBox = new View({ style: { marginLeft: 20, width: 440 } });
     background.add(pickerBox);
     const headerWrapper = new View({

@@ -668,69 +668,35 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
             ? c._state.clientWidth + c._style.marginLeft + c._style.marginRight
             : c._state.clientHeight + c._style.marginTop + c._style.marginBottom;
           main += mainGap;
+        }
 
-          let lineCrossSize = maxCrossChild;
-          // If there's only one line, if the flex container has defined height, use it as the
-          // cross size. For multi lines it's not relevant.
-          if (e._state.children.length === 1) {
-            lineCrossSize = isHorizontal
-              ? e._state.clientHeight -
-                e._style.paddingTop -
-                e._style.paddingBottom -
-                e._style.borderTopWidth -
-                e._style.borderBottomWidth
-              : e._state.clientWidth -
-                e._style.paddingLeft -
-                e._style.paddingRight -
-                e._style.borderLeftWidth -
-                e._style.borderRightWidth;
-          }
+        let lineCrossSize = maxCrossChild;
+        // If there's only one line, if the flex container has defined height, use it as the
+        // cross size. For multi lines it's not relevant.
+        if (e._state.children.length === 1) {
+          lineCrossSize = isHorizontal
+            ? e._state.clientHeight -
+              e._style.paddingTop -
+              e._style.paddingBottom -
+              e._style.borderTopWidth -
+              e._style.borderBottomWidth
+            : e._state.clientWidth -
+              e._style.paddingLeft -
+              e._style.paddingRight -
+              e._style.borderLeftWidth -
+              e._style.borderRightWidth;
+        }
 
-          // Apply align items.
-          if (c._style.alignSelf === AlignSelf.Auto) {
-            if (e._style.alignItems === AlignItems.Center) {
-              if (isHorizontal) {
-                c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
-              } else {
-                c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
-              }
-            }
-            if (e._style.alignItems === AlignItems.End) {
-              if (isHorizontal) {
-                c._state.y += lineCrossSize - c._state.clientHeight;
-              } else {
-                c._state.x += lineCrossSize - c._state.clientWidth;
-              }
-            }
-            if (
-              e._style.alignItems === AlignItems.Stretch &&
-              ((isHorizontal && c._style.height === undefined) ||
-                (isVertical && c._style.width === undefined))
-            ) {
-              if (isHorizontal) {
-                c._state.clientHeight = lineCrossSize;
-              } else {
-                c._state.clientWidth = lineCrossSize;
-              }
-            }
-          }
-
-          // Apply align self.
-          if (c._style.alignSelf === AlignSelf.Start) {
-            if (isHorizontal) {
-              c._state.y = resetCross;
-            } else {
-              c._state.x = resetCross;
-            }
-          }
-          if (c._style.alignSelf === AlignSelf.Center) {
+        // Apply align items.
+        if (c._style.alignSelf === AlignSelf.Auto) {
+          if (e._style.alignItems === AlignItems.Center) {
             if (isHorizontal) {
               c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
             } else {
               c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
             }
           }
-          if (c._style.alignSelf === AlignSelf.End) {
+          if (e._style.alignItems === AlignItems.End) {
             if (isHorizontal) {
               c._state.y += lineCrossSize - c._state.clientHeight;
             } else {
@@ -738,17 +704,51 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
             }
           }
           if (
-            c._style.alignSelf === AlignSelf.Stretch &&
+            e._style.alignItems === AlignItems.Stretch &&
             ((isHorizontal && c._style.height === undefined) ||
               (isVertical && c._style.width === undefined))
           ) {
             if (isHorizontal) {
-              c._state.y = resetCross;
               c._state.clientHeight = lineCrossSize;
             } else {
-              c._state.x = resetCross;
               c._state.clientWidth = lineCrossSize;
             }
+          }
+        }
+
+        // Apply align self.
+        if (c._style.alignSelf === AlignSelf.Start) {
+          if (isHorizontal) {
+            c._state.y = resetCross;
+          } else {
+            c._state.x = resetCross;
+          }
+        }
+        if (c._style.alignSelf === AlignSelf.Center) {
+          if (isHorizontal) {
+            c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
+          } else {
+            c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
+          }
+        }
+        if (c._style.alignSelf === AlignSelf.End) {
+          if (isHorizontal) {
+            c._state.y += lineCrossSize - c._state.clientHeight;
+          } else {
+            c._state.x += lineCrossSize - c._state.clientWidth;
+          }
+        }
+        if (
+          c._style.alignSelf === AlignSelf.Stretch &&
+          ((isHorizontal && c._style.height === undefined) ||
+            (isVertical && c._style.width === undefined))
+        ) {
+          if (isHorizontal) {
+            c._state.y = resetCross;
+            c._state.clientHeight = lineCrossSize;
+          } else {
+            c._state.x = resetCross;
+            c._state.clientWidth = lineCrossSize;
           }
         }
 

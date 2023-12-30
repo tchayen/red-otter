@@ -23,12 +23,15 @@ export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Array<Glyph> {
   return charCodes.map((code) => {
     invariant(ttf, "TTF is missing.");
 
-    const index = ttf.cmap.glyphIndexMap[code];
+    const index =
+      ttf.cmap.glyphIndexMap[code] ?? ttf.cmap.glyphIndexMap[MISSING_GLYPH.charCodeAt(0)]!;
 
-    invariant(
-      index !== undefined,
-      `Couldn't find index for character '${String.fromCharCode(code)}' in glyphIndexMap.`,
-    );
+    if (!ttf.cmap.glyphIndexMap[code]) {
+      console.warn(
+        `Couldn't find index for character '${String.fromCharCode(code)}' in glyphIndexMap.`,
+      );
+    }
+
     invariant(index < ttf.glyf.length, "Index is out of bounds for glyf table.");
 
     const lastMetric = ttf.hmtx.hMetrics.at(-1);
