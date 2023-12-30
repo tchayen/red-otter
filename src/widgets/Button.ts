@@ -10,7 +10,7 @@ export class Button extends View {
     onClick?(): void;
     style?: ViewStyleProps;
     testID?: string;
-    textStyle?: TextStyleProps;
+    textStyle?: Partial<TextStyleProps>;
   }) {
     // Put default styles here.
     const mergedStyle: ViewStyleProps = { backgroundColor: "#ffd000", ...props.style };

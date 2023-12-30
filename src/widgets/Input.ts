@@ -14,7 +14,8 @@ import type {
   InputChangeHandler,
   BlurHandler,
 } from "../layout/eventTypes";
-import { Whitespace, type ViewStyleProps, Position, TextAlign, AlignSelf } from "../layout/styling";
+import { Whitespace, Position, TextAlign, AlignSelf, JustifyContent } from "../layout/styling";
+import type { TextStyleProps, ViewStyleProps } from "../layout/styling";
 import { invariant } from "../utils/invariant";
 import { updateSelection } from "./updateSelection";
 import { updateText } from "./updateText";
@@ -54,6 +55,7 @@ export class Input extends View {
 
   constructor(
     readonly props: {
+      cursorColor?: string;
       lookups: Lookups;
       onBlur?: BlurHandler;
       onChange?: InputChangeHandler;
@@ -61,15 +63,19 @@ export class Input extends View {
       onFocus?: FocusHandler;
       onKeyDown?: KeyDownHandler;
       placeholder?: string;
-      style: ViewStyleProps;
+      selectionColor?: string;
+      style?: ViewStyleProps;
       testID?: string;
+      textStyle?: Partial<TextStyleProps>;
       value?: string;
     },
   ) {
-    const baseStyle =
-      props.style.alignSelf !== AlignSelf.Stretch && props.style.width === undefined
+    const baseStyle: ViewStyleProps =
+      props.style?.alignSelf !== AlignSelf.Stretch && props.style?.width === undefined
         ? { width: 160 }
         : {};
+    baseStyle.justifyContent = JustifyContent.Center;
+
     super({ ...props, style: { ...baseStyle, ...props.style } });
 
     // // Blinking cursor.
@@ -89,6 +95,7 @@ export class Input extends View {
           fontName: "Inter",
           fontSize: fontSize,
           whitespace: Whitespace.NoWrap,
+          ...props.textStyle,
         },
       }),
     );
@@ -97,7 +104,7 @@ export class Input extends View {
     this.add(
       new View({
         style: {
-          backgroundColor: selectionColor,
+          backgroundColor: props.selectionColor ?? selectionColor,
           height: "100%",
           left: 0,
           position: Position.Absolute,
@@ -111,7 +118,7 @@ export class Input extends View {
     this.add(
       new View({
         style: {
-          backgroundColor: cursorColor,
+          backgroundColor: props.cursorColor ?? cursorColor,
           height: "100%",
           left: this._style.paddingLeft,
           position: Position.Absolute,
@@ -167,7 +174,6 @@ export class Input extends View {
   }
 
   private onLayout() {
-    console.log("hi");
     this.update();
   }
 

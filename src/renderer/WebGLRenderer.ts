@@ -10,6 +10,7 @@ import { shapeText } from "..";
 import type { Shape } from "../font/shapeText";
 import type { TextAlign } from "../layout/styling";
 import { defaultTextStyleProps } from "../layout/styling";
+import { MISSING_GLYPH } from "../font/calculateGlyphQuads";
 
 const vertex = `#version 300 es
 layout (location = 0) in vec2 a_position;
@@ -423,7 +424,7 @@ export class WebGLRenderer implements Renderer {
 
       const uv =
         this.fontLookups.uvs.get(`${fontName}-${character.charCodeAt(0)}`) ??
-        this.fontLookups.uvs.get(`${fontName}-${"□".charCodeAt(0)}`)!;
+        this.fontLookups.uvs.get(`${fontName}-${MISSING_GLYPH.charCodeAt(0)}`)!;
       invariant(uv, "UV does not exist.");
 
       const vertices = [

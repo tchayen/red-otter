@@ -4,6 +4,7 @@ import { LRUCache } from "../utils/LRUCache";
 import { invariant } from "../utils/invariant";
 import { fontSizeToGap } from "./renderFontAtlas";
 import type { Lookups } from "./types";
+import { MISSING_GLYPH } from "./calculateGlyphQuads";
 
 export const ENABLE_KERNING = true;
 
@@ -82,7 +83,7 @@ export function shapeText(
     }
 
     const character = text[i]!.charCodeAt(0);
-    const glyph = font.glyphs.get(character) ?? font.glyphs.get("□".charCodeAt(0))!;
+    const glyph = font.glyphs.get(character) ?? font.glyphs.get(MISSING_GLYPH.charCodeAt(0))!;
     const { y, width, height, lsb, rsb } = glyph;
     let kerning = 0;
     if (i > 0 && ENABLE_KERNING) {

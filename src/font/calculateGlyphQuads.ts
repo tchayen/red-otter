@@ -2,6 +2,7 @@ import { invariant } from "../utils/invariant";
 import type { TTF } from "./parseTTF";
 import type { Glyph } from "./types";
 
+export const MISSING_GLYPH = "?";
 /**
  * Calculates glyph information for a given font file and optional alphabet.
  *
@@ -15,8 +16,8 @@ export function calculateGlyphQuads(ttf: TTF, alphabet?: string): Array<Glyph> {
       [...new Set(alphabet.split("").map((c) => c.charCodeAt(0)))]
     : Object.keys(ttf.cmap.glyphIndexMap).map(Number);
 
-  if (!charCodes.some((code) => code === "□".charCodeAt(0))) {
-    charCodes.push("□".charCodeAt(0));
+  if (!charCodes.some((code) => code === MISSING_GLYPH.charCodeAt(0))) {
+    charCodes.push(MISSING_GLYPH.charCodeAt(0));
   }
 
   return charCodes.map((code) => {

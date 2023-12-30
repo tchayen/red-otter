@@ -679,29 +679,25 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           // If there's only one line, if the flex container has defined height, use it as the
           // cross size. For multi lines it's not relevant.
           if (e._state.children.length === 1) {
-            lineCrossSize = Math.max(
-              lineCrossSize,
-              isHorizontal ? e._state.clientHeight : e._state.clientWidth,
-            );
+            lineCrossSize = isHorizontal
+              ? e._state.clientHeight - e._style.paddingTop - e._style.paddingBottom
+              : e._state.clientWidth - e._style.paddingLeft - e._style.paddingRight;
           }
-
-          const horizontalPadding = e._style.paddingLeft + e._style.paddingRight;
-          const verticalPadding = e._style.paddingTop + e._style.paddingBottom;
 
           // Apply align items.
           if (c._style.alignSelf === AlignSelf.Auto) {
             if (e._style.alignItems === AlignItems.Center) {
               if (isHorizontal) {
-                c._state.y += (lineCrossSize - horizontalPadding - c._state.clientHeight) / 2;
+                c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
               } else {
-                c._state.x += (lineCrossSize - verticalPadding - c._state.clientWidth) / 2;
+                c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
               }
             }
             if (e._style.alignItems === AlignItems.End) {
               if (isHorizontal) {
-                c._state.y += lineCrossSize - horizontalPadding - c._state.clientHeight;
+                c._state.y += lineCrossSize - c._state.clientHeight;
               } else {
-                c._state.x += lineCrossSize - verticalPadding - c._state.clientWidth;
+                c._state.x += lineCrossSize - c._state.clientWidth;
               }
             }
             if (
@@ -727,16 +723,16 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           }
           if (c._style.alignSelf === AlignSelf.Center) {
             if (isHorizontal) {
-              c._state.y += (lineCrossSize - horizontalPadding - c._state.clientHeight) / 2;
+              c._state.y += (lineCrossSize - c._state.clientHeight) / 2;
             } else {
-              c._state.x += (lineCrossSize - verticalPadding - c._state.clientWidth) / 2;
+              c._state.x += (lineCrossSize - c._state.clientWidth) / 2;
             }
           }
           if (c._style.alignSelf === AlignSelf.End) {
             if (isHorizontal) {
-              c._state.y += lineCrossSize - horizontalPadding - c._state.clientHeight;
+              c._state.y += lineCrossSize - c._state.clientHeight;
             } else {
-              c._state.x += lineCrossSize - verticalPadding - c._state.clientWidth;
+              c._state.x += lineCrossSize - c._state.clientWidth;
             }
           }
           if (
@@ -746,10 +742,10 @@ export function layout(tree: Node, fontLookups: Lookups | null, rootSize: Vec2):
           ) {
             if (isHorizontal) {
               c._state.y = resetCross;
-              c._state.clientHeight = lineCrossSize - horizontalPadding;
+              c._state.clientHeight = lineCrossSize;
             } else {
               c._state.x = resetCross;
-              c._state.clientWidth = lineCrossSize - verticalPadding;
+              c._state.clientWidth = lineCrossSize;
             }
           }
         }

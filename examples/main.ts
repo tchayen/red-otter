@@ -15,13 +15,15 @@ const eventManager = new EventManager();
 async function initialize() {
   const alphabet =
     "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890 ,.:•-–()[]{}!?@#$%^&*+=/\\|<>`~’'\";_";
-  const [interTTF, interBoldTTF] = await Promise.all(
-    ["/Inter.ttf", "/Inter-SemiBold.ttf"].map((url) =>
-      fetch(url).then((response) => response.arrayBuffer()),
+  const [interTTF, interBoldTTF, comicNeueTTF, jetBrainsMonoTTF] = await Promise.all(
+    ["/Inter.ttf", "/Inter-SemiBold.ttf", "/ComicNeue-Bold.ttf", "JetBrainsMono-Regular.ttf"].map(
+      (url) => fetch(url).then((response) => response.arrayBuffer()),
     ),
   );
   invariant(interTTF, "Inter.ttf not found.");
   invariant(interBoldTTF, "Inter-SemiBold.ttf not found.");
+  invariant(comicNeueTTF, "ComicNeue-Bold.ttf not found.");
+  invariant(jetBrainsMonoTTF, "JetBrainsMono-Regular.ttf not found.");
 
   document.body.setAttribute("style", "margin: 0");
 
@@ -54,6 +56,8 @@ async function initialize() {
     [
       { buffer: interTTF, name: "Inter", ttf: parseTTF(interTTF) },
       { buffer: interBoldTTF, name: "InterBold", ttf: parseTTF(interBoldTTF) },
+      { buffer: comicNeueTTF, name: "ComicNeue", ttf: parseTTF(comicNeueTTF) },
+      { buffer: jetBrainsMonoTTF, name: "JetBrainsMono", ttf: parseTTF(jetBrainsMonoTTF) },
     ],
     { alphabet, fontSize: 150 },
   );

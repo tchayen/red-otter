@@ -8,6 +8,7 @@ import type { Settings } from "../consts";
 import { createTextureFromImageBitmap } from "../utils/createTextureFromBitmap";
 import type { Renderer } from "./Renderer";
 import { defaultTextStyleProps, type TextAlign } from "../layout/styling";
+import { MISSING_GLYPH } from "../font/calculateGlyphQuads";
 
 const enum DrawingMode {
   Rectangles,
@@ -547,7 +548,7 @@ export class WebGPURenderer implements Renderer {
 
       const uv =
         this.fontLookups.uvs.get(`${fontName}-${character.charCodeAt(0)}`) ??
-        this.fontLookups.uvs.get(`${fontName}-${"□".charCodeAt(0)}`)!;
+        this.fontLookups.uvs.get(`${fontName}-${MISSING_GLYPH.charCodeAt(0)}`)!;
       invariant(uv, "UV does not exist.");
 
       const scale = window.devicePixelRatio;

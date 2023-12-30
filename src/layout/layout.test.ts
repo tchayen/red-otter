@@ -254,11 +254,11 @@ describe("Layout", () => {
     expect(box?._state.clientHeight).toBe(300);
 
     const expectedPositions = [
-      new Vec2(88, 0),
-      new Vec2(80, 70),
-      new Vec2(88, 131),
-      new Vec2(34, 8),
-      new Vec2(10, 0),
+      new Vec2(88, 15),
+      new Vec2(80, 85),
+      new Vec2(88, 146),
+      new Vec2(34, 23),
+      new Vec2(10, 15),
     ];
 
     for (let i = 0; i < nodes.length; i++) {

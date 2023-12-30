@@ -448,6 +448,7 @@ export function flexWrapColumn() {
       flexWrap: FlexWrap.WrapReverse,
       height: "100%",
       paddingHorizontal: 10,
+      paddingVertical: 15,
       rowGap: 5,
     },
     testID: "column-wrap",
@@ -1450,6 +1451,271 @@ export function lobbyPicker() {
   pickerButtonRow.add(pickerSubmitButton);
 
   root.add(pickerBox);
+
+  return root;
+}
+
+export function monoFontForm() {
+  invariant(lookups, "Lookups must be set.");
+
+  const tagStyle = {
+    backgroundColor: "rgba(0, 255, 56, 0.45)",
+    borderRadius: 10,
+    paddingBottom: 6,
+    paddingHorizontal: 8,
+    paddingTop: 4,
+  } as ViewStyleProps;
+
+  const root = new View({
+    style: {},
+  });
+  const greenForm = new View({
+    style: {
+      backgroundColor: "#000",
+      flexDirection: FlexDirection.Row,
+      gap: 12,
+      height: 600,
+      overflow: Overflow.Hidden,
+      padding: 20,
+      width: 600,
+    },
+  });
+  root.add(greenForm);
+
+  const column = new View({
+    style: {
+      gap: 12,
+      width: 265,
+    },
+  });
+  greenForm.add(column);
+
+  const input = new Input({
+    cursorColor: "rgb(0, 255, 26)",
+    lookups,
+    placeholder: "Type here...",
+    selectionColor: "rgba(0, 255, 26, 0.2)",
+    style: {
+      alignSelf: AlignSelf.Stretch,
+      backgroundColor: "#000",
+      borderColor: "#3A3A3A",
+      borderRadius: 2,
+      borderWidth: 2,
+      height: 40,
+      paddingHorizontal: 10,
+    },
+    textStyle: {
+      fontName: "JetBrainsMono",
+      fontSize: 16,
+    },
+  });
+  column.add(input);
+
+  const tagRow = new View({
+    style: {
+      alignSelf: AlignSelf.Stretch,
+      flexDirection: FlexDirection.Row,
+      flexWrap: FlexWrap.Wrap,
+      gap: 8,
+    },
+  });
+  column.add(tagRow);
+
+  function addTag(text: string) {
+    const tag = new View({ style: tagStyle });
+    tag.add(
+      new Text(text, {
+        lookups: lookups!,
+        style: { color: "#fff", fontName: "JetBrainsMono", fontSize: 14 },
+      }),
+    );
+    tagRow.add(tag);
+  }
+  addTag("Tag");
+  addTag("Another");
+  addTag("More");
+  addTag("@@@@");
+  addTag("Different");
+
+  const button = new Button({
+    label: "Submit",
+    lookups,
+    onClick: () => {
+      //
+    },
+    style: {
+      backgroundColor: "rgb(0, 255, 26)",
+      borderRadius: 2,
+      height: 40,
+      paddingHorizontal: 12,
+      paddingTop: 12,
+    },
+    textStyle: {
+      color: "#000",
+      fontName: "JetBrainsMono",
+      fontSize: 18,
+    },
+  });
+  greenForm.add(button);
+
+  const grayForm = new View({
+    style: {
+      backgroundColor: "#000",
+      flexDirection: FlexDirection.Row,
+      gap: 12,
+      height: 600,
+      overflow: Overflow.Hidden,
+      padding: 20,
+      width: 600,
+    },
+  });
+  root.add(grayForm);
+
+  const gray = [
+    "#111111",
+    "#191919",
+    "#222222",
+    "#2A2A2A",
+    "#313131",
+    "#3A3A3A",
+    "#484848",
+    "#606060",
+    "#6E6E6E",
+    "#7B7B7B",
+    "#B4B4B4",
+    "#EEEEEE",
+  ] as const;
+
+  const list = new View({
+    style: {
+      backgroundColor: gray[2],
+      borderColor: gray[5],
+      borderRadius: 8,
+      borderWidth: 1,
+      width: 265,
+    },
+  });
+  grayForm.add(list);
+
+  const listHeader = new View({
+    style: {
+      alignItems: AlignItems.Center,
+      flexDirection: FlexDirection.Row,
+      flexWrap: FlexWrap.Wrap,
+      gap: 8,
+      padding: 8,
+    },
+  });
+  list.add(listHeader);
+
+  const categoryTextStyle = {
+    color: gray[11],
+    fontName: "Inter",
+    fontSize: 14,
+  } as TextStyleProps;
+  const capsuleStyle = {
+    backgroundColor: gray[5],
+    borderRadius: 9,
+    height: 18,
+    justifyContent: JustifyContent.Center,
+    paddingHorizontal: 6,
+  } as ViewStyleProps;
+  const capsuleTextStyle = {
+    color: gray[11],
+    fontName: "Inter",
+    fontSize: 14,
+  } as TextStyleProps;
+
+  for (const [name, value] of [
+    ["All", 37],
+    ["Controls", 2],
+    ["Other", 11],
+    ["Plugins", 8],
+  ] as const) {
+    const categoryControls = new Text(name, { lookups, style: categoryTextStyle });
+    listHeader.add(categoryControls);
+    const capsuleCategory = new View({ style: capsuleStyle });
+    capsuleCategory.add(new Text(value.toString(), { lookups, style: capsuleTextStyle }));
+    listHeader.add(capsuleCategory);
+  }
+
+  const options = new View({
+    style: {
+      alignSelf: AlignSelf.Stretch,
+      backgroundColor: gray[2],
+      borderBottomWidth: 1,
+      borderColor: gray[5],
+      borderTopWidth: 1,
+      padding: 4,
+    },
+  });
+  list.add(options);
+
+  const selected = "Export";
+
+  for (const option of ["New file", "Save", "Export", "Exit"]) {
+    const optionRow = new View({
+      style: {
+        alignItems: AlignItems.Center,
+        alignSelf: AlignSelf.Stretch,
+        backgroundColor: selected === option ? "#2870BD" : "transparent",
+        borderRadius: 4,
+        flexDirection: FlexDirection.Row,
+        height: 32,
+        paddingHorizontal: 8,
+      },
+    });
+    options.add(optionRow);
+    optionRow.add(new Text(option, { lookups, style: categoryTextStyle }));
+  }
+
+  function addKey(parent: View, value: string) {
+    invariant(lookups, "Lookups must be set.");
+
+    const outer = new View({
+      style: {
+        backgroundColor: gray[5],
+        borderColor: gray[6],
+        borderRadius: 6,
+        borderWidth: 1,
+        height: 24,
+      },
+    });
+    const inner = new View({
+      style: {
+        alignItems: AlignItems.Center,
+        backgroundColor: gray[5],
+        borderBottomWidth: 2,
+        borderColor: gray[3],
+        borderRadius: 4,
+        height: 22,
+        justifyContent: JustifyContent.Center,
+        paddingHorizontal: 10,
+      },
+    });
+    inner.add(
+      new Text(value, { lookups, style: { color: gray[11], fontName: "InterBold", fontSize: 12 } }),
+    );
+    outer.add(inner);
+    parent.add(outer);
+  }
+
+  const keybinds = new View({
+    style: {
+      alignItems: AlignItems.Center,
+      alignSelf: AlignSelf.Stretch,
+      flexDirection: FlexDirection.Row,
+      gap: 8,
+      padding: 8,
+    },
+  });
+  list.add(keybinds);
+
+  addKey(keybinds, "W");
+  addKey(keybinds, "S");
+  keybinds.add(new Text("Navigate", { lookups, style: categoryTextStyle }));
+  addKey(keybinds, "Enter");
+  keybinds.add(new Text("Select", { lookups, style: categoryTextStyle }));
 
   return root;
 }
