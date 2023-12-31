@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
 
 - Add new WebGPU renderer.
 - Add missing styling and layout properties: `flexWrap`, `flexShrink`, `flexGrow`, `flexBasis`, `aspectRatio`, `minHeight` (and width and max variants), `overflow`.
