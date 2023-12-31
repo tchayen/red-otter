@@ -1,3 +1,12 @@
+
+
+## [0.1.0](https://github.com/tchayen/red-otter/compare/v0.0.16...v0.1.0) (2023-12-31)
+
+
+### Features
+
+* publish 0.1.0 ([#13](https://github.com/tchayen/red-otter/issues/13)) ([fd6d908](https://github.com/tchayen/red-otter/commit/fd6d9087f724dc223d039599c3c01b1397f49484))
+
 # Changelog
 
 ## [Unreleased]
