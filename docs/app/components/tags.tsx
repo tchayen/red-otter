@@ -209,6 +209,10 @@ export function Hr({ className }: { className?: string }) {
   return <hr className={twMerge("my-8 border-t border-mauvedark5", className)} />;
 }
 
+export function Img({ className, ...props }: { className?: string }) {
+  return <img {...props} className={twMerge("my-6 rounded-md", className)} />;
+}
+
 export function Box({
   children,
   overrideType,
