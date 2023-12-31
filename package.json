@@ -37,7 +37,7 @@
     "@petamoriken/float16": "^3.8.4"
   },
   "devDependencies": {
-    "@release-it/keep-a-changelog": "^5.0.0",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@rollup/plugin-typescript": "^11.1.5",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/node": "^20.10.6",
@@ -63,9 +63,22 @@
     "vitest": "^1.1.1"
   },
   "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
     "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "conventionalcommits"
+        },
+        "infile": "CHANGELOG.md"
       }
     }
   }
