@@ -1,0 +1,120 @@
+import { getMetadata } from "../../../getMetadata";
+export const metadata = getMetadata("0.1: the Big Reset", undefined, "2023-12-20");
+
+<Blogpost title="0.1.0: the Big Reset" date="2023-12-20" author="Tomasz Czajecki" />
+
+![banner](/blog/0.1.0.png)
+
+After many months of on and off work in the background, I am proud to present the next big release of Red Otter. Somehow the previous release process and everything involved felt intimidating to me so I started experimenting on the side and the scope of my changes kept growing and growing until I decided that I will just rewrite a large chunk of the library.
+
+What you see here is the result of a multi-month effort, done, as usual, after hours and in the free time so it took ten times longer than it could have if I focused only on it, but such is life. Don't expect too much for the time it took, but also I am happy with the results and that I was able to keep it going for so long without giving up (and only slightly burned out).
+
+## Changes
+
+I might have missed something, but this is a list of major things that changed since the last release.
+
+### New fast WebGPU renderer
+
+I found a new way how to split rectangle and text drawing, resulting in faster, specialized shaders while utilizing new WebGPU instancing API to not lose on draw calls.
+
+More about the approach: [Thousands of Styled Rectangles in 120FPS on GPU](https://tchayen.com/thousands-styled-rectangles-in-120fps-on-gpu).
+
+While WebGPU adoption is climbing ([Web3DSurvey](https://web3dsurvey.com/webgpu) reports 56.9% at the time of writing this), current lack of mobile support and Safari implementation make keeping WebGL renderer a must-have. It didn't receive any love in this update (and to be honest I might have broken it in the process) but I will make sure that going forward it will be brought to parity with the WebGPU one.
+
+### Layout improvements
+
+Major improvements to the layout engine. I basically rewrote a bing chunk of it and finally implemented remaining missing flexbox features.
+
+- `flexWrap` support.
+- `flexShrink` and `flexGrow`.
+- `flexBasis` – alternative to `width` and `height` with some gotchas.
+- `minWidth` and `minHeight`.
+- `aspectRatio` – modelled after Yoga counterpart.
+- `overflow` – which required way more changes outside of the layout algorithm to make scrolling happen.
+- Refactored algorithm that shortened the code and packed much more features.
+
+### Rethinking the font APIs
+
+The previous iteration of font-related APIs didn't feel right to use. I spent some time thinking about it and came up with IMO a better, more function and data-passing oriented API which I first used in my [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file) article.
+
+### Text improvements
+
+Following the font API changes, I was able add some very needed features to the text rendering:
+
+**Line wrapping** – that was a thing that made the previous version extremely incomplete (or inconvenient) for creating real life UIs. Now it's here.
+
+**Kerning** – now the text looks and reads much better.
+
+**Text alignment** – not strictly crucial nowadays with flexbox properties but still nice to have.
+
+You can read more about the rendering method and kerning in my recent blogpost: [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).
+
+### Event system
+
+Supports clicks, scrolling, typing. The model is simplified in comparison to DOM. Events are dispatched in reverse order of the component tree so that the topmost component can handle them first. I have yet to figure out all edge cases so I am not documenting them yet.
+
+### Scrolling
+
+Ability to scroll overflowing components. Nested scrolling works too.
+
+### Basic components/widgets
+
+Early version of a base component library comes with this release. The main highlight is going to be a fully functioning browser-like `Input` component, but at the moment of release, the lib is still missing a focus system without which it's not possible to have more than one input on the screen at the same time.
+
+### Tests
+
+Library is now (somewhat) covered with tests, with biggest focus on the layout engine. Hard to believe I got this far without them.
+
+It's definitely nowhere near a finished effort but it's a start.
+
+```
+ ✓ src/utils/Tree.test.ts (4)
+ ✓ src/math/Mat4.test.ts (4)
+ ✓ src/utils/parseColor.test.ts (14)
+ ✓ src/layout/paint.test.ts (1)
+ ✓ src/utils/Queue.test.ts (7)
+ ✓ src/math/triangulatePolygon.test.ts (1)
+ ✓ src/math/packShelves.test.ts (1)
+ ✓ src/layout/layout.test.ts (15)
+ ✓ src/font/shapeText.test.ts (1)
+
+ Test Files  9 passed (9)
+      Tests  48 passed (48)
+   Start at  17:01:20
+   Duration  1.22s (transform 759ms, setup 0ms, collect 2.49s, tests 153ms, environment 1ms, prepare 364ms)
+```
+
+### New docs
+
+As you have noticed by now, this release is paired with a new website version. This is a complete rewrite from scratch.
+
+Previous version was just a single HTML file mostly generated with a bunch of scripts glued together. It worked fine and I am happy that I did the right call of not overengineering it. However, I have also reached limits how long it can reasonably be, so it was time to make more pages, introduce search and a blog. Which is all what you see now.
+
+### Better CI and release process
+
+The previous release process was working fine, but was very manual and intimidating. That's a big part of why I was put off and created everything from scratch. Now I am using automated NPM releases, continue to utilize conventional commits and I am hopeful it will generally be a more pleasant process now.
+
+### JSX is temporarily gone
+
+It was a nice trick to utilize JSX for declaring the UI, but since there's still a lot to figure out about interactivity and related APIs, I decided to leave it out for now and revisit it later when more pieces are in place.
+
+## What is coming next?
+
+- Lots of small bug fixes that I wish I had done before the release but I ran out of steam.
+- zIndex support.
+- Proper focus system for inputs and buttons.
+- SDF border radius clipping. Currently it's just rectangle, which means that elements can overflow in the corners.
+- Better line height and text support. Currently it works, mostly, but is far from perfect and even making a simple button might require manual vertical padding adjustment to make it look good.
+- Ability to style scrollbars.
+- Font ligatures support.
+- More styling options: `outline`, `boxShadow`, background gradients.
+- Image rendering.
+- Non-SDF font rendering that supports regular font atlases from rasterized fonts.
+
+## That's all
+
+Keep in mind that it is my fun side project and I am not forcing not expecting anyone to use it for anything, especially web development. It is not the right tool for that and would have very negative impact on accessibility – use of screen readers, high contrast mode, automatic language translations and other assistive technologies that come with the browser.
+
+_However, it is potentially a great tool for building highly visual apps and games and that's where I expect it to thrive._
+
+I hope you will enjoy this release. It brings major new capabilities and I am excited to see what people will be able to build with it. Feel free to [reach out to me on X](https://x.com/tchayen) if you have any questions or observations and always feel free to report issues on [GitHub](https://github.com/tchayen/red-otter/issues).

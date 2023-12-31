@@ -1,88 +1,99 @@
-import { Vec3 } from "./Vec3";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import type { Vec3 } from "./Vec3";
 import { Vec4 } from "./Vec4";
 
 export class Mat4 {
-  constructor(public readonly data: number[]) {}
+  constructor(public readonly data: Array<number>) {}
 
   static identity(): Mat4 {
-    return new Mat4([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    // prettier-ignore
+    return new Mat4([
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ]);
   }
 
   static scale(x: number, y: number, z: number): Mat4 {
-    return new Mat4([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1]);
+    // prettier-ignore
+    return new Mat4([
+      x, 0, 0, 0,
+      0, y, 0, 0,
+      0, 0, z, 0,
+      0, 0, 0, 1
+    ]);
   }
 
   static translate(x: number, y: number, z: number): Mat4 {
-    return new Mat4([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]);
+    // prettier-ignore
+    return new Mat4([
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      x, y, z, 1
+    ]);
   }
 
   static xRotation(angle: number): Mat4 {
+    // prettier-ignore
     return new Mat4([
-      1,
-      0,
-      0,
-      0,
-      0,
-      Math.cos(angle),
-      Math.sin(angle),
-      0,
-      0,
-      -Math.sin(angle),
-      Math.cos(angle),
-      0,
-      0,
-      0,
-      0,
-      1,
+      1, 0, 0, 0,
+      0, Math.cos(angle), Math.sin(angle), 0,
+      0, -Math.sin(angle), Math.cos(angle), 0,
+      0, 0, 0, 1,
     ]);
   }
 
   static yRotation(angle: number): Mat4 {
+    // prettier-ignore
     return new Mat4([
-      Math.cos(angle),
-      0,
-      -Math.sin(angle),
-      0,
-      0,
-      1,
-      0,
-      0,
-      Math.sin(angle),
-      0,
-      Math.cos(angle),
-      0,
-      0,
-      0,
-      0,
-      1,
+      Math.cos(angle), 0, -Math.sin(angle), 0,
+      0, 1, 0, 0,
+      Math.sin(angle), 0, Math.cos(angle), 0,
+      0, 0, 0, 1,
     ]);
   }
 
   static zRotation(angle: number): Mat4 {
+    // prettier-ignore
     return new Mat4([
-      Math.cos(angle),
-      -Math.sin(angle),
-      0,
-      0,
-      Math.sin(angle),
-      Math.cos(angle),
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
+      Math.cos(angle), -Math.sin(angle), 0, 0,
+      Math.sin(angle), Math.cos(angle), 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1,
     ]);
   }
 
   static rotate(x: number, y: number, z: number): Mat4 {
-    return this.xRotation(x)
-      .multiply(this.yRotation(y))
-      .multiply(this.zRotation(z));
+    return this.xRotation(x).multiply(this.yRotation(y)).multiply(this.zRotation(z));
+  }
+
+  static rotateFromQuat(q: Vec4): Mat4 {
+    const x = q.x;
+    const y = q.y;
+    const z = q.z;
+    const w = q.w;
+
+    const x2 = x * x;
+    const y2 = y * y;
+    const z2 = z * z;
+
+    const xy = x * y;
+    const xz = x * z;
+    const yz = y * z;
+    const wx = w * x;
+    const wy = w * y;
+    const wz = w * z;
+
+    // prettier-ignore
+    return new Mat4([
+      1 - 2 * (y2 + z2), 2 * (xy - wz), 2 * (xz + wy), 0,
+      2 * (xy + wz), 1 - 2 * (x2 + z2), 2 * (yz - wx), 0,
+      2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (x2 + y2), 0,
+      0, 0, 0, 1
+    ])
   }
 
   static orthographic(
@@ -91,57 +102,30 @@ export class Mat4 {
     bottom: number,
     top: number,
     near: number,
-    far: number
+    far: number,
   ): Mat4 {
+    // prettier-ignore
     return new Mat4([
-      2 / (right - left),
-      0,
-      0,
-      0,
-      0,
-      2 / (top - bottom),
-      0,
-      0,
-      0,
-      0,
-      -2 / (far - near),
-      0,
-      -(right + left) / (right - left),
-      -(top + bottom) / (top - bottom),
-      -(far + near) / (far - near),
-      1,
+      2 / (right - left), 0, 0, 0,
+      0, 2 / (top - bottom), 0, 0,
+      0, 0, -2 / (far - near), 0,
+      -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1,
     ]);
   }
 
   /**
    * `fov` is in radians.
    */
-  static perspective(
-    fov: number,
-    aspect: number,
-    near: number,
-    far: number
-  ): Mat4 {
+  static perspective(fov: number, aspect: number, near: number, far: number): Mat4 {
     const f = 1.0 / Math.tan(fov / 2);
     const nf = 1.0 / (near - far);
 
+    // prettier-ignore
     return new Mat4([
-      f / aspect,
-      0,
-      0,
-      0,
-      0,
-      f,
-      0,
-      0,
-      0,
-      0,
-      (far + near) * nf,
-      -1,
-      0,
-      0,
-      2 * far * near * nf,
-      0,
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (far + near) * nf, -1,
+      0, 0, 2 * far * near * nf, 0,
     ]);
   }
 
@@ -150,23 +134,12 @@ export class Mat4 {
     const xAxis = up.cross(zAxis).normalize();
     const yAxis = zAxis.cross(xAxis).normalize();
 
+    // prettier-ignore
     return new Mat4([
-      xAxis.x,
-      xAxis.y,
-      xAxis.z,
-      0,
-      yAxis.x,
-      yAxis.y,
-      yAxis.z,
-      0,
-      zAxis.x,
-      zAxis.y,
-      zAxis.z,
-      0,
-      position.x,
-      position.y,
-      position.z,
-      1,
+      xAxis.x, xAxis.y, xAxis.z, 0,
+      yAxis.x, yAxis.y, yAxis.z, 0,
+      zAxis.x, zAxis.y, zAxis.z, 0,
+      position.x, position.y, position.z, 1,
     ]);
   }
 
@@ -205,22 +178,10 @@ export class Mat4 {
 
   multiplyVec4(vec: Vec4): Vec4 {
     return new Vec4(
-      this.data[0] * vec.x +
-        this.data[1] * vec.y +
-        this.data[2] * vec.z +
-        this.data[3] * vec.w,
-      this.data[4] * vec.x +
-        this.data[5] * vec.y +
-        this.data[6] * vec.z +
-        this.data[7] * vec.w,
-      this.data[8] * vec.x +
-        this.data[9] * vec.y +
-        this.data[10] * vec.z +
-        this.data[11] * vec.w,
-      this.data[12] * vec.x +
-        this.data[13] * vec.y +
-        this.data[14] * vec.z +
-        this.data[15] * vec.w
+      this.data[0] * vec.x + this.data[1] * vec.y + this.data[2] * vec.z + this.data[3] * vec.w,
+      this.data[4] * vec.x + this.data[5] * vec.y + this.data[6] * vec.z + this.data[7] * vec.w,
+      this.data[8] * vec.x + this.data[9] * vec.y + this.data[10] * vec.z + this.data[11] * vec.w,
+      this.data[12] * vec.x + this.data[13] * vec.y + this.data[14] * vec.z + this.data[15] * vec.w,
     );
   }
 
@@ -336,26 +297,12 @@ export class Mat4 {
     const tmp_22 = m00 * m11;
     const tmp_23 = m10 * m01;
 
-    const t0 =
-      tmp_0 * m11 +
-      tmp_3 * m21 +
-      tmp_4 * m31 -
-      (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
-    const t1 =
-      tmp_1 * m01 +
-      tmp_6 * m21 +
-      tmp_9 * m31 -
-      (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+    const t0 = tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31 - (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+    const t1 = tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31 - (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
     const t2 =
-      tmp_2 * m01 +
-      tmp_7 * m11 +
-      tmp_10 * m31 -
-      (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+      tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31 - (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
     const t3 =
-      tmp_5 * m01 +
-      tmp_8 * m11 +
-      tmp_11 * m21 -
-      (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
+      tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21 - (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
 
     const d = 1 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
 
@@ -365,66 +312,26 @@ export class Mat4 {
       d * t2,
       d * t3,
 
+      d * (tmp_1 * m10 + tmp_2 * m20 + tmp_5 * m30 - (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30)),
+      d * (tmp_0 * m00 + tmp_7 * m20 + tmp_8 * m30 - (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30)),
+      d * (tmp_3 * m00 + tmp_6 * m10 + tmp_11 * m30 - (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30)),
+      d * (tmp_4 * m00 + tmp_9 * m10 + tmp_10 * m20 - (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20)),
       d *
-        (tmp_1 * m10 +
-          tmp_2 * m20 +
-          tmp_5 * m30 -
-          (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30)),
+        (tmp_12 * m13 + tmp_15 * m23 + tmp_16 * m33 - (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33)),
       d *
-        (tmp_0 * m00 +
-          tmp_7 * m20 +
-          tmp_8 * m30 -
-          (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30)),
+        (tmp_13 * m03 + tmp_18 * m23 + tmp_21 * m33 - (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33)),
       d *
-        (tmp_3 * m00 +
-          tmp_6 * m10 +
-          tmp_11 * m30 -
-          (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30)),
+        (tmp_14 * m03 + tmp_19 * m13 + tmp_22 * m33 - (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33)),
       d *
-        (tmp_4 * m00 +
-          tmp_9 * m10 +
-          tmp_10 * m20 -
-          (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20)),
+        (tmp_17 * m03 + tmp_20 * m13 + tmp_23 * m23 - (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23)),
       d *
-        (tmp_12 * m13 +
-          tmp_15 * m23 +
-          tmp_16 * m33 -
-          (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33)),
+        (tmp_14 * m22 + tmp_17 * m32 + tmp_13 * m12 - (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22)),
       d *
-        (tmp_13 * m03 +
-          tmp_18 * m23 +
-          tmp_21 * m33 -
-          (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33)),
+        (tmp_20 * m32 + tmp_12 * m02 + tmp_19 * m22 - (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02)),
       d *
-        (tmp_14 * m03 +
-          tmp_19 * m13 +
-          tmp_22 * m33 -
-          (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33)),
+        (tmp_18 * m12 + tmp_23 * m32 + tmp_15 * m02 - (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12)),
       d *
-        (tmp_17 * m03 +
-          tmp_20 * m13 +
-          tmp_23 * m23 -
-          (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23)),
-      d *
-        (tmp_14 * m22 +
-          tmp_17 * m32 +
-          tmp_13 * m12 -
-          (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22)),
-      d *
-        (tmp_20 * m32 +
-          tmp_12 * m02 +
-          tmp_19 * m22 -
-          (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02)),
-      d *
-        (tmp_18 * m12 +
-          tmp_23 * m32 +
-          tmp_15 * m02 -
-          (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12)),
-      d *
-        (tmp_22 * m22 +
-          tmp_16 * m02 +
-          tmp_21 * m12 -
-          (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02)),
+        (tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12 - (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02)),
     ]);
   }
 }

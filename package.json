@@ -1,58 +1,85 @@
 {
   "name": "red-otter",
-  "description": "Self-contained WebGL flexbox layout engine.",
+  "description": "Self-contained UI rendering library for 3D graphics APIs.",
   "version": "0.0.16",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
   "type": "module",
+  "sideEffects": false,
+  "module": "dist/src/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs"
-    },
-    "./dist/jsx-runtime": {
-      "import": "./dist/jsx-runtime.js",
-      "require": "./dist/jsx-runtime.cjs",
-      "types": "./dist/jsx-runtime.d.ts"
-    },
-    "./dist/jsx-dev-runtime": {
-      "import": "./dist/jsx-dev-runtime.js",
-      "require": "./dist/jsx-dev-runtime.cjs",
-      "types": "./dist/jsx-dev-runtime.d.ts"
-    },
-    "./package.json": "./package.json"
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
+    }
   },
   "files": [
-    "/dist"
+    "dist"
   ],
-  "scripts": {
-    "lib:build": "vite build",
-    "tsc": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0",
-    "test": "vitest run --no-threads",
-    "run-checks": "yarn tsc && yarn lint && yarn test",
-    "docs:dev": "cd docs; yarn dev",
-    "docs:build": "cd docs; yarn build",
-    "docs:generate": "cd docs; yarn generate",
-    "docs:watch": "cd docs; yarn watch"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.1",
-    "eslint": "^8.39.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
-    "prettier": "^2.8.8",
-    "typescript": "^5.0.4",
-    "vite": "^4.3.3",
-    "vite-plugin-dts": "^2.3.0",
-    "vitest": "^0.30.1"
-  },
   "homepage": "https://red-otter.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/tchayen/red-otter"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "ci": "bun run lint && bun run tsc && bun run vitest run && bun run build",
+    "coverage": "vitest --coverage",
+    "dev": "cd examples && vite --port 5005",
+    "build": "bun run tsc -p tsconfig.build.json",
+    "prepare": "bun run build",
+    "lint": "eslint src",
+    "loc": "find src -name \"*.ts\" ! -path \"*/node_modules/*\" -exec cat {} + | wc -l",
+    "prepare-sandpack": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@petamoriken/float16": "^3.8.4"
+  },
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^8.0.1",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
+    "@vitest/coverage-istanbul": "^1.1.1",
+    "@vitest/coverage-v8": "^1.1.1",
+    "@vitest/ui": "^1.1.1",
+    "@webgpu/types": "^0.1.40",
+    "eslint": "^8.56.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-comment-length": "^1.7.2",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "eslint-plugin-typescript-sort-keys": "^3.1.0",
+    "eslint-plugin-unicorn": "^50.0.1",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "prettier": "^3.1.1",
+    "release-it": "^17.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^1.1.1"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "conventionalcommits"
+        },
+        "infile": "CHANGELOG.md"
+      }
+    }
+  }
 }

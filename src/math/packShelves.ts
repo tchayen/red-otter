@@ -1,38 +1,26 @@
-import { invariant } from "../invariant";
+import { invariant } from "../utils/invariant";
 import { Vec2 } from "./Vec2";
 
-function ceilPow2(x: number): number {
-  let value = x;
-  value -= 1;
-  value |= value >> 1;
-  value |= value >> 2;
-  value |= value >> 4;
-  value |= value >> 8;
-  value |= value >> 16;
-  value += 1;
-  return value;
-}
-
 export type Packing = {
-  width: number;
   height: number;
-  positions: Vec2[];
+  positions: Array<Vec2>;
+  width: number;
 };
 
 /**
  * Takes sizes of rectangles and packs them into a single texture. Width and
  * height will be the next power of two.
  */
-export function packShelves(sizes: Vec2[]): Packing {
+export function packShelves(sizes: Array<Vec2>): Packing {
   let area = 0;
   let maxWidth = 0;
 
   const rectangles = sizes.map((rectangle, i) => ({
+    height: rectangle.y,
     id: i,
+    width: rectangle.x,
     x: 0,
     y: 0,
-    width: rectangle.x,
-    height: rectangle.y,
   }));
 
   for (const box of rectangles) {
@@ -46,7 +34,7 @@ export function packShelves(sizes: Vec2[]): Packing {
   // space utilization.
   const startWidth = Math.max(Math.ceil(Math.sqrt(area / 0.95)), maxWidth);
 
-  const regions = [{ x: 0, y: 0, width: startWidth, height: Infinity }];
+  const regions = [{ height: Number.POSITIVE_INFINITY, width: startWidth, x: 0, y: 0 }];
 
   let width = 0;
   let height = 0;
@@ -54,6 +42,7 @@ export function packShelves(sizes: Vec2[]): Packing {
   for (const box of rectangles) {
     for (let i = regions.length - 1; i >= 0; i--) {
       const region = regions[i];
+      invariant(region, "Region is missing.");
       if (box.width > region.width || box.height > region.height) {
         continue;
       }
@@ -78,10 +67,10 @@ export function packShelves(sizes: Vec2[]): Packing {
         region.height -= box.height;
       } else {
         regions.push({
+          height: box.height,
+          width: region.width - box.width,
           x: region.x + box.width,
           y: region.y,
-          width: region.width - box.width,
-          height: box.height,
         });
 
         region.y += box.height;
@@ -95,10 +84,20 @@ export function packShelves(sizes: Vec2[]): Packing {
   rectangles.sort((a, b) => a.id - b.id);
 
   return {
-    width: size,
     height: size,
-    positions: rectangles.map(
-      (rectangle) => new Vec2(rectangle.x, rectangle.y)
-    ),
+    positions: rectangles.map((rectangle) => new Vec2(rectangle.x, rectangle.y)),
+    width: size,
   };
+}
+
+function ceilPow2(x: number): number {
+  let value = x;
+  value -= 1;
+  value |= value >> 1;
+  value |= value >> 2;
+  value |= value >> 4;
+  value |= value >> 8;
+  value |= value >> 16;
+  value += 1;
+  return value;
 }

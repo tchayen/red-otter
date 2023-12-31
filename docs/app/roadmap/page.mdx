@@ -1,0 +1,22 @@
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Roadmap");
+
+# Roadmap
+
+Things that would be nice to have, roughly sorted by priority:
+
+- Lots of small bug fixes that I wish I had done before the release but I ran out of steam.
+- zIndex support.
+- Proper focus system for inputs and buttons.
+- SDF border radius clipping. Currently it's just rectangle, which means that elements can overflow in the corners.
+- Better line height and text support. Currently it works, mostly, but is far from perfect and even making a simple button might require manual vertical padding adjustment to make it look good.
+- Ability to style scrollbars.
+- Font ligatures support.
+- More styling options: `outline`, `boxShadow`, background gradients.
+- Image rendering.
+- Non-SDF font rendering that supports regular font atlases from rasterized fonts.
+- Rendering vector shapes. Maybe a mini SVG `<path>` renderer?
+- Position `fixed` and `sticky`.
+- Animations.
+- Custom shaders for views.
+- Better OTF file support. Currently the library is only able to parse fonts that follow classic TTF-style declaration of glyphs and their sizes.

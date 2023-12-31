@@ -1,0 +1,58 @@
+import { Api } from "./Api";
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Layout Engine");
+
+# Layout engine
+
+The layout algorithm is perhaps the most valuable and unique part of the library and took the most time to develop.
+
+## Overview
+
+Layout engine executes a 4 pass algorithm:
+
+- _Pass 1:_ Traverse tree in level order and generate the reverse queue.
+- _Pass 2:_ Going bottom-up, level order, resolve sizes of elements that base their size on their children.
+- _Pass 3:_ Going top-down, level order, resolve flex sizes by splitting available space between children and assign positions of all elements based on specified flex modifiers.
+- _Pass 4:_ Going top-down, level order, calculate scroll sizes – the actual space used by children versus available component size.
+
+## What is actually happening?
+
+### Pass 1
+
+Internal state of each node is reset (see [LayoutNodeState](/styling#layoutnodestate)).
+
+If element has defined width or height, it is applied. If it is a text node and parent has defined width, the maximum available width of the text is now known.
+
+### Pass 2
+
+If element has undefined size on the main axis (width for row, height for column), it is calculated as a sum of element's paddings, widths and margins of all children. For cross axis it is the maximum value of children sizes (and element's paddings).
+
+The children are divided into rows. If `flexWrap` is not defined it will be a single row. If it is defined, sizes of all children are calculated and rows are split based on them and gap values.
+
+### Pass 3
+
+If element has both left and right offsets (or top and bottom) it is used to set its size.
+
+For each row of children, each child is positioned based on `alignContent`, `alignItems`, `justifyContent` and `alignSelf` properties. Also flex sizes are determined based on `flexGrow`, `flexShrink` and `flexBasis` properties. Min, max sizes and aspect ratio is applied.
+
+Size and position of each element is rounded using `Math.round()` to a full pixel.
+
+### pass 4
+
+Scroll size of each element is calculated, which is the maximum area needed to display all children. Used for scrolling.
+
+## Quick story
+
+My initial idea was to base it off the Auto Layout system from Figma, but it soon turned out that the CSS flexbox API is more familiar to write. Since there was a similar already successfully developed project by Facebook, [Yoga](https://yogalayout.dev/), I decided to follow the same subset of implemented flexbox features.
+
+I made first implementation in Zig in June 2022. In July I came with with the a 3-pass tree traversal that allows to resolve all flexbox properties without introducing any recursion. I released Red Otter in early 2023. At the time it was missing flex wrap and scrollable containers.
+
+I spent a lot of time thinking how approach interactivity. In October 2023 I settled for retained mode UI rendering and what soon followed was a major rewrite of the layout algorithm that enabled flex wrap and shortened the code. In November I finished the implementation and implemented scrolling, which required rethinking other execution layers of the library.
+
+## API
+
+<Api />
+
+## Want to learn more?
+
+I wrote a blogpost about implementing similar algorithm – [How to Write a Flexbox Layout Engine](https://tchayen.com/how-to-write-a-flexbox-layout-engine).

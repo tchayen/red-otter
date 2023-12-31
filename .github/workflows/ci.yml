@@ -3,55 +3,43 @@ run-name: CI actions (${{ github.actor }})
 on: [push]
 
 jobs:
-  tests:
+  lib:
+    name: Run tests, eslint, tsc, and build
     runs-on: ubuntu-latest
     env:
       CI: 1
     steps:
       - name: Checkout git
         uses: actions/checkout@v3
-
-      - name: Use Node v18
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
-
-      - name: Install dependencies (main)
-        uses: borales/actions-yarn@v4
+          node-version: 21
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install dependencies
+        run: bun i
+      - name: Run all checks
+        run: bun run ci
+  docs:
+    name: Run everything in docs too
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          cmd: install
-
-      - name: Install dependencies (docs)
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: --cwd docs install
-
-      - name: Install dependencies (examples/font-atlas-runtime)
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: --cwd examples/font-atlas-runtime install
-
-      - name: Install dependencies (examples/font-atlas-vercel-ci)
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: --cwd examples/font-atlas-vercel-ci install
-
-      - name: Run tsc
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: tsc
-
-      - name: Eslint
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: lint
-
-      - name: Run tests
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: test
-
-      - name: Build docs
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: docs:build
+          node-version: 21
+      - name: Install bun
+        uses: oven-sh/setup-bun@v1
+      - name: CD into docs
+        run: cd docs
+      - name: Install dependencies
+        run: bun i
+      - name: eslint
+        run: bun run lint
+      - name: tsc
+        run: bun run tsc
+      - name: Build
+        run: bun run build

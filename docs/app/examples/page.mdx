@@ -1,0 +1,30 @@
+import { getMetadata } from "../getMetadata";
+import { ExampleBasic } from "./editors/Basic";
+import { ExamplePicker } from "./editors/Picker";
+import { ExampleScrollbars } from "./editors/Scrollbars";
+
+export const metadata = getMetadata("Examples");
+
+# Examples
+
+## Basic rendering
+
+Example of basic rendering that does not use the layout algorithm.
+
+<ExampleBasic />
+
+## Interactive UIs
+
+Text inputs focus on click and can be typed into. Text can be selected either with mouse or with shift + arrow keys (or cmd/ctrl to jump to either end).
+
+Scrollable views can be scrolled with mouse wheel or by dragging the scrollbars with mouse.
+
+If anything doesn't work or you find a bug, please [open an issue](https://github.com/tchayen/red-otter/issues/new) (but please do check if it hasn't already been reported).
+
+<ExamplePicker />
+
+## Scrollbars
+
+Example (and a benchmark of sorts) of proper scrolling capabilities in the library – nested scrollable views.
+
+<ExampleScrollbars />

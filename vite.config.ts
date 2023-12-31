@@ -1,25 +1,23 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-// https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
   build: {
     lib: {
-      entry: [
-        resolve(__dirname, "src/index.ts"),
-        resolve(__dirname, "src/jsx-runtime.ts"),
-        resolve(__dirname, "src/jsx-dev-runtime.ts"),
-      ],
-      formats: ["es", "cjs"],
+      entry: resolve(__dirname, "src/index.ts"),
+      // fileName: () => `index.js`,
+      formats: ["es"],
       name: "RedOtter",
     },
+    outDir: ".sandpack-files",
   },
   plugins: [
+    // @ts-expect-error dts types were not updated to vite 5.
     dts({
-      // Because tsconfig.json includes docs/ and examples/, we cannot let dts
-      // use it (which happens by default).
-      include: ["src"],
+      // include: "src",
+      rollupTypes: true,
+      strictOutput: true,
     }),
   ],
 });

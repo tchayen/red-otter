@@ -1,0 +1,80 @@
+import { Api } from "./Api";
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Text Rendering");
+
+# Text Rendering
+
+Everything about the process of getting text to the user's screen.
+
+---
+
+## Overview
+
+Text rendering is based on SDF (Signed Distance Field) font atlas approach. This means that for every font to be rendered, the TTF file must be parsed, glyph information extracted and then the font atlas needs to be generated. The basic and default approach is to use HTML Canvas API to prepare it.
+
+---
+
+## Font lookups
+
+All the information about text that is later needed is bundled in what I call `Lookups`:
+
+```ts
+type Lookups = {
+  atlas: {
+    fontSize: number;
+    height: number;
+    positions: Array<Vec2>;
+    sizes: Array<Vec2>;
+    width: number;
+  };
+  fonts: Array<{
+    ascender: number;
+    buffer: ArrayBuffer;
+    capHeight: number;
+    glyphs: Map<number, Glyph>;
+    kern: KerningFunction;
+    name: string;
+    ttf: TTF;
+    unitsPerEm: number;
+  }>;
+  uvs: Map<string, Vec4>;
+};
+```
+
+And this is how it is generated:
+
+```ts
+// Alphabet is a string containing all characters that should be included in the atlas.
+const alphabet = "AaBbCc…";
+
+const [interTTF, interBoldTTF] = await Promise.all(
+  ["/Inter.ttf", "/Inter-SemiBold.ttf"].map((url) =>
+    fetch(url).then((response) => response.arrayBuffer()),
+  ),
+);
+
+const lookups = prepareLookups(
+  // Declare all fonts that should be included.
+  [
+    {
+      buffer: interTTF,
+      name: "Inter",
+      ttf: parseTTF(interTTF),
+    },
+    {
+      buffer: interBoldTTF,
+      name: "InterBold",
+      ttf: parseTTF(interBoldTTF),
+    },
+  ],
+  // Render at 150px size. The size of the font atlas will be determined by packShelves() algorithm.
+  { alphabet, fontSize: 150 },
+);
+
+// Generate _one_ font atlas texture for all fonts. In future it would make sense to allow splitting for projects that use many fonts.
+const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
+```
+
+## API
+
+<Api />

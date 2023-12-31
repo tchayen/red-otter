@@ -1,0 +1,200 @@
+import { Tabs } from "../components/Tabs";
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Getting Started");
+
+# Getting Started
+
+Due to modular and layered architecture, you can start almost anywhere depending on your needs.
+
+However, the library is still in early stages and there are many rough edges. If you feel brave enough to try it out now, please let me know of any problems in the [GitHub issues](https://github.com/tchayen/red-otter).
+
+As mentioned in the README, first install the library with package manager of your choice:
+
+```bash
+npm i red-otter
+```
+
+## Setting up the renderer
+
+Depending on which renderer you use, setup code will differ. There is a bit of boilerplate code that is needed, but the idea was to make it as unopinionated as possible since setup of every app is different and this is not meant to be a framework, but a UI library that co-exists with other parts of the app.
+
+<Tabs.Root defaultValue="webgpu">
+  <Tabs.List>
+    <Tabs.Trigger value="webgpu">WebGPU</Tabs.Trigger>
+    <Tabs.Trigger value="webgl">WebGL</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="webgpu">
+
+There is a bit of setup involved. This is general WebGPU initialization, so if you are doing something similar that boils down to the same thing – it's great, you can skip this part. That is the whole point on not enforcing anything on you.
+
+```tsx
+const settings = {
+  sampleCount: 4,
+  windowHeight: canvas.clientHeight,
+  windowWidth: canvas.clientWidth,
+};
+
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+const interTTF = await fetch("/Inter.ttf").then((response) => response.arrayBuffer());
+
+const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+const entry = navigator.gpu;
+invariant(entry, "WebGPU is not supported in this browser.");
+
+const context = canvas.getContext("webgpu");
+invariant(context, "WebGPU is not supported in this browser.");
+
+const adapter = await entry.requestAdapter();
+invariant(adapter, "No GPU found on this system.");
+
+const device = await adapter.requestDevice();
+
+context.configure({
+  alphaMode: "opaque",
+  device: device,
+  format: navigator.gpu.getPreferredCanvasFormat(),
+});
+
+const lookups = prepareLookups(
+  [
+    {
+      buffer: interTTF,
+      name: "Inter",
+      ttf: parseTTF(interTTF),
+    },
+  ],
+  {
+    alphabet,
+    fontSize: 150,
+  },
+);
+
+const fontAtlas = await renderFontAtlas(lookups, { useSDF: true });
+
+const colorTexture = device.createTexture({
+  format: "bgra8unorm",
+  label: "color",
+  sampleCount: settings.sampleCount,
+  size: { height: canvas.height, width: canvas.width },
+  usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
+});
+const colorTextureView = colorTexture.createView({ label: "color" });
+
+const renderer = new ScrollableRenderer(
+  device,
+  context,
+  colorTextureView,
+  settings,
+  lookups,
+  fontAtlas,
+);
+
+// Our code goes here…
+
+function render() {
+  // …or here!
+
+  const commandEncoder = device.createCommandEncoder();
+  renderer.render(commandEncoder);
+  device.queue.submit([commandEncoder.finish()]);
+  requestAnimationFrame(render);
+}
+
+render();
+```
+
+  </Tabs.Content>
+  <Tabs.Content value="webgl">
+
+_WebGL example coming in future._
+
+  </Tabs.Content>
+</Tabs.Root>
+
+## First layer: calling renderer directly
+
+First of all, you can abandon all other library features and just use the renderer as a Canvas API replacement (although limited!).
+
+```tsx
+renderer.rectangle(
+  new Vec4(1, 0, 1, 1),
+  new Vec2(50, 50),
+  new Vec2(100, 100),
+  new Vec4(10, 10, 10, 10),
+  new Vec4(0, 0, 0, 0),
+  new Vec4(0, 0, 0, 0),
+  new Vec2(0, 0),
+  new Vec2(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY),
+  new Vec4(0, 0, 0, 0),
+);
+```
+
+This will get us a pink rounded rectangle on the screen.
+
+> [!NOTE]
+> You might have noticed that this API is uhm… a bit ugly? What are even those parameters? Well, the thing is, this is the most low-level function there is. It is as 'hot path' as it gets here.
+>
+> Therefore performance takes precedence over ergonomics and most JS engines will deal better with even a large number of arguments rather than with an options object (citation needed).
+
+But usually this is not what might be useful to us. Therefore let's continue to…
+
+## Second layer: using views
+
+This is the place where layout and user events happens.
+
+```tsx
+const root = new BaseView({
+  style: {
+    height: "100%",
+    width: "100%",
+  },
+});
+
+root.add(
+  new BaseView({
+    style: {
+      backgroundColor: "#333",
+      height: 100,
+      width: 100,
+    },
+  }),
+);
+
+layout(root, lookups, new Vec2(window.innerWidth, window.innerHeight));
+```
+
+## Third layer: make it interactive
+
+Until now we only have a static content, which, while maybe useful for things like OG images or some static parts that need automatic layout, is not a full UI. What is missing is user interaction.
+
+```tsx
+// Replace BaseView with View.
+
+// And in your game loop add this:
+compose(renderer, root);
+paint(renderer, root);
+```
+
+### Add event listeners
+
+Each view accepts `onClick` event listener, but there are more types that can be added in a `constructor()` if you extend the `View` class.
+
+```tsx
+export class Input extends View {
+  constructor() {
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this._eventListeners.push([UserEventType.KeyDown, this.onKeyDown]);
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    // ...
+  }
+}
+```
+
+## Summary
+
+This hopefully gives some overview of how the library works.

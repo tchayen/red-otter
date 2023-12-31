@@ -1,0 +1,53 @@
+import { Api } from "./Api";
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Renderer");
+
+# Renderer
+
+The renderer is responsible for rendering shapes and text on the screen. It has a very simple API:
+
+```tsx
+export interface Renderer {
+  rectangle(
+    color: Vec4,
+    position: Vec2,
+    size: Vec2,
+    corners: Vec4,
+    borderWidth: Vec4,
+    borderColor: Vec4,
+    clipStart: Vec2,
+    clipSize: Vec2,
+    clipCorners: Vec4,
+  ): void;
+
+  render(commandEncoder: GPUCommandEncoder): void;
+
+  text(
+    text: string,
+    position: Vec2,
+    fontName: string,
+    fontSize: number,
+    color: Vec4,
+    textAlignment: TextAlign,
+    clipStart: Vec2,
+    clipSize: Vec2,
+    options?: { lineHeight?: number; maxWidth?: number },
+  ): void;
+}
+```
+
+## Overview
+
+For each rectangle on the screen, an instance of a full-screen quad is renderered, which is then assigned to proper positions based on data stored in storage buffer. Fragment shader uses SDF to calculate border radius.
+
+## API
+
+<Api />
+
+---
+
+## Text rendering
+
+Text uses SDF font rendering to display glyphs from a font atlas. See [Text Rendering](/text-rendering) page for more information.
+
+I wrote a blogpost that goes more in depth – [Drawing Text in WebGPU Using Just the Font File](https://tchayen.com/drawing-text-in-webgpu-using-just-the-font-file).

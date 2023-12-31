@@ -1,13 +1,13 @@
-import { invariant } from "../invariant";
-import { Vec2 } from "./Vec2";
+import { invariant } from "../utils/invariant";
+import type { Vec2 } from "./Vec2";
 
 type RingNode = {
+  next: RingNode;
   position: Vec2;
   prev: RingNode;
-  next: RingNode;
 };
 
-function earCut(ear: RingNode): Vec2[] {
+function earCut(ear: RingNode): Array<Vec2> {
   const triangles = [];
 
   let next = ear.next;
@@ -36,7 +36,7 @@ function earCut(ear: RingNode): Vec2[] {
 /**
  * Triangulates a polygon. Assumes that polygon is clockwise.
  */
-export function triangulatePolygon(polygon: Vec2[]): Vec2[] {
+export function triangulatePolygon(polygon: Array<Vec2>): Array<Vec2> {
   invariant(polygon.length >= 3, "Polygon must have at least 3 points.");
   const node = createRing(polygon);
   invariant(node, "Failed to triangulate polygon.");
@@ -63,7 +63,7 @@ function removeNode(p: RingNode): void {
   p.prev.next = p.next;
 }
 
-export function createRing(data: Vec2[]): RingNode | null {
+function createRing(data: Array<Vec2>): RingNode | null {
   let last;
   for (const v of data) {
     last = insertNode(v, last);
@@ -118,11 +118,7 @@ function isEar(ear: RingNode): boolean {
 
   let p = ear.next.next;
   while (p !== ear.prev) {
-    const inTriangle = isPointInPolygon(p.position, [
-      a.position,
-      b.position,
-      c.position,
-    ]);
+    const inTriangle = isPointInPolygon(p.position, [a.position, b.position, c.position]);
 
     if (inTriangle && area(p.prev.position, p.position, p.next.position) >= 0) {
       return false;
@@ -132,22 +128,26 @@ function isEar(ear: RingNode): boolean {
   return true;
 }
 
-function isPointInPolygon(point: Vec2, points: Vec2[]): boolean {
+function isPointInPolygon(point: Vec2, points: Array<Vec2>): boolean {
   let i = 0;
   let j = points.length - 1;
   let oddNodes = false;
 
   while (i < points.length) {
+    const leftPoint = points[i];
+    const rightPoint = points[j];
+    invariant(leftPoint, "Left point is missing.");
+    invariant(rightPoint, "Right point is missing.");
     // Check if the point is between the y coordinates of the two points of the edge.
     if (
-      (points[i].y < point.y && points[j].y >= point.y) ||
-      (points[j].y < point.y && points[i].y >= point.y)
+      (leftPoint.y < point.y && rightPoint.y >= point.y) ||
+      (rightPoint.y < point.y && leftPoint.y >= point.y)
     ) {
-      // Calculate the x coordinate of the point based on the slope of the edge and the y coordinate of the point
+      // Calculate the x coordinate of the point based on the slope of the edge and the y
+      // coordinate of the point.
       if (
-        points[i].x +
-          ((point.y - points[i].y) / (points[j].y - points[i].y)) *
-            (points[j].x - points[i].x) <
+        leftPoint.x +
+          ((point.y - leftPoint.y) / (rightPoint.y - leftPoint.y)) * (rightPoint.x - leftPoint.x) <
         point.x
       ) {
         oddNodes = !oddNodes;

@@ -1,0 +1,39 @@
+import { Api } from "./Api";
+import { getMetadata } from "../getMetadata";
+export const metadata = getMetadata("Styling");
+
+# Styling
+
+Everything to know about styling components.
+
+---
+
+## Edge cases
+
+Some differences (or unobvious cases) from RN and/or CSS:
+
+- Default `flexDirection` is `column` (CSS default is `row`).
+- Default `alignContent` is `flex-start` (CSS default is `stretch`).
+- Default `flexShrink` is `0` (CSS default is `1`).
+- `flexBasis` takes precedence over `width` and `height` if defined.
+- There's no `margin: auto`.
+- Similarly to CSS and RN, if both top and bottom (or left and right) are defined and `height` (or `width`) is _not_ defined, the element will span the distance between those two edges.
+- Properties with higher specificity override properties with lower specificity (in CSS it is the that order matters).
+  In CSS `style="flex-grow: 1; flex: 2"` would use value `2` for `flex-grow` because it is defined later. Here corresponding code would use value `1` for `flex-grow` because it is more specific. Same goes for `margin`, `padding`, `borderWidth`, `gap`.
+- `box-sizing` is always `border-box`, which means that `width` and `height` include both `padding` and `border` (CSS default is `content-box`).
+
+---
+
+## Colors
+
+Colors are defined as strings, similar to CSS.
+
+Supported formats are hex (long and short variants – `#f00` and `#ff0000`), RGB, RGBA (`rgba(255, 0, 0, 0.5)`), HSL (`hsl(60 100% 50%)`, `hsl(60, 100%, 50%, 0.8)`), HSLA, HSV.
+
+RGB and HSV require adding A in the end to support alpha. In HSL it is optional. If color is not recognized, `transparent` is used and warning is logged to the console. For the most up-to-date info check `parseColor()` in the code.
+
+---
+
+## API
+
+<Api />
