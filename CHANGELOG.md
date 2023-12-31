@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Add new WebGPU renderer.
+- Add missing styling and layout properties: `flexWrap`, `flexShrink`, `flexGrow`, `flexBasis`, `aspectRatio`, `minHeight` (and width and max variants), `overflow`.
+- Refactor font handling code and added line wrapping, kerning, text alignment.
+- Split layout and rendering into phases: `layout()`, `compose()`, `paint()`.
+- Add event system scrolling support to `View` (use `BaseView` to avoid runtime cost of it).
+- Add first components as building blocks for larger UIs: `Button` and `Input` (which supports keyboard and mouse selection).
+- Improve CI and automated the release process.
+- Remove JSX API for the time being while research is ongoing on how to make it play well with interactive components.
+- Add unit tests.
+- Add New docs website with multiple pages, search, API reference, examples, and guides.
+
 ## 0.0.16
 
 - Fix paths in `package.json` field `exports`.

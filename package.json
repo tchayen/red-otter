@@ -37,6 +37,7 @@
     "@petamoriken/float16": "^3.8.4"
   },
   "devDependencies": {
+    "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-typescript": "^11.1.5",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/node": "^20.10.4",
@@ -60,5 +61,12 @@
     "vite": "^5.0.7",
     "vite-plugin-dts": "^3.6.4",
     "vitest": "^1.0.3"
+  },
+  "release-it": {
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
+      }
+    }
   }
 }
