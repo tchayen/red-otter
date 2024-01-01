@@ -66,7 +66,6 @@ export { Button } from "./widgets/Button";
 export { Input } from "./widgets/Input";
 
 export type {
-  UserEventType,
   MouseClickHandler,
   MouseMoveHandler,
   MouseEnterHandler,
@@ -87,6 +86,5 @@ export type {
   FocusEvent,
   LayoutEvent,
   UserEvent,
-  isMouseEvent,
-  isKeyboardEvent,
 } from "./layout/eventTypes";
+export { UserEventType, isMouseEvent, isKeyboardEvent } from "./layout/eventTypes";
