@@ -1,5 +1,12 @@
 
 
+## [0.1.2](https://github.com/tchayen/red-otter/compare/v0.1.1...v0.1.2) (2024-01-01)
+
+
+### Bug Fixes
+
+* export event enums and functions as values not types ([bdd6a43](https://github.com/tchayen/red-otter/commit/bdd6a43e554951ba3b608848e3110da734ed97d7))
+
 ## [0.1.1](https://github.com/tchayen/red-otter/compare/v0.1.0...v0.1.1) (2024-01-01)
 
 
