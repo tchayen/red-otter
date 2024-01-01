@@ -64,3 +64,29 @@ export { triangulatePolygon } from "./math/triangulatePolygon";
 
 export { Button } from "./widgets/Button";
 export { Input } from "./widgets/Input";
+
+export type {
+  UserEventType,
+  MouseClickHandler,
+  MouseMoveHandler,
+  MouseEnterHandler,
+  MouseLeaveHandler,
+  MouseDownHandler,
+  MouseUpHandler,
+  ScrollHandler,
+  KeyDownHandler,
+  KeyUpHandler,
+  KeyPressHandler,
+  FocusHandler,
+  BlurHandler,
+  InputChangeHandler,
+  LayoutHandler,
+  MouseEvent,
+  ScrollEvent,
+  KeyboardEvent,
+  FocusEvent,
+  LayoutEvent,
+  UserEvent,
+  isMouseEvent,
+  isKeyboardEvent,
+} from "./layout/eventTypes";
