@@ -1,5 +1,12 @@
 
 
+## [0.1.1](https://github.com/tchayen/red-otter/compare/v0.1.0...v0.1.1) (2024-01-01)
+
+
+### Bug Fixes
+
+* export event types ([d2ba6db](https://github.com/tchayen/red-otter/commit/d2ba6db5fb8b10ec11e030d2b632b1e9cf403796))
+
 ## [0.1.0](https://github.com/tchayen/red-otter/compare/v0.0.16...v0.1.0) (2023-12-31)
 
 
