@@ -36,6 +36,7 @@ export { toSDF } from "./font/toSDF";
 export { parseTTF } from "./font/parseTTF";
 export { shapeText } from "./font/shapeText";
 export { prepareLookups } from "./font/prepareLookups";
+export type { Lookups, Glyph, KerningFunction } from "./font/types";
 export { renderFontAtlas, fontSizeToGap } from "./font/renderFontAtlas";
 export { generateGlyphToClassMap } from "./font/generateGlyphToClassMap";
 export { generateKerningFunction } from "./font/generateKerningFunction";
