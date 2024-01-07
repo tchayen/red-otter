@@ -29,9 +29,9 @@ export function ui(renderer: WebGPURenderer): View {
   });
 
   // root.add(exampleGrid());
-  root.add(fixtures.monoFontForm());
+  // root.add(fixtures.monoFontForm());
   // root.add(fixtures.lobbyPicker());
-  // root.add(fixtures.displayAndOverflow());
+  root.add(fixtures.interactiveButton());
   // root.add(complexWindow());
 
   measure("Layout", () => {

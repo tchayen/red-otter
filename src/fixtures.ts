@@ -1000,7 +1000,6 @@ export function interactiveButton() {
     style: {
       alignItems: AlignItems.Center,
       backgroundColor: "#111",
-      flexDirection: FlexDirection.RowReverse,
       gap: 12,
       height: 300,
       justifyContent: JustifyContent.Center,
@@ -1010,19 +1009,8 @@ export function interactiveButton() {
   });
 
   const button = new Button({
-    // style: {
-    //   backgroundColor: "#2870BD",
-    //   borderColor: "#0090FF",
-    //   borderRadius: 6,
-    //   borderTopWidth: 1,
-    //   height: 28,
-    //   paddingHorizontal: 12,
-    //   paddingTop: 7,
-    // },
     label: "Confirm",
-
     lookups,
-
     onClick: () => {
       console.log("Clicked!");
     },
@@ -1038,8 +1026,8 @@ export function interactiveButton() {
 
   const input = new Input({
     lookups,
-    onKeyDown: (event) => {
-      //
+    onChange: (value) => {
+      console.log("Input value changed to", value);
     },
     placeholder: "Type here...",
     style: {
@@ -1049,18 +1037,24 @@ export function interactiveButton() {
       paddingHorizontal: 0,
       paddingLeft: 10,
     },
-    // style: {
-    //   backgroundColor: "#111111",
-    //   borderColor: "#313131",
-    //   borderRadius: 6,
-    //   borderWidth: 1,
-    //   height: 40,
-    //   justifyContent: JustifyContent.Center,
-    //   paddingHorizontal: 0,
-    // },
-    value: "Hello worldabcdefghijklmnop",
   });
   root.add(input);
+
+  const secondInput = new Input({
+    lookups,
+    onChange: (value) => {
+      console.log("Input value changed to", value);
+    },
+    placeholder: "Type here...",
+    style: {
+      backgroundColor: "#333",
+      height: 40,
+      justifyContent: JustifyContent.Center,
+      paddingHorizontal: 0,
+      paddingLeft: 10,
+    },
+  });
+  root.add(secondInput);
 
   return root;
 }

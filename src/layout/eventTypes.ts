@@ -35,7 +35,6 @@ export type KeyUpHandler = (event: KeyboardEvent, eventManager: EventManager) =>
 export type KeyPressHandler = (event: KeyboardEvent, eventManager: EventManager) => void;
 export type FocusHandler = (event: FocusEvent, eventManager: EventManager) => void;
 export type BlurHandler = (event: FocusEvent, eventManager: EventManager) => void;
-export type InputChangeHandler = (eventManager: EventManager) => void;
 export type LayoutHandler = (eventManager: EventManager) => void;
 
 export type MouseEvent = {

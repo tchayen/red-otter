@@ -11,7 +11,6 @@ import type {
   KeyboardEvent,
   KeyDownHandler,
   FocusHandler,
-  InputChangeHandler,
   BlurHandler,
 } from "../layout/eventTypes";
 import { Whitespace, Position, TextAlign, AlignSelf, JustifyContent } from "../layout/styling";
@@ -53,12 +52,14 @@ export class Input extends View {
   horizontalScroll = 0;
   scrollWhenDragStarted = 0;
 
+  isFocused = false;
+
   constructor(
     readonly props: {
       cursorColor?: string;
       lookups: Lookups;
       onBlur?: BlurHandler;
-      onChange?: InputChangeHandler;
+      onChange?: (value: string) => void;
       onClick?(): void;
       onFocus?: FocusHandler;
       onKeyDown?: KeyDownHandler;
@@ -77,14 +78,6 @@ export class Input extends View {
     baseStyle.justifyContent = JustifyContent.Center;
 
     super({ ...props, style: { ...baseStyle, ...props.style } });
-
-    // // Blinking cursor.
-    // setInterval(() => {
-    //   const cursor = this.firstChild?.next?.next;
-    //   invariant(cursor instanceof View, "Third child should be cursor.");
-    //   cursor._style.backgroundColor =
-    //     cursor._style.backgroundColor === cursorColor ? "transparent" : cursorColor;
-    // }, blinkIntervalMs);
 
     // Text (placeholder or value).
     this.add(
@@ -131,6 +124,7 @@ export class Input extends View {
     this.onClick = this.onClick.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.onBlur = this.onBlur.bind(this);
     this.onMouseDownForDragging = this.onMouseDownForDragging.bind(this);
     this.onMouseUpForDragging = this.onMouseUpForDragging.bind(this);
     this.onMouseMoveForDragging = this.onMouseMoveForDragging.bind(this);
@@ -139,6 +133,7 @@ export class Input extends View {
 
     this._eventListeners.push(
       [UserEventType.MouseClick, this.onClick],
+      [UserEventType.Blur, this.onBlur],
       [UserEventType.KeyDown, this.onKeyDown],
       [UserEventType.KeyPress, this.onKeyPress],
       [UserEventType.MouseDown, this.onMouseDownForDragging],
@@ -151,9 +146,6 @@ export class Input extends View {
 
     if (props.onBlur) {
       this._eventListeners.push([UserEventType.Blur, props.onBlur]);
-    }
-    if (props.onChange) {
-      this._eventListeners.push([UserEventType.InputChange, props.onChange]);
     }
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
@@ -170,6 +162,12 @@ export class Input extends View {
 
   private onClick(_: MouseEvent, eventManager: EventManager) {
     eventManager.setFocused(this);
+    this.isFocused = true;
+    this.update();
+  }
+
+  private onBlur() {
+    this.isFocused = false;
     this.update();
   }
 
@@ -190,6 +188,9 @@ export class Input extends View {
     }
 
     const { cursor, mark, value } = updateSelection(this.value, this.cursor, this.mark, event);
+    if (value !== this.value) {
+      this.props.onChange?.(value);
+    }
     this.value = value;
     this.previousCursor = this.cursor;
     this.cursor = cursor;
@@ -199,6 +200,9 @@ export class Input extends View {
 
   private onKeyPress(event: KeyboardEvent) {
     const { cursor, mark, value } = updateText(this.value, this.cursor, this.mark, event);
+    if (value !== this.value) {
+      this.props.onChange?.(value);
+    }
     this.value = value;
     this.previousCursor = this.cursor;
     this.cursor = cursor;
@@ -441,5 +445,7 @@ export class Input extends View {
       text._style.color = placeholderColor;
       text.text = this.props.placeholder ?? "";
     }
+
+    cursor._style.backgroundColor = this.isFocused ? cursorColor : "transparent";
   }
 }

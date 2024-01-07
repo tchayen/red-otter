@@ -78,7 +78,6 @@ export type {
   KeyPressHandler,
   FocusHandler,
   BlurHandler,
-  InputChangeHandler,
   LayoutHandler,
   MouseEvent,
   ScrollEvent,

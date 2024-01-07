@@ -6,7 +6,6 @@ import { BaseView } from "./BaseView";
 import type {
   BlurHandler,
   FocusHandler,
-  InputChangeHandler,
   KeyDownHandler,
   KeyPressHandler,
   KeyUpHandler,
@@ -38,8 +37,7 @@ type UserEventTuple =
   | [UserEventType.KeyPress, KeyPressHandler]
   | [UserEventType.Focus, FocusHandler]
   | [UserEventType.Blur, BlurHandler]
-  | [UserEventType.Layout, LayoutHandler]
-  | [UserEventType.InputChange, InputChangeHandler];
+  | [UserEventType.Layout, LayoutHandler];
 
 /**
  * `BaseView` but with event listeners.
