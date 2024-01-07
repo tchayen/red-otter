@@ -1,5 +1,12 @@
 
 
+## [0.1.4](https://github.com/tchayen/red-otter/compare/v0.1.3...v0.1.4) (2024-01-07)
+
+
+### Bug Fixes
+
+* export lookups types ([f594b42](https://github.com/tchayen/red-otter/commit/f594b4282962da5df2680a306ddb5837fac4acac))
+
 ## [0.1.3](https://github.com/tchayen/red-otter/compare/v0.1.2...v0.1.3) (2024-01-07)
 
 
