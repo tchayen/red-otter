@@ -1,5 +1,12 @@
 
 
+## [0.1.3](https://github.com/tchayen/red-otter/compare/v0.1.2...v0.1.3) (2024-01-07)
+
+
+### Bug Fixes
+
+* add onChange() handler to input fields ([52a29dc](https://github.com/tchayen/red-otter/commit/52a29dc20266224936c30c4524160196544bcd83))
+
 ## [0.1.2](https://github.com/tchayen/red-otter/compare/v0.1.1...v0.1.2) (2024-01-01)
 
 
