@@ -1045,6 +1045,9 @@ export function interactiveButton() {
     onChange: (value) => {
       console.log("Input value changed to", value);
     },
+    onKeyDown: (key) => {
+      console.log("Pressed", key);
+    },
     placeholder: "Type here...",
     style: {
       backgroundColor: "#333",

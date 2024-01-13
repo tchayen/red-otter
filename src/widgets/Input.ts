@@ -144,14 +144,17 @@ export class Input extends View {
       [UserEventType.Layout, this.onLayout],
     );
 
-    if (props.onBlur) {
-      this._eventListeners.push([UserEventType.Blur, props.onBlur]);
-    }
     if (props.onClick) {
       this._eventListeners.push([UserEventType.MouseClick, props.onClick]);
     }
     if (props.onFocus) {
       this._eventListeners.push([UserEventType.Focus, props.onFocus]);
+    }
+    if (props.onBlur) {
+      this._eventListeners.push([UserEventType.Blur, props.onBlur]);
+    }
+    if (props.onKeyDown) {
+      this._eventListeners.push([UserEventType.KeyDown, props.onKeyDown]);
     }
 
     if (props.value) {
@@ -199,6 +202,10 @@ export class Input extends View {
   }
 
   private onKeyPress(event: KeyboardEvent) {
+    if (event.code === 13 /* ENTER */) {
+      return;
+    }
+
     const { cursor, mark, value } = updateText(this.value, this.cursor, this.mark, event);
     if (value !== this.value) {
       this.props.onChange?.(value);

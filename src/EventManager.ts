@@ -29,7 +29,7 @@ export class EventManager {
       window.addEventListener("keydown", (event) => {
         this.dispatchEvent({
           bubbles: false,
-          capturable: true,
+          capturable: false,
           character: event.key,
           code: event.keyCode,
           modifiers: {
