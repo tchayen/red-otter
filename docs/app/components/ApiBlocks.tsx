@@ -236,7 +236,7 @@ export function Interface({
   );
 }
 
-const gitBranch = "big-reset"; // TODO release: change to "main".
+const gitBranch = "main";
 
 function Description({ children }: { children: string }) {
   if (!children) {
