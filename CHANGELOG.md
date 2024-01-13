@@ -1,5 +1,12 @@
 
 
+## [0.1.6](https://github.com/tchayen/red-otter/compare/v0.1.5...v0.1.6) (2024-01-13)
+
+
+### Bug Fixes
+
+* add support for onKeyDown in inputs ([53e7aad](https://github.com/tchayen/red-otter/commit/53e7aad61555462326630ac34f92fec7980236a4))
+
 ## [0.1.5](https://github.com/tchayen/red-otter/compare/v0.1.4...v0.1.5) (2024-01-13)
 
 ## [0.1.4](https://github.com/tchayen/red-otter/compare/v0.1.3...v0.1.4) (2024-01-07)
