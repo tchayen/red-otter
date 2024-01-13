@@ -1,5 +1,7 @@
 
 
+## [0.1.5](https://github.com/tchayen/red-otter/compare/v0.1.4...v0.1.5) (2024-01-13)
+
 ## [0.1.4](https://github.com/tchayen/red-otter/compare/v0.1.3...v0.1.4) (2024-01-07)
 
 
