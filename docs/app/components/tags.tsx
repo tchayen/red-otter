@@ -209,8 +209,9 @@ export function Hr({ className }: { className?: string }) {
   return <hr className={twMerge("my-8 border-t border-mauvedark5", className)} />;
 }
 
-export function Img({ className, ...props }: { className?: string }) {
-  return <img {...props} className={twMerge("my-6 rounded-md", className)} />;
+export function Img({ className, ...props }: { alt?: string; className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img {...props} alt={props.alt} className={twMerge("my-6 rounded-md", className)} />;
 }
 
 export function Box({
