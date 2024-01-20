@@ -357,7 +357,11 @@ export class Input extends View {
     }
   }
 
-  private update() {
+  /**
+   * Apply changes like update scroll position etc. in response to changing value, in a way that
+   * will be reflected in the next frame.
+   */
+  public update() {
     invariant(this.firstChild instanceof Text, "First child should be text.");
     const text = this.firstChild;
     invariant(text instanceof Text, "First child should be text.");
