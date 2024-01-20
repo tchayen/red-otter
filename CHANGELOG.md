@@ -1,5 +1,13 @@
 
 
+## [0.1.7](https://github.com/tchayen/red-otter/compare/v0.1.6...v0.1.7) (2024-01-20)
+
+
+### Bug Fixes
+
+* expose Input[#update](https://github.com/tchayen/red-otter/issues/update)() method ([07ea373](https://github.com/tchayen/red-otter/commit/07ea3739a54e9bb3d2a963c07b9d1aaaedd537a3))
+* upgrade libraries to fix TS mismatch error ([2e69434](https://github.com/tchayen/red-otter/commit/2e69434e275e843c6fe7cdf8c6f3d48ae2cae387))
+
 ## [0.1.6](https://github.com/tchayen/red-otter/compare/v0.1.5...v0.1.6) (2024-01-13)
 
 
