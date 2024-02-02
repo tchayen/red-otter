@@ -589,11 +589,7 @@ export class WebGPURenderer implements Renderer {
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [
         {
-          // TODO release: this should be changed to load and clearing should be done outside.
-          // Otherwise UI will steal the whole screen.
-          clearValue: { a: 1, b: 0, g: 0, r: 0 },
-          loadOp: "clear",
-          // loadOp: "load",
+          loadOp: "load",
           resolveTarget: this.context
             .getCurrentTexture()
             .createView({ label: "antialiased resolve target" }),
