@@ -129,17 +129,25 @@ export class Mat4 {
     ]);
   }
 
-  static lookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
+  static lookAt(position, target, up) {
+    // Camera's backward vector.
     const zAxis = position.subtract(target).normalize();
+    // Camera's right vector.
     const xAxis = up.cross(zAxis).normalize();
+    // Camera's up vector.
     const yAxis = zAxis.cross(xAxis).normalize();
+
+    // Calculate the negative translation
+    const posX = -xAxis.dot(position);
+    const posY = -yAxis.dot(position);
+    const posZ = -zAxis.dot(position);
 
     // prettier-ignore
     return new Mat4([
-      xAxis.x, xAxis.y, xAxis.z, 0,
-      yAxis.x, yAxis.y, yAxis.z, 0,
-      zAxis.x, zAxis.y, zAxis.z, 0,
-      position.x, position.y, position.z, 1,
+      xAxis.x, yAxis.x, zAxis.x, 0,
+      xAxis.y, yAxis.y, zAxis.y, 0,
+      xAxis.z, yAxis.z, zAxis.z, 0,
+      posX, posY, posZ, 1,
     ]);
   }
 
