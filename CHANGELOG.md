@@ -1,5 +1,12 @@
 
 
+## [0.1.9](https://github.com/tchayen/red-otter/compare/v0.1.8...v0.1.9) (2024-02-02)
+
+
+### Bug Fixes
+
+* add missing typings ([8162293](https://github.com/tchayen/red-otter/commit/8162293458f26933f6fd64440ff7c1a529106445))
+
 ## [0.1.8](https://github.com/tchayen/red-otter/compare/v0.1.7...v0.1.8) (2024-02-02)
 
 
