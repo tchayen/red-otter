@@ -129,7 +129,7 @@ export class Mat4 {
     ]);
   }
 
-  static lookAt(position, target, up) {
+  static lookAt(position: Vec3, target: Vec3, up: Vec3): Mat4 {
     // Camera's backward vector.
     const zAxis = position.subtract(target).normalize();
     // Camera's right vector.
