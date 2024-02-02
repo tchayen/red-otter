@@ -1,5 +1,12 @@
 
 
+## [0.1.10](https://github.com/tchayen/red-otter/compare/v0.1.9...v0.1.10) (2024-02-02)
+
+
+### Bug Fixes
+
+* load color attachment in render pass instead of clearing ([70e763e](https://github.com/tchayen/red-otter/commit/70e763e442b0fd3185ad6e76995eb68671720c02))
+
 ## [0.1.9](https://github.com/tchayen/red-otter/compare/v0.1.8...v0.1.9) (2024-02-02)
 
 

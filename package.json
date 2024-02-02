@@ -1,7 +1,7 @@
 {
   "name": "red-otter",
   "description": "Self-contained UI rendering library for 3D graphics APIs.",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "main": "dist/src/index.js",
   "type": "module",
   "sideEffects": false,
