@@ -1,5 +1,12 @@
 
 
+## [0.1.8](https://github.com/tchayen/red-otter/compare/v0.1.7...v0.1.8) (2024-02-02)
+
+
+### Bug Fixes
+
+* make Mat4.lookAt() work like in other math libraries ([d9e2dbf](https://github.com/tchayen/red-otter/commit/d9e2dbf3d0c48a5dccba310e5e0a351fd19d79e0))
+
 ## [0.1.7](https://github.com/tchayen/red-otter/compare/v0.1.6...v0.1.7) (2024-01-20)
 
 
