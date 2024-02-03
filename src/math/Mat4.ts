@@ -114,7 +114,7 @@ export class Mat4 {
   }
 
   /**
-   * `fov` is in radians.
+   * `fov` is in radians. Assumes WebGPU NDC z-range of [0, 1].
    */
   static perspective(fov: number, aspect: number, near: number, far: number): Mat4 {
     const f = 1.0 / Math.tan(fov / 2);
@@ -122,10 +122,10 @@ export class Mat4 {
 
     // prettier-ignore
     return new Mat4([
-      f / aspect, 0, 0, 0,
-      0, f, 0, 0,
-      0, 0, (far + near) * nf, -1,
-      0, 0, 2 * far * near * nf, 0,
+        f / aspect, 0, 0, 0,
+        0, f, 0, 0,
+        0, 0, far * nf, -1,
+        0, 0, far * near * nf * 2, 0,
     ]);
   }
 
