@@ -1,5 +1,12 @@
 
 
+## [0.1.12](https://github.com/tchayen/red-otter/compare/v0.1.11...v0.1.12) (2024-02-03)
+
+
+### Bug Fixes
+
+* remove unnecessary * 2 ([9df2463](https://github.com/tchayen/red-otter/commit/9df246334ea35375546da13fbad99f16bcdb1086))
+
 ## [0.1.11](https://github.com/tchayen/red-otter/compare/v0.1.10...v0.1.11) (2024-02-03)
 
 
