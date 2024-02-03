@@ -1,5 +1,12 @@
 
 
+## [0.1.11](https://github.com/tchayen/red-otter/compare/v0.1.10...v0.1.11) (2024-02-03)
+
+
+### Bug Fixes
+
+* change Mat4.perspective to use WebGPU NDC space ([ebaf0fa](https://github.com/tchayen/red-otter/commit/ebaf0faa90a8ce855371045a05b79c83854e820a))
+
 ## [0.1.10](https://github.com/tchayen/red-otter/compare/v0.1.9...v0.1.10) (2024-02-02)
 
 
