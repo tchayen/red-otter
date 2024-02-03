@@ -125,7 +125,7 @@ export class Mat4 {
         f / aspect, 0, 0, 0,
         0, f, 0, 0,
         0, 0, far * nf, -1,
-        0, 0, far * near * nf * 2, 0,
+        0, 0, far * near * nf, 0,
     ]);
   }
 
