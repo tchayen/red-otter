@@ -1,5 +1,12 @@
 
 
+## [0.1.14](https://github.com/tchayen/red-otter/compare/v0.1.13...v0.1.14) (2024-02-04)
+
+
+### Bug Fixes
+
+* replace Mat4.rotateFromQuat() with Mat4.getRotationAndTranslationFromQuatAndVec() ([2c11e0e](https://github.com/tchayen/red-otter/commit/2c11e0eaa3279d4332dbd199aa57722cfbee78cd))
+
 ## [0.1.13](https://github.com/tchayen/red-otter/compare/v0.1.12...v0.1.13) (2024-02-04)
 
 
