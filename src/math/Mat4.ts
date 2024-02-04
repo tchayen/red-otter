@@ -70,30 +70,33 @@ export class Mat4 {
     return this.xRotation(x).multiply(this.yRotation(y)).multiply(this.zRotation(z));
   }
 
-  static rotateFromQuat(q: Vec4): Mat4 {
-    const x = q.x;
-    const y = q.y;
-    const z = q.z;
-    const w = q.w;
+  /**
+   * @param q rotation quaternion
+   * @param v translation vector
+   * @returns a matrix combining rotation and translation
+   */
+  static getRotationAndTranslationFromQuatAndVec(q: Vec4, v: Vec4): Mat4 {
+    const x2 = q.x + q.x;
+    const y2 = q.y + q.y;
+    const z2 = q.z + q.z;
 
-    const x2 = x * x;
-    const y2 = y * y;
-    const z2 = z * z;
-
-    const xy = x * y;
-    const xz = x * z;
-    const yz = y * z;
-    const wx = w * x;
-    const wy = w * y;
-    const wz = w * z;
+    const xx = q.x * x2;
+    const xy = q.x * y2;
+    const xz = q.x * z2;
+    const yy = q.y * y2;
+    const yz = q.y * z2;
+    const zz = q.z * z2;
+    const wx = q.w * x2;
+    const wy = q.w * y2;
+    const wz = q.w * z2;
 
     // prettier-ignore
     return new Mat4([
-      1 - 2 * (y2 + z2), 2 * (xy - wz), 2 * (xz + wy), 0,
-      2 * (xy + wz), 1 - 2 * (x2 + z2), 2 * (yz - wx), 0,
-      2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (x2 + y2), 0,
-      0, 0, 0, 1
-    ])
+      1 - (yy + zz), xy + wz, xz - wy, 0,
+      xy - wz, 1 - (xx + zz), yz + wx, 0,
+      xz + wy, yz - wx, 1 - (xx + yy), 0,
+      v.x, v.y, v.z, 1,
+    ]);
   }
 
   /**
