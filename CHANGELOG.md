@@ -1,5 +1,12 @@
 
 
+## [0.1.13](https://github.com/tchayen/red-otter/compare/v0.1.12...v0.1.13) (2024-02-04)
+
+
+### Bug Fixes
+
+* correct more math functions ([c013d58](https://github.com/tchayen/red-otter/commit/c013d58011c41f4f97ac3ef8fb7b38b973404ba1))
+
 ## [0.1.12](https://github.com/tchayen/red-otter/compare/v0.1.11...v0.1.12) (2024-02-03)
 
 
