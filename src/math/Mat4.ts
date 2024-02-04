@@ -96,6 +96,10 @@ export class Mat4 {
     ])
   }
 
+  /**
+   * Generates orthogonal projection matrix with near/far clip planes corresponding to a normalized
+   * NDC z-range of [0, 1].
+   */
   static orthographic(
     left: number,
     right: number,
@@ -104,12 +108,26 @@ export class Mat4 {
     near: number,
     far: number,
   ): Mat4 {
-    // prettier-ignore
+    const lr = 1 / (left - right);
+    const bt = 1 / (bottom - top);
+    const nf = 1 / (near - far);
     return new Mat4([
-      2 / (right - left), 0, 0, 0,
-      0, 2 / (top - bottom), 0, 0,
-      0, 0, -2 / (far - near), 0,
-      -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1,
+      -2 * lr,
+      0,
+      0,
+      0,
+      0,
+      -2 * bt,
+      0,
+      0,
+      0,
+      0,
+      nf,
+      0,
+      (left + right) * lr,
+      (top + bottom) * bt,
+      near * nf,
+      1,
     ]);
   }
 
@@ -185,11 +203,15 @@ export class Mat4 {
   }
 
   multiplyVec4(vec: Vec4): Vec4 {
+    const x = vec.x;
+    const y = vec.y;
+    const z = vec.z;
+    const w = this.data[3] * x + this.data[7] * y + this.data[11] * z + this.data[15];
     return new Vec4(
-      this.data[0] * vec.x + this.data[1] * vec.y + this.data[2] * vec.z + this.data[3] * vec.w,
-      this.data[4] * vec.x + this.data[5] * vec.y + this.data[6] * vec.z + this.data[7] * vec.w,
-      this.data[8] * vec.x + this.data[9] * vec.y + this.data[10] * vec.z + this.data[11] * vec.w,
-      this.data[12] * vec.x + this.data[13] * vec.y + this.data[14] * vec.z + this.data[15] * vec.w,
+      (this.data[0] * x + this.data[4] * y + this.data[8] * z + this.data[12]) / w,
+      (this.data[1] * x + this.data[5] * y + this.data[9] * z + this.data[13]) / w,
+      (this.data[2] * x + this.data[6] * y + this.data[10] * z + this.data[14]) / w,
+      1,
     );
   }
 
