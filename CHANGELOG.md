@@ -1,5 +1,12 @@
 
 
+## [0.1.15](https://github.com/tchayen/red-otter/compare/v0.1.14...v0.1.15) (2024-02-11)
+
+
+### Bug Fixes
+
+* export LRUCache and Queue ([2a59580](https://github.com/tchayen/red-otter/commit/2a595800e802e847070bd72f7d6d3dcc89ca4dd5))
+
 ## [0.1.14](https://github.com/tchayen/red-otter/compare/v0.1.13...v0.1.14) (2024-02-04)
 
 
