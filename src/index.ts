@@ -30,6 +30,8 @@ export {
 } from "./layout/styling";
 
 export { invariant } from "./utils/invariant";
+export { LRUCache } from "./utils/LRUCache";
+export { Queue } from "./utils/Queue";
 
 export { BinaryReader } from "./font/BinaryReader";
 export { toSDF } from "./font/toSDF";
